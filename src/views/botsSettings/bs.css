@@ -1,0 +1,30 @@
+.bot-btn{
+    height: 70px !important;
+    width: 250px;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.load-btn{
+    height: 70px !important;
+    width: 90px;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.modal-btn{
+    height: 70px !important;
+    width: 250px;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    background-color: orange;
+    margin-right: 20px;
+}
+
+.modal-btn:hover{
+    color: black;
+    background-color: rgb(255, 188, 62);
+}

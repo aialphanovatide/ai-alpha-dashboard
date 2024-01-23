@@ -24,6 +24,8 @@ const AppContent = () => {
             )
           })}
           <Route path="/" element={<Navigate to="dashboard" replace />} />
+          <Route path="/botsSettings" element={<Navigate to="botsSettings" replace />} />
+          <Route path="/chartsPage" element={<Navigate to="chartsPage" replace />} />
         </Routes>
       </Suspense>
     </CContainer>

@@ -1,0 +1,28 @@
+.save-btn{
+    height: 40px !important;
+    width: 100px;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: orange;
+    margin-right: 20px;
+    border: none;
+}
+
+.save-btn:hover{
+    height: 40px !important;
+    width: 100px;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: rgb(255, 188, 62);
+    margin-right: 20px;
+    border: none;
+    color: black;
+}
+
+.space{
+    margin: 10px;
+    color: green;
+    font: 400;
+}

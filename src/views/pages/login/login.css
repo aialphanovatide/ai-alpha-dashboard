@@ -1,0 +1,26 @@
+.loginlogo{
+    width: 170px; /* Ajusta el tamaño del logo según tus necesidades */
+    height: auto;
+    margin-left: 33%;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    animation: rotate 10s linear infinite;
+    box-shadow: 0 0 20px rgba(255, 165, 0, 0.7);
+}
+
+@keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+.loginbtn{
+    background-color: #ffa600b3;
+    outline: none;
+    border: none;
+}
+
+.loginbtn:hover{background-color: #d68b00b3;}

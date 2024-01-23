@@ -1,5 +1,4 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
 import {
   CButton,
   CCard,
@@ -13,26 +12,72 @@ import {
   CInputGroupText,
   CRow,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
+import { useNavigate } from 'react-router-dom'
+import '../login/login.css'
 
 const Login = () => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+
+  const navigate = useNavigate()
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value)
+  }
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value)
+  }
+
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:9000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      })
+      const user = await response.json()
+      if (user.success) {
+        navigate('/dashboard', { state: { username: user.user.username } })
+      } else {
+        setError('Incorrect credentials. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error making the request:', error)
+      setError('Error making the request. Please try again.')
+    }
+  }
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
-          <CCol md={8}>
+          <CCol md={6}>
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm>
+                  <CForm onSubmit={(e) => e.preventDefault()}>
+                    <img
+                      src={require('../../../assets/brand/logo.jpg')}
+                      alt="logo"
+                      className="loginlogo"
+                    />
                     <h1>Login</h1>
                     <p className="text-body-secondary">Sign In to your account</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput
+                        placeholder="Username"
+                        autoComplete="username"
+                        value={username}
+                        onChange={handleUsernameChange}
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -42,37 +87,19 @@ const Login = () => {
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
+                        value={password}
+                        onChange={handlePasswordChange}
                       />
                     </CInputGroup>
                     <CRow>
-                      <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                      <CCol xs={4}>
+                        <CButton color="primary" className="px-4 loginbtn" onClick={handleSubmit}>
                           Login
                         </CButton>
                       </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
-                          Forgot password?
-                        </CButton>
-                      </CCol>
                     </CRow>
+                    {error && <p className="error-message">{error}</p>}
                   </CForm>
-                </CCardBody>
-              </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
-                <CCardBody className="text-center">
-                  <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
-                    <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Register Now!
-                      </CButton>
-                    </Link>
-                  </div>
                 </CCardBody>
               </CCard>
             </CCardGroup>

@@ -1,6 +1,9 @@
 import React from 'react'
 
+const BotsSettings = React.lazy(() => import('./views/botsSettings/BotsSettings'))
+const ChartsPage = React.lazy(() => import('./views/chartsPage/ChartsPage'))
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const Analysis = React.lazy(() => import('./views/analysis/Analysis'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
@@ -53,6 +56,9 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/botsSettings', name: 'BotsSettings', element: BotsSettings },
+  { path: '/chartsPage', name: 'ChartsPage', element: ChartsPage },
+  { path: '/analysis', name: 'Analysis', element: Analysis },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },

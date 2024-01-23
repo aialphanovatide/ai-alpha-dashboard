@@ -1,7 +1,7 @@
 {
   "name": "@coreui/coreui-free-react-admin-template",
   "version": "5.0.0-rc.0",
-  "description": "CoreUI Free React Admin Template",
+  "description": "AI-Alpha App Dashboard",
   "homepage": ".",
   "bugs": {
     "url": "https://github.com/coreui/coreui-free-react-admin-template/issues"
@@ -36,6 +36,7 @@
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-app-polyfill": "^3.0.0",
+    "react-bootstrap": "^2.10.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.3",
     "react-router-dom": "^6.20.0",

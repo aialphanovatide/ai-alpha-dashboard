@@ -53,31 +53,12 @@ const AppHeader = () => {
         </CHeaderToggler>
         <CHeaderNav className="d-none d-md-flex">
           <CNavItem>
-            <CNavLink to="/dashboard" component={NavLink}>
-              Dashboard
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">Users</CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">Settings</CNavLink>
-          </CNavItem>
-        </CHeaderNav>
-        <CHeaderNav className="ms-auto">
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilBell} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilList} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilEnvelopeOpen} size="lg" />
+            <CNavLink
+              to="/dashboard"
+              component={NavLink}
+              style={{ cursor: 'pointer' }} // Establece el estilo del cursor a "pointer"
+            >
+              AI-Alpha Dashboard
             </CNavLink>
           </CNavItem>
         </CHeaderNav>
@@ -114,15 +95,6 @@ const AppHeader = () => {
               >
                 <CIcon className="me-2" icon={cilMoon} size="lg" /> Dark
               </CDropdownItem>
-              <CDropdownItem
-                active={colorMode === 'auto'}
-                className="d-flex align-items-center"
-                component="button"
-                type="button"
-                onClick={() => setColorMode('auto')}
-              >
-                <CIcon className="me-2" icon={cilContrast} size="lg" /> Auto
-              </CDropdownItem>
             </CDropdownMenu>
           </CDropdown>
           <li className="nav-item py-1">
@@ -130,9 +102,6 @@ const AppHeader = () => {
           </li>
           <AppHeaderDropdown />
         </CHeaderNav>
-      </CContainer>
-      <CContainer className="px-4" fluid>
-        <AppBreadcrumb />
       </CContainer>
     </CHeader>
   )
