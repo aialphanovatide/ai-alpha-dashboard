@@ -57,8 +57,8 @@ const Analysis = () => {
     { id: '35', bot_name: 'fet' },
     { id: '36', bot_name: 'rndr' },
   ])
-
   const [previewImage, setPreviewImage] = useState(null)
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 
   const handleChange = (event) => {
     const { name, value, files } = event.target
@@ -70,16 +70,24 @@ const Analysis = () => {
     setFormData((prevData) => ({ ...prevData, [name]: name === 'image' ? files[0] : value }))
   }
 
+  const handleFileChange = (event) => {
+    const { name, files } = event.target
+
+    if (files && files[0]) {
+      setPreviewImage(URL.createObjectURL(files[0]))
+    }
+
+    setFormData((prevData) => ({ ...prevData, [name]: files[0] }))
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
 
     try {
       const formDataObj = new FormData()
-      console.log('FormData:', formDataObj)
       formDataObj.append('coinBot', formData.coinBot)
       formDataObj.append('content', formData.content)
       formDataObj.append('image', formData.image)
-      console.log('FormData:', formDataObj)
 
       const response = await fetch('http://127.0.0.1:9000/post_analysis', {
         method: 'POST',
@@ -88,6 +96,7 @@ const Analysis = () => {
 
       if (response.ok) {
         console.log('Analysis sent successfully')
+        setIsFormSubmitted(true)
       } else {
         console.error('Error sending analysis:', response.statusText)
       }
@@ -95,6 +104,7 @@ const Analysis = () => {
       console.error('Error sending analysis:', error)
     }
 
+    setPreviewImage(null)
     // Limpiar el formulario después de enviar
     setFormData({
       content: '',
@@ -102,8 +112,22 @@ const Analysis = () => {
       coinBot: '',
     })
 
-    setPreviewImage(null)
+    // Restablecer el campo de archivo asignándole un nuevo elemento
+    const fileInput = document.getElementById('image')
+    fileInput.value = null
   }
+
+  useEffect(() => {
+    if (isFormSubmitted) {
+      // Después de un tiempo (por ejemplo, 2 segundos), restablecer el estado de isFormSubmitted
+      const timeout = setTimeout(() => {
+        setIsFormSubmitted(false)
+      }, 2000)
+
+      // Limpiar el temporizador si el componente se desmonta antes de que se ejecute
+      return () => clearTimeout(timeout)
+    }
+  }, [isFormSubmitted])
 
   return (
     <CRow>
@@ -166,8 +190,8 @@ const Analysis = () => {
               </CInputGroup>
 
               {/* Submit button */}
-              <CButton color="primary" type="submit">
-                Submit Analysis
+              <CButton color="primary" type="submit" disabled={isFormSubmitted}>
+                {isFormSubmitted ? 'Submitting...' : 'Submit Analysis'}
               </CButton>
             </form>
           </CCardBody>
