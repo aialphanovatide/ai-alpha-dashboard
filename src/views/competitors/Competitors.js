@@ -13,7 +13,7 @@ const Competitors = () => {
   useEffect(() => {
     const getAllBots = async () => {
       try {
-        const response = await fetch('https://ntf1vmdf-9000.use.devtunnels.ms/get_all_coin_bots', {
+        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_coin_bots', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -41,12 +41,15 @@ const Competitors = () => {
     setSelectedCoinBot(value)
 
     try {
-      const response = await fetch(`https://ntf1vmdf-9000.use.devtunnels.ms/api/competitors?coin_bot_id=${value}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `https://star-oyster-known.ngrok-free.app/api/competitors?coin_bot_id=${value}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      })
+      )
 
       const data = await response.json()
       if (data && data.competitors) {

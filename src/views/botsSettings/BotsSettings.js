@@ -13,7 +13,7 @@ const BotsSettings = () => {
   const [loading, setLoading] = useState(false)
   const getAllBots = useCallback(async () => {
     try {
-      const response = await fetch('https://ntf1vmdf-9000.use.devtunnels.ms/get_all_bots', {
+      const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_bots', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -63,12 +63,12 @@ const BotsSettings = () => {
 
   const turnOnAllBots = useCallback(() => {
     setLoading(true)
-    updateBotState('https://ntf1vmdf-9000.use.devtunnels.ms/activate_all_bots')
+    updateBotState('https://star-oyster-known.ngrok-free.app/activate_all_bots')
   }, [updateBotState])
 
   const turnOffAllBots = useCallback(() => {
     setLoading(true)
-    updateBotState('https://ntf1vmdf-9000.use.devtunnels.ms/deactivate_all_bots')
+    updateBotState('https://star-oyster-known.ngrok-free.app/deactivate_all_bots')
   }, [updateBotState])
 
   useEffect(() => {

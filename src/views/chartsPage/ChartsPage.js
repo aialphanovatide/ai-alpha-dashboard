@@ -30,7 +30,7 @@ const ChartsPage = () => {
   useEffect(() => {
     const fetchCoinBots = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:9000/get_all_coin_bots')
+        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_coin_bots')
         if (response.ok) {
           const data = await response.json()
           setCoinBots(data.coin_bots)
@@ -54,7 +54,7 @@ const ChartsPage = () => {
     event.preventDefault()
 
     try {
-      const response = await fetch('http://127.0.0.1:9000/save_chart', {
+      const response = await fetch('https://star-oyster-known.ngrok-free.app/save_chart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

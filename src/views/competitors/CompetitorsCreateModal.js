@@ -66,7 +66,7 @@ const CompetitorsCreateModal = ({ handleClose, coinBotId, handleSave }) => {
 
     try {
       const response = await fetch(
-        'https://ntf1vmdf-9000.use.devtunnels.ms/api/competitors/create',
+        'https://star-oyster-known.ngrok-free.app/api/competitors/create',
         {
           method: 'POST',
           headers: {

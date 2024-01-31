@@ -79,7 +79,7 @@ const TokenomicsEditModal = ({ dataToEdit, coinBotId, handleClose, handleSave })
     updatedData.coinBotId = coinBotId
     console.log('Data being sent to server:', updatedData)
     try {
-      const response = await fetch('https://ntf1vmdf-9000.use.devtunnels.ms/save_tokenomics', {
+      const response = await fetch('https://star-oyster-known.ngrok-free.app/save_tokenomics', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

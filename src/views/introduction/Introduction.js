@@ -10,7 +10,7 @@ const Introduction = () => {
   useEffect(() => {
     const getAllBots = async () => {
       try {
-        const response = await fetch('https://ntf1vmdf-9000.use.devtunnels.ms/get_all_coin_bots', {
+        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_coin_bots', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ const Introduction = () => {
       }
 
       // Realizar la solicitud POST a la ruta /post_introduction
-      const response = await fetch('https://ntf1vmdf-9000.use.devtunnels.ms/post_introduction', {
+      const response = await fetch('https://star-oyster-known.ngrok-free.app/post_introduction', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

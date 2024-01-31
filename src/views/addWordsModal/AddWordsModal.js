@@ -15,7 +15,7 @@ const AddWordsModal = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://ntf1vmdf-9000.use.devtunnels.ms/get_all_coin_bots')
+        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_coin_bots')
         if (response.ok) {
           const data = await response.json()
           setCoinBots(data.coin_bots)
@@ -38,7 +38,7 @@ const AddWordsModal = () => {
   const handleAddWords = async () => {
     try {
       if (selectedCoinBot) {
-        const response = await fetch('https://ntf1vmdf-9000.use.devtunnels.ms/save_keyword', {
+        const response = await fetch('https://star-oyster-known.ngrok-free.app/save_keyword', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

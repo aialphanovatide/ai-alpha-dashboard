@@ -10,7 +10,7 @@ const CompetitorsEditModal = ({ competitorInfo, coinBotId, handleClose, handleSa
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `https://ntf1vmdf-9000.use.devtunnels.ms/api/competitors?coin_bot_id=${coinBotId}`,
+        `https://star-oyster-known.ngrok-free.app/api/competitors?coin_bot_id=${coinBotId}`,
         {
           method: 'GET',
           headers: {
@@ -50,16 +50,19 @@ const CompetitorsEditModal = ({ competitorInfo, coinBotId, handleClose, handleSa
 
   const handleSaveClick = async () => {
     try {
-      const response = await fetch('https://ntf1vmdf-9000.use.devtunnels.ms/api/competitors/edit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        'https://star-oyster-known.ngrok-free.app/api/competitors/edit',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            coin_bot_id: coinBotId,
+            competitor_data: editedCompetitor,
+          }),
         },
-        body: JSON.stringify({
-          coin_bot_id: coinBotId,
-          competitor_data: editedCompetitor,
-        }),
-      })
+      )
       console.log('coin_bot_id', coinBotId)
       console.log('editedCompetitor', editedCompetitor)
       const data = await response.json()
