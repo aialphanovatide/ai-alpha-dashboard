@@ -24,7 +24,7 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Bots Settings',
+    name: 'News Bots Settings',
     to: '/botsSettings',
     icon: <CIcon icon={cilSitemap} customClassName="nav-icon" />,
   },
@@ -39,6 +39,12 @@ const _nav = [
     name: 'Analysis',
     to: '/analysis',
     icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Fundamentals',
+    to: '/fundamentals',
+    icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
   },
 ]
 

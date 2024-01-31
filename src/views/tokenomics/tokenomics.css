@@ -1,0 +1,9 @@
+.editButton {
+    display: none;
+  }
+
+  
+tr:hover .editButton {
+    display: inline-block;
+  }
+  

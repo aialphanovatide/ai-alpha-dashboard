@@ -1,15 +1,17 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import classNames from 'classnames'
-import '../botsSettings/bs.css'
-import '../addWordsModal/addWordsModal.css'
+import React, { useState, useEffect } from 'react'
 import { CButton, CModal, CModalBody, CModalHeader, CModalTitle, CModalFooter } from '@coreui/react'
 import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap'
+import PropTypes from 'prop-types'
 
-const AddWordsModal = () => {
+const AddSitesModal = () => {
   const [showAlert, setShowAlert] = useState(false)
   const [coinBots, setCoinBots] = useState([])
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
-  const [keywordValue, setKeywordValue] = useState('')
+  const [siteName, setSiteName] = useState('')
+  const [baseUrl, setBaseUrl] = useState('')
+  const [dataSourceUrl, setDataSourceUrl] = useState('')
+  const [isURLComplete, setIsURLComplete] = useState(true)
+  const [mainContainer, setMainContainer] = useState('')
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -26,44 +28,59 @@ const AddWordsModal = () => {
         console.error('Error fetching coin bots:', error)
       }
     }
+
     fetchData()
   }, [])
 
   const clearFields = () => {
     setSelectedCoinBot('')
-    setKeywordValue('')
+    setSiteName('')
+    setBaseUrl('')
+    setDataSourceUrl('')
+    setIsURLComplete(true)
+    setMainContainer('')
     setShowAlert(false)
   }
 
-  const handleAddWords = async () => {
+  const handleAddSite = async () => {
     try {
       if (selectedCoinBot) {
-        const response = await fetch('https://ntf1vmdf-9000.use.devtunnels.ms/save_keyword', {
+        const mainContainerValue = mainContainer.trim() === '' ? 'None' : mainContainer
+
+        const response = await fetch('https://ntf1vmdf-9000.use.devtunnels.ms/save_site', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            keyword: keywordValue,
             coin_bot_id: selectedCoinBot,
+            site_name: siteName,
+            base_url: baseUrl,
+            data_source_url: dataSourceUrl,
+            is_URL_complete: isURLComplete,
+            main_container: mainContainerValue,
           }),
         })
 
         const data = await response.json()
         if (data.success) {
+          // Limpiar los campos
           clearFields()
+          // Mostrar el cartel
           setShowAlert(true)
+          // Cerrar el modal después de 3 segundos
           setTimeout(() => {
             setShowAlert(false)
-          }, 2000)
+            setVisible(false)
+          }, 3000)
         } else {
-          console.error('Error saving keyword:', data.message)
+          console.error('Error saving site:', data.message)
         }
       } else {
         console.error('No selected coin bot available.')
       }
     } catch (error) {
-      console.error('Error saving keyword:', error)
+      console.error('Error saving site:', error)
     }
   }
 
@@ -75,10 +92,10 @@ const AddWordsModal = () => {
   return (
     <>
       <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
-        Add Words
+        Add Sites
       </CButton>
       <Modal show={visible} onHide={() => setVisible(false)} className="custom-modal">
-        <Modal.Title className="titlemodal">Add Words to Keyword / Blacklist List</Modal.Title>
+        <Modal.Title className="titlemodal">Add Sites</Modal.Title>
         <Modal.Body>
           <Form>
             <Form.Group>
@@ -100,19 +117,60 @@ const AddWordsModal = () => {
             </Form.Group>
             <div className="espacio"></div>
             <Form.Group>
-              <Form.Label className="espacio">Add New Keyword / Blackword:</Form.Label>
+              <Form.Label className="espacio">Site Name:</Form.Label>
               <InputGroup className="espacio">
                 <FormControl
                   type="text"
-                  id="keywordInput"
-                  value={keywordValue}
-                  onChange={(e) => setKeywordValue(e.target.value)}
-                  placeholder="Enter Word..."
+                  value={siteName}
+                  onChange={(e) => setSiteName(e.target.value)}
+                  placeholder="Enter Site Name..."
+                />
+              </InputGroup>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label className="espacio">Base URL:</Form.Label>
+              <InputGroup className="espacio">
+                <FormControl
+                  type="text"
+                  value={baseUrl}
+                  onChange={(e) => setBaseUrl(e.target.value)}
+                  placeholder="Enter Base URL..."
+                />
+              </InputGroup>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label className="espacio">Data Source URL:</Form.Label>
+              <InputGroup className="espacio">
+                <FormControl
+                  type="text"
+                  value={dataSourceUrl}
+                  onChange={(e) => setDataSourceUrl(e.target.value)}
+                  placeholder="Enter Data Source URL..."
+                />
+              </InputGroup>
+            </Form.Group>
+            <Form.Group>
+              <Form.Check
+                type="checkbox"
+                label="Is URL Complete"
+                checked={isURLComplete}
+                onChange={() => setIsURLComplete(!isURLComplete)}
+                className="espacio"
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label className="espacio">Main Container:</Form.Label>
+              <InputGroup className="espacio">
+                <FormControl
+                  type="text"
+                  value={mainContainer}
+                  onChange={(e) => setMainContainer(e.target.value)}
+                  placeholder="Enter Main Container - Remember to use a '.' in frontword"
                 />
               </InputGroup>
             </Form.Group>
 
-            {/* Cartel flash */}
+            {/* flash */}
             {showAlert && (
               <Alert
                 className="espacio"
@@ -120,7 +178,7 @@ const AddWordsModal = () => {
                 onClose={() => setShowAlert(false)}
                 dismissible
               >
-                Word added successfully.
+                Site added successfully.
               </Alert>
             )}
           </Form>
@@ -137,16 +195,19 @@ const AddWordsModal = () => {
             className="espacio close addwords"
             variant="primary"
             onClick={() => {
-              handleAddWords()
+              handleAddSite()
             }}
             disabled={!selectedCoinBot}
           >
-            Add Words
+            Add Site
           </Button>
         </Modal.Footer>
       </Modal>
     </>
   )
 }
+AddSitesModal.propTypes = {
+  coinBots: PropTypes.array.isRequired,
+}
 
-export default AddWordsModal
+export default AddSitesModal

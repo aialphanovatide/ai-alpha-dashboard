@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import 'quill/dist/quill.snow.css'
+import ReactQuill from 'react-quill'
 import {
   CButton,
   CCard,
@@ -18,6 +20,10 @@ const Analysis = () => {
     image: null,
     coinBot: '',
   })
+
+  const handleProcedureContentChange = (content) => {
+    console.log(content)
+  }
 
   const [coinBots, setCoinBots] = useState([
     { id: '1', bot_name: 'btc' },
@@ -60,9 +66,78 @@ const Analysis = () => {
   const [previewImage, setPreviewImage] = useState(null)
   const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 
+  const formats = [
+    'header',
+    'height',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'color',
+    'bullet',
+    'indent',
+    'link',
+    'image',
+    'align',
+    'size',
+  ]
+
+  const modules = {
+    toolbar: [
+      [{ size: ['small', false, 'large', 'huge'] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link', 'image'],
+      [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }, { align: [] }],
+      [
+        {
+          color: [
+            '#000000',
+            '#e60000',
+            '#ff9900',
+            '#ffff00',
+            '#008a00',
+            '#0066cc',
+            '#9933ff',
+            '#ffffff',
+            '#facccc',
+            '#ffebcc',
+            '#ffffcc',
+            '#cce8cc',
+            '#cce0f5',
+            '#ebd6ff',
+            '#bbbbbb',
+            '#f06666',
+            '#ffc266',
+            '#ffff66',
+            '#66b966',
+            '#66a3e0',
+            '#c285ff',
+            '#888888',
+            '#a10000',
+            '#b26b00',
+            '#b2b200',
+            '#006100',
+            '#0047b2',
+            '#6b24b2',
+            '#444444',
+            '#5c0000',
+            '#663d00',
+            '#666600',
+            '#003700',
+            '#002966',
+            '#3d1466',
+            'custom-color',
+          ],
+        },
+      ],
+    ],
+  }
+
   const handleChange = (event) => {
     const { name, value, files } = event.target
-
     if (name === 'image' && files && files[0]) {
       setPreviewImage(URL.createObjectURL(files[0]))
     }
@@ -89,7 +164,7 @@ const Analysis = () => {
       formDataObj.append('content', formData.content)
       formDataObj.append('image', formData.image)
 
-      const response = await fetch('http://127.0.0.1:9000/post_analysis', {
+      const response = await fetch('https://ntf1vmdf-9000.use.devtunnels.ms/post_analysis', {
         method: 'POST',
         body: formDataObj,
       })
@@ -117,6 +192,11 @@ const Analysis = () => {
     fileInput.value = null
   }
 
+  const handleQuillChange = (content, delta, source, editor) => {
+    // `content` contiene el HTML del contenido de ReactQuill
+    setFormData((prevData) => ({ ...prevData, content }))
+  }
+
   useEffect(() => {
     if (isFormSubmitted) {
       // Después de un tiempo (por ejemplo, 2 segundos), restablecer el estado de isFormSubmitted
@@ -139,16 +219,16 @@ const Analysis = () => {
           <CCardBody>
             <form onSubmit={handleSubmit}>
               {/* Input field for content */}
-              <CInputGroup className="mb-3">
+              <CInputGroup className="mb-5">
                 <CInputGroupText>Content</CInputGroupText>
-                <textarea
-                  name="content"
-                  value={formData.content}
-                  onChange={handleChange}
-                  style={{ height: '400px', resize: 'vertical' }}
-                  className="form-control"
-                  required
-                />
+                <ReactQuill
+                  theme="snow"
+                  modules={modules}
+                  formats={formats}
+                  placeholder="write your content ...."
+                  onChange={handleQuillChange}
+                  style={{ height: '160px' }}
+                ></ReactQuill>
               </CInputGroup>
 
               {/* Input field for image */}

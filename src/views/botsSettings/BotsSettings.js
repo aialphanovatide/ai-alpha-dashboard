@@ -6,13 +6,14 @@ import CIcon from '@coreui/icons-react'
 import { cilXCircle, cilCheckCircle, cilToggleOn, cilToggleOff } from '@coreui/icons'
 import AddWordsModal from '../addWordsModal/AddWordsModal'
 import DeleteWordsModal from '../deleteWordsModal/DeleteWordsModal'
+import AddSitesModal from '../addSitesModal/AddSitesModal'
 
 const BotsSettings = () => {
   const [bots, setBots] = useState([])
   const [loading, setLoading] = useState(false)
   const getAllBots = useCallback(async () => {
     try {
-      const response = await fetch('http://127.0.0.1:9000/get_all_bots', {
+      const response = await fetch('https://ntf1vmdf-9000.use.devtunnels.ms/get_all_bots', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -62,12 +63,12 @@ const BotsSettings = () => {
 
   const turnOnAllBots = useCallback(() => {
     setLoading(true)
-    updateBotState('http://127.0.0.1:9000/activate_all_bots')
+    updateBotState('https://ntf1vmdf-9000.use.devtunnels.ms/activate_all_bots')
   }, [updateBotState])
 
   const turnOffAllBots = useCallback(() => {
     setLoading(true)
-    updateBotState('http://127.0.0.1:9000/deactivate_all_bots')
+    updateBotState('https://ntf1vmdf-9000.use.devtunnels.ms/deactivate_all_bots')
   }, [updateBotState])
 
   useEffect(() => {
@@ -109,7 +110,7 @@ const BotsSettings = () => {
                           icon={bot.isActive ? cilCheckCircle : cilXCircle}
                           className="me-2"
                         />
-                        <span>{bot.category}</span>
+                        <span>{bot.category.toUpperCase()}</span>
                       </div>
                     </h4>
                   </CCol>
@@ -144,6 +145,7 @@ const BotsSettings = () => {
         <div>
           <AddWordsModal />
           <DeleteWordsModal />
+          <AddSitesModal />
         </div>
       </div>
       <br></br>
