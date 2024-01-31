@@ -7,7 +7,7 @@ import { cilXCircle, cilCheckCircle, cilToggleOn, cilToggleOff } from '@coreui/i
 import AddWordsModal from '../addWordsModal/AddWordsModal'
 import DeleteWordsModal from '../deleteWordsModal/DeleteWordsModal'
 import AddSitesModal from '../addSitesModal/AddSitesModal'
-
+//bots settings
 const BotsSettings = () => {
   const [bots, setBots] = useState([])
   const [loading, setLoading] = useState(false)
@@ -129,7 +129,7 @@ const BotsSettings = () => {
           )}
           <CButton
             className={`btn ${bots.every((bot) => bot.isActive) ? 'btn-danger' : 'btn-success'}
-              bot-btn`}
+                bot-btn`}
             onClick={
               loading ? null : bots.every((bot) => bot.isActive) ? turnOffAllBots : turnOnAllBots
             }
