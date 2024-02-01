@@ -7,27 +7,40 @@ import { cilXCircle, cilCheckCircle, cilToggleOn, cilToggleOff } from '@coreui/i
 import AddWordsModal from '../addWordsModal/AddWordsModal'
 import DeleteWordsModal from '../deleteWordsModal/DeleteWordsModal'
 import AddSitesModal from '../addSitesModal/AddSitesModal'
+import config from '../../config'
 //bots settings
 const BotsSettings = () => {
   const [bots, setBots] = useState([])
   const [loading, setLoading] = useState(false)
   const getAllBots = useCallback(async () => {
     try {
-      const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_bots', {
+      const response = await fetch(`${config.BASE_URL}/get_all_bots`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
         },
       })
 
-      const data = await response.json()
-      if (data) {
-        setBots(data.bots)
-      } else {
-        console.error('Error bots:', data.message)
+      const responseText = await response.text()
+      console.log('Response Text:', responseText)
+
+      try {
+        const data = JSON.parse(responseText)
+        console.log('Data:', data)
+
+        if (data && data.bots) {
+          setBots(data.bots)
+        } else {
+          console.error('Error in response:', data.message)
+        }
+      } catch (parseError) {
+        console.error('Error parsing JSON:', parseError)
       }
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Error fetching data:', error)
+    } finally {
+      setLoading(false)
     }
   }, [])
 
@@ -63,12 +76,12 @@ const BotsSettings = () => {
 
   const turnOnAllBots = useCallback(() => {
     setLoading(true)
-    updateBotState('https://star-oyster-known.ngrok-free.app/activate_all_bots')
+    updateBotState(`${config.BASE_URL}/activate_all_bots`)
   }, [updateBotState])
 
   const turnOffAllBots = useCallback(() => {
     setLoading(true)
-    updateBotState('https://star-oyster-known.ngrok-free.app/deactivate_all_bots')
+    updateBotState(`${config.BASE_URL}/deactivate_all_bots`)
   }, [updateBotState])
 
   useEffect(() => {

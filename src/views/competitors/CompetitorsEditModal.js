@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Modal, Button, Form, Alert } from 'react-bootstrap'
 import PropTypes from 'prop-types'
+import config from '../../config'
 
 const CompetitorsEditModal = ({ competitorInfo, coinBotId, handleClose, handleSave }) => {
   const [editedCompetitor, setEditedCompetitor] = useState({})
@@ -9,15 +10,13 @@ const CompetitorsEditModal = ({ competitorInfo, coinBotId, handleClose, handleSa
 
   const fetchData = async () => {
     try {
-      const response = await fetch(
-        `https://star-oyster-known.ngrok-free.app/api/competitors?coin_bot_id=${coinBotId}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const response = await fetch(`${config.BASE_URL}/api/competitors?coin_bot_id=${coinBotId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
         },
-      )
+      })
 
       const data = await response.json()
       if (data && data.competitors[0]) {
@@ -50,19 +49,17 @@ const CompetitorsEditModal = ({ competitorInfo, coinBotId, handleClose, handleSa
 
   const handleSaveClick = async () => {
     try {
-      const response = await fetch(
-        'https://star-oyster-known.ngrok-free.app/api/competitors/edit',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            coin_bot_id: coinBotId,
-            competitor_data: editedCompetitor,
-          }),
+      const response = await fetch(`${config.BASE_URL}/api/competitors/edit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
         },
-      )
+        body: JSON.stringify({
+          coin_bot_id: coinBotId,
+          competitor_data: editedCompetitor,
+        }),
+      })
       console.log('coin_bot_id', coinBotId)
       console.log('editedCompetitor', editedCompetitor)
       const data = await response.json()
@@ -116,7 +113,7 @@ const CompetitorsEditModal = ({ competitorInfo, coinBotId, handleClose, handleSa
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseClick}>
+          <Button variant="secondary" onClick={() => setVisible(false)}>
             Close
           </Button>
           <Button variant="primary" onClick={handleSaveClick}>

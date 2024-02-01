@@ -4,6 +4,7 @@ import '../botsSettings/bs.css'
 import '../addWordsModal/addWordsModal.css'
 import { CButton, CModal, CModalBody, CModalHeader, CModalTitle, CModalFooter } from '@coreui/react'
 import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap'
+import config from '../../config'
 
 const AddWordsModal = () => {
   const [showAlert, setShowAlert] = useState(false)
@@ -15,7 +16,7 @@ const AddWordsModal = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_coin_bots')
+        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`)
         if (response.ok) {
           const data = await response.json()
           setCoinBots(data.coin_bots)
@@ -38,7 +39,7 @@ const AddWordsModal = () => {
   const handleAddWords = async () => {
     try {
       if (selectedCoinBot) {
-        const response = await fetch('https://star-oyster-known.ngrok-free.app/save_keyword', {
+        const response = await fetch(`${config.BASE_URL}/save_keyword`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

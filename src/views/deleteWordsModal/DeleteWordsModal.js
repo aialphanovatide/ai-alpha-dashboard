@@ -4,6 +4,7 @@ import '../botsSettings/bs.css'
 import '../deleteWordsModal/deleteWordsModal.css'
 import { CButton, CModal, CModalBody, CModalHeader, CModalTitle, CModalFooter } from '@coreui/react'
 import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap'
+import config from '../../config'
 
 const DeleteWordsModal = () => {
   const [showAlert, setShowAlert] = useState(false)
@@ -16,7 +17,7 @@ const DeleteWordsModal = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_coin_bots')
+        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`)
         if (response.ok) {
           const data = await response.json()
           setCoinBots(data.coin_bots)
@@ -34,7 +35,7 @@ const DeleteWordsModal = () => {
     setSelectedCoinBot(selectedCoinBotId)
     try {
       const response = await fetch(
-        `https://star-oyster-known.ngrok-free.app/get_keywords_for_coin_bot/${selectedCoinBotId}`,
+        `${config.BASE_URL}/get_keywords_for_coin_bot/${selectedCoinBotId}`,
       )
       if (response.ok) {
         const data = await response.json()
@@ -57,7 +58,7 @@ const DeleteWordsModal = () => {
   const handleDeleteKeyword = async () => {
     try {
       if (selectedKeyword) {
-        const response = await fetch('https://star-oyster-known.ngrok-free.app/delete_keyword', {
+        const response = await fetch(`${config.BASE_URL}/delete_keyword`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

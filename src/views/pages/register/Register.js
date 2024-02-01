@@ -14,6 +14,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import config from '../../../../src/config'
 
 const Register = () => {
   const [username, setUsername] = useState('')
@@ -23,10 +24,11 @@ const Register = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await fetch('https://star-oyster-known.ngrok-free.app/signup', {
+      const response = await fetch(`${config.BASE_URL}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
         },
         body: JSON.stringify({
           username,

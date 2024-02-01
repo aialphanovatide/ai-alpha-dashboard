@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Modal, Button, Form, Alert } from 'react-bootstrap'
 import { CButton } from '@coreui/react'
 import PropTypes from 'prop-types'
+import config from '../../config'
 
 const TokenomicsEditModal = ({ dataToEdit, coinBotId, handleClose, handleSave }) => {
   const [editedData, setEditedData] = useState({
@@ -79,10 +80,11 @@ const TokenomicsEditModal = ({ dataToEdit, coinBotId, handleClose, handleSave })
     updatedData.coinBotId = coinBotId
     console.log('Data being sent to server:', updatedData)
     try {
-      const response = await fetch('https://star-oyster-known.ngrok-free.app/save_tokenomics', {
+      const response = await fetch(`${config.BASE_URL}/save_tokenomics`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
         },
         body: JSON.stringify(updatedData),
       })

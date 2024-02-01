@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Button, Modal } from 'react-bootstrap'
+import config from '../../config'
 
 const Introduction = () => {
   const [bots, setBots] = useState([])
@@ -10,10 +11,11 @@ const Introduction = () => {
   useEffect(() => {
     const getAllBots = async () => {
       try {
-        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_coin_bots', {
+        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
           },
         })
 
@@ -22,6 +24,7 @@ const Introduction = () => {
           console.log(data)
           setBots(data.coin_bots)
         } else {
+          console.log(data.coin_bots)
           console.error('Error fetching bots:', data.message)
         }
       } catch (error) {
@@ -51,10 +54,11 @@ const Introduction = () => {
       }
 
       // Realizar la solicitud POST a la ruta /post_introduction
-      const response = await fetch('https://star-oyster-known.ngrok-free.app/post_introduction', {
+      const response = await fetch(`${config.BASE_URL}/post_introduction`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
         },
         body: JSON.stringify(data),
       })

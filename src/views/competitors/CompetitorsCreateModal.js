@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Modal, Button, Form, Alert } from 'react-bootstrap'
 import PropTypes from 'prop-types'
+import config from '../../config'
 
 // ... (importaciones y código anterior)
 
@@ -65,19 +66,17 @@ const CompetitorsCreateModal = ({ handleClose, coinBotId, handleSave }) => {
     const createdCompetitor = { ...newCompetitor }
 
     try {
-      const response = await fetch(
-        'https://star-oyster-known.ngrok-free.app/api/competitors/create',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            coin_bot_id: coinBotId,
-            competitor_data: createdCompetitor,
-          }),
+      const response = await fetch(`${config.BASE_URL}/api/competitors/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
         },
-      )
+        body: JSON.stringify({
+          coin_bot_id: coinBotId,
+          competitor_data: createdCompetitor,
+        }),
+      })
       console.log('coin bot enviado', coinBotId)
       const data = await response.json()
       console.log('Fetch response:', data)

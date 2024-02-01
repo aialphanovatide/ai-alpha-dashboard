@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { useLocation } from 'react-router-dom'
 import { CRow, CCol, CCard, CCardBody, CCardText } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+import config from '../../config'
 
 const WidgetsDropdown = (props) => {
   const location = useLocation()
@@ -12,7 +13,7 @@ const WidgetsDropdown = (props) => {
   useEffect(() => {
     const getBotStatus = async () => {
       try {
-        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_bot_status', {
+        const response = await fetch(`${config.BASE_URL}/get_bot_status`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

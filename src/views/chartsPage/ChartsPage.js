@@ -11,6 +11,7 @@ import {
   CFormInput,
 } from '@coreui/react'
 import '../chartsPage/ChartsPage.css'
+import config from '../../config'
 
 const ChartsPage = () => {
   const [formData, setFormData] = useState({
@@ -30,7 +31,14 @@ const ChartsPage = () => {
   useEffect(() => {
     const fetchCoinBots = async () => {
       try {
-        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_coin_bots')
+        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+          },
+        })
+
         if (response.ok) {
           const data = await response.json()
           setCoinBots(data.coin_bots)
@@ -54,10 +62,11 @@ const ChartsPage = () => {
     event.preventDefault()
 
     try {
-      const response = await fetch('https://star-oyster-known.ngrok-free.app/save_chart', {
+      const response = await fetch(`${config.BASE_URL}/save_chart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
         },
         body: JSON.stringify({
           support_1: formData.support1,

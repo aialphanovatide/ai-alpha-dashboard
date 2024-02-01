@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import 'quill/dist/quill.snow.css'
+import config from '../../config'
 import ReactQuill from 'react-quill'
 import {
   CButton,
@@ -164,7 +165,7 @@ const Analysis = () => {
       formDataObj.append('content', formData.content)
       formDataObj.append('image', formData.image)
 
-      const response = await fetch('https://star-oyster-known.ngrok-free.app/post_analysis', {
+      const response = await fetch(`${config.BASE_URL}/post_analysis`, {
         method: 'POST',
         body: formDataObj,
       })

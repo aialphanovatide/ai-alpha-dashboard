@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Form, Table } from 'react-bootstrap'
 import TokenomicsEditModal from '../tokenomics/tokenomicsEditModal'
 import '../botsSettings/bs.css'
+import config from '../../config'
 
 const Tokenomics = () => {
   const [bots, setBots] = useState([])
@@ -28,10 +29,11 @@ const Tokenomics = () => {
   useEffect(() => {
     const getAllBots = async () => {
       try {
-        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_coin_bots', {
+        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
           },
         })
 
@@ -53,15 +55,12 @@ const Tokenomics = () => {
     setSelectedCoinBot(value)
 
     try {
-      const response = await fetch(
-        `https://star-oyster-known.ngrok-free.app/get_coin_bot_tokenomics/${value}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const response = await fetch(`${config.BASE_URL}/get_coin_bot_tokenomics/${value}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+      })
 
       const data = await response.json()
       if (data && data.coinBotInfo) {

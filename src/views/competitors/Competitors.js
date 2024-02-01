@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Form, Table } from 'react-bootstrap'
 import CompetitorsEditModal from './CompetitorsEditModal' // Asegúrate de importar correctamente tu componente de edición de competidores
 import CompetitorsCreateModal from './CompetitorsCreateModal'
+import config from '../../config'
+
 const Competitors = () => {
   const [bots, setBots] = useState([])
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
@@ -13,10 +15,11 @@ const Competitors = () => {
   useEffect(() => {
     const getAllBots = async () => {
       try {
-        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_coin_bots', {
+        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
           },
         })
 
@@ -41,15 +44,12 @@ const Competitors = () => {
     setSelectedCoinBot(value)
 
     try {
-      const response = await fetch(
-        `https://star-oyster-known.ngrok-free.app/api/competitors?coin_bot_id=${value}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const response = await fetch(`${config.BASE_URL}/api/competitors?coin_bot_id=${value}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+      })
 
       const data = await response.json()
       if (data && data.competitors) {

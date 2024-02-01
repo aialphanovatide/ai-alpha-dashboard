@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
-
+import config from '../../config'
 import {
   CAvatar,
   CButton,
@@ -53,7 +53,7 @@ const Dashboard = () => {
   useEffect(() => {
     const getBotStatus = async () => {
       try {
-        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_bot_status', {
+        const response = await fetch(`${config.BASE_URL}/get_bot_status`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -78,15 +78,12 @@ const Dashboard = () => {
 
     const getLastChartUpdate = async () => {
       try {
-        const response = await fetch(
-          'https://star-oyster-known.ngrok-free.app/get_last_chart_update',
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+        const response = await fetch(`${config.BASE_URL}/get_last_chart_update`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        )
+        })
 
         const data = await response.json()
         if (data && data.success && data.last_update) {

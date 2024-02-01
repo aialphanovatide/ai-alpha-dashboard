@@ -16,6 +16,7 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { useNavigate } from 'react-router-dom'
 import '../login/login.css'
+import config from '../../../../src/config'
 
 const Login = () => {
   const [username, setUsername] = useState('')
@@ -34,10 +35,11 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('https://star-oyster-known.ngrok-free.app/login', {
+      const response = await fetch(`${config.BASE_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
         },
         body: JSON.stringify({ username, password }),
       })

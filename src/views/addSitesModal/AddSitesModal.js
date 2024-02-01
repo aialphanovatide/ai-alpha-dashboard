@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { CButton, CModal, CModalBody, CModalHeader, CModalTitle, CModalFooter } from '@coreui/react'
 import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
+import config from '../../config'
 
 const AddSitesModal = () => {
   const [showAlert, setShowAlert] = useState(false)
@@ -17,7 +18,7 @@ const AddSitesModal = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://star-oyster-known.ngrok-free.app/get_all_coin_bots')
+        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`)
         if (response.ok) {
           const data = await response.json()
           setCoinBots(data.coin_bots)
@@ -47,7 +48,7 @@ const AddSitesModal = () => {
       if (selectedCoinBot) {
         const mainContainerValue = mainContainer.trim() === '' ? 'None' : mainContainer
 
-        const response = await fetch('https://star-oyster-known.ngrok-free.app/save_site', {
+        const response = await fetch(`${config.BASE_URL}/save_site`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
