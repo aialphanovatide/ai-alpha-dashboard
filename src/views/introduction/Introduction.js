@@ -6,6 +6,8 @@ const Introduction = () => {
   const [bots, setBots] = useState([])
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
   const [content, setContent] = useState('')
+  const [website, setWebsite] = useState('')
+  const [whitepaper, setWhitepaper] = useState('')
   const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
@@ -41,19 +43,18 @@ const Introduction = () => {
 
   const handleUpdateClick = async () => {
     try {
-      // Verificar que se haya seleccionado un Coin Bot
       if (!selectedCoinBot) {
         console.error('Please select a Coin Bot')
         return
       }
 
-      // Construir el cuerpo de la solicitud
       const data = {
-        id: selectedCoinBot,
+        coin_bot_id: selectedCoinBot,
         content: content,
+        website: website,
+        whitepaper: whitepaper,
       }
 
-      // Realizar la solicitud POST a la ruta /post_introduction
       const response = await fetch(`${config.BASE_URL}/post_introduction`, {
         method: 'POST',
         headers: {
@@ -64,9 +65,6 @@ const Introduction = () => {
       })
 
       const responseData = await response.json()
-
-      // Mostrar el resultado en la consola o en la interfaz de usuario según lo prefieras
-      console.log(responseData)
 
       // Mostrar el modal de resultado
       setShowModal(true)
@@ -88,8 +86,7 @@ const Introduction = () => {
       <h2>Introduction Sub-Section Form</h2>
       <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
         {' '}
-        {/* Agregado el estilo de margen al grupo de formulario */}
-        <Form.Label>Select Coin Bot</Form.Label>
+        <Form.Label>Select Coin</Form.Label>
         <Form.Control
           as="select"
           value={selectedCoinBot}
@@ -105,19 +102,42 @@ const Introduction = () => {
       </Form.Group>
       <Form.Group controlId="contentInput" style={{ marginBottom: '15px' }}>
         {' '}
-        {/* Agregado el estilo de margen al grupo de formulario */}
-        <Form.Label>Content</Form.Label>
+        <Form.Label>Content (Max 400 Characters)</Form.Label>
         <Form.Control
-          style={{ height: '300px' }} // Establece la altura aquí
-          as="textarea" // Usa un área de texto para admitir múltiples líneas
+          required
+          style={{ height: '300px' }}
+          as="textarea"
           placeholder="Enter content..."
           value={content}
+          onChange={(e) => handleContentChange(e.target.value.substring(0, 400))}
+        />
+      </Form.Group>
+      <Form.Group controlId="websiteInput" style={{ marginBottom: '15px' }}>
+        {' '}
+        <Form.Label>Website</Form.Label>
+        <Form.Control
+          required
+          style={{ height: '40px' }}
+          as="textarea"
+          placeholder="Enter content..."
+          value={website}
+          onChange={(e) => handleContentChange(e.target.value)}
+        />
+      </Form.Group>
+      <Form.Group controlId="whitepaperInput" style={{ marginBottom: '15px' }}>
+        {' '}
+        <Form.Label>Whitepaper</Form.Label>
+        <Form.Control
+          required
+          style={{ height: '400px' }}
+          as="textarea"
+          placeholder="Enter content..."
+          value={whitepaper}
           onChange={(e) => handleContentChange(e.target.value)}
         />
       </Form.Group>
       <Button variant="primary" onClick={handleUpdateClick} style={{ marginRight: '10px' }}>
         {' '}
-        {/* Agregado el estilo de margen al botón */}
         Update
       </Button>
       <Modal show={showModal} onHide={handleCloseModal}>
@@ -125,7 +145,6 @@ const Introduction = () => {
           <Modal.Title>Update Result</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* Puedes mostrar aquí el resultado de la actualización */}
           <p>
             Successfully updated with Coin Bot: {selectedCoinBot} and Content: {content}
           </p>

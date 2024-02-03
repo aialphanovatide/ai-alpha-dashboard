@@ -1,6 +1,6 @@
 // src/config.js
 const config = {
-  BASE_URL: 'https://star-oyster-known.ngrok-free.app',
+  BASE_URL: 'http://localhost:9000',
 }
 
 export default config

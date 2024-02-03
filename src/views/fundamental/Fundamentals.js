@@ -3,6 +3,10 @@ import Introduction from '../introduction/Introduction'
 import Tokenomics from '../tokenomics/Tokenomics'
 import Competitors from '../competitors/Competitors'
 import classnames from 'classnames'
+import RevenueModels from '../revenueModel/RevenueModels'
+import Hacks from '../hacks/Hacks'
+import DApps from '../dapps/DApps'
+import Upgrades from '../upgrades/Upgrades'
 
 const Fundamentals = () => {
   const [activeTab, setActiveTab] = useState('introduction')
@@ -41,6 +45,38 @@ const Fundamentals = () => {
                 Competitors
               </a>
             </li>
+            <li className="nav-item">
+              <a
+                className={classnames('nav-link', { active: activeTab === 'revenueModels' })}
+                onClick={() => toggleTab('revenueModels')}
+              >
+                Revenue Models
+              </a>
+            </li>
+            <li className="nav-item">
+              <a
+                className={classnames('nav-link', { active: activeTab === 'hacks' })}
+                onClick={() => toggleTab('hacks')}
+              >
+                Hacks
+              </a>
+            </li>
+            <li className="nav-item">
+              <a
+                className={classnames('nav-link', { active: activeTab === 'upgrades' })}
+                onClick={() => toggleTab('upgrades')}
+              >
+                Upgrades
+              </a>
+            </li>
+            <li className="nav-item">
+              <a
+                className={classnames('nav-link', { active: activeTab === 'dapps' })}
+                onClick={() => toggleTab('dapps')}
+              >
+                DApps
+              </a>
+            </li>
           </ul>
         </div>
         <div className="card-body">
@@ -58,6 +94,26 @@ const Fundamentals = () => {
           {activeTab === 'competitors' && (
             <div>
               <Competitors />
+            </div>
+          )}
+          {activeTab === 'revenueModels' && (
+            <div>
+              <RevenueModels />
+            </div>
+          )}
+          {activeTab === 'hacks' && (
+            <div>
+              <Hacks />
+            </div>
+          )}
+          {activeTab === 'upgrades' && (
+            <div>
+              <Upgrades />
+            </div>
+          )}
+          {activeTab === 'dapps' && (
+            <div>
+              <DApps />
             </div>
           )}
         </div>

@@ -66,6 +66,7 @@ const Tokenomics = () => {
       if (data && data.coinBotInfo) {
         setCoinBotInfo(data.coinBotInfo)
       } else {
+        setCoinBotInfo(null)
         console.error('Error fetching Coin Bot info:', data.error)
       }
     } catch (error) {
@@ -78,7 +79,7 @@ const Tokenomics = () => {
       <h2>Tokenomics Section</h2>
       <br></br>
       <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
-        <Form.Label>Select Coin Bot</Form.Label>
+        <Form.Label>Select Coin</Form.Label>
         <Form.Control
           as="select"
           value={selectedCoinBot}
@@ -99,33 +100,49 @@ const Tokenomics = () => {
           <h3>Tokenomics</h3>
           <br></br>
           <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>Feature</th>
-                <th>Value</th>
-              </tr>
-            </thead>
             <tbody>
               <tr>
                 <td>Total Supply</td>
-                <td>{coinBotInfo.totalSupply}</td>
-              </tr>
-              <tr>
                 <td>Circulating Supply</td>
-                <td>{coinBotInfo.circulatingSupply}</td>
-              </tr>
-              <tr>
                 <td>% Circulating Supply</td>
-                <td>{coinBotInfo.percentCirculatingSupply}</td>
-              </tr>
-              <tr>
                 <td>Max Supply</td>
-                <td>{coinBotInfo.maxSupply}</td>
+                <td>Supply Model</td>
               </tr>
               <tr>
-                <td>Supply Model</td>
+                <td>{coinBotInfo.totalSupply}</td>
+                <td>{coinBotInfo.circulatingSupply}</td>
+                <td>{coinBotInfo.percentCirculatingSupply}</td>
+                <td>{coinBotInfo.maxSupply}</td>
                 <td>{coinBotInfo.supplyModel}</td>
               </tr>
+              <tr></tr>
+              <tr></tr>
+              <tr></tr>
+            </tbody>
+          </Table>
+          <br></br>
+          <br></br>
+          <h3>Competitors Tokenomics</h3>
+          <br></br>
+          <Table striped bordered hover>
+            <tbody>
+              <tr>
+                <td>Total Supply</td>
+                <td>Circulating Supply</td>
+                <td>% Circulating Supply</td>
+                <td>Max Supply</td>
+                <td>Supply Model</td>
+              </tr>
+              <tr>
+                <td>{coinBotInfo.totalSupply}</td>
+                <td>{coinBotInfo.circulatingSupply}</td>
+                <td>{coinBotInfo.percentCirculatingSupply}</td>
+                <td>{coinBotInfo.maxSupply}</td>
+                <td>{coinBotInfo.supplyModel}</td>
+              </tr>
+              <tr></tr>
+              <tr></tr>
+              <tr></tr>
             </tbody>
           </Table>
           <br></br>
@@ -149,7 +166,11 @@ const Tokenomics = () => {
           <Table striped bordered hover>
             <tbody>
               <tr>
-                <td>Gas Fees and Transaction Settlement</td>
+                <td>Token Applications</td>
+                <td>Description</td>
+              </tr>
+              <tr>
+                <td>{coinBotInfo.tokenUtility.gasFeesAndTransactionSettlement}</td>
                 <td>{coinBotInfo.tokenUtility.gasFeesAndTransactionSettlement}</td>
               </tr>
             </tbody>
@@ -160,12 +181,12 @@ const Tokenomics = () => {
           <Table striped bordered hover>
             <tbody>
               <tr>
-                <td>Token Burning</td>
-                <td>{coinBotInfo.valueAccrualMechanisms.tokenBurning}</td>
+                <td>Mechanisms</td>
+                <td>Description</td>
               </tr>
               <tr>
-                <td>Token Buyback</td>
-                <td>{coinBotInfo.valueAccrualMechanisms.tokenBuyback}</td>
+                <td>{coinBotInfo.valueAccrualMechanisms.mechanism}</td>
+                <td>{coinBotInfo.valueAccrualMechanisms.description}</td>
               </tr>
             </tbody>
           </Table>

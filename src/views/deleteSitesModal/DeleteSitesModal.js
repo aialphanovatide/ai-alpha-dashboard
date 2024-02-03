@@ -6,12 +6,12 @@ import { CButton, CModal, CModalBody, CModalHeader, CModalTitle, CModalFooter } 
 import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap'
 import config from '../../config'
 
-const DeleteWordsModal = () => {
+const DeleteSitesModal = () => {
   const [showAlert, setShowAlert] = useState(false)
   const [coinBots, setCoinBots] = useState([])
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
-  const [keywords, setKeywords] = useState([])
-  const [selectedKeyword, setSelectedKeyword] = useState('')
+  const [sites, setSites] = useState([])
+  const [selectedSite, setSelectedSite] = useState('')
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -34,41 +34,43 @@ const DeleteWordsModal = () => {
   const handleCoinBotChange = async (selectedCoinBotId) => {
     setSelectedCoinBot(selectedCoinBotId)
     try {
-      const response = await fetch(
-        `${config.BASE_URL}/get_keywords_for_coin_bot/${selectedCoinBotId}`,
-      )
+      const response = await fetch(`${config.BASE_URL}/get_sites_for_coin_bot/${selectedCoinBotId}`)
       if (response.ok) {
         const data = await response.json()
-        setKeywords(data.keywords || [])
+        console.log(data)
+        setSites(data.sites || [])
       } else {
-        console.error('Error fetching keywords:', response.statusText)
+        console.error('Error fetching sites:', response.statusText)
       }
     } catch (error) {
-      console.error('Error fetching keywords:', error)
+      console.error('Error fetching sites:', error)
     }
   }
 
   const clearFields = useCallback(() => {
     setSelectedCoinBot('')
-    setKeywords([])
-    setSelectedKeyword('')
+    setSites([])
+    setSelectedSite('')
     setShowAlert(false)
-  }, []) // Agrega el arreglo de dependencias vacío para que la función no cambie entre renderizados
+  }, [])
 
-  const handleDeleteKeyword = async () => {
+  const handleDeleteSite = async () => {
     try {
-      if (selectedKeyword) {
-        const response = await fetch(`${config.BASE_URL}/delete_keyword`, {
+      if (selectedSite) {
+        const response = await fetch(`${config.BASE_URL}/erase_site_by_id`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            keyword_id: selectedKeyword,
+            site_id: selectedSite,
           }),
         })
 
+        console.log(selectedSite)
+
         const data = await response.json()
+
         if (data.success) {
           clearFields()
           setShowAlert(true)
@@ -76,22 +78,21 @@ const DeleteWordsModal = () => {
             setShowAlert(false)
           }, 2000)
         } else {
-          console.error('Error deleting keyword:', data.message)
+          console.error('Error deleting site:', data.message || 'Unknown error') // Asegurar que data.message esté definido
         }
-      } else {
-        console.error('No selected keyword available.')
       }
     } catch (error) {
-      console.error('Error deleting keyword:', error)
+      console.error('Error deleting site:', error)
     }
   }
+
   return (
     <>
       <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
-        Delete Words
+        Delete Sites
       </CButton>
       <Modal show={visible} onHide={() => setVisible(false)} className="custom-modal">
-        <Modal.Title className="titlemodal">Delete Keywords</Modal.Title>
+        <Modal.Title className="titlemodal">Delete Sites</Modal.Title>
         <Modal.Body>
           <Form>
             <Form.Group>
@@ -112,18 +113,18 @@ const DeleteWordsModal = () => {
               <div className="espacio"></div>
             </Form.Group>
 
-            {keywords.length > 0 && (
+            {sites.length > 0 && (
               <Form.Group>
-                <Form.Label>Select Keyword to Delete:</Form.Label>
+                <Form.Label>Select Site to Delete:</Form.Label>
                 <Form.Control
                   as="select"
-                  value={selectedKeyword}
-                  onChange={(e) => setSelectedKeyword(e.target.value)}
+                  value={selectedSite}
+                  onChange={(e) => setSelectedSite(e.target.value)}
                 >
                   <option value="">Select...</option>
-                  {keywords.map((keyword) => (
-                    <option key={keyword.id} value={keyword.id}>
-                      {keyword.word || 'No Keyword'}
+                  {sites.map((site) => (
+                    <option key={site.id} value={site.id}>
+                      {site.url || 'No Site'}
                     </option>
                   ))}
                 </Form.Control>
@@ -133,7 +134,7 @@ const DeleteWordsModal = () => {
 
             {showAlert && (
               <Alert variant="success" onClose={() => setShowAlert(false)} dismissible>
-                Keyword deleted successfully.
+                Site deleted successfully.
               </Alert>
             )}
           </Form>
@@ -150,10 +151,10 @@ const DeleteWordsModal = () => {
           <Button
             className="espacio close turn-off-button"
             variant="primary"
-            onClick={handleDeleteKeyword}
-            disabled={!selectedKeyword}
+            onClick={handleDeleteSite}
+            disabled={!selectedSite}
           >
-            Delete Keyword
+            Delete Site
           </Button>
         </Modal.Footer>
       </Modal>
@@ -161,4 +162,4 @@ const DeleteWordsModal = () => {
   )
 }
 
-export default DeleteWordsModal
+export default DeleteSitesModal

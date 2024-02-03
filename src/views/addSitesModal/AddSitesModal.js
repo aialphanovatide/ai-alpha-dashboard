@@ -3,6 +3,7 @@ import { CButton, CModal, CModalBody, CModalHeader, CModalTitle, CModalFooter } 
 import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import config from '../../config'
+import '../botsSettings/bs.css'
 
 const AddSitesModal = () => {
   const [showAlert, setShowAlert] = useState(false)
@@ -95,12 +96,12 @@ const AddSitesModal = () => {
       <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
         Add Sites
       </CButton>
-      <Modal show={visible} onHide={() => setVisible(false)} className="custom-modal">
+      <Modal show={visible} onHide={() => setVisible(false)} className="custom-modal-width">
         <Modal.Title className="titlemodal">Add Sites</Modal.Title>
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Label className="espacio">Select Coin Bot:</Form.Label>
+              <Form.Label className="espacio">Select Coin:</Form.Label>
               <Form.Control
                 className="espacio"
                 as="select"

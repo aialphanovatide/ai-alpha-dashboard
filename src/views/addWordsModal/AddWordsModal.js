@@ -83,7 +83,7 @@ const AddWordsModal = () => {
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Label className="espacio">Select Coin Bot:</Form.Label>
+              <Form.Label className="espacio">Select Coin:</Form.Label>
               <Form.Control
                 className="espacio"
                 as="select"

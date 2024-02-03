@@ -83,7 +83,7 @@ const Competitors = () => {
         <h2>Competitors Section</h2>
         <br />
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
-          <Form.Label>Select Coin Bot</Form.Label>
+          <Form.Label>Select Coin</Form.Label>
           <Form.Control
             as="select"
             value={selectedCoinBot}

@@ -8,6 +8,7 @@ import AddWordsModal from '../addWordsModal/AddWordsModal'
 import DeleteWordsModal from '../deleteWordsModal/DeleteWordsModal'
 import AddSitesModal from '../addSitesModal/AddSitesModal'
 import config from '../../config'
+import DeleteSitesModal from '../deleteSitesModal/DeleteSitesModal'
 //bots settings
 const BotsSettings = () => {
   const [bots, setBots] = useState([])
@@ -159,6 +160,7 @@ const BotsSettings = () => {
           <AddWordsModal />
           <DeleteWordsModal />
           <AddSitesModal />
+          <DeleteSitesModal />
         </div>
       </div>
       <br></br>
