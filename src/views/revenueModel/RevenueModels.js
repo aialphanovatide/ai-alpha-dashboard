@@ -25,7 +25,7 @@ const RevenueModels = () => {
         credentials: 'include',
         body: JSON.stringify({
           coin_bot_id: selectedCoinBot,
-          analized_revenue: formData.analizedRevenue,
+          analized_revenue: formData.analized_revenue,
           fees_1ys: formData.fees_1ys,
         }),
       })
@@ -35,7 +35,7 @@ const RevenueModels = () => {
       if (response.ok) {
         console.log('Revenue model created successfully:', result)
         setShowModal(true)
-
+        setSelectedCoinBot('')
         // Cierra el modal después de dos segundos
         setTimeout(() => {
           setShowModal(false)
@@ -92,6 +92,7 @@ const RevenueModels = () => {
         if (data && data.revenue_models) {
           setRevenueModels(data.revenue_models)
           setShowCreateButton(data.revenue_models.length === 0)
+          setShowCreateButton(true)
           setInfoMessage('') // Limpiar el mensaje de información
         } else {
           console.error('Error fetching Revenue Models:', data.error)
@@ -152,12 +153,14 @@ const RevenueModels = () => {
         {revenueModels && revenueModels.length > 0 ? (
           <>
             <br />
-            <h3>Revenue Models</h3>
+            <h3 style={{ marginTop: '20px' }}>Revenue Models</h3>
             <br />
             <Table striped bordered hover>
               <thead>
                 <tr>
                   <th>Action</th>
+                  <th>Annualised Revenue</th>
+                  <th>Fees (1Y)</th>
                   {/* Add other columns based on your data model */}
                 </tr>
               </thead>
@@ -167,7 +170,8 @@ const RevenueModels = () => {
                     <td>
                       <button onClick={() => console.log('Edit button clicked')}>Edit</button>
                     </td>
-                    {/* Add other columns based on your data model */}
+                    <td>{revenueModel.analized_revenue}</td>
+                    <td>{revenueModel.fees_1ys}</td>
                   </tr>
                 ))}
               </tbody>
