@@ -58,7 +58,7 @@ const AppHeader = () => {
               component={NavLink}
               style={{ cursor: 'pointer' }} // Establece el estilo del cursor a "pointer"
             >
-              AI-Alpha Dashboard
+              AI Alpha
             </CNavLink>
           </CNavItem>
         </CHeaderNav>

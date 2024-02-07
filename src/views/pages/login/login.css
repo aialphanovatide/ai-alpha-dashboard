@@ -24,3 +24,8 @@
 }
 
 .loginbtn:hover{background-color: #d68b00b3;}
+
+.error-message {
+  color: red;
+  padding: 5px;
+}

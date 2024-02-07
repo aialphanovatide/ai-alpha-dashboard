@@ -14,6 +14,8 @@ import '../chartsPage/ChartsPage.css'
 import config from '../../config'
 
 const ChartsPage = () => {
+
+  const [selectedCoin, setSelectedCoin] = useState(1)
   const [formData, setFormData] = useState({
     support1: '',
     support2: '',
@@ -23,11 +25,12 @@ const ChartsPage = () => {
     resistance2: '',
     resistance3: '',
     resistance4: '',
-    coin_bot_id: '', // Valor por defecto, ajusta según tus necesidades
   })
-  const [successMessage, setSuccessMessage] = useState('')
+  const [message, setMessage] = useState('')
   const [coinBots, setCoinBots] = useState([])
+  const [coinData, setCoinData] = useState([])
 
+  // Gets all the coins
   useEffect(() => {
     const fetchCoinBots = async () => {
       try {
@@ -53,10 +56,51 @@ const ChartsPage = () => {
     fetchCoinBots()
   }, [])
 
-  const handleChange = (event) => {
-    const { name, value } = event.target
-    setFormData((prevData) => ({ ...prevData, [name]: value }))
+  const fetchCoinData = async () => {
+    try {
+      const response = await fetch(`${config.BASE_URL}/api/coin-support-resistance/${selectedCoin}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setCoinData(data)
+      } else {
+        console.error('Error fetching coin data:', response.statusText)
+      }
+    } catch (error) {
+      console.error('Error fetching coin data:', error)
+    }
   }
+
+  // Gets the S&R of a coin
+  useEffect(() => {
+    fetchCoinData()
+  }, [selectedCoin])
+
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSelectedCoin = (event) => {
+    setSelectedCoin(event.target.value);
+    setFormData({
+      support1: '',
+      support2: '',
+      support3: '',
+      support4: '',
+      resistance1: '',
+      resistance2: '',
+      resistance3: '',
+      resistance4: '',
+    })
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -77,11 +121,13 @@ const ChartsPage = () => {
           resistance_2: formData.resistance2,
           resistance_3: formData.resistance3,
           resistance_4: formData.resistance4,
-          coin_bot_id: formData.coin_bot_id,
+          coin_bot_id: selectedCoin,
         }),
       })
-
+      
       if (response.ok) {
+        const responseData = await response.json();
+      
         setFormData({
           support1: '',
           support2: '',
@@ -91,35 +137,63 @@ const ChartsPage = () => {
           resistance2: '',
           resistance3: '',
           resistance4: '',
-          coin_bot_id: '',
         })
+        fetchCoinData()
+        setMessage(responseData.message)
 
-        setSuccessMessage('Chart successfully Updated!') // Establece el mensaje de éxito
-
-        // Limpia el mensaje después de unos segundos (ajusta el tiempo según tus preferencias)
         setTimeout(() => {
-          setSuccessMessage('')
-        }, 3000) // 3000 milisegundos (3 segundos) en este ejemplo
+          setMessage('')
+        }, 2000) 
+
       } else {
         console.error('Error saving chart:', response.statusText)
+        setMessage(response.statusText)
       }
     } catch (error) {
       console.error('Error saving chart:', error)
+      setMessage(error)
     }
   }
 
+  
+  
+  const values = coinData?.success === true ? Object.values(coinData.chart_values) : null;
+  const supports = values && values.length >= 4 ? values.slice(4) : null;
+  const resistances = values && values.length >= 4 ? values.slice(0, 4) : null;
+  
   return (
     <CRow>
-      <CCol xs="12">
-        <CCard>
-          <CCardHeader>
-            <strong>Update a Support-Resistance Chart:</strong>
+      <CCol className='mainContainer' xs="13">
+        <CCard className='card'>
+          <CCardHeader className='chatTitle'>
+            <strong>Update Support & Resistance Chart</strong>
           </CCardHeader>
-          <CCardBody>
-            <form onSubmit={handleSubmit}>
-              {/* Input fields for support */}
+          <CCardBody className='cardBody'>
+            <form className='form' onSubmit={handleSubmit}>
+             
+              {/* Select coin */}
+              <div className="mb-3">
+                <CInputGroup>
+                  <CInputGroupText>Coin</CInputGroupText>
+                  <select
+                    className="form-control"
+                    name="coin_bot_id"
+                    value={selectedCoin}
+                    onChange={handleSelectedCoin}
+                    required
+                  >
+                    <option>Select...</option>
+                    {coinBots.map((coinBot) => (
+                      <option className='coinName' key={coinBot.id} value={coinBot.id}>
+                        {coinBot.name.toUpperCase()}
+                      </option>
+                    ))}
+                  </select>
+                </CInputGroup>
+              </div>
+
               <CRow>
-                <CCol md="6">
+                <CCol className='column' md="6">
                   {[1, 2, 3, 4].map((index) => (
                     <div key={`support${index}`} className="mb-3">
                       <CInputGroup>
@@ -130,6 +204,8 @@ const ChartsPage = () => {
                           value={formData[`support${index}`]}
                           onChange={handleChange}
                           required
+                          className='input'
+                          placeholder={supports && supports[index - 1]}
                         />
                       </CInputGroup>
                     </div>
@@ -137,9 +213,11 @@ const ChartsPage = () => {
                 </CCol>
               </CRow>
 
+              
+
               {/* Input fields for resistance */}
               <CRow>
-                <CCol md="6">
+                <CCol className='column' md="6">
                   {[1, 2, 3, 4].map((index) => (
                     <div key={`resistance${index}`} className="mb-3">
                       <CInputGroup>
@@ -150,6 +228,8 @@ const ChartsPage = () => {
                           value={formData[`resistance${index}`]}
                           onChange={handleChange}
                           required
+                          className='input'
+                          placeholder={resistances && resistances[index - 1]}
                         />
                       </CInputGroup>
                     </div>
@@ -157,34 +237,18 @@ const ChartsPage = () => {
                 </CCol>
               </CRow>
 
-              {/* Success message */}
-              {successMessage && <div className="success-message space">{successMessage}</div>}
+              <div className='lastContainer'>
+                
+                {/* Submit button */}
+                <CButton className="save-btn" color="primary" type="submit">
+                  Save Chart
+                </CButton>
 
-              {/* Additional fields */}
-              <div className="mb-3">
-                <CInputGroup>
-                  <CInputGroupText>Coin Bot</CInputGroupText>
-                  <select
-                    className="form-control"
-                    name="coin_bot_id"
-                    value={formData.coin_bot_id}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option>Select...</option>
-                    {coinBots.map((coinBot) => (
-                      <option key={coinBot.id} value={coinBot.id}>
-                        {coinBot.name}
-                      </option>
-                    ))}
-                  </select>
-                </CInputGroup>
+                {/* Success message */}
+                {message && <div className="message">{message.toLowerCase()}</div>}
+
+
               </div>
-
-              {/* Submit button */}
-              <CButton className="save-btn" color="primary" type="submit">
-                Save Chart
-              </CButton>
             </form>
           </CCardBody>
         </CCard>
