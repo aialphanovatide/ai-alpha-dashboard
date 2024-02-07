@@ -83,7 +83,7 @@ const Introduction = () => {
 
   return (
     <div style={{ margin: '20px' }}>
-      <h2>Introduction Sub-Section Form</h2>
+      <h2>Introduction Sub-Section</h2>
       <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
         {' '}
         <Form.Label>Select Coin</Form.Label>

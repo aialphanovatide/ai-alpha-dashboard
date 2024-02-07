@@ -100,7 +100,7 @@ const Upgrades = () => {
   return (
     <div>
       <div style={{ margin: '20px', overflowX: 'auto' }}>
-        <h2>Upgrades Section</h2>
+        <h2>Upgrades Sub-Section</h2>
         <br />
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
           <Form.Label>Select Coin</Form.Label>

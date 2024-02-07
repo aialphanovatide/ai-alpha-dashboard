@@ -1,29 +1,66 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Table } from 'react-bootstrap'
-import TokenomicsEditModal from '../tokenomics/tokenomicsEditModal'
+import { Form, Table, Button } from 'react-bootstrap'
 import '../botsSettings/bs.css'
 import config from '../../config'
+import TokenomicsModal from './TokenomicsModal'
 
 const Tokenomics = () => {
   const [bots, setBots] = useState([])
-
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
-  const [coinBotInfo, setCoinBotInfo] = useState(null)
+  const [tokenomicsData, setTokenomicsData] = useState(null)
+  const [competitorsData, setCompetitorsData] = useState(null)
+  const [showModal, setShowModal] = useState(false)
 
-  // Definir handleCloseFunction para cerrar el modal
-  const handleCloseFunction = async () => {
-    // Lógica para cerrar el modal
-    console.log('Modal cerrado')
-    // Recargar la información del bot después de cerrar el modal
-    await handleCoinBotChange(selectedCoinBot)
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Obtener datos de competidores
+        const competitorsResponse = await fetch(
+          `${config.BASE_URL}/get_competitors/${selectedCoinBot}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'ngrok-skip-browser-warning': 'true',
+            },
+          },
+        )
+        const competitorsData = await competitorsResponse.json()
+        setCompetitorsData(competitorsData.competitors)
+
+        const tokenomicsResponse = await fetch(
+          `${config.BASE_URL}/get_tokenomics/${selectedCoinBot}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'ngrok-skip-browser-warning': 'true',
+            },
+          },
+        )
+        const tokenomicsData = await tokenomicsResponse.json()
+        console.log('tokenomicsData', tokenomicsData.message)
+        setTokenomicsData(tokenomicsData.message)
+        console.log(tokenomicsData)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+
+    if (selectedCoinBot) {
+      fetchData()
+    }
+  }, [selectedCoinBot])
+
+  const handleCoinBotChange = (value) => {
+    setSelectedCoinBot(value)
   }
 
-  // Definir handleSaveFunction para guardar los cambios
-  const handleSaveFunction = async () => {
-    // Lógica para guardar los cambios
-    console.log('Cambios guardados')
-    // Recargar la información del bot después de guardar los cambios
-    await handleCoinBotChange(selectedCoinBot)
+  const handleClose = () => {
+    setShowModal(false)
+    setSelectedCoinBot('')
+    setTokenomicsData('')
+    setCompetitorsData('')
   }
 
   useEffect(() => {
@@ -51,32 +88,9 @@ const Tokenomics = () => {
     getAllBots()
   }, [])
 
-  const handleCoinBotChange = async (value) => {
-    setSelectedCoinBot(value)
-
-    try {
-      const response = await fetch(`${config.BASE_URL}/get_coin_bot_tokenomics/${value}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      const data = await response.json()
-      if (data && data.coinBotInfo) {
-        setCoinBotInfo(data.coinBotInfo)
-      } else {
-        setCoinBotInfo(null)
-        console.error('Error fetching Coin Bot info:', data.error)
-      }
-    } catch (error) {
-      console.error('Error:', error)
-    }
-  }
-
   return (
     <div style={{ margin: '20px' }}>
-      <h2>Tokenomics Section</h2>
+      <h2>Tokenomics Sub-Section</h2>
       <br></br>
       <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
         <Form.Label>Select Coin</Form.Label>
@@ -94,7 +108,7 @@ const Tokenomics = () => {
         </Form.Control>
       </Form.Group>
 
-      {coinBotInfo && (
+      {competitorsData && (
         <>
           <br></br>
           <h3>Tokenomics</h3>
@@ -108,18 +122,21 @@ const Tokenomics = () => {
                 <td>Max Supply</td>
                 <td>Supply Model</td>
               </tr>
-              <tr>
-                <td>{coinBotInfo.totalSupply}</td>
-                <td>{coinBotInfo.circulatingSupply}</td>
-                <td>{coinBotInfo.percentCirculatingSupply}</td>
-                <td>{coinBotInfo.maxSupply}</td>
-                <td>{coinBotInfo.supplyModel}</td>
-              </tr>
+              {competitorsData && (
+                <tr>
+                  <td>{competitorsData[0].tokenomics.total_supply}</td>
+                  <td>{competitorsData[0].tokenomics.circulating_supply}</td>
+                  <td>{competitorsData[0].tokenomics.percentage_circulating_supply}</td>
+                  <td>{competitorsData[0].tokenomics.max_supply}</td>
+                  <td>{competitorsData[0].tokenomics.token_supply_model}</td>
+                </tr>
+              )}
               <tr></tr>
               <tr></tr>
               <tr></tr>
             </tbody>
           </Table>
+          <br></br>
           <br></br>
           <br></br>
           <h3>Competitors Tokenomics</h3>
@@ -133,75 +150,91 @@ const Tokenomics = () => {
                 <td>Max Supply</td>
                 <td>Supply Model</td>
               </tr>
-              <tr>
-                <td>{coinBotInfo.totalSupply}</td>
-                <td>{coinBotInfo.circulatingSupply}</td>
-                <td>{coinBotInfo.percentCirculatingSupply}</td>
-                <td>{coinBotInfo.maxSupply}</td>
-                <td>{coinBotInfo.supplyModel}</td>
-              </tr>
-              <tr></tr>
-              <tr></tr>
-              <tr></tr>
+              {competitorsData.slice(1).map((competitor, index) => (
+                <tr key={index}>
+                  <td>{competitor.tokenomics.total_supply}</td>
+                  <td>{competitor.tokenomics.circulating_supply}</td>
+                  <td>{competitor.tokenomics.percentage_circulating_supply}</td>
+                  <td>{competitor.tokenomics.max_supply}</td>
+                  <td>{competitor.tokenomics.token_supply_model}</td>
+                </tr>
+              ))}
             </tbody>
           </Table>
           <br></br>
           <h3>Token Distribution</h3>
-          <br></br>
+          <br />
           <Table striped bordered hover>
             <tbody>
               <tr>
                 <td>Holder Category</td>
-                <td>{coinBotInfo.tokenDistribution.holderCategory}</td>
-              </tr>
-              <tr>
                 <td>Percentage Held</td>
-                <td>{coinBotInfo.tokenDistribution.percentageHeld}</td>
               </tr>
+              {tokenomicsData &&
+                tokenomicsData.token_distribution &&
+                tokenomicsData.token_distribution.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.token_distributions.holder_category}</td>
+                    <td>{item.token_distributions.percentage_held}</td>
+                  </tr>
+                ))}
             </tbody>
           </Table>
-          <br></br>
+          <br />
           <h3>Token Utility</h3>
-          <br></br>
+          <br />
           <Table striped bordered hover>
             <tbody>
               <tr>
                 <td>Token Applications</td>
                 <td>Description</td>
               </tr>
-              <tr>
-                <td>{coinBotInfo.tokenUtility.gasFeesAndTransactionSettlement}</td>
-                <td>{coinBotInfo.tokenUtility.gasFeesAndTransactionSettlement}</td>
-              </tr>
+              {tokenomicsData &&
+                tokenomicsData.token_utility &&
+                tokenomicsData.token_utility.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.token_utilities.token_application}</td>
+                    <td>{item.token_utilities.description}</td>
+                  </tr>
+                ))}
             </tbody>
           </Table>
-          <br></br>
+          <br />
           <h3>Value Accrual Mechanisms</h3>
-          <br></br>
+          <br />
           <Table striped bordered hover>
             <tbody>
               <tr>
                 <td>Mechanisms</td>
                 <td>Description</td>
               </tr>
-              <tr>
-                <td>{coinBotInfo.valueAccrualMechanisms.mechanism}</td>
-                <td>{coinBotInfo.valueAccrualMechanisms.description}</td>
-              </tr>
+              {tokenomicsData &&
+                tokenomicsData.value_accrual_mechanisms &&
+                tokenomicsData.value_accrual_mechanisms.map((item, index) => (
+                  <React.Fragment key={index}>
+                    <tr>
+                      <td>{item.value_accrual_mechanisms.mechanism}</td>
+                      <td>{item.value_accrual_mechanisms.description}</td>
+                    </tr>
+                  </React.Fragment>
+                ))}
             </tbody>
           </Table>
-          <br></br>
-          <br></br>
-          <h3>Actions</h3>
-          <TokenomicsEditModal
-            dataToEdit={coinBotInfo}
-            handleClose={handleCloseFunction}
-            handleSave={handleSaveFunction}
-            coinBotId={selectedCoinBot}
-          />
-          <br></br>
         </>
       )}
+      <br></br>
+      <br></br>
+      <h3>Actions</h3>
+
+      {/* Botón para abrir el modal */}
+      <Button onClick={() => setShowModal(true)}>Add Tokenomics Data</Button>
+
+      {/* Modal */}
+      <TokenomicsModal
+        selectedCoinBot={selectedCoinBot}
+        showModal={showModal}
+        handleClose={handleClose}
+      />
     </div>
   )
 }

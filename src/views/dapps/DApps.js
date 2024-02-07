@@ -102,7 +102,7 @@ const DApps = () => {
   return (
     <div>
       <div style={{ margin: '20px', overflowX: 'auto' }}>
-        <h2>DApps Section</h2>
+        <h2>DApps Sub-Section</h2>
         <br />
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
           <Form.Label>Select Coin</Form.Label>

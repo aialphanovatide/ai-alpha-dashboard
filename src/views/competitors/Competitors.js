@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Table } from 'react-bootstrap'
-import CompetitorsCreateModal from './CompetitorsCreateModal'
+import { Form, Table, Button } from 'react-bootstrap'
+import CompetitorForm from './CompetitorForm'
 import config from '../../config'
 
 const Competitors = () => {
   const [bots, setBots] = useState([])
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
   const [competitorsData, setCompetitorsData] = useState([])
-  const [createModalVisible, setCreateModalVisible] = useState(false)
-  const [selectedCompetitorId, setSelectedCompetitorId] = useState(null)
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     const getAllBots = async () => {
@@ -87,24 +86,52 @@ const Competitors = () => {
     }
   }, [selectedCoinBot])
 
+  const handleCreateFormSubmit = async (formData) => {
+    try {
+      const response = await fetch(`${config.BASE_URL}/post_competitor`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: JSON.stringify({
+          coin_bot_id: selectedCoinBot,
+          competitor_data: formData,
+        }),
+      })
+
+      if (!response.ok) {
+        // Si la respuesta no es exitosa, lanza un error con el mensaje de la respuesta
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Error creating competitor')
+      }
+
+      const data = await response.json()
+
+      // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
+      handleCloseModal()
+    } catch (error) {
+      console.error('Error creating competitor:', error.message)
+      // Puedes mostrar un mensaje de error al usuario aquí
+    }
+  }
+
+  const handleShowModal = () => {
+    setShowModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false)
+  }
+
   const handleCoinBotChange = (value) => {
     setSelectedCoinBot(value)
   }
 
-  const handleCompetitorSelect = (competitorId) => {
-    setSelectedCompetitorId(competitorId)
-    setCreateModalVisible(true)
-  }
-
-  const closeModals = () => {
-    setCreateModalVisible(false)
-    setSelectedCompetitorId(null)
-  }
-  console.log('competitorsData', competitorsData)
   return (
     <div>
       <div style={{ margin: '20px', overflowX: 'auto' }}>
-        <h2>Competitors Section</h2>
+        <h2>Competitors Sub-Section</h2>
         <br />
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
           <Form.Label>Select Coin</Form.Label>
@@ -237,16 +264,11 @@ const Competitors = () => {
           </>
         )}
       </div>
-
-      <h3>Actions</h3>
-      <CompetitorsCreateModal
-        handleClose={closeModals}
-        coinBotId={selectedCoinBot}
-        competitorId={selectedCompetitorId}
-        handleSave={(newCompetitor) => {
-          console.log('New Competitor created or edited:', newCompetitor)
-          closeModals()
-        }}
+      <Button onClick={handleShowModal}>Add Competitor</Button>
+      <CompetitorForm
+        showModal={showModal}
+        handleClose={handleCloseModal}
+        handleSave={(formData) => handleCreateFormSubmit(formData)} // Llamar a handleCreateFormSubmit con formData
       />
     </div>
   )

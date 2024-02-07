@@ -108,7 +108,7 @@ const Hacks = () => {
   return (
     <div>
       <div style={{ margin: '20px', overflowX: 'auto' }}>
-        <h2>Hacks Section</h2>
+        <h2>Hacks Sub-Section</h2>
         <br />
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
           <Form.Label>Select Coin</Form.Label>

@@ -122,7 +122,7 @@ const RevenueModels = () => {
   return (
     <div>
       <div style={{ margin: '20px' }}>
-        <h2>Revenue Models Sub-Section Form</h2>
+        <h2>Revenue Models Sub-Section</h2>
 
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
           <Form.Label>Select Coin</Form.Label>
