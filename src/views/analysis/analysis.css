@@ -1,0 +1,38 @@
+.analysisMain {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.submitAnalisys {
+    display: inline-block;
+    margin: 5rem 0 4rem 0;
+    align-self: flex-start;
+    padding: 8px 18px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: 2px solid #5856d6; 
+    color: #5856d6; 
+    border-radius: 5px;
+    background-color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submitAnalisys:hover {
+    background-color: #5856d6; /* Green background color on hover */
+    color: white;
+  }
+  
+  .submitAnalisys:disabled {
+    background-color: #d3d3d3; /* Light gray background when disabled */
+    border: 2px solid #d3d3d3; /* Light gray border when disabled */
+    color: #808080; /* Gray text color when disabled */
+    cursor: not-allowed;
+  }
