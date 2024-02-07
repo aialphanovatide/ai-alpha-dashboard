@@ -48,6 +48,7 @@ const Hacks = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
         },
         body: JSON.stringify({
           coin_bot_id: selectedCoinBot,
@@ -61,12 +62,12 @@ const Hacks = () => {
 
       const data = await response.json()
       console.log(data)
-
+      setHacks([])
       // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
     } catch (error) {
       console.error('Error creating hack:', error)
     } finally {
-      setShowCreateForm(false)
+      setShowCreateForm(true)
     }
   }
 
@@ -78,6 +79,7 @@ const Hacks = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
         },
       })
 
@@ -89,6 +91,7 @@ const Hacks = () => {
         setHacks(data.message)
         setShowCreateButton(data.message.length === 0)
         console.log('data que llega,', data.message)
+        setShowCreateButton(true)
       } else {
         // Si data.hacks no existe
         console.error('Error fetching Hacks:', data.error)
@@ -132,7 +135,7 @@ const Hacks = () => {
         {hacks && hacks.length > 0 && (
           <>
             <br />
-            <h3>Hacks</h3>
+            <h3 style={{ marginTop: '20px' }}>Hacks</h3>
             <br />
             <Table striped bordered hover>
               <thead>
