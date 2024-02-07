@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Table, Button, Modal } from 'react-bootstrap'
 import HackForm from './HacksForm'
+import HackEditForm from './HackEditForm'
 import config from '../../config'
 
 const Hacks = () => {
@@ -8,6 +9,8 @@ const Hacks = () => {
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
   const [hacks, setHacks] = useState([])
   const [showCreateButton, setShowCreateButton] = useState(false)
+  const [showEditForm, setShowEditForm] = useState(false)
+  const [selectedHackForEdit, setSelectedHackForEdit] = useState(null)
 
   useEffect(() => {
     const getAllBots = async () => {
@@ -42,6 +45,29 @@ const Hacks = () => {
     setShowCreateForm(true)
   }
 
+  const handleEditFormSubmit = async (formData) => {
+    try {
+      const response = await fetch(`${config.BASE_URL}/api/hacks/edit/${selectedHackForEdit.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+      console.log(data)
+      selectedCoinBot('')
+      // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
+    } catch (error) {
+      console.error('Error editing hack:', error)
+    } finally {
+      setShowEditForm(false) // Ocultar el modal de edición después de enviar el formulario
+      setHacks([]) // Limpiar los hacks para forzar una nueva carga después de la edición
+    }
+  }
+
   const handleCreateFormSubmit = async (formData) => {
     try {
       const response = await fetch(`${config.BASE_URL}/api/hacks/create`, {
@@ -69,6 +95,11 @@ const Hacks = () => {
     } finally {
       setShowCreateForm(true)
     }
+  }
+
+  const handleEditButtonClick = (hack) => {
+    setSelectedHackForEdit(hack) // Establece el hack seleccionado para la edición
+    setShowEditForm(true) // Muestra el modal de edición
   }
 
   const handleCoinBotChange = async (value) => {
@@ -152,7 +183,7 @@ const Hacks = () => {
                 {hacks.map((hack) => (
                   <tr key={hack.id}>
                     <td>
-                      <button onClick={() => console.log('Edit button clicked')}>Edit</button>
+                      <button onClick={() => handleEditButtonClick(hack)}>Edit</button>
                     </td>
                     <td>{hack.hack_name}</td>
                     <td>{hack.date}</td>
@@ -175,6 +206,14 @@ const Hacks = () => {
         </Modal.Header>
         <Modal.Body>
           <HackForm onSubmit={handleCreateFormSubmit} />
+        </Modal.Body>
+      </Modal>
+      <Modal show={showEditForm} onHide={() => setShowEditForm(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Hack Data</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <HackEditForm onSubmit={handleEditFormSubmit} hack={selectedHackForEdit} />
         </Modal.Body>
       </Modal>
     </div>
