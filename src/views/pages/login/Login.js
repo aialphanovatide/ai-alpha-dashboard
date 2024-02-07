@@ -1,3 +1,5 @@
+// eslint-disable-next-line prettier/prettier
+
 import React, { useState } from 'react'
 import {
   CButton,
@@ -50,8 +52,7 @@ const Login = () => {
         setError('Incorrect credentials. Please try again.')
       }
     } catch (error) {
-      console.error('Error making the request:', error)
-      setError('Error making the request. Please try again.')
+      setError('Error making request. Please try again.')
     }
   }
   return (

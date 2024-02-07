@@ -10,9 +10,12 @@ import AddSitesModal from '../addSitesModal/AddSitesModal'
 import config from '../../config'
 import DeleteSitesModal from '../deleteSitesModal/DeleteSitesModal'
 //bots settings
+
 const BotsSettings = () => {
+
   const [bots, setBots] = useState([])
   const [loading, setLoading] = useState(false)
+
   const getAllBots = useCallback(async () => {
     try {
       const response = await fetch(`${config.BASE_URL}/get_all_bots`, {
@@ -96,9 +99,9 @@ const BotsSettings = () => {
 
   return (
     <>
-      <h1 id="traffic" className="mb-2">
-        Bots Settings
-      </h1>
+      <h3 id="traffic" className="mb-2">
+        Bot settings
+      </h3>
       <br></br>
       <CRow>
         {bots.map((bot, index) => (
@@ -153,9 +156,9 @@ const BotsSettings = () => {
         </div>
       </CButtonGroup>
       <br></br>
-      <br></br>
+     
       <div>
-        <h3>Actions</h3>
+        <h4>Actions</h4>
         <div>
           <AddWordsModal />
           <DeleteWordsModal />
