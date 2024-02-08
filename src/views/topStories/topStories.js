@@ -125,9 +125,9 @@ const TopStories = () => {
                 console.error('Error deleting:', data);
                 Swal.fire({
                     icon: "error",
-                    title: data.message,
+                    title: data.error,
                     showConfirmButton: false,
-                    timer: 1500
+                    
                 });
             }
         } catch (error) {
@@ -136,7 +136,6 @@ const TopStories = () => {
                 icon: "error",
                 title: error,
                 showConfirmButton: false,
-                timer: 1500
             });
         }
     };
@@ -145,7 +144,7 @@ const TopStories = () => {
         getTopStories()
     }, [])
 
-    console.log('topStories: ', topStories.length)
+    console.log('topStories: ', topStories)
     
   return (
     <div className='alltopStoriesmain'>
