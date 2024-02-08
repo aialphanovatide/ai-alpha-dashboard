@@ -220,7 +220,7 @@ const Introduction = () => {
         </Modal.Header>
         <Modal.Body>
           <p>
-            Successfully Post!
+            Successfully Post
           </p>
         </Modal.Body>
         <Modal.Footer>
