@@ -12,6 +12,7 @@ import {
 } from '@coreui/react'
 import '../chartsPage/ChartsPage.css'
 import config from '../../config'
+import Swal from 'sweetalert2'
 
 const ChartsPage = () => {
 
@@ -26,7 +27,6 @@ const ChartsPage = () => {
     resistance3: '',
     resistance4: '',
   })
-  const [message, setMessage] = useState('')
   const [coinBots, setCoinBots] = useState([])
   const [coinData, setCoinData] = useState([])
 
@@ -58,7 +58,7 @@ const ChartsPage = () => {
 
   const fetchCoinData = async () => {
     try {
-      const response = await fetch(`${config.BASE_URL}/api/coin-support-resistance/${selectedCoin}`, {
+      const response = await fetch(`${config.BASE_URL}/api/coin-support-resistance/dashboard/${selectedCoin}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -125,8 +125,8 @@ const ChartsPage = () => {
         }),
       })
       
+      const responseData = await response.json();
       if (response.ok) {
-        const responseData = await response.json();
       
         setFormData({
           support1: '',
@@ -139,19 +139,31 @@ const ChartsPage = () => {
           resistance4: '',
         })
         fetchCoinData()
-        setMessage(responseData.message)
 
-        setTimeout(() => {
-          setMessage('')
-        }, 2000) 
+        Swal.fire({
+          icon: "success",
+          title: responseData.message,
+          showConfirmButton: false,
+          timer: 1000
+        });
 
       } else {
         console.error('Error saving chart:', response.statusText)
-        setMessage(response.statusText)
+        Swal.fire({
+          icon: "error",
+          title: responseData.message,
+          showConfirmButton: false,
+          timer: 1000
+        });
       }
     } catch (error) {
       console.error('Error saving chart:', error)
-      setMessage(error)
+      Swal.fire({
+        icon: "error",
+        title: error,
+        showConfirmButton: false,
+        timer: 1500
+      });
     }
   }
 
@@ -160,14 +172,23 @@ const ChartsPage = () => {
   const values = coinData?.success === true ? Object.values(coinData.chart_values) : null;
   const supports = values && values.length >= 4 ? values.slice(4) : null;
   const resistances = values && values.length >= 4 ? values.slice(0, 4) : null;
-  
+
+  function formatNumberToCurrency(number) {
+    const decimalPlaces = (number.toString().split('.')[1] || '').length;
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: decimalPlaces,
+        maximumFractionDigits: decimalPlaces
+    }).format(number);
+}
+
   return (
     <CRow>
       <CCol className='mainContainer' xs="13">
+      <h4 className='chartTitle'>Support & Resistance</h4>
         <CCard className='card'>
-          <CCardHeader className='chatTitle'>
-            <strong>Update Support & Resistance Chart</strong>
-          </CCardHeader>
+         
           <CCardBody className='cardBody'>
             <form className='form' onSubmit={handleSubmit}>
              
@@ -205,7 +226,7 @@ const ChartsPage = () => {
                           onChange={handleChange}
                           required
                           className='input'
-                          placeholder={supports && supports[index - 1]}
+                          placeholder={supports && formatNumberToCurrency(supports[index -1])}
                         />
                       </CInputGroup>
                     </div>
@@ -229,7 +250,7 @@ const ChartsPage = () => {
                           onChange={handleChange}
                           required
                           className='input'
-                          placeholder={resistances && resistances[index - 1]}
+                          placeholder={resistances && formatNumberToCurrency(resistances[index -1])}
                         />
                       </CInputGroup>
                     </div>
@@ -240,13 +261,9 @@ const ChartsPage = () => {
               <div className='lastContainer'>
                 
                 {/* Submit button */}
-                <CButton className="save-btn" color="primary" type="submit">
+                <CButton className="save-btn"  type="submit">
                   Save Chart
                 </CButton>
-
-                {/* Success message */}
-                {message && <div className="message">{message.toLowerCase()}</div>}
-
 
               </div>
             </form>

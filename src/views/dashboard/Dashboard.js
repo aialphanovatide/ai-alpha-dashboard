@@ -1,26 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import config from '../../config'
-import {
-  CCard,
-  CCardBody,
-  CCol,
-  CRow,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import {
-  cilMoodBad,
-  cilMoodVeryGood,
-} from '@coreui/icons'
-import { TbReportAnalytics } from "react-icons/tb";
 import './dashboardStyles.css';
+import { Link } from 'react-router-dom';
 
-const CenteredBox = ({ title, coin, date }) => {
+const CenteredBox = ({ title, coin, date, to }) => {
   return (
-    <div className="centered-box">
+    <Link to={to} className="centered-box">
       <h1 className="title">{title}</h1>
       <h1 className="subtitle">{coin && `Coin: ${coin}`}</h1>
       <h2 className="subtitle">Last update: {date}</h2>
-    </div>
+    </Link>
   );
 };
 
@@ -63,9 +52,9 @@ const Dashboard = () => {
     <div className='dashboardMain'>
     <h3 className="mb-2">General status</h3>
     <div className='dasboardSubMain'>
-    <CenteredBox title="News Bot" date="Coming soon..." />
-    <CenteredBox title="Chart" coin={coin} date={date} />
-    <CenteredBox title="Analysis" date="Coming soon..." />
+    <CenteredBox title="News Bot" date="Coming soon..." to={"/botsSettings"}/>
+    <CenteredBox title="Chart" coin={coin} date={date} to={"/chartsPage"}/>
+    <CenteredBox title="Analysis" date="Coming soon..." to={"/analysis"}/>
     </div>
     </div>
   )

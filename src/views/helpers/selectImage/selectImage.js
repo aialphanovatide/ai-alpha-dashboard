@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import './selectImage.css'; 
 
-const ImageUpload = ({ onImageSelect }) => {
+const ImageUpload = ({ onImageSelect, success }) => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     onImageSelect(selectedImage);
   }, [selectedImage, onImageSelect]);
+
+  useEffect(()=>{
+    if (success){
+      setSelectedImage(null)
+    }
+  }, [success])
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];

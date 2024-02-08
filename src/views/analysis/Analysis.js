@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import 'quill/dist/quill.snow.css'
 import config from '../../config'
 import DropdownMenu from '../helpers/selectCoin/SelectCoin'
 import './analysis.css'
 import ImageUpload from '../helpers/selectImage/selectImage'
 import RichTextEditor from '../helpers/textEditor/textEditor'
+import Swal from 'sweetalert2'
+import AllAnalysis from './AllAnalysis'
 
 const Analysis = () => {
 
@@ -12,7 +14,10 @@ const Analysis = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [content, setContent] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
- 
+  const [items, setItems] = useState([]);
+
+  const [isAnalysisCreated, setIsAnalysisCreated ]= useState(false)
+
   const handleSelectCoin = (coinId) => {
     setSelectedCoin(coinId);
   };
@@ -25,8 +30,51 @@ const Analysis = () => {
     setContent(content);
   };
 
+  // Gets all analysis for a coin
+  const fetchAnalysis = async () => {
+    try {
+      const response = await fetch(`${config.BASE_URL}/get_analysis/${selectedCoin}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setItems(data.message)
+      } else {
+        console.error('Error fetching coin bots:', response.statusText)
+      }
+    } catch (error) {
+      console.error('Error fetching coin bots:', error)
+    }
+  }
+
+  // Calls right away all the analysis when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      if (selectedCoin) {
+        await fetchAnalysis();
+      }
+    };
+
+    fetchData();
+  }, [selectedCoin]);
+
   // handles the submit of the three values needed - coin Id, content and image
   const handleSubmit = async () => {
+
+    if (selectedCoin === null || selectedImage === null || content === null){
+      return Swal.fire({
+        icon: "error",
+        title: "One or more required fields are missing",
+        showConfirmButton: false,
+        timer: 1000
+      });
+    }
     setIsSubmitting(true);
 
     const formData = new FormData();
@@ -40,122 +88,67 @@ const Analysis = () => {
         body: formData,
       });
 
-      const respondaData = await response.json()
+      let responseData = await response.json()
 
       if (response.ok) {
-        console.log('Submission successful');
+
+        Swal.fire({
+          icon: "success",
+          title: responseData.message,
+          showConfirmButton: false,
+          timer: 1000
+        });
+        fetchAnalysis()
+        setIsAnalysisCreated(true)
+        setSelectedImage(null)
+        setContent(null)
+       
       } else {
-        console.error('Submission failed', respondaData);
+        Swal.fire({
+          icon: "error",
+          title: "Error creating analysis",
+          showConfirmButton: false,
+          timer: 1000
+        });
       }
     } catch (error) {
-      console.error('Error:', error);
+      Swal.fire({
+        icon: "error",
+        title: error,
+        showConfirmButton: false,
+        timer: 1000
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
- 
+
+  console.log('content: ', content)
+  console.log('selectedImage: ', selectedImage)
+
   return (
 
     <div className='analysisMain'>
+      <h3 className='analysisTitle'>Analysis</h3>
+      <div className='analysisSubmain'>
+        <DropdownMenu selectedCoin={selectedCoin} onSelectCoin={handleSelectCoin} />
+        <ImageUpload success={isAnalysisCreated} onImageSelect={handleImageSelect} />
+        <RichTextEditor success={isAnalysisCreated} onContentChange={handleContentChange} />
 
-      <DropdownMenu selectedCoin={selectedCoin} onSelectCoin={handleSelectCoin} />
-      <ImageUpload onImageSelect={handleImageSelect} />
-      <RichTextEditor onContentChange={handleContentChange} />
-      
-      <button
-        className='submitAnalisys'
-        onClick={handleSubmit}
-        disabled={isSubmitting}
-      >
-      {isSubmitting ? 'Submitting...' : 'Submit'}
-      </button>    
-      
+        <button
+          className='submitAnalisys'
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Submitting...' : 'Submit'}
+        </button>
       </div>
+      <AllAnalysis items={items} fetchAnalysis={fetchAnalysis}/>
+
+    </div>
   )
 }
 
 export default Analysis
 
 
-
-// useEffect(() => {
-//   if (isFormSubmitted) {
-//     // Después de un tiempo (por ejemplo, 2 segundos), restablecer el estado de isFormSubmitted
-//     const timeout = setTimeout(() => {
-//       setIsFormSubmitted(false)
-//     }, 2000)
-
-//     // Limpiar el temporizador si el componente se desmonta antes de que se ejecute
-//     return () => clearTimeout(timeout)
-//   }
-// }, [isFormSubmitted])
-
-
-  // <CRow>
-    //   <CCol xs="12">
-    //     <CCard>
-    //       <CCardHeader>
-    //         <strong>Create Analysis:</strong>
-    //       </CCardHeader>
-    //       <CCardBody>
-    //         <form onSubmit={handleSubmit}>
-    //           {/* Input field for content */}
-    //           <CInputGroup className="mb-5">
-    //             <CInputGroupText>Content</CInputGroupText>
-    //             <ReactQuill
-    //               theme="snow"
-    //               modules={modules}
-    //               formats={formats}
-    //               placeholder="write your content ...."
-    //               onChange={handleQuillChange}
-    //               style={{ height: '160px' }}
-    //             ></ReactQuill>
-    //           </CInputGroup>
-
-    //           {/* Input field for image */}
-    //           <CInputGroup className="mb-3">
-    //             <CInputGroupText>Image</CInputGroupText>
-    //             <CFormInput
-    //               id="image"
-    //               name="image"
-    //               type="file"
-    //               accept="image/png, image/jpeg"
-    //               onChange={handleChange}
-    //             />
-    //           </CInputGroup>
-    //           {previewImage && (
-    //             <img
-    //               src={previewImage}
-    //               alt="Image Preview"
-    //               style={{ maxWidth: '100%', marginBottom: '16px' }}
-    //             />
-    //           )}
-
-    //           {/* Selector for coinBot */}
-    //           <CInputGroup className="mb-3">
-    //             <CInputGroupText>Coin Bot</CInputGroupText>
-    //             <select
-    //               className="form-control"
-    //               name="coinBot"
-    //               value={formData.coinBot}
-    //               onChange={handleChange}
-    //               required
-    //             >
-    //               <option value="">Select...</option>
-    //               {coinBots.map((coinBot) => (
-    //                 <option key={coinBot.id} value={coinBot.id}>
-    //                   {coinBot.bot_name.toUpperCase()}
-    //                 </option>
-    //               ))}
-    //             </select>
-    //           </CInputGroup>
-
-    //           {/* Submit button */}
-    //           <CButton color="primary" type="submit" disabled={isFormSubmitted}>
-    //             {isFormSubmitted ? 'Submitting...' : 'Submit Analysis'}
-    //           </CButton>
-    //         </form>
-    //       </CCardBody>
-    //     </CCard>
-    //   </CCol>
-    // </CRow>

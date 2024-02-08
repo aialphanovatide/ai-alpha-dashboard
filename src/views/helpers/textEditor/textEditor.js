@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './textEditor.css'
 
-const RichTextEditor = ({ onContentChange }) => {
+const RichTextEditor = ({ onContentChange, success }) => {
   const [content, setContent] = useState('');
 
   const handleQuillChange = (value) => {
     setContent(value);
     onContentChange(value);
   };
+
+  useEffect(()=>{
+    if (success){
+      setContent('')
+    }
+  }, [success])
 
   
   const formats = [
