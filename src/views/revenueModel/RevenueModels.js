@@ -32,7 +32,7 @@ const RevenueModels = () => {
 
       const data = await response.json()
       setSelectedCoinBot('')
-
+      setRevenueModels([])
       // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
     } catch (error) {
       console.error('Error editing revenue model:', error)
@@ -54,7 +54,7 @@ const RevenueModels = () => {
         body: JSON.stringify({
           coin_bot_id: selectedCoinBot,
           analized_revenue: formData.analized_revenue,
-          fees_1ys: formData.fees_1ys,
+          //fees_1ys: formData.fees_1ys,
         }),
       })
 
@@ -64,15 +64,18 @@ const RevenueModels = () => {
         console.log('Revenue model created successfully:', result)
         setShowModal(true)
         setSelectedCoinBot('')
+        setRevenueModels([])
         // Cierra el modal después de dos segundos
         setTimeout(() => {
           setShowModal(false)
         }, 2000)
       } else {
         console.error('Error creating Revenue Model:', result.error)
+        setRevenueModels([])
       }
     } catch (error) {
       console.error('Error:', error)
+      setRevenueModels([])
     }
   }
   useEffect(() => {
@@ -193,7 +196,7 @@ const RevenueModels = () => {
                 <tr>
                   <th>Action</th>
                   <th>Annualised Revenue</th>
-                  <th>Fees (1Y)</th>
+                  {/* <th>Fees (1Y)</th> */}
                   {/* Add other columns based on your data model */}
                 </tr>
               </thead>
@@ -204,7 +207,7 @@ const RevenueModels = () => {
                       <button onClick={() => handleEditButtonClick(revenueModel)}>Edit</button>
                     </td>
                     <td>{revenueModel.analized_revenue}</td>
-                    <td>{revenueModel.fees_1ys}</td>
+                    {/* <td>{revenueModel.fees_1ys}</td> */}
                   </tr>
                 ))}
               </tbody>

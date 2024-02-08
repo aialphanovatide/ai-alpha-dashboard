@@ -36,10 +36,12 @@ const HackEditForm = ({ hack, onSubmit }) => {
           onChange={handleChange}
         />
       </Form.Group>
+      <br />
       <Form.Group controlId="date">
         <Form.Label>Date</Form.Label>
-        <Form.Control type="date" name="date" value={formData.date} onChange={handleChange} />
+        <Form.Control type="text" name="date" value={formData.date} onChange={handleChange} />
       </Form.Group>
+      <br />
       <Form.Group controlId="incidentDescription">
         <Form.Label>Incident Description</Form.Label>
         <Form.Control
@@ -50,6 +52,7 @@ const HackEditForm = ({ hack, onSubmit }) => {
           onChange={handleChange}
         />
       </Form.Group>
+      <br />
       <Form.Group controlId="consequences">
         <Form.Label>Consequences</Form.Label>
         <Form.Control
@@ -59,6 +62,7 @@ const HackEditForm = ({ hack, onSubmit }) => {
           onChange={handleChange}
         />
       </Form.Group>
+      <br />
       <Form.Group controlId="mitigationMeasure">
         <Form.Label>Mitigation Measure</Form.Label>
         <Form.Control
@@ -68,9 +72,11 @@ const HackEditForm = ({ hack, onSubmit }) => {
           onChange={handleChange}
         />
       </Form.Group>
+      <br />
       <Button variant="primary" type="submit">
         Save Changes
       </Button>
+      <br />
     </Form>
   )
 }

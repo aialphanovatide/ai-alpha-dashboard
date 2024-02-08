@@ -29,10 +29,12 @@ const UpgradesForm = ({ onSubmit }) => {
           required
         />
       </Form.Group>
+      <br />
       <Form.Group controlId="dateInput">
         <Form.Label>Date</Form.Label>
         <Form.Control type="text" value={date} onChange={(e) => setDate(e.target.value)} required />
       </Form.Group>
+      <br />
       <Form.Group controlId="event_overviewInput">
         <Form.Label>Event Overview</Form.Label>
         <Form.Control
@@ -42,6 +44,7 @@ const UpgradesForm = ({ onSubmit }) => {
           required
         />
       </Form.Group>
+      <br />
       <Form.Group controlId="impactInput">
         <Form.Label>Impact</Form.Label>
         <Form.Control
@@ -51,9 +54,11 @@ const UpgradesForm = ({ onSubmit }) => {
           required
         />
       </Form.Group>
+      <br />
       <Button type="submit" variant="primary">
         Create Upgrade Data
       </Button>
+      <br />
     </Form>
   )
 }

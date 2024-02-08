@@ -58,7 +58,7 @@ const Hacks = () => {
 
       const data = await response.json()
       console.log(data)
-      selectedCoinBot('')
+      setSelectedCoinBot('')
       // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
     } catch (error) {
       console.error('Error editing hack:', error)

@@ -1,243 +1,208 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Button, Form, Alert } from 'react-bootstrap'
-import { CButton } from '@coreui/react'
-import PropTypes from 'prop-types'
+import { Modal, Button, Form } from 'react-bootstrap'
 import config from '../../config'
 
-const TokenomicsEditModal = ({ dataToEdit, coinBotId, handleClose, handleSave }) => {
-  const [editedData, setEditedData] = useState({
-    totalSupply: '',
-    circulatingSupply: '',
-    percentCirculatingSupply: '',
-    maxSupply: '',
-    supplyModel: '',
-    tokenDistribution: {
-      holderCategory: '',
-      percentageHeld: '',
-    },
-    tokenUtility: {
-      gasFeesAndTransactionSettlement: '',
-    },
-    valueAccrualMechanisms: {
-      tokenBurning: '',
-      tokenBuyback: '',
-    },
-  })
-  const [visible, setVisible] = useState(false)
-  const [successMessage, setSuccessMessage] = useState('')
+const TokenomicsEditModal = ({ selectedCoinBot, showEditModal, setShowEditModal }) => {
+  const [tokenomicsData, setTokenomicsData] = useState(null)
+  const [tokenDistributionData, setTokenDistributionData] = useState({})
+  const [tokenUtilityData, setTokenUtilityData] = useState({})
+  const [valueAccrualMechanismsData, setValueAccrualMechanismsData] = useState({})
 
   useEffect(() => {
-    setEditedData(
-      dataToEdit || {
-        totalSupply: '',
-        circulatingSupply: '',
-        percentCirculatingSupply: '',
-        maxSupply: '',
-        supplyModel: '',
-        tokenDistribution: {
-          holderCategory: '',
-          percentageHeld: '',
-        },
-        tokenUtility: {
-          gasFeesAndTransactionSettlement: '',
-        },
-        valueAccrualMechanisms: {
-          tokenBurning: '',
-          tokenBuyback: '',
-        },
-      },
-    )
-    setSuccessMessage('')
-  }, [dataToEdit])
+    const fetchData = async () => {
+      try {
+        const tokenomicsResponse = await fetch(
+          `${config.BASE_URL}/get_tokenomics/${selectedCoinBot}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'ngrok-skip-browser-warning': 'true',
+            },
+          },
+        )
+        const data = await tokenomicsResponse.json()
+        setTokenomicsData(data.message)
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-
-    // Si el nombre contiene un punto, significa que es una propiedad anidada
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.')
-      setEditedData((prevData) => ({
-        ...prevData,
-        [parent]: {
-          ...prevData[parent],
-          [child]: value,
-        },
-      }))
-    } else {
-      // Si no, simplemente actualiza la propiedad
-      setEditedData((prevData) => ({ ...prevData, [name]: value }))
+        // Actualizar los estados de los datos de tokenomics si los datos están disponibles
+        if (data.message) {
+          setTokenDistributionData(data.message.token_distribution[0].token_distributions)
+          setTokenUtilityData(data.message.token_utility[0].token_utilities)
+          setValueAccrualMechanismsData(
+            data.message.value_accrual_mechanisms[0].value_accrual_mechanisms,
+          )
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
     }
-  }
 
-  const handleCloseClick = () => {
-    console.log('Closing modal...')
-    handleClose()
-  }
+    if (selectedCoinBot) {
+      fetchData()
+    }
+  }, [selectedCoinBot])
 
-  const handleSaveClick = async () => {
-    // Asegúrate de que editedData esté actualizado antes de realizar la solicitud fetch
-    const updatedData = { ...editedData }
-    updatedData.coinBotId = coinBotId
-    console.log('Data being sent to server:', updatedData)
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     try {
-      const response = await fetch(`${config.BASE_URL}/save_tokenomics`, {
-        method: 'POST',
+      const dataToSend = {
+        token_distribution: {
+          holder_category: tokenDistributionData.holder_category || '',
+          percentage_held: tokenDistributionData.percentage_held || '',
+        },
+        token_utility: {
+          token_application: tokenUtilityData.token_application || '',
+          description: tokenUtilityData.description || '',
+        },
+        value_accrual_mechanisms: {
+          mechanism: valueAccrualMechanismsData.mechanism || '',
+          description: valueAccrualMechanismsData.description || '',
+        },
+      }
+      console.log('Data to send:', dataToSend)
+      console.log('ID: ', selectedCoinBot)
+      const response = await fetch(`${config.BASE_URL}/edit_tokenomics/${selectedCoinBot}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'ngrok-skip-browser-warning': 'true',
         },
-        body: JSON.stringify(updatedData),
+        body: JSON.stringify(dataToSend),
       })
-
       const data = await response.json()
-      console.log('Fetch response:', data)
-
-      handleSave({ ...dataToEdit, ...editedData })
-      setSuccessMessage('Updated successfully')
-      setVisible(true)
-
-      // Configurar un temporizador para ocultar el mensaje después de 2000 milisegundos (2 segundos)
-      setTimeout(() => {
-        setSuccessMessage('')
-      }, 2000)
-
-      // Configurar un temporizador adicional para cerrar el modal después de otros 2000 milisegundos (2 segundos)
-      setTimeout(() => {
-        setVisible(false)
-      }, 4000)
+      console.log('Response:', data)
+      // Manejar la respuesta del servidor aquí según sea necesario
+      // Cerrar el modal después de enviar el formulario
+      setShowEditModal(false)
+      handleClose()
     } catch (error) {
-      console.error('Error en la solicitud fetch:', error)
-      // Maneja el error según tus necesidades
+      console.error('Error:', error)
+      // Manejar errores de solicitud aquí según sea necesario
     }
   }
 
+  const handleInputChange = (category, field, value) => {
+    switch (category) {
+      case 'token_distribution':
+        setTokenDistributionData({
+          ...tokenDistributionData,
+          [field]: value,
+        })
+        break
+      case 'token_utility':
+        setTokenUtilityData({
+          ...tokenUtilityData,
+          [field]: value,
+        })
+        break
+      case 'value_accrual_mechanisms':
+        setValueAccrualMechanismsData({
+          ...valueAccrualMechanismsData,
+          [field]: value,
+        })
+        break
+      default:
+        break
+    }
+  }
+
+  const handleClose = () => {
+    // Cerrar el modal utilizando setShowEditModal
+    setShowEditModal(false)
+  }
+
   return (
-    <>
-      <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
-        Edit Tokenomics Data
-      </CButton>
-      <Modal show={visible} onHide={() => setVisible(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Data</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Modal.Title className="subtitleModal">Tokenomics:</Modal.Title>
-            <Form.Group controlId="formTokenomics">
-              <Form.Label>Total Supply</Form.Label>
-              <br />
-              <Form.Control
-                type="text"
-                name="totalSupply"
-                value={editedData.totalSupply || ''}
-                onChange={handleChange}
-              />
-
-              <Form.Label>Circulating Supply</Form.Label>
-              <Form.Control
-                type="text"
-                name="circulatingSupply"
-                value={editedData.circulatingSupply || ''}
-                onChange={handleChange}
-              />
-              <Form.Label>% Circulating Supply</Form.Label>
-              <Form.Control
-                type="text"
-                name="percentCirculatingSupply"
-                value={editedData.percentCirculatingSupply || ''}
-                onChange={handleChange}
-              />
-              <Form.Label>Max Supply</Form.Label>
-              <Form.Control
-                type="text"
-                name="maxSupply"
-                value={editedData.maxSupply || ''}
-                onChange={handleChange}
-              />
-              <Form.Label>Supply Model</Form.Label>
-              <Form.Control
-                type="text"
-                name="supplyModel"
-                value={editedData.supplyModel || ''}
-                onChange={handleChange}
-              />
-            </Form.Group>
-            <br />
-            <Modal.Title className="subtitleModal">Token Distribution:</Modal.Title>
-            <Form.Group controlId="tokenDistribution">
-              <Form.Label>Holder Category</Form.Label>
-              <Form.Control
-                type="text"
-                name="tokenDistribution.holderCategory"
-                value={editedData.tokenDistribution.holderCategory || ''}
-                onChange={handleChange}
-              />
-              <Form.Label>Percentage Held</Form.Label>
-              <Form.Control
-                type="text"
-                name="tokenDistribution.percentageHeld"
-                value={editedData.tokenDistribution.percentageHeld || ''}
-                onChange={handleChange}
-              />
-            </Form.Group>
-            <br />
-            <Modal.Title className="subtitleModal">Token Utility:</Modal.Title>
-            <Form.Group controlId="tokenDistribution">
-              <Form.Label>Gas Fees and Transaction Settlement</Form.Label>
-              <Form.Control
-                type="text"
-                name="tokenUtility.gasFeesAndTransactionSettlement"
-                value={editedData.tokenUtility.gasFeesAndTransactionSettlement || ''}
-                onChange={handleChange}
-              />
-            </Form.Group>
-            <br />
-            <Modal.Title className="subtitleModal">Value Accrual Mechanisms:</Modal.Title>
-            <Form.Group controlId="tokenDistribution">
-              <Form.Label>Token Burning</Form.Label>
-              <Form.Control
-                type="text"
-                name="valueAccrualMechanisms.tokenBurning"
-                value={editedData.valueAccrualMechanisms.tokenBurning || ''}
-                onChange={handleChange}
-              />
-              <Form.Label>Token Buyback</Form.Label>
-              <Form.Control
-                type="text"
-                name="valueAccrualMechanisms.tokenBuyback"
-                value={editedData.valueAccrualMechanisms.tokenBuyback || ''}
-                onChange={handleChange}
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            className="espacio close btn-primary"
-            variant="secondary"
-            onClick={() => setVisible((prevVisible) => !prevVisible)}
-          >
-            Close
+    <Modal show={showEditModal} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Edit Tokenomics Data</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
+          {/* Formulario para Token Utility */}
+          <Form.Group controlId="tokenApplication">
+            <Form.Label>Token Application</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter token application"
+              value={tokenUtilityData.token_application || ''}
+              onChange={(e) =>
+                handleInputChange('token_utility', 'token_application', e.target.value)
+              }
+            />
+          </Form.Group>
+          <br />
+          <Form.Group controlId="tokenDescription">
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              placeholder="Enter description"
+              value={tokenUtilityData.description || ''}
+              onChange={(e) => handleInputChange('token_utility', 'description', e.target.value)}
+            />
+          </Form.Group>
+          <br />
+          {/* Formulario para Token Distribution */}
+          <Form.Group controlId="holderCategory">
+            <Form.Label>Holder Category</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter holder category"
+              value={tokenDistributionData.holder_category || ''}
+              onChange={(e) =>
+                handleInputChange('token_distribution', 'holder_category', e.target.value)
+              }
+            />
+          </Form.Group>
+          <br />
+          <Form.Group controlId="percentageHeld">
+            <Form.Label>Percentage Held</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter percentage held"
+              value={tokenDistributionData.percentage_held || ''}
+              onChange={(e) =>
+                handleInputChange('token_distribution', 'percentage_held', e.target.value)
+              }
+            />
+          </Form.Group>
+          <br />
+          {/* Formulario para Value Accrual Mechanisms */}
+          <Form.Group controlId="mechanism">
+            <Form.Label>Mechanism</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter mechanism"
+              value={valueAccrualMechanismsData.mechanism || ''}
+              onChange={(e) =>
+                handleInputChange('value_accrual_mechanisms', 'mechanism', e.target.value)
+              }
+            />
+          </Form.Group>
+          <br />
+          <Form.Group controlId="mechanismDescription">
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              placeholder="Enter mechanism description"
+              value={valueAccrualMechanismsData.description || ''}
+              onChange={(e) =>
+                handleInputChange('value_accrual_mechanisms', 'description', e.target.value)
+              }
+            />
+          </Form.Group>
+          <br />
+          <Button variant="primary" type="submit">
+            Submit
           </Button>
-          <Button variant="primary" onClick={handleSaveClick}>
-            Save Changes
-          </Button>
-          {successMessage && (
-            <Alert variant="success" onClose={() => setSuccessMessage('')} dismissible>
-              {successMessage}
-            </Alert>
-          )}
-        </Modal.Footer>
-      </Modal>
-    </>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
   )
-}
-
-TokenomicsEditModal.propTypes = {
-  dataToEdit: PropTypes.object,
-  coinBotId: PropTypes.string.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  handleSave: PropTypes.func.isRequired,
 }
 
 export default TokenomicsEditModal
