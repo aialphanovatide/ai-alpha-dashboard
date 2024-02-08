@@ -14,7 +14,7 @@ const RMForm = ({ onSubmit, onCancel, show }) => {
       // Realiza la operación de creación y maneja el éxito
       await onSubmit({
         analized_revenue,
-        fees_1ys,
+        // fees_1ys,
       })
 
       // Muestra el mensaje de éxito
@@ -52,7 +52,7 @@ const RMForm = ({ onSubmit, onCancel, show }) => {
               required
             />
           </Form.Group>
-          <Form.Group controlId="fees1YsInput">
+          {/* <Form.Group controlId="fees1YsInput">
             <Form.Label>Fees (1Y)</Form.Label>
             <Form.Control
               type="text"
@@ -60,10 +60,12 @@ const RMForm = ({ onSubmit, onCancel, show }) => {
               onChange={(e) => setFees1Ys(e.target.value)}
               required
             />
-          </Form.Group>
+          </Form.Group> */}
+          <br />
           <Button style={{ marginTop: '10px' }} type="submit" variant="primary">
             Create RevenueModel Data
           </Button>
+          <br />
         </Form>
       </Modal.Body>
     </Modal>

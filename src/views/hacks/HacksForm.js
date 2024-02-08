@@ -34,10 +34,12 @@ const HackForm = ({ onSubmit }) => {
           required
         />
       </Form.Group>
+      <br />
       <Form.Group controlId="dateInput">
         <Form.Label>Date</Form.Label>
         <Form.Control type="text" value={date} onChange={(e) => setDate(e.target.value)} required />
       </Form.Group>
+      <br />
       <Form.Group controlId="incidentDescriptionInput">
         <Form.Label>What was the Incident?</Form.Label>
         <Form.Control
@@ -48,6 +50,7 @@ const HackForm = ({ onSubmit }) => {
           required
         />
       </Form.Group>
+      <br />
       <Form.Group controlId="consequencesInput">
         <Form.Label>What were the Consequences?</Form.Label>
         <Form.Control
@@ -58,6 +61,7 @@ const HackForm = ({ onSubmit }) => {
           required
         />
       </Form.Group>
+      <br />
       <Form.Group controlId="mitigationMeasureInput">
         <Form.Label>What risk mitigation measures have been taken?</Form.Label>
         <Form.Control
@@ -68,9 +72,11 @@ const HackForm = ({ onSubmit }) => {
           required
         />
       </Form.Group>
+      <br />
       <Button type="submit" variant="primary">
         Create Hack Data
       </Button>
+      <br />
     </Form>
   )
 }

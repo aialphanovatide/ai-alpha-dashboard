@@ -3,6 +3,7 @@ import { Form, Table, Button } from 'react-bootstrap'
 import '../botsSettings/bs.css'
 import config from '../../config'
 import TokenomicsModal from './TokenomicsModal'
+import TokenomicsEditModal from './tokenomicsEditModal'
 
 const Tokenomics = () => {
   const [bots, setBots] = useState([])
@@ -10,6 +11,8 @@ const Tokenomics = () => {
   const [tokenomicsData, setTokenomicsData] = useState(null)
   const [competitorsData, setCompetitorsData] = useState(null)
   const [showModal, setShowModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedItemForEdit, setSelectedItemForEdit] = useState(null) // Estado para el ítem seleccionado para editar
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +44,6 @@ const Tokenomics = () => {
         const tokenomicsData = await tokenomicsResponse.json()
         console.log('tokenomicsData', tokenomicsData.message)
         setTokenomicsData(tokenomicsData.message)
-        console.log(tokenomicsData)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -58,9 +60,10 @@ const Tokenomics = () => {
 
   const handleClose = () => {
     setShowModal(false)
+    setShowEditModal(false)
     setSelectedCoinBot('')
-    setTokenomicsData('')
-    setCompetitorsData('')
+    setTokenomicsData(null) // Restablece los datos de tokenomics a null o a un valor vacío según corresponda
+    setCompetitorsData(null) // Restablece los datos de los competidores a null o a un valor vacío según corresponda
   }
 
   useEffect(() => {
@@ -87,6 +90,11 @@ const Tokenomics = () => {
 
     getAllBots()
   }, [])
+
+  const handleEditButtonClick = (dataFromTokenomic) => {
+    setSelectedItemForEdit(dataFromTokenomic) // Establece el ítem seleccionado para editar
+    setShowEditModal(true) // Muestra el modal de edición
+  }
 
   return (
     <div style={{ margin: '20px' }}>
@@ -167,6 +175,7 @@ const Tokenomics = () => {
           <Table striped bordered hover>
             <tbody>
               <tr>
+                <td>Action</td>
                 <td>Holder Category</td>
                 <td>Percentage Held</td>
               </tr>
@@ -174,6 +183,9 @@ const Tokenomics = () => {
                 tokenomicsData.token_distribution &&
                 tokenomicsData.token_distribution.map((item, index) => (
                   <tr key={index}>
+                    <td>
+                      <Button onClick={() => handleEditButtonClick(tokenomicsData)}>Edit</Button>
+                    </td>
                     <td>{item.token_distributions.holder_category}</td>
                     <td>{item.token_distributions.percentage_held}</td>
                   </tr>
@@ -186,6 +198,7 @@ const Tokenomics = () => {
           <Table striped bordered hover>
             <tbody>
               <tr>
+                <td>Action</td>
                 <td>Token Applications</td>
                 <td>Description</td>
               </tr>
@@ -193,6 +206,9 @@ const Tokenomics = () => {
                 tokenomicsData.token_utility &&
                 tokenomicsData.token_utility.map((item, index) => (
                   <tr key={index}>
+                    <td>
+                      <Button onClick={() => handleEditButtonClick(tokenomicsData)}>Edit</Button>
+                    </td>
                     <td>{item.token_utilities.token_application}</td>
                     <td>{item.token_utilities.description}</td>
                   </tr>
@@ -205,6 +221,7 @@ const Tokenomics = () => {
           <Table striped bordered hover>
             <tbody>
               <tr>
+                <td>Action</td>
                 <td>Mechanisms</td>
                 <td>Description</td>
               </tr>
@@ -213,6 +230,9 @@ const Tokenomics = () => {
                 tokenomicsData.value_accrual_mechanisms.map((item, index) => (
                   <React.Fragment key={index}>
                     <tr>
+                      <td>
+                        <Button onClick={() => handleEditButtonClick(tokenomicsData)}>Edit</Button>
+                      </td>
                       <td>{item.value_accrual_mechanisms.mechanism}</td>
                       <td>{item.value_accrual_mechanisms.description}</td>
                     </tr>
@@ -234,6 +254,14 @@ const Tokenomics = () => {
         selectedCoinBot={selectedCoinBot}
         showModal={showModal}
         handleClose={handleClose}
+      />
+      {/* Modal de edición */}
+      <TokenomicsEditModal
+        selectedItemForEdit={selectedItemForEdit}
+        showEditModal={showEditModal} // Cambiado de showEdit a showEditModal
+        handleClose={handleClose}
+        setShowEditModal={setShowEditModal}
+        selectedCoinBot={selectedCoinBot}
       />
     </div>
   )

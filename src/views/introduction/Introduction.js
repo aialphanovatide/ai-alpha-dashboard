@@ -9,6 +9,7 @@ const Introduction = () => {
   const [website, setWebsite] = useState('')
   const [whitepaper, setWhitepaper] = useState('')
   const [showModal, setShowModal] = useState(false)
+  const [hasIntroductionData, setHasIntroductionData] = useState(false)
 
   useEffect(() => {
     const getAllBots = async () => {
@@ -23,10 +24,8 @@ const Introduction = () => {
 
         const data = await response.json()
         if (data && data.coin_bots) {
-          console.log(data)
           setBots(data.coin_bots)
         } else {
-          console.log(data.coin_bots)
           console.error('Error fetching bots:', data.message)
         }
       } catch (error) {
@@ -37,11 +36,81 @@ const Introduction = () => {
     getAllBots()
   }, [])
 
-  const handleCoinBotChange = (value) => {
+  const handleWebsiteChange = (value) => {
+    setWebsite(value)
+  }
+
+  const handleWhitepaperChange = (value) => {
+    setWhitepaper(value)
+  }
+
+  const handleCoinBotChange = async (value) => {
     setSelectedCoinBot(value)
+
+    try {
+      const response = await fetch(`${config.BASE_URL}/get_introduction/${value}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+      })
+
+      const data = await response.json()
+      console.log(data.message.content)
+      if (data.message.content) {
+        const { content, website, whitepaper } = data.message
+        setContent(content || '')
+        setWebsite(website || '')
+        setWhitepaper(whitepaper || '')
+        setHasIntroductionData(true) // Si hay datos de introducción, establecer el estado en true
+      } else {
+        setContent('')
+        setWebsite('')
+        setWhitepaper('')
+        setHasIntroductionData(false) // Si no hay datos de introducción, establecer el estado en false
+      }
+    } catch (error) {
+      console.error('Error fetching introduction data:', error)
+    }
   }
 
   const handleUpdateClick = async () => {
+    try {
+      if (!selectedCoinBot) {
+        console.error('Please select a Coin Bot')
+        return
+      }
+
+      const data = {
+        coin_bot_id: selectedCoinBot,
+        content: content,
+        website: website,
+        whitepaper: whitepaper,
+      }
+
+      const response = await fetch(`${config.BASE_URL}/edit_introduction/${selectedCoinBot}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: JSON.stringify(data),
+      })
+
+      const responseData = await response.json()
+
+      setShowModal(true)
+      setContent('')
+      setWebsite('')
+      setWhitepaper('')
+      setHasIntroductionData(false)
+      setSelectedCoinBot('')
+    } catch (error) {
+      console.error('Error updating content:', error)
+    }
+  }
+  const handleCreateClick = async () => {
     try {
       if (!selectedCoinBot) {
         console.error('Please select a Coin Bot')
@@ -66,10 +135,15 @@ const Introduction = () => {
 
       const responseData = await response.json()
 
-      // Mostrar el modal de resultado
       setShowModal(true)
+      setContent('')
+      setWebsite('')
+      setWhitepaper('')
+      setHasIntroductionData(false)
+      setSelectedCoinBot('')
+      
     } catch (error) {
-      console.error('Error updating content:', error)
+      console.error('Error creating content:', error)
     }
   }
 
@@ -80,12 +154,10 @@ const Introduction = () => {
   const handleCloseModal = () => {
     setShowModal(false)
   }
-
   return (
     <div style={{ margin: '20px' }}>
       <h2>Introduction Sub-Section</h2>
       <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
-        {' '}
         <Form.Label>Select Coin</Form.Label>
         <Form.Control
           as="select"
@@ -101,7 +173,6 @@ const Introduction = () => {
         </Form.Control>
       </Form.Group>
       <Form.Group controlId="contentInput" style={{ marginBottom: '15px' }}>
-        {' '}
         <Form.Label>Content (Max 400 Characters)</Form.Label>
         <Form.Control
           required
@@ -113,40 +184,43 @@ const Introduction = () => {
         />
       </Form.Group>
       <Form.Group controlId="websiteInput" style={{ marginBottom: '15px' }}>
-        {' '}
         <Form.Label>Website</Form.Label>
         <Form.Control
           required
           style={{ height: '40px' }}
           as="textarea"
-          placeholder="Enter content..."
+          placeholder="Enter website..."
           value={website}
-          onChange={(e) => handleContentChange(e.target.value)}
+          onChange={(e) => handleWebsiteChange(e.target.value)}
         />
       </Form.Group>
       <Form.Group controlId="whitepaperInput" style={{ marginBottom: '15px' }}>
-        {' '}
         <Form.Label>Whitepaper</Form.Label>
         <Form.Control
           required
           style={{ height: '400px' }}
           as="textarea"
-          placeholder="Enter content..."
+          placeholder="Enter whitepaper..."
           value={whitepaper}
-          onChange={(e) => handleContentChange(e.target.value)}
+          onChange={(e) => handleWhitepaperChange(e.target.value)}
         />
       </Form.Group>
-      <Button variant="primary" onClick={handleUpdateClick} style={{ marginRight: '10px' }}>
-        {' '}
-        Update
-      </Button>
+      {hasIntroductionData ? (
+        <Button variant="primary" onClick={handleUpdateClick} style={{ marginRight: '10px' }}>
+          Update
+        </Button>
+      ) : (
+        <Button variant="primary" onClick={handleCreateClick} style={{ marginRight: '10px' }}>
+          Create
+        </Button>
+      )}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Update Result</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>
-            Successfully updated with Coin Bot: {selectedCoinBot} and Content: {content}
+            Successfully Post
           </p>
         </Modal.Body>
         <Modal.Footer>
