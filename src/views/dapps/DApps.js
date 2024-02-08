@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Table, Button, Modal } from 'react-bootstrap'
-import DAppsForm from './DAppsForm' // Asegúrate de tener el componente DAppsForm
+import DAppsForm from './DAppsForm'
+import DAppsEditModal from './DAppsEditModal'
 
 import config from '../../config'
 
@@ -9,6 +10,10 @@ const DApps = () => {
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
   const [dapps, setDApps] = useState([])
   const [showCreateButton, setShowCreateButton] = useState(false)
+  const [selectedDApp, setSelectedDApp] = useState(null)
+  const [showCreateForm, setShowCreateForm] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
 
   useEffect(() => {
     const getAllBots = async () => {
@@ -37,10 +42,14 @@ const DApps = () => {
     getAllBots()
   }, [])
 
-  const [showCreateForm, setShowCreateForm] = useState(false)
-
   const handleCreateButtonClick = () => {
     setShowCreateForm(true)
+  }
+
+  const handleEditDApp = (dapp) => {
+    setSelectedDApp(dapp)
+    
+
   }
 
   const handleCreateFormSubmit = async (formData) => {
@@ -144,7 +153,7 @@ const DApps = () => {
                 {dapps.map((dapp) => (
                   <tr key={dapp.id}>
                     <td>
-                      <button onClick={() => console.log('Edit button clicked')}>Edit</button>
+                    <button onClick={() => handleEditDApp(dapp)}>Edit</button>
                     </td>
                     <td>{dapp.dapps}</td>
                     <td>{dapp.description}</td>
@@ -167,6 +176,16 @@ const DApps = () => {
           <DAppsForm onSubmit={handleCreateFormSubmit} />
         </Modal.Body>
       </Modal>
+      {selectedDApp && (
+        <DAppsEditModal
+          show={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          dapp={selectedDApp} // Aquí está la corrección, pasar 'selectedDApp' en lugar de 'selectedDApp.id'
+          onSave={(editedDApp) => {
+            setShowEditModal(false)
+          }}
+        />
+      )}
     </div>
   )
 }

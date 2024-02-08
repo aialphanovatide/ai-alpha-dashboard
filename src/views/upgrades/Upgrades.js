@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Table, Button, Modal } from 'react-bootstrap'
 import UpgradesForm from './UpgradesForm'
+import EditUpgradesForm from './EditUpgradesForm'
+
 import config from '../../config'
 
 const Upgrades = () => {
@@ -8,6 +10,41 @@ const Upgrades = () => {
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
   const [upgrades, setUpgrades] = useState([])
   const [showCreateButton, setShowCreateButton] = useState(false)
+  const [showEditForm, setShowEditForm] = useState(false) // Definir el estado de mostrar el modal de edición
+  const [selectedUpgrade, setSelectedUpgrade] = useState(null) // Definir el estado del upgrade seleccionado para editar
+
+  const handleEditButtonClick = (upgrade) => {
+    setSelectedUpgrade(upgrade) // Establecer el upgrade seleccionado para editar
+    setShowEditForm(true) // Mostrar el modal de edición
+  }
+
+  const handleEditFormSubmit = async (formData) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/edit_upgrade/${selectedUpgrade.upgrade.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+          },
+          body: JSON.stringify({
+            upgrate_data: formData,
+          }),
+        },
+      )
+
+      const data = await response.json()
+
+      setSelectedCoinBot('')
+      // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
+    } catch (error) {
+      console.error('Error editing upgrade:', error)
+    } finally {
+      setShowEditForm(false) // Ocultar el modal de edición después de enviar el formulario
+      setUpgrades([]) // Limpiar los upgrades para forzar una nueva carga después de la edición
+    }
+  }
 
   useEffect(() => {
     const getAllBots = async () => {
@@ -57,7 +94,6 @@ const Upgrades = () => {
       })
 
       const data = await response.json()
-      console.log(data)
 
       // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
     } catch (error) {
@@ -81,7 +117,6 @@ const Upgrades = () => {
       })
 
       const data = await response.json()
-      console.log('data Recibida: ', data.message)
 
       if (data) {
         setUpgrades(data.message)
@@ -145,7 +180,7 @@ const Upgrades = () => {
                   upgrades.map((upgrade) => (
                     <tr key={upgrade.upgrade.id}>
                       <td>
-                        <button onClick={() => console.log('Edit button clicked')}>Edit</button>
+                        <button onClick={() => handleEditButtonClick(upgrade)}>Edit</button>
                       </td>
                       <td>{upgrade.upgrade.event}</td>
                       <td>{upgrade.upgrade.date}</td>
@@ -173,6 +208,14 @@ const Upgrades = () => {
         </Modal.Header>
         <Modal.Body>
           <UpgradesForm onSubmit={handleCreateFormSubmit} />
+        </Modal.Body>
+      </Modal>
+      <Modal show={showEditForm} onHide={() => setShowEditForm(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Upgrade Data</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <EditUpgradesForm upgrade={selectedUpgrade} onSubmit={handleEditFormSubmit} />
         </Modal.Body>
       </Modal>
     </div>

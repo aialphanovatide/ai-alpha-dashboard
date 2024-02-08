@@ -2,17 +2,45 @@ import React, { useEffect, useState } from 'react'
 import { Form, Button, Modal, Table } from 'react-bootstrap'
 import config from '../../config'
 import RMForm from './RMForm'
+import RMEditForm from './RMEditForm'
 
 const RevenueModels = () => {
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
   const [content, setContent] = useState('')
-  const [website, setWebsite] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [showCreateButton, setShowCreateButton] = useState(false)
   const [revenueModels, setRevenueModels] = useState([])
   const [bots, setBots] = useState([])
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [infoMessage, setInfoMessage] = useState('')
+  const [showEditForm, setShowEditForm] = useState(false)
+  const [selectedRevenueModelForEdit, setSelectedRevenueModelForEdit] = useState(null)
+
+  const handleEditFormSubmit = async (formData) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/api/edit_revenue_model/${selectedRevenueModelForEdit.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+          },
+          body: JSON.stringify(formData),
+        },
+      )
+
+      const data = await response.json()
+      setSelectedCoinBot('')
+
+      // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
+    } catch (error) {
+      console.error('Error editing revenue model:', error)
+    } finally {
+      setShowEditForm(false) // Ocultar el modal de edición después de enviar el formulario
+      setRevenueModels([]) // Limpiar los modelos de ingresos para forzar una nueva carga después de la edición
+    }
+  }
 
   const handleCreateClick = async (formData) => {
     try {
@@ -111,6 +139,11 @@ const RevenueModels = () => {
     }
   }, [selectedCoinBot])
 
+  const handleEditButtonClick = (revenueModel) => {
+    setSelectedRevenueModelForEdit(revenueModel) // Establece el modelo de ingresos seleccionado para la edición
+    setShowEditForm(true) // Muestra el modal de edición
+  }
+
   const handleCoinBotChange = (value) => {
     setSelectedCoinBot(value)
   }
@@ -168,7 +201,7 @@ const RevenueModels = () => {
                 {revenueModels.map((revenueModel) => (
                   <tr key={revenueModel.id}>
                     <td>
-                      <button onClick={() => console.log('Edit button clicked')}>Edit</button>
+                      <button onClick={() => handleEditButtonClick(revenueModel)}>Edit</button>
                     </td>
                     <td>{revenueModel.analized_revenue}</td>
                     <td>{revenueModel.fees_1ys}</td>
@@ -187,6 +220,21 @@ const RevenueModels = () => {
         onCancel={() => setShowCreateForm(false)}
         show={showCreateForm}
       />
+      {/* Modal para el formulario de edición */}
+      <Modal show={showEditForm} onHide={() => setShowEditForm(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Revenue Model Data</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/* Se pasa el modelo de ingresos seleccionado al formulario de edición solo cuando se está editando */}
+          {selectedRevenueModelForEdit && (
+            <RMEditForm
+              onSubmit={handleEditFormSubmit}
+              revenueModel={selectedRevenueModelForEdit}
+            />
+          )}
+        </Modal.Body>
+      </Modal>
     </div>
   )
 }
