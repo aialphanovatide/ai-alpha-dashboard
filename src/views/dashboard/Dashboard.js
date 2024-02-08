@@ -7,7 +7,7 @@ const CenteredBox = ({ title, coin, date, to }) => {
   return (
     <Link to={to} className="centered-box">
       <h1 className="title">{title}</h1>
-      <h1 className="subtitle">{coin && `Coin: ${coin}`}</h1>
+      <h1 className="subtitle">{coin && `Coin: ${coin.toUpperCase()}`}</h1>
       <h2 className="subtitle">Last update: {date}</h2>
     </Link>
   );
@@ -15,7 +15,7 @@ const CenteredBox = ({ title, coin, date, to }) => {
 
 const Dashboard = () => {
 
-  const [botStatuses, setBotStatuses] = useState([])
+  const [lastAnalysis, setLastAnalysis] = useState(null)
   const [lastChartUpdate, setLastChartUpdate] = useState(null)
   const [allBotsInactive, setAllBotsInactive] = useState(true)
 
@@ -45,16 +45,44 @@ const Dashboard = () => {
     getLastChartUpdate()
   }, [])
 
+  // Gets the last analysis created
+  useEffect(()=>{
+    const getLastAnalysis = async () => {
+      try {
+        const response = await fetch(`${config.BASE_URL}/get_last_analysis`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+          },
+        })
+
+        const data = await response.json()
+        if (response.ok){
+          setLastAnalysis(data.last_analysis)
+        } else {
+          console.error('Error:', data.error)
+        }
+      } catch (error) {
+        console.error('Error making request:', error)
+      }
+    }
+    getLastAnalysis()
+  }, [])
+
   const coin = lastChartUpdate && lastChartUpdate.coin_bot_name ? lastChartUpdate.coin_bot_name : ''
-  const date = lastChartUpdate && lastChartUpdate.formatted_date ? lastChartUpdate.formatted_date : ''
+  const date = lastChartUpdate && lastChartUpdate.formatted_date ? lastChartUpdate.formatted_date : 'No chart yet'
   
+  const analysisDate = lastAnalysis && lastAnalysis.created_at ? lastAnalysis.created_at : 'No Analysis yet'
+  const analysisCoin = lastAnalysis && lastAnalysis.coin_name ? lastAnalysis.coin_name : ''
+
   return (
     <div className='dashboardMain'>
     <h3 className="mb-2">General status</h3>
     <div className='dasboardSubMain'>
     <CenteredBox title="News Bot" date="Coming soon..." to={"/botsSettings"}/>
     <CenteredBox title="Chart" coin={coin} date={date} to={"/chartsPage"}/>
-    <CenteredBox title="Analysis" date="Coming soon..." to={"/analysis"}/>
+    <CenteredBox title="Analysis" coin={analysisCoin} date={analysisDate} to={"/analysis"}/>
     </div>
     </div>
   )

@@ -6,7 +6,8 @@ import './analysis.css'
 import ImageUpload from '../helpers/selectImage/selectImage'
 import RichTextEditor from '../helpers/textEditor/textEditor'
 import Swal from 'sweetalert2'
-import AllAnalysis from './AllAnalysis'
+import {AllAnalysis} from './AllAnalysis'
+import GeneralAnalysis from './GeneralAnalysis'
 
 const Analysis = () => {
 
@@ -132,8 +133,8 @@ const Analysis = () => {
       <h3 className='analysisTitle'>Analysis</h3>
       <div className='analysisSubmain'>
         <DropdownMenu selectedCoin={selectedCoin} onSelectCoin={handleSelectCoin} />
-        <ImageUpload success={isAnalysisCreated} onImageSelect={handleImageSelect} />
-        <RichTextEditor success={isAnalysisCreated} onContentChange={handleContentChange} />
+        <ImageUpload success={isAnalysisCreated} onSuccess={setIsAnalysisCreated} onImageSelect={handleImageSelect} />
+        <RichTextEditor success={isAnalysisCreated} onSuccess={setIsAnalysisCreated} onContentChange={handleContentChange} />
 
         <button
           className='submitAnalisys'
@@ -144,7 +145,7 @@ const Analysis = () => {
         </button>
       </div>
       <AllAnalysis items={items} fetchAnalysis={fetchAnalysis}/>
-
+      <GeneralAnalysis success={isAnalysisCreated} onSuccess={setIsAnalysisCreated}/>
     </div>
   )
 }

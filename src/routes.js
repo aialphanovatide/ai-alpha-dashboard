@@ -5,6 +5,7 @@ const ChartsPage = React.lazy(() => import('./views/chartsPage/ChartsPage'))
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Analysis = React.lazy(() => import('./views/analysis/Analysis'))
 const Fundamentals = React.lazy(() => import('./views/fundamental/Fundamentals'))
+const topSoties = React.lazy(() => import('./views/topStories/topStories'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
@@ -61,6 +62,7 @@ const routes = [
   { path: '/botsSettings', name: 'BotsSettings', element: BotsSettings },
   { path: '/chartsPage', name: 'ChartsPage', element: ChartsPage },
   { path: '/analysis', name: 'Analysis', element: Analysis },
+  { path: '/topStories', name: 'Top Stories', element: topSoties },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },

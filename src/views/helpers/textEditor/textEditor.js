@@ -3,7 +3,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './textEditor.css'
 
-const RichTextEditor = ({ onContentChange, success }) => {
+const RichTextEditor = ({ onContentChange, success, onSuccess }) => {
   const [content, setContent] = useState('');
 
   const handleQuillChange = (value) => {
@@ -15,6 +15,7 @@ const RichTextEditor = ({ onContentChange, success }) => {
     if (success){
       setContent('')
     }
+    onSuccess(false)
   }, [success])
 
   

@@ -69,6 +69,8 @@
   list-style: none;
   width: 100%;
   padding: 0;
+  max-height: 800px;
+  overflow-y: scroll;
 }
 
 .allAnalysisLI {
@@ -89,6 +91,7 @@
   border-radius: 5px;
   width: 25%;
   height: 90%;
+  object-fit: contain;
 }
 
 .itemContent {
@@ -122,6 +125,7 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  
 }
 
 .modalContent {
@@ -133,6 +137,7 @@
   display: flex;
   flex-direction: column;
   height: 75%;
+  position: relative;
   overflow-y: scroll;
 }
 
@@ -149,6 +154,8 @@
   align-self: center;
   margin-bottom: 15px;
   border-radius: 5px;
+  object-fit: contain;
+  
 }
 
 .closeButton {
@@ -160,6 +167,7 @@
   border-radius: 5px;
   font-size: 16px;
   margin-top: 15px;
+  
 }
 
 

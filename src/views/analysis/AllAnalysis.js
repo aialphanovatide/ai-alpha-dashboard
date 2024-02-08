@@ -33,11 +33,14 @@ const Modal = ({ item, base64Image, onClose }) => {
       };
   
       const handleItemClick = (e) => {
-        // Check if the click target is the delete button
-        if (e.target.classList.contains('deleteBtn')) {
-          // If it is, do not open the modal
-          return;
-        }
+         // Check if the click target or its parent has the deleteBtn class
+         if (
+          e.target.classList.contains('deleteBtn') ||
+          e.target.parentElement.classList.contains('deleteBtn')
+          ) {
+              // If it is, do not open the modal
+              return;
+          }
     
         // Otherwise, open the modal
         setIsModalOpen(true);
@@ -58,7 +61,7 @@ const Modal = ({ item, base64Image, onClose }) => {
             />
           )}
           <span className="itemContent" dangerouslySetInnerHTML={{ __html: item.analysis }} />
-          <CIcon size="xl" icon={cilTrash} className="deleteBtn" onClick={handleClick} />
+          {onDelete && <CIcon size="xxl" icon={cilTrash} className="deleteBtn" onClick={handleClick} />}
         </li>
         {isModalOpen && (
           <Modal item={item} base64Image={base64Image} onClose={handleCloseModal} />
@@ -125,7 +128,7 @@ const AllAnalysis = ({items, fetchAnalysis}) => {
   );
 };
 
-export default AllAnalysis
+export {AllAnalysis, Item, Modal}
 
 
 
