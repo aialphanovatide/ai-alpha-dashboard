@@ -57,6 +57,11 @@
     max-width: 50%;
 }
 
+.chartOptions {
+    display: flex;
+    margin: 1rem 0;
+}
+
 .input{
     color: #282828;
 
@@ -67,7 +72,4 @@
 }
 
 
-.form-control {
-    text-transform: capitalize;
-}
 
