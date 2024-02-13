@@ -87,9 +87,9 @@ const ChartsPage = () => {
 
   // Gets the S&R of a coin
   useEffect(() => {
-    // if (selectedCoin && temp && pairValue) {
-    // }
-    fetchCoinData();
+    if (selectedCoin && temp && pairValue) {
+      fetchCoinData();
+    }
   }, [selectedCoin, temp, pairValue, fetchCoinData]);
 
 
