@@ -48,29 +48,8 @@ const Competitors = () => {
 
         const data = await response.json()
 
-        if (data && Array.isArray(data.competitors)) {
-          const competitorsData = data.competitors.map((competitorData, index) => ({
-            token: competitorData.competitors.token,
-            circulating_supply: competitorData.competitors.circulating_supply,
-            token_supply_model: competitorData.competitors.token_supply_model,
-            current_market_cap: competitorData.competitors.current_market_cap,
-            tvl: competitorData.competitors.tvl,
-            daily_active_users: competitorData.competitors.daily_active_users,
-            transaction_fees: competitorData.competitors.transaction_fees,
-            transaction_speed: competitorData.competitors.transaction_speed,
-            inflation_rate_2022: competitorData.competitors.inflation_rate_2022,
-            inflation_rate_2023: competitorData.competitors.inflation_rate_2023,
-            apr: competitorData.competitors.apr,
-            active_developers: competitorData.competitors.active_developers,
-            revenue: competitorData.competitors.revenue,
-            total_supply: competitorData.tokenomics.total_supply,
-            percentage_circulating_supply: competitorData.tokenomics.percentage_circulating_supply,
-            max_supply: competitorData.tokenomics.max_supply,
-            dynamic: competitorData.tokenomics.dynamic,
-            created_at: competitorData.competitors.created_at,
-            updated_at: competitorData.competitors.updated_at,
-          }))
-          setCompetitorsData(competitorsData)
+        if (data && data.competitors) {
+          setCompetitorsData(data.competitors)
         } else {
           console.error('Error fetching competitors:', data.message)
           setCompetitorsData([])
@@ -88,7 +67,7 @@ const Competitors = () => {
 
   const handleCreateFormSubmit = async (formData) => {
     try {
-      const response = await fetch(`${config.BASE_URL}/post_competitor`, {
+      const response = await fetch(`${config.BASE_URL}/create_competitor`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,10 +101,25 @@ const Competitors = () => {
 
   const handleCloseModal = () => {
     setShowModal(false)
+    setSelectedCoinBot('')
+    setCompetitorsData([])
   }
 
   const handleCoinBotChange = (value) => {
     setSelectedCoinBot(value)
+  }
+
+  // Función para agrupar los datos de competidores por token
+  const groupCompetitorsByToken = () => {
+    const groupedCompetitors = {}
+    competitorsData.forEach((competitor) => {
+      const token = competitor.competitor.token
+      if (!groupedCompetitors[token]) {
+        groupedCompetitors[token] = []
+      }
+      groupedCompetitors[token].push(competitor)
+    })
+    return groupedCompetitors
   }
 
   return (
@@ -149,125 +143,52 @@ const Competitors = () => {
           </Form.Control>
         </Form.Group>
 
-        {competitorsData.length > 0 && (
-          <>
+        {/* Generar una tabla para cada grupo de datos de competidores */}
+        {Object.entries(groupCompetitorsByToken()).map(([token, competitors]) => (
+          <div key={token}>
             <br />
-            <h3>Competitors</h3>
+            <h3>{token.toUpperCase()}</h3>
             <br />
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th>Feature</th>
-                  <th>Coin Analyzed</th>
-                  {competitorsData.slice(1).map((_, index) => (
-                    <th key={index}>{`Competitor ${index + 1}`}</th>
-                  ))}
+                  {Object.keys(competitors[0].competitor).map(
+                    (feature) =>
+                      feature !== 'coin_bot_id' &&
+                      feature !== 'id' &&
+                      feature !== 'created_at' &&
+                      feature !== 'updated_at' &&
+                      feature !== 'token' &&
+                      feature !== 'dynamic' && <th key={feature}>{feature}</th>,
+                  )}
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Token</td>
-                  <td>{competitorsData[0].token}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.token}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td>Circulating Supply</td>
-                  <td>{competitorsData[0].circulating_supply}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.circulating_supply}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td>Token Supply Model</td>
-                  <td>{competitorsData[0].token_supply_model}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.token_supply_model}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td>Current Market Cap</td>
-                  <td>{competitorsData[0].current_market_cap}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.current_market_cap}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td>TVL</td>
-                  <td>{competitorsData[0].tvl}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.tvl}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td>Daily Active Users</td>
-                  <td>{competitorsData[0].daily_active_users}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.daily_active_users}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td>Transaction Fees</td>
-                  <td>{competitorsData[0].transaction_fees}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.transaction_fees}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td>Transaction Speed</td>
-                  <td>{competitorsData[0].transaction_speed}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.transaction_speed}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td>Inflation Rate 2022</td>
-                  <td>{competitorsData[0].inflation_rate_2022}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.inflation_rate_2022}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td>Inflation Rate 2023</td>
-                  <td>{competitorsData[0].inflation_rate_2023}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.inflation_rate_2023}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td>APR</td>
-                  <td>{competitorsData[0].apr}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.apr}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td>Active Developers</td>
-                  <td>{competitorsData[0].active_developers}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.active_developers}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td>Revenue</td>
-                  <td>{competitorsData[0].revenue}</td>
-                  {competitorsData.slice(1).map((competitor, index) => (
-                    <td key={index}>{competitor.revenue}</td>
-                  ))}
-                </tr>
-                {/* Asegúrate de agregar más características aquí según sea necesario */}
+                {competitors.map((competitor, index) => (
+                  <tr key={index}>
+                    {Object.keys(competitor.competitor).map(
+                      (key) =>
+                        key !== 'coin_bot_id' &&
+                        key !== 'id' &&
+                        key !== 'token' &&
+                        key !== 'created_at' &&
+                        key !== 'updated_at' &&
+                        key !== 'dynamic' && <td key={key}>{competitor.competitor[key]}</td>,
+                    )}
+                  </tr>
+                ))}
               </tbody>
             </Table>
             <br />
             <br />
-          </>
-        )}
+          </div>
+        ))}
       </div>
       <Button onClick={handleShowModal}>Add Competitor</Button>
       <CompetitorForm
         showModal={showModal}
         handleClose={handleCloseModal}
+        selectedCoinBot={selectedCoinBot}
         handleSave={(formData) => handleCreateFormSubmit(formData)} // Llamar a handleCreateFormSubmit con formData
       />
     </div>
