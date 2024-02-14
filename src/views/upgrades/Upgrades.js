@@ -111,7 +111,7 @@ const Upgrades = () => {
     setSelectedCoinBot(value);
 
     try {
-      const response = await fetch(`${config.BASE_URL}/get_upgrades/${value}`, {
+      const response = await fetch(`${config.BASE_URL}/get_upgrades?coin_bot_id=${value}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
