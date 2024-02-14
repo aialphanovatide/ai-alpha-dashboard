@@ -14,37 +14,33 @@ const Tokenomics = () => {
   const [showEditModal, setShowEditModal] = useState(false)
   const [selectedItemForEdit, setSelectedItemForEdit] = useState(null) // Estado para el ítem seleccionado para editar
 
+  // Agregar este useEffect para reiniciar el estado selectedCoinBot cuando cambie la lista de bots
+  useEffect(() => {
+    setSelectedCoinBot('') // Reiniciar el estado cuando cambie la lista de bots
+  }, [bots]) // Ejecutar el efecto cuando la lista de bots cambie
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Obtener datos de competidores
-        const competitorsResponse = await fetch(
-          `${config.BASE_URL}/get_competitors/${selectedCoinBot}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'ngrok-skip-browser-warning': 'true',
-            },
+        const response = await fetch(`${config.BASE_URL}/get_tokenomics/${selectedCoinBot}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
           },
-        )
-        const competitorsData = await competitorsResponse.json()
-        setCompetitorsData(competitorsData.competitors)
+        })
+        const data = await response.json()
+        console.log('tokenomicsData', data.message.tokenomics_data[0].tokenomics)
 
-        const tokenomicsResponse = await fetch(
-          `${config.BASE_URL}/get_tokenomics/${selectedCoinBot}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'ngrok-skip-browser-warning': 'true',
-            },
-          },
-        )
-        const tokenomicsData = await tokenomicsResponse.json()
-        console.log('tokenomicsData', tokenomicsData.message)
-        setTokenomicsData(tokenomicsData.message)
+        if (data.message) {
+          setTokenomicsData(data.message)
+        } else {
+          console.error('No tokenomics data received from the server')
+        }
       } catch (error) {
+        setSelectedCoinBot('')
+        setTokenomicsData(null)
+        setCompetitorsData(null)
         console.error('Error fetching data:', error)
       }
     }
@@ -62,8 +58,8 @@ const Tokenomics = () => {
     setShowModal(false)
     setShowEditModal(false)
     setSelectedCoinBot('')
-    setTokenomicsData(null) // Restablece los datos de tokenomics a null o a un valor vacío según corresponda
-    setCompetitorsData(null) // Restablece los datos de los competidores a null o a un valor vacío según corresponda
+    setTokenomicsData(null)
+    setCompetitorsData(null)
   }
 
   useEffect(() => {
@@ -116,7 +112,7 @@ const Tokenomics = () => {
         </Form.Control>
       </Form.Group>
 
-      {competitorsData && (
+      {tokenomicsData && (
         <>
           <br></br>
           <h3>Tokenomics</h3>
@@ -130,13 +126,15 @@ const Tokenomics = () => {
                 <td>Max Supply</td>
                 <td>Supply Model</td>
               </tr>
-              {competitorsData && (
+              {tokenomicsData && (
                 <tr>
-                  <td>{competitorsData[0].tokenomics.total_supply}</td>
-                  <td>{competitorsData[0].tokenomics.circulating_supply}</td>
-                  <td>{competitorsData[0].tokenomics.percentage_circulating_supply}</td>
-                  <td>{competitorsData[0].tokenomics.max_supply}</td>
-                  <td>{competitorsData[0].tokenomics.token_supply_model}</td>
+                  <td>{tokenomicsData.tokenomics_data[0].tokenomics.total_supply}</td>
+                  <td>{tokenomicsData.tokenomics_data[0].tokenomics.circulating_supply}</td>
+                  <td>
+                    {tokenomicsData.tokenomics_data[0].tokenomics.percentage_circulating_supply}
+                  </td>
+                  <td>{tokenomicsData.tokenomics_data[0].tokenomics.max_supply}</td>
+                  <td>{tokenomicsData.tokenomics_data[0].tokenomics.supply_model}</td>
                 </tr>
               )}
               <tr></tr>
@@ -158,88 +156,95 @@ const Tokenomics = () => {
                 <td>Max Supply</td>
                 <td>Supply Model</td>
               </tr>
-              {competitorsData.slice(1).map((competitor, index) => (
+              {tokenomicsData.tokenomics_data.slice(1).map((tokenomic, index) => (
                 <tr key={index}>
-                  <td>{competitor.tokenomics.total_supply}</td>
-                  <td>{competitor.tokenomics.circulating_supply}</td>
-                  <td>{competitor.tokenomics.percentage_circulating_supply}</td>
-                  <td>{competitor.tokenomics.max_supply}</td>
-                  <td>{competitor.tokenomics.token_supply_model}</td>
+                  <td>{tokenomic.tokenomics.total_supply}</td>
+                  <td>{tokenomic.tokenomics.circulating_supply}</td>
+                  <td>{tokenomic.tokenomics.percentage_circulating_supply}</td>
+                  <td>{tokenomic.tokenomics.max_supply}</td>
+                  <td>{tokenomic.tokenomics.supply_model}</td>
                 </tr>
               ))}
             </tbody>
           </Table>
           <br></br>
           <h3>Token Distribution</h3>
-          <br />
-          <Table striped bordered hover>
-            <tbody>
-              <tr>
-                <td>Action</td>
-                <td>Holder Category</td>
-                <td>Percentage Held</td>
-              </tr>
-              {tokenomicsData &&
-                tokenomicsData.token_distribution &&
-                tokenomicsData.token_distribution.map((item, index) => (
-                  <tr key={index}>
+          {tokenomicsData &&
+            tokenomicsData.token_distribution &&
+            tokenomicsData.token_distribution[0] && (
+              <Table striped bordered hover>
+                <tbody>
+                  <tr>
+                    <td>Action</td>
+                    <td>Holder Category</td>
+                    <td>Percentage Held</td>
+                  </tr>
+                  <tr>
                     <td>
                       <Button onClick={() => handleEditButtonClick(tokenomicsData)}>Edit</Button>
                     </td>
-                    <td>{item.token_distributions.holder_category}</td>
-                    <td>{item.token_distributions.percentage_held}</td>
+                    <td>
+                      {tokenomicsData.token_distribution[0].token_distributions.holder_category}
+                    </td>
+                    <td>
+                      {tokenomicsData.token_distribution[0].token_distributions.percentage_held}
+                    </td>
                   </tr>
-                ))}
-            </tbody>
-          </Table>
+                </tbody>
+              </Table>
+            )}
           <br />
           <h3>Token Utility</h3>
+          {tokenomicsData && tokenomicsData.token_utility && tokenomicsData.token_utility[0] && (
+            <Table striped bordered hover>
+              <tbody>
+                <tr>
+                  <td>Action</td>
+                  <td>Token Applications</td>
+                  <td>Description</td>
+                </tr>
+                <tr>
+                  <td>
+                    <Button onClick={() => handleEditButtonClick(tokenomicsData)}>Edit</Button>
+                  </td>
+                  <td>{tokenomicsData.token_utility[0].token_utilities.token_application}</td>
+                  <td>{tokenomicsData.token_utility[0].token_utilities.description}</td>
+                </tr>
+              </tbody>
+            </Table>
+          )}
           <br />
-          <Table striped bordered hover>
-            <tbody>
-              <tr>
-                <td>Action</td>
-                <td>Token Applications</td>
-                <td>Description</td>
-              </tr>
-              {tokenomicsData &&
-                tokenomicsData.token_utility &&
-                tokenomicsData.token_utility.map((item, index) => (
-                  <tr key={index}>
+          <h3>Value Accrual Mechanisms</h3>
+          {tokenomicsData &&
+            tokenomicsData.value_accrual_mechanisms &&
+            tokenomicsData.value_accrual_mechanisms[0] && (
+              <Table striped bordered hover>
+                <tbody>
+                  <tr>
+                    <td>Action</td>
+                    <td>Mechanisms</td>
+                    <td>Description</td>
+                  </tr>
+                  <tr>
                     <td>
                       <Button onClick={() => handleEditButtonClick(tokenomicsData)}>Edit</Button>
                     </td>
-                    <td>{item.token_utilities.token_application}</td>
-                    <td>{item.token_utilities.description}</td>
+                    <td>
+                      {
+                        tokenomicsData.value_accrual_mechanisms[0].value_accrual_mechanisms
+                          .mechanism
+                      }
+                    </td>
+                    <td>
+                      {
+                        tokenomicsData.value_accrual_mechanisms[0].value_accrual_mechanisms
+                          .description
+                      }
+                    </td>
                   </tr>
-                ))}
-            </tbody>
-          </Table>
-          <br />
-          <h3>Value Accrual Mechanisms</h3>
-          <br />
-          <Table striped bordered hover>
-            <tbody>
-              <tr>
-                <td>Action</td>
-                <td>Mechanisms</td>
-                <td>Description</td>
-              </tr>
-              {tokenomicsData &&
-                tokenomicsData.value_accrual_mechanisms &&
-                tokenomicsData.value_accrual_mechanisms.map((item, index) => (
-                  <React.Fragment key={index}>
-                    <tr>
-                      <td>
-                        <Button onClick={() => handleEditButtonClick(tokenomicsData)}>Edit</Button>
-                      </td>
-                      <td>{item.value_accrual_mechanisms.mechanism}</td>
-                      <td>{item.value_accrual_mechanisms.description}</td>
-                    </tr>
-                  </React.Fragment>
-                ))}
-            </tbody>
-          </Table>
+                </tbody>
+              </Table>
+            )}
         </>
       )}
       <br></br>

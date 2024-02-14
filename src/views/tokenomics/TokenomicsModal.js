@@ -11,10 +11,15 @@ const TokenomicsModal = ({ selectedCoinBot, showModal, handleClose }) => {
   const [mechanism, setMechanism] = useState('')
   const [mechanismDescription, setMechanismDescription] = useState('')
   const [currentCoinBotId, setCurrentCoinBotId] = useState('')
+  const [token, setToken] = useState('')
+  const [totalSupply, setTotalSupply] = useState('')
+  const [circulatingSupply, setCirculatingSupply] = useState('')
+  const [percentageCirculatingSupply, setPercentageCirculatingSupply] = useState('')
+  const [maxSupply, setMaxSupply] = useState('')
+  const [supplyModel, setSupplyModel] = useState('')
 
   useEffect(() => {
     setCurrentCoinBotId(selectedCoinBot)
-    console.log('currentCoinBotId', currentCoinBotId)
   }, [selectedCoinBot])
 
   const handleSubmitTokenUtility = async (event) => {
@@ -37,6 +42,34 @@ const TokenomicsModal = ({ selectedCoinBot, showModal, handleClose }) => {
       // Manejar la respuesta del backend aquí
     } catch (error) {
       console.error('Error submitting token utility:', error)
+      // Manejar el error aquí
+    }
+  }
+
+  const handleSubmitTokenomics = async (event) => {
+    event.preventDefault()
+    try {
+      const response = await fetch(`${config.BASE_URL}/post_tokenomics`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: JSON.stringify({
+          coin_bot_id: selectedCoinBot,
+          token: token,
+          total_supply: totalSupply,
+          circulating_supply: circulatingSupply,
+          percentage_circulating_supply: percentageCirculatingSupply,
+          max_supply: maxSupply,
+          supply_model: supplyModel,
+        }),
+      })
+      const data = await response.json()
+      console.log(data)
+      // Manejar la respuesta del backend aquí
+    } catch (error) {
+      console.error('Error submitting tokenomics:', error)
       // Manejar el error aquí
     }
   }
@@ -95,9 +128,82 @@ const TokenomicsModal = ({ selectedCoinBot, showModal, handleClose }) => {
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>Add Tokenomics Data</Modal.Title>
+        <br />
       </Modal.Header>
       <Modal.Body>
+        <h3>Tokenomics</h3>
+        <Form onSubmit={handleSubmitTokenomics}>
+          <Form.Group controlId="token">
+            <Form.Label>Token</Form.Label>
+            <br />
+            <Form.Control
+              type="text"
+              placeholder="Enter token"
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+            />
+          </Form.Group>
+          <br />
+          <Form.Group controlId="totalSupply">
+            <Form.Label>Total Supply</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter total supply"
+              value={totalSupply}
+              onChange={(e) => setTotalSupply(e.target.value)}
+            />
+          </Form.Group>
+          <br />
+          <Form.Group controlId="circulatingSupply">
+            <Form.Label>Circulating Supply</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter circulating supply"
+              value={circulatingSupply}
+              onChange={(e) => setCirculatingSupply(e.target.value)}
+            />
+          </Form.Group>
+          <br />
+          <Form.Group controlId="percentageCirculatingSupply">
+            <Form.Label>% Circulating Supply</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter percentage circulating supply"
+              value={percentageCirculatingSupply}
+              onChange={(e) => setPercentageCirculatingSupply(e.target.value)}
+            />
+          </Form.Group>
+          <br />
+          <Form.Group controlId="maxSupply">
+            <Form.Label>Max Supply</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter max supply"
+              value={maxSupply}
+              onChange={(e) => setMaxSupply(e.target.value)}
+            />
+          </Form.Group>
+          <br />
+          <Form.Group controlId="supplyModel">
+            <Form.Label>Supply Model</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter supply model"
+              value={supplyModel}
+              onChange={(e) => setSupplyModel(e.target.value)}
+            />
+          </Form.Group>
+          <br />
+          <Button variant="primary" type="submit">
+            Add Tokenomics
+          </Button>
+          <br />
+        </Form>
+
+        <hr />
+
         {/* Formulario para Token Utility */}
+        <h3>Token Utility</h3>
         <Form onSubmit={handleSubmitTokenUtility}>
           <Form.Group controlId="tokenApplication">
             <Form.Label>Token Application</Form.Label>
@@ -124,7 +230,11 @@ const TokenomicsModal = ({ selectedCoinBot, showModal, handleClose }) => {
             Add Token Utility
           </Button>
         </Form>
-        <br />
+        <hr />
+
+        {/* Formulario para Token Utility */}
+        <h3>Token Distribution</h3>
+
         {/* Formulario para Token Distribution */}
         <Form onSubmit={handleSubmitTokenDistribution}>
           <Form.Group controlId="holderCategory">
@@ -150,6 +260,10 @@ const TokenomicsModal = ({ selectedCoinBot, showModal, handleClose }) => {
           <Button variant="primary" type="submit">
             Add Token Distribution
           </Button>
+          <hr />
+
+          {/* Formulario para Token Utility */}
+          <h3>Value Accrual Mechanisms</h3>
         </Form>
         <br />
         {/* Formulario para Value Accrual Mechanisms */}
