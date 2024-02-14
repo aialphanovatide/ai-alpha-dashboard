@@ -25,8 +25,8 @@ const RMEditForm = ({ onSubmit, revenueModel }) => {
           placeholder="Enter analized revenue"
         />
       </Form.Group>
-    
-      <Button style={{ margin: '0.9rem 0', alignSelf: 'center' }} variant="primary" type="submit">
+      <br />
+      <Button style={{ width:'100%' }} variant="primary" type="submit">
         Update Revenue model
       </Button>
      
