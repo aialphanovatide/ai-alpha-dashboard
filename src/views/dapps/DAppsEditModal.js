@@ -1,9 +1,10 @@
 // DAppsEditModal.js
 import React, { useState } from 'react'
-import { Modal, Button, Form } from 'react-bootstrap'
+import { Modal, Button, Form, Alert } from 'react-bootstrap'
 import config from '../../config'
 
-const DAppsEditModal = ({ dapp, onSave, onClose }) => {
+const DAppsEditModal = ({ show, onClose, dapp  }) => {
+  
   const [editedDApp, setEditedDApp] = useState({
     id: dapp.id,
     dapps: dapp.dapps,
@@ -11,6 +12,8 @@ const DAppsEditModal = ({ dapp, onSave, onClose }) => {
     tvl: dapp.tvl,
   })
 
+  const [responseMessage, setResponseMessage] = useState({'error': '',
+                                                          'success': ''})
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -26,16 +29,18 @@ const DAppsEditModal = ({ dapp, onSave, onClose }) => {
         },
         body: JSON.stringify(editedDApp),
       })
-      console.log(editedDApp)
-      if (response.ok) {
-        const data = await response.json()
-        onSave(editedDApp)
-        onClose() // Cerrar el modal después de guardar los cambios
+    
+      const data = await response.json()
+      if (response.status === 200) {
+        setTimeout(() => {
+          onClose()
+        }, 1200);
+        setResponseMessage({ ...responseMessage, success: data.message, error: '' });
       } else {
-        console.error('Error updating DApp:', response.status)
+        setResponseMessage({ ...responseMessage, error: data.message, success: '' });
       }
     } catch (error) {
-      console.error('Error updating DApp:', error)
+      setResponseMessage({ ...responseMessage, error: error, success: '' });
     }
   }
 
@@ -45,8 +50,8 @@ const DAppsEditModal = ({ dapp, onSave, onClose }) => {
         <Modal.Title>Edit DApp</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
-          <Form.Group controlId="formDAppName">
+        <Form className='formGeneral'>
+          <Form.Group className='dappsInput' controlId="formDAppName">
             <Form.Label>DApp Name</Form.Label>
             <Form.Control
               type="text"
@@ -55,29 +60,31 @@ const DAppsEditModal = ({ dapp, onSave, onClose }) => {
               onChange={handleChange}
             />
           </Form.Group>
-          <Form.Group controlId="formDescription">
+          <Form.Group className='dappsInput' controlId="formDescription">
             <Form.Label>Description</Form.Label>
             <Form.Control
               type="text"
               name="description"
+              as='textarea'
               value={editedDApp.description}
               onChange={handleChange}
             />
           </Form.Group>
-          <Form.Group controlId="formTVL">
+          <Form.Group className='dappsInput' controlId="formTVL">
             <Form.Label>TVL</Form.Label>
             <Form.Control type="text" name="tvl" value={editedDApp.tvl} onChange={handleChange} />
           </Form.Group>
         </Form>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
-          Cancel
-        </Button>
+      <Modal.Footer className='formGeneral'>
         <Button variant="primary" onClick={handleSubmit}>
           Save Changes
         </Button>
+
+      {responseMessage.success && <Alert className='alertSucess' variant="success">{responseMessage.success}</Alert>}
+      {responseMessage.error && <Alert className='alertSucess' variant="danger">{responseMessage.error}</Alert>}
       </Modal.Footer>
+
     </Modal>
   )
 }

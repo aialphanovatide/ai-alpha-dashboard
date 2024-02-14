@@ -28,7 +28,7 @@ const Hacks = () => {
           setBots(data.coin_bots)
         } else {
           setHacks([])
-          console.error('Error fetching bots:', data.message)
+          console.error('Error fetching bots:', data.error)
         }
       } catch (error) {
         setHacks([])

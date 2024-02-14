@@ -147,3 +147,36 @@
       width: 100%;
   }
   }
+
+
+
+  /* ------------ DAPPS STYLES ------------- */
+
+
+  .dappsTable{
+    margin: 1.8rem 0;
+  }
+
+  .dappsInput{
+    margin: 0.8rem 0;
+    width: 90%;
+  }
+
+  .formDescription{
+    height: 80px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .formGeneral{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+  }
+
+  .createBtn{
+    width: 90%;
+    margin: 0.8rem 0;
+  }
