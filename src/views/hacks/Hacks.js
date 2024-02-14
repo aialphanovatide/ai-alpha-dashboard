@@ -3,14 +3,17 @@ import { Form, Table, Button, Modal } from "react-bootstrap";
 import HackForm from "./HacksForm";
 import HackEditForm from "./HackEditForm";
 import config from "../../config";
+import './hacks.css'
 
 const Hacks = () => {
+  
   const [bots, setBots] = useState([]);
   const [selectedCoinBot, setSelectedCoinBot] = useState("");
   const [hacks, setHacks] = useState([]);
   const [showCreateButton, setShowCreateButton] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [selectedHackForEdit, setSelectedHackForEdit] = useState(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     const getAllBots = async () => {
@@ -27,11 +30,9 @@ const Hacks = () => {
         if (data && data.coin_bots) {
           setBots(data.coin_bots);
         } else {
-          setHacks([]);
           console.error("Error fetching bots:", data.message);
         }
       } catch (error) {
-        setHacks([]);
         console.error("Error:", error);
       }
     };
@@ -39,8 +40,7 @@ const Hacks = () => {
     getAllBots();
   }, []);
 
-  const [showCreateForm, setShowCreateForm] = useState(false);
-
+  
   const handleCreateButtonClick = () => {
     setShowCreateForm(true);
   };
@@ -60,14 +60,16 @@ const Hacks = () => {
       );
 
       const data = await response.json();
-      console.log(data);
+
+      if (data && data.status === 200){
+        return 
+      }
       setSelectedCoinBot("");
-      // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
     } catch (error) {
-      console.error("Error editing hack:", error);
+       return error
     } finally {
-      setShowEditForm(false); // Ocultar el modal de edición después de enviar el formulario
-      setHacks([]); // Limpiar los hacks para forzar una nueva carga después de la edición
+      setShowEditForm(false); 
+      setHacks([]); 
     }
   };
 
@@ -148,9 +150,9 @@ const Hacks = () => {
   return (
     <div>
       <div style={{ margin: "20px", overflowX: "auto" }}>
-        <h2>Hacks Sub-Section</h2>
-        <br />
-        <Form.Group controlId="coinBotSelect" style={{ marginBottom: "15px" }}>
+        <h2>Hacks</h2>
+       
+        <Form.Group controlId="coinBotSelect" style={{ marginBottom: "20px" }}>
           <Form.Label>Select Coin</Form.Label>
           <Form.Control
             as="select"
@@ -166,17 +168,13 @@ const Hacks = () => {
           </Form.Control>
         </Form.Group>
 
-        {showCreateButton && (
-          <Button variant="primary" onClick={handleCreateButtonClick}>
-            Create Hack Data
+          <Button className="hackCreateBtn" disabled={!selectedCoinBot} variant="primary" onClick={handleCreateButtonClick}>
+            Create Hack
           </Button>
-        )}
 
         {hacks && hacks.length > 0 ? (
           <>
-            <br />
-            <h3 style={{ marginTop: "20px" }}>Hacks</h3>
-            <br />
+           
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -210,10 +208,8 @@ const Hacks = () => {
           </>
         ) : (
           <>
-            <br />
-            <h3 style={{ marginTop: "20px" }}>Hacks</h3>
-            <br />
-            <Table striped bordered hover>
+            
+            <Table className="tableGeneral" striped bordered hover>
               <thead>
                 <tr>
                   <th>Action</th>
