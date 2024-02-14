@@ -2,34 +2,39 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Form, Button, Alert } from "react-bootstrap";
 
-const UpgradesForm = ({ onSubmit, onClose }) => {
+const UpgradesForm = ({ onSubmit, onClose, coinName }) => {
   const [event, setEvent] = useState("");
   const [date, setDate] = useState("");
   const [event_overview, setEvent_overview] = useState("");
   const [impact, setImpact] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({
+    const response = await onSubmit({
       event,
       date,
       event_overview,
       impact,
     });
-    setSuccessMessage("Upgrade created successfully");
+    setSuccessMessage(response);
 
-    // Limpia los campos después de un breve retraso
     setTimeout(() => {
       setSuccessMessage(null);
       onClose();
     }, 2000);
-
-    // Llamar a la función para cerrar el modal
   };
 
   return (
     <Form onSubmit={handleSubmit}>
+       <Form.Group  controlId="coin_Name">
+        <Form.Label>Token</Form.Label>
+        <Form.Control
+          readOnly={true}
+          value={coinName}
+        />
+      </Form.Group>
+      <br />
       <Form.Group controlId="eventInput">
         <Form.Label>Event</Form.Label>
         <Form.Control
@@ -61,7 +66,7 @@ const UpgradesForm = ({ onSubmit, onClose }) => {
           required
         />
       </Form.Group>
-      <br />
+      
       <Form.Group controlId="impactInput">
         <Form.Label>Impact</Form.Label>
         <Form.Control
@@ -78,7 +83,6 @@ const UpgradesForm = ({ onSubmit, onClose }) => {
         Create Upgrade
       </Button>
 
-      <br />
       <br />
       {successMessage && (
         <Alert className="alertSucess" variant="success">

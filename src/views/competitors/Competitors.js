@@ -5,6 +5,7 @@ import config from "../../config";
 import CompetitorsEditModal from "./CompetitorsEditModal";
 
 const Competitors = () => {
+  
   const [bots, setBots] = useState([]);
   const [selectedCoinBot, setSelectedCoinBot] = useState("");
   const [competitorsData, setCompetitorsData] = useState([]);
@@ -12,6 +13,7 @@ const Competitors = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCompetitor, setSelectedCompetitor] = useState("");
 
+  // gets all the coins
   useEffect(() => {
     const getAllBots = async () => {
       try {
@@ -39,6 +41,8 @@ const Competitors = () => {
     getAllBots();
   }, []);
 
+
+  // Gets all the competitor of a coin
   useEffect(() => {
     const getCompetitorsData = async () => {
       try {
@@ -71,6 +75,32 @@ const Competitors = () => {
     }
   }, [selectedCoinBot]);
 
+   // Edits a competitor
+   const handleSaveEditCompetitor = async (editedCompetitorData) => {
+    try {
+      const response = await fetch(`${config.BASE_URL}/update_competitor`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+        },
+        body: JSON.stringify({
+          competitor_id: editedCompetitorData.id, // Suponiendo que este es el ID del competidor
+          updated_data: editedCompetitorData, // Los datos actualizados del competidor
+        }),
+      });
+      
+      const data = await response.json();
+      if (!response.ok) {
+        console.log('response edited: ', data)
+      }
+      setShowEditModal(false);
+    } catch (error) {
+      console.error("Error updating competitor:", error.message);
+    }
+  };
+
+  // Creates a new competitor
   const handleCreateFormSubmit = async (formData) => {
     try {
       const response = await fetch(`${config.BASE_URL}/create_competitor`, {
@@ -85,19 +115,15 @@ const Competitors = () => {
         }),
       });
 
-      if (!response.ok) {
-        // Si la respuesta no es exitosa, lanza un error con el mensaje de la respuesta
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error creating competitor");
-      }
-
       const data = await response.json();
-
-      // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
-      handleCloseModal();
+      if (!response.ok) {
+        console.log('response creation: ', data)
+        // Si la respuesta no es exitosa, lanza un error con el mensaje de la respuesta
+        // throw new Error(errorData.error || "Error creating competitor");
+      }
+      handleCloseModal(); // Close the creation modal
     } catch (error) {
       console.error("Error creating competitor:", error.message);
-      // Puedes mostrar un mensaje de error al usuario aquí
     }
   };
 
@@ -119,37 +145,7 @@ const Competitors = () => {
   const handleCoinBotChange = (value) => {
     setSelectedCoinBot(value);
   };
-
-  const handleSaveEditCompetitor = async (editedCompetitorData) => {
-    try {
-      // Realiza la solicitud al servidor para guardar los cambios del competidor
-      const response = await fetch(`${config.BASE_URL}/update_competitor`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-        },
-        body: JSON.stringify({
-          competitor_id: editedCompetitorData.id, // Suponiendo que este es el ID del competidor
-          updated_data: editedCompetitorData, // Los datos actualizados del competidor
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error updating competitor");
-      }
-
-      // Puedes manejar la respuesta según tus necesidades
-      console.log("Competitor updated successfully");
-      // Cerrar el modal de edición
-      setShowEditModal(false);
-    } catch (error) {
-      console.error("Error updating competitor:", error.message);
-      // Puedes mostrar un mensaje de error al usuario aquí
-    }
-  };
-
+  
   // Función para agrupar los datos de competidores por token
   const groupCompetitorsByToken = () => {
     const groupedCompetitors = {};
@@ -160,15 +156,17 @@ const Competitors = () => {
       }
       groupedCompetitors[token].push(competitor);
     });
+    // console.log('groupedCompetitors: ', groupedCompetitors)
     return groupedCompetitors;
   };
 
-  console.log(selectedCompetitor);
+  // console.log('selectedCompetitor: ', selectedCompetitor);
+  console.log('competitorsData: ', competitorsData);
 
   return (
     <div>
       <div style={{ margin: "20px", overflowX: "auto" }}>
-        <h2>Competitors Sub-Section</h2>
+        <h2>Competitors</h2>
         <br />
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: "15px" }}>
           <Form.Label>Select Coin</Form.Label>

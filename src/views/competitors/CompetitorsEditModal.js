@@ -9,22 +9,27 @@ const CompetitorsEditModal = ({
   handleClose,
   handleSave,
 }) => {
-  const [editedCompetitor, setEditedCompetitor] = useState({
+
+  const [editedCompetitor, setEditedCompetitor] = useState([
     ...competitorInfo,
-  });
+  ]);
+
   const [visible, setVisible] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log('name: ', name)
+    console.log('value: ', value)
     setEditedCompetitor((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: {...competitorInfo},
     }));
   };
 
-  console.log("competitorInfo", competitorInfo);
+  console.log("editedCompetitor", editedCompetitor);
 
+  // Fires an edit for a competitor
   const handleSaveClick = async () => {
     try {
       const response = await fetch(`${config.BASE_URL}/api/competitors/edit`, {
@@ -56,7 +61,9 @@ const CompetitorsEditModal = ({
       console.error("Error:", error);
     }
   };
-  console.log("editedCompetitor", editedCompetitor);
+
+
+
   return (
     <Modal show={visible} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -67,13 +74,7 @@ const CompetitorsEditModal = ({
           <Form.Group controlId="formCompetitor">
             {Object.keys(editedCompetitor).map(
               (field) =>
-                ![
-                  "coin_bot_id",
-                  "id",
-                  "created_at",
-                  "updated_at",
-                  "dynamic",
-                ].includes(field) && (
+              (
                   <React.Fragment key={field}>
                     <Form.Label>
                       {editedCompetitor[field].competitor &&
@@ -84,8 +85,8 @@ const CompetitorsEditModal = ({
                       name={field}
                       value={
                         editedCompetitor[field].competitor
-                          ? editedCompetitor[field].competitor.value || ""
-                          : ""
+                          ? editedCompetitor[field].competitor.value || " "
+                          : " "
                       }
                       onChange={handleChange}
                     />
@@ -96,9 +97,6 @@ const CompetitorsEditModal = ({
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
         <Button variant="primary" onClick={handleSaveClick}>
           Save Changes
         </Button>

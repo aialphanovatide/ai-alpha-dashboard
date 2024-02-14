@@ -1,3 +1,11 @@
 .nav-item{
     cursor: pointer;
 }
+
+.container {
+    padding: 1rem;
+    width: 100%;
+}
+
+
+

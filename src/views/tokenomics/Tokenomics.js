@@ -38,7 +38,7 @@ const Tokenomics = () => {
           console.error('No tokenomics data received from the server')
         }
       } catch (error) {
-        setSelectedCoinBot('')
+       
         setTokenomicsData(null)
         setCompetitorsData(null)
         console.error('Error fetching data:', error)
