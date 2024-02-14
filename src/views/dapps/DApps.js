@@ -6,15 +6,16 @@ import DAppsEditModal from './DAppsEditModal'
 import config from '../../config'
 
 const DApps = () => {
+
   const [bots, setBots] = useState([])
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
   const [dapps, setDApps] = useState([])
   const [showCreateButton, setShowCreateButton] = useState(false)
   const [selectedDApp, setSelectedDApp] = useState(null)
   const [showCreateForm, setShowCreateForm] = useState(false)
-  const [showModal, setShowModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
 
+  // Gets all the coins
   useEffect(() => {
     const getAllBots = async () => {
       try {
@@ -30,11 +31,9 @@ const DApps = () => {
         if (data && data.coin_bots) {
           setBots(data.coin_bots)
         } else {
-          setDApps([])
-          console.error('Error fetching bots:', data.message)
+          console.error('Error fetching bots:', data.error)
         }
       } catch (error) {
-        setDApps([])
         console.error('Error:', error)
       }
     }
@@ -42,16 +41,54 @@ const DApps = () => {
     getAllBots()
   }, [])
 
+  // Gets all the dapps data of a coin
+  useEffect(()=>{
+    const getDappsData = async () => {
+      try {
+        const response = await fetch(`${config.BASE_URL}/api/dapps?coin_bot_id=${selectedCoinBot}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+          },
+        })
+  
+        const data = await response.json()
+  
+        if (data && data.status == 200) {
+          setDApps(data.message)
+          // setShowCreateButton(data.message.length === 0)
+          // setShowCreateButton(true)
+        } else {
+          console.error('Error fetching DApps:', data.error)
+          // setShowCreateButton(true)
+          setDApps([])
+        }
+      } catch (error) {
+        console.error('Error:', error)
+        // setShowCreateButton(true)
+        setDApps([])
+      }
+    }
+    if (selectedCoinBot){
+      getDappsData()
+    }
+  }, [selectedCoinBot])
+
   const handleCreateButtonClick = () => {
     setShowCreateForm(true)
   }
 
   const handleEditDApp = (dapp) => {
     setSelectedDApp(dapp)
-    
-
+    setShowEditModal(true)
   }
 
+  const handleSelectedCoin = (value) => {
+    setSelectedCoinBot(value);
+  }
+
+  // creates a new record in dapps for a coin
   const handleCreateFormSubmit = async (formData) => {
     try {
       const response = await fetch(`${config.BASE_URL}/api/dapps/create`, {
@@ -66,59 +103,45 @@ const DApps = () => {
         }),
       })
 
-      const data = await response.json()
-      console.log(data)
-
-      // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
-    } catch (error) {
-      console.error('Error creating DApp:', error)
-    } finally {
-      setDApps([])
-      setShowCreateForm(false)
-    }
-  }
-
-  const handleCoinBotChange = async (value) => {
-    setSelectedCoinBot(value)
-
-    try {
-      const response = await fetch(`${config.BASE_URL}/api/dapps?coin_bot_id=${value}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
-        },
-      })
-
-      const data = await response.json()
-      console.log('data', data)
-
-      if (data && data.message) {
-        setDApps(data.message)
-        setShowCreateButton(data.message.length === 0)
-        console.log('data que llega,', data.message)
-        setShowCreateButton(true)
+      const data = await response.json();
+    
+      if (data && data.status === 201) {
+        setTimeout(() => {
+          setShowCreateForm(false)
+        }, 2000);
+        return { success: true, message: data.message };
       } else {
-        console.error('Error fetching DApps:', data.error)
-        setShowCreateButton(true)
+        return { success: false, error: data.message};
       }
     } catch (error) {
-      console.error('Error:', error)
-      setShowCreateButton(true)
+      return { success: false, error: error};
+    } finally {
+      setDApps([])
+      setSelectedCoinBot('')
     }
   }
+
+  const selectedBot = bots && selectedCoinBot? bots.find(bot => bot.id === Number(selectedCoinBot)) : '';
+  const coin_name = selectedBot ? selectedBot.name.toUpperCase() : 'No Name';
+
+  // console.log('selectedCoinBot: ', selectedCoinBot)
+  // console.log('dapps: ', dapps)
+  // console.log('bots: ', bots)
+  // console.log('coin_name: ', coin_name)
+  console.log('selectedDApp: ', selectedDApp)
+  console.log('showEditModal: ', showEditModal)
 
   return (
     <div>
       <div style={{ margin: '20px', overflowX: 'auto' }}>
-        <h2>DApps Sub-Section</h2>
+        <h2>DApps</h2>
         <br />
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
           <Form.Label>Select Coin</Form.Label>
           <Form.Control
             as="select"
             value={selectedCoinBot}
-            onChange={(e) => handleCoinBotChange(e.target.value)}
+            onChange={(e) => handleSelectedCoin(e.target.value)}
           >
             <option value="">Select...</option>
             {bots.map((bot) => (
@@ -129,18 +152,13 @@ const DApps = () => {
           </Form.Control>
         </Form.Group>
 
-        {showCreateButton && (
-          <Button variant="primary" onClick={handleCreateButtonClick}>
-            Create DApp Data
-          </Button>
-        )}
+        <Button disabled={!selectedCoinBot} variant="primary" onClick={handleCreateButtonClick}>
+          Create DApp
+        </Button>
 
         {dapps && dapps.length > 0 && (
           <>
-            <br />
-            <h3 style={{ marginTop: '15px' }}>DApps</h3>
-            <br />
-            <Table striped bordered hover>
+            <Table className='dappsTable' striped bordered hover>
               <thead>
                 <tr>
                   <th>Action</th>
@@ -162,28 +180,24 @@ const DApps = () => {
                 ))}
               </tbody>
             </Table>
-            <br />
-            <br />
+        
           </>
         )}
       </div>
-      {/* Modal para el formulario de creación */}
+      {/* Creation modal */}
       <Modal show={showCreateForm} onHide={() => setShowCreateForm(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Create DApp Data</Modal.Title>
+          <Modal.Title>Create DApp</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <DAppsForm onSubmit={handleCreateFormSubmit} />
+          <DAppsForm coinName={coin_name} onSubmit={handleCreateFormSubmit} />
         </Modal.Body>
       </Modal>
-      {selectedDApp && (
+      {showEditModal && (
         <DAppsEditModal
           show={showEditModal}
           onClose={() => setShowEditModal(false)}
-          dapp={selectedDApp} // Aquí está la corrección, pasar 'selectedDApp' en lugar de 'selectedDApp.id'
-          onSave={(editedDApp) => {
-            setShowEditModal(false)
-          }}
+          dapp={selectedDApp} 
         />
       )}
     </div>

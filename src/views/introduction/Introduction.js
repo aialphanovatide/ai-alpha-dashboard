@@ -43,7 +43,7 @@ const Introduction = () => {
         if (data && data.coin_bots) {
           setBots(data.coin_bots)
         } else {
-          console.error('Error fetching bots:', data.message)
+          console.error('Error fetching bots:', data.error)
         }
       } catch (error) {
         console.error('Error:', error)
