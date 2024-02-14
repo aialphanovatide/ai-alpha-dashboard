@@ -128,16 +128,16 @@ const RevenueModels = () => {
       })
 
       const data = await response.json()
-      if (response.ok) {
-        console.log('Revenue model created successfully:', data)
-        setRevenueModels(null)
-        setSelectedCoinBot('')
-
+      if (data.status === 200) {
+        return data.message
       } else {
-        console.error('Error creating Revenue Model:', data.error)
+        return data.message
       }
     } catch (error) {
-      console.error('Error:', error)
+      return error
+    } finally {
+      setRevenueModels(null)
+      setSelectedCoinBot('')
     }
   }
 
@@ -212,29 +212,3 @@ const RevenueModels = () => {
 
 export default RevenueModels
 
-
-// {revenueModels !== null? (
-//   <>
-//     <h3 style={{ marginTop: '20px' }}>Revenue Model</h3>
-//     <Table striped bordered hover>
-//       <thead>
-//         <tr>
-//           <th>Action</th>
-//           <th>Annualised Revenue</th>
-//         </tr>
-//       </thead>
-//       <tbody>
-//         {revenueModels.map((revenueModel) => (
-//           <tr key={revenueModel.id}>
-//             <td>
-//               <button onClick={() => handleEditButtonClick(revenueModel)}>Edit</button>
-//             </td>
-//             <td>{revenueModel.analized_revenue}</td>
-//             {/* <td>{revenueModel.fees_1ys}</td> */}
-//           </tr>
-//         ))}
-//       </tbody>
-//     </Table>
-  
-//   </>
-// ) : null}
