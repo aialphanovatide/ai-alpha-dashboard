@@ -85,15 +85,19 @@ const Hacks = () => {
           mitigationMeasure: formData.mitigationMeasure,
         }),
       })
-
+      
       const data = await response.json()
-      console.log(data)
-      setHacks([])
-      // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
+      if (response.status == 200){
+        return data.message
+      } else {
+        return data.error
+      }
+      
     } catch (error) {
       console.error('Error creating hack:', error)
     } finally {
       setShowCreateForm(true)
+      setHacks([])
     }
   }
 
@@ -208,6 +212,7 @@ const Hacks = () => {
           <HackForm onSubmit={handleCreateFormSubmit} />
         </Modal.Body>
       </Modal>
+      {/* Modal for edition  */}
       <Modal show={showEditForm} onHide={() => setShowEditForm(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Hack Data</Modal.Title>

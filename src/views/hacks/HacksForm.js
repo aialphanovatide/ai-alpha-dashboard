@@ -8,8 +8,9 @@ const HackForm = ({ onSubmit }) => {
   const [incidentDescription, setIncidentDescription] = useState('')
   const [consequences, setConsequences] = useState('')
   const [mitigationMeasure, setMitigationMeasure] = useState('')
+  const [responseMessage, setResponseMessage] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     // Validaciones adicionales si es necesario
     const formData = {
@@ -20,7 +21,8 @@ const HackForm = ({ onSubmit }) => {
       mitigationMeasure,
     }
     console.log('Form Data:', formData) // Agrega este console.log para ver los datos antes de enviarlos
-    onSubmit(formData)
+    const response = await onSubmit(formData)
+    setResponseMessage(response)
   }
 
   return (

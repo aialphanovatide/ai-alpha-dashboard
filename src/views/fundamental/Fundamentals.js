@@ -10,7 +10,7 @@ import Upgrades from '../upgrades/Upgrades'
 import './fundamentals.css'
 
 const Fundamentals = () => {
-  const [activeTab, setActiveTab] = useState('revenueModels')
+  const [activeTab, setActiveTab] = useState('introduction')
 
   const toggleTab = (tab) => {
     setActiveTab(tab)
