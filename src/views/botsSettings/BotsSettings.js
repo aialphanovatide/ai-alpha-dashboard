@@ -1,21 +1,32 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import classNames from 'classnames'
 import '../botsSettings/bs.css'
-import { CButton, CButtonGroup, CCard, CCardBody, CCardHeader, CCol, CRow } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilXCircle, cilCheckCircle, cilToggleOn, cilToggleOff } from '@coreui/icons'
+import { CButton, CButtonGroup} from '@coreui/react'
 import AddWordsModal from '../addWordsModal/AddWordsModal'
 import DeleteWordsModal from '../deleteWordsModal/DeleteWordsModal'
 import AddSitesModal from '../addSitesModal/AddSitesModal'
 import config from '../../config'
 import DeleteSitesModal from '../deleteSitesModal/DeleteSitesModal'
+import Loader from '../loader/loader'
+import BotList from './botList'
 //bots settings
+
+
+const SpinnerComponent = () => {
+  return (
+    <div className="spinnergnral">
+      <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+    </div>
+  );
+};
+
+
 
 const BotsSettings = () => {
 
   const [bots, setBots] = useState([])
   const [loading, setLoading] = useState(false)
 
+  // get all the botss
   const getAllBots = useCallback(async () => {
     try {
       const response = await fetch(`${config.BASE_URL}/get_all_bots`, {
@@ -27,7 +38,6 @@ const BotsSettings = () => {
       })
 
       const responseText = await response.text()
-      console.log('Response Text:', responseText)
 
       try {
         const data = JSON.parse(responseText)
@@ -88,62 +98,22 @@ const BotsSettings = () => {
     updateBotState(`${config.BASE_URL}/deactivate_all_bots`)
   }, [updateBotState])
 
+  // Loads bots
   useEffect(() => {
-    // Cargar bots inicialmente
     getAllBots()
   }, [getAllBots])
 
-  useEffect(() => {
-    console.log('Bots State:', bots)
-  }, [bots])
-
   return (
-    <>
-      <h3 id="traffic" className="mb-2">
+    <div className='botsettingsMain'>
+      <h3 className="botsTitle">
         Bot settings
       </h3>
-      <br></br>
-      <CRow>
-        {bots.map((bot, index) => (
-          <CCol key={index} sm={4}>
-            <CCard
-              className={classNames('mb-4', {
-                'bg-danger': !bot.isActive,
-                'bg-success': bot.isActive,
-              })}
-            >
-              <CCardBody>
-                <CRow>
-                  <CCol sm={8}>
-                    <h4 id="traffic" className="mb-2">
-                      {bot.isActive ? (
-                        <div className="bot-status green"></div>
-                      ) : (
-                        <div className="bot-status red"></div>
-                      )}
-                      <div className="d-flex align-items-center">
-                        <CIcon
-                          size="3xl"
-                          icon={bot.isActive ? cilCheckCircle : cilXCircle}
-                          className="me-2"
-                        />
-                        <span>{bot.category.toUpperCase()}</span>
-                      </div>
-                    </h4>
-                  </CCol>
-                </CRow>
-              </CCardBody>
-            </CCard>
-          </CCol>
-        ))}
-      </CRow>
-      <CButtonGroup className="mb-2">
-        <div className="d-flex align-items-center">
-          {loading && (
-            <button className="load-btn btn btn-primary me-2" type="button" disabled>
-              <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
-            </button>
-          )}
+
+      <BotList bots={bots}/>
+   
+
+      <CButtonGroup className="mb-2 btn-group-main">
+        <div className="d-flex align-items-center main-button">
           <CButton
             className={`btn ${bots.every((bot) => bot.isActive) ? 'btn-danger' : 'btn-success'}
                 bot-btn`}
@@ -151,23 +121,23 @@ const BotsSettings = () => {
               loading ? null : bots.every((bot) => bot.isActive) ? turnOffAllBots : turnOnAllBots
             }
           >
-            {bots.every((bot) => bot.isActive) ? 'Turn Off All Bots' : 'Turn On All Bots'}
+            {bots.every((bot) => bot.isActive) ? 'Turn off all bots' : 'Turn on all bots'}
           </CButton>
         </div>
+        {loading && <SpinnerComponent/>}
       </CButtonGroup>
-      <br></br>
      
-      <div>
-        <h4>Actions</h4>
-        <div>
+      <div className='actionmain'>
+        <h4 className='actionsTitle'>Actions</h4>
+        <div className='actionsSubMain'>
           <AddWordsModal />
           <DeleteWordsModal />
           <AddSitesModal />
           <DeleteSitesModal />
         </div>
       </div>
-      <br></br>
-    </>
+    
+    </div>
   )
 }
 

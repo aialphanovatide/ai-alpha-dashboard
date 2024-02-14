@@ -7,12 +7,12 @@ import RevenueModels from '../revenueModel/RevenueModels'
 import Hacks from '../hacks/Hacks'
 import DApps from '../dapps/DApps'
 import Upgrades from '../upgrades/Upgrades'
+import './fundamentals.css'
 
 const Fundamentals = () => {
-  const [activeTab, setActiveTab] = useState('introduction')
+  const [activeTab, setActiveTab] = useState('revenueModels')
 
   const toggleTab = (tab) => {
-    console.log('Changing tab to:', tab)
     setActiveTab(tab)
   }
 
@@ -50,7 +50,7 @@ const Fundamentals = () => {
                 className={classnames('nav-link', { active: activeTab === 'revenueModels' })}
                 onClick={() => toggleTab('revenueModels')}
               >
-                Revenue Models
+                Revenue Model
               </a>
             </li>
             <li className="nav-item">
@@ -82,7 +82,6 @@ const Fundamentals = () => {
         <div className="card-body">
           {activeTab === 'introduction' && (
             <div>
-              {console.log('Rendering Introduction')}
               <Introduction />
             </div>
           )}

@@ -18,8 +18,8 @@ const DeleteSitesModal = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`)
+        let data = await response.json()
         if (response.ok) {
-          const data = await response.json()
           setCoinBots(data.coin_bots)
         } else {
           console.error('Error fetching coin bots:', response.statusText)
@@ -34,10 +34,15 @@ const DeleteSitesModal = () => {
   const handleCoinBotChange = async (selectedCoinBotId) => {
     setSelectedCoinBot(selectedCoinBotId)
     try {
-      const response = await fetch(`${config.BASE_URL}/get_sites_for_coin_bot/${selectedCoinBotId}`)
+      const response = await fetch(`${config.BASE_URL}/get_sites_for_coin_bot/${selectedCoinBotId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+      })
       if (response.ok) {
         const data = await response.json()
-        console.log(data)
         setSites(data.sites || [])
       } else {
         console.error('Error fetching sites:', response.statusText)
@@ -54,6 +59,7 @@ const DeleteSitesModal = () => {
     setShowAlert(false)
   }, [])
 
+  // Deletes a site by ID
   const handleDeleteSite = async () => {
     try {
       if (selectedSite) {
@@ -61,13 +67,12 @@ const DeleteSitesModal = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
           },
           body: JSON.stringify({
             site_id: selectedSite,
           }),
         })
-
-        console.log(selectedSite)
 
         const data = await response.json()
 
@@ -78,7 +83,7 @@ const DeleteSitesModal = () => {
             setShowAlert(false)
           }, 2000)
         } else {
-          console.error('Error deleting site:', data.message || 'Unknown error') // Asegurar que data.message esté definido
+          console.error('Error deleting site:', data.message || 'Unknown error')
         }
       }
     } catch (error) {
@@ -89,16 +94,17 @@ const DeleteSitesModal = () => {
   return (
     <>
       <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
-        Delete Sites
+        delete source
       </CButton>
       <Modal show={visible} onHide={() => setVisible(false)} className="custom-modal">
-        <Modal.Title className="titlemodal">Delete Sites</Modal.Title>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Label className="espacio">Select Coin:</Form.Label>
+      <span className='closeModalBtn' onClick={() => setVisible((prevVisible) => !prevVisible)}>X</span>
+        <Modal.Body className='formBody'>
+          <Form className='formMain'>
+            <h3>Delete Source</h3>
+            <Form.Group className='formSubmain'>
+              <Form.Label >Select Coin</Form.Label>
               <Form.Control
-                className="espacio"
+                
                 as="select"
                 value={selectedCoinBot}
                 onChange={(e) => handleCoinBotChange(e.target.value)}
@@ -106,17 +112,17 @@ const DeleteSitesModal = () => {
                 <option value="">Select...</option>
                 {coinBots.map((bot) => (
                   <option key={bot.id} value={bot.id}>
-                    {bot.name || 'No Name'}
+                    {bot.name.toUpperCase() || 'No Name'}
                   </option>
                 ))}
               </Form.Control>
-              <div className="espacio"></div>
             </Form.Group>
 
             {sites.length > 0 && (
-              <Form.Group>
-                <Form.Label>Select Site to Delete:</Form.Label>
+              <Form.Group className='formSubmain'>
+                <Form.Label >Select Source to Delete</Form.Label>
                 <Form.Control
+                  
                   as="select"
                   value={selectedSite}
                   onChange={(e) => setSelectedSite(e.target.value)}
@@ -128,33 +134,24 @@ const DeleteSitesModal = () => {
                     </option>
                   ))}
                 </Form.Control>
-                <div className="espacio"></div>
               </Form.Group>
             )}
 
             {showAlert && (
-              <Alert variant="success" onClose={() => setShowAlert(false)} dismissible>
+              <Alert className='espacio' variant="success" onClose={() => setShowAlert(false)} dismissible>
                 Site deleted successfully.
               </Alert>
             )}
           </Form>
         </Modal.Body>
-        <div className="espacio"></div>
-        <Modal.Footer>
+
+        <Modal.Footer className="button-row">
           <Button
-            className="espacio close turn-off-button"
-            variant="secondary"
-            onClick={() => setVisible(false)}
-          >
-            Close
-          </Button>
-          <Button
-            className="espacio close turn-off-button"
             variant="primary"
             onClick={handleDeleteSite}
-            disabled={!selectedSite}
+            disabled={!selectedSite || !selectedCoinBot}
           >
-            Delete Site
+            Delete Source
           </Button>
         </Modal.Footer>
       </Modal>

@@ -17,7 +17,13 @@ const DeleteWordsModal = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`)
+        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+          },
+        })
         if (response.ok) {
           const data = await response.json()
           setCoinBots(data.coin_bots)
@@ -35,7 +41,14 @@ const DeleteWordsModal = () => {
     setSelectedCoinBot(selectedCoinBotId)
     try {
       const response = await fetch(
-        `${config.BASE_URL}/get_keywords_for_coin_bot/${selectedCoinBotId}`,
+        `${config.BASE_URL}/get_keywords_for_coin_bot/${selectedCoinBotId}`, 
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+          },
+        }
       )
       if (response.ok) {
         const data = await response.json()
@@ -53,7 +66,7 @@ const DeleteWordsModal = () => {
     setKeywords([])
     setSelectedKeyword('')
     setShowAlert(false)
-  }, []) // Agrega el arreglo de dependencias vacío para que la función no cambie entre renderizados
+  }, []) 
 
   const handleDeleteKeyword = async () => {
     try {
@@ -62,6 +75,7 @@ const DeleteWordsModal = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
           },
           body: JSON.stringify({
             keyword_id: selectedKeyword,
@@ -88,16 +102,16 @@ const DeleteWordsModal = () => {
   return (
     <>
       <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
-        Delete Words
+        delete keyword
       </CButton>
       <Modal show={visible} onHide={() => setVisible(false)} className="custom-modal">
-        <Modal.Title className="titlemodal">Delete Keywords</Modal.Title>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Label className="espacio">Select Coin:</Form.Label>
+          <span className='closeModalBtn' onClick={() => setVisible((prevVisible) => !prevVisible)}>X</span>
+        <Modal.Body className='formBody'>
+          <Form className='formMain'>
+          <h3>Delete Keyword</h3>
+            <Form.Group className='formSubmain'>
+              <Form.Label>Select Coin</Form.Label>
               <Form.Control
-                className="espacio"
                 as="select"
                 value={selectedCoinBot}
                 onChange={(e) => handleCoinBotChange(e.target.value)}
@@ -105,7 +119,7 @@ const DeleteWordsModal = () => {
                 <option value="">Select...</option>
                 {coinBots.map((bot) => (
                   <option key={bot.id} value={bot.id}>
-                    {bot.name || 'No Name'}
+                    {bot.name && bot.name.toUpperCase() || 'No Name'}
                   </option>
                 ))}
               </Form.Control>
@@ -113,45 +127,38 @@ const DeleteWordsModal = () => {
             </Form.Group>
 
             {keywords.length > 0 && (
-              <Form.Group>
-                <Form.Label>Select Keyword to Delete:</Form.Label>
+              <Form.Group className='formSubmain'>
+                <Form.Label>Select Keyword to Delete</Form.Label>
                 <Form.Control
+                  className='optioname'
                   as="select"
                   value={selectedKeyword}
                   onChange={(e) => setSelectedKeyword(e.target.value)}
                 >
                   <option value="">Select...</option>
                   {keywords.map((keyword) => (
-                    <option key={keyword.id} value={keyword.id}>
+                    <option className='optioname' key={keyword.id} value={keyword.id}>
                       {keyword.word || 'No Keyword'}
                     </option>
                   ))}
                 </Form.Control>
-                <div className="espacio"></div>
+        
               </Form.Group>
             )}
-
+              
             {showAlert && (
-              <Alert variant="success" onClose={() => setShowAlert(false)} dismissible>
-                Keyword deleted successfully.
-              </Alert>
+              <Alert className='espacio' variant="success" onClose={() => setShowAlert(false)} dismissible>
+              Keyword deleted successfully.
+            </Alert>
             )}
           </Form>
         </Modal.Body>
-        <div className="espacio"></div>
-        <Modal.Footer>
+
+        <Modal.Footer  className="button-row">
           <Button
-            className="espacio close turn-off-button"
-            variant="secondary"
-            onClick={() => setVisible(false)}
-          >
-            Close
-          </Button>
-          <Button
-            className="espacio close turn-off-button"
             variant="primary"
             onClick={handleDeleteKeyword}
-            disabled={!selectedKeyword}
+            disabled={!selectedKeyword || !selectedCoinBot}
           >
             Delete Keyword
           </Button>

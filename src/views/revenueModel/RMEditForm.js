@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
-import config from '../../config';
+import { Form, Button, Alert } from 'react-bootstrap';
 
 const RMEditForm = ({ onSubmit, revenueModel }) => {
-  // Estados para almacenar los valores editados del modelo de ingresos
-  const [analizedRevenue, setAnalizedRevenue] = useState(revenueModel.analized_revenue);
-  //const [fees1ys, setFees1ys] = useState(revenueModel.fees_1ys);
 
-  // Función para manejar el envío del formulario
-  const handleSubmit = (e) => {
+  const [analizedRevenue, setAnalizedRevenue] = useState(revenueModel);
+  const [responseMessage, setResponseMessage] = useState(null) 
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Lógica para enviar los datos editados al servidor
-    onSubmit({ analized_revenue: analizedRevenue, //fees_1ys: fees1ys
+    const response = await onSubmit({ analized_revenue: analizedRevenue
    });
+   setResponseMessage(response)
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form className='modalFormMain' onSubmit={handleSubmit}>
       <Form.Group controlId="analizedRevenue">
         <Form.Label>Analized Revenue</Form.Label>
         <Form.Control
@@ -27,20 +25,12 @@ const RMEditForm = ({ onSubmit, revenueModel }) => {
           placeholder="Enter analized revenue"
         />
       </Form.Group>
-      <br />
-      {/* <Form.Group controlId="fees1ys">
-        <Form.Label>Fees (1Y)</Form.Label>
-        <Form.Control
-          type="text"
-          value={fees1ys}
-          onChange={(e) => setFees1ys(e.target.value)}
-          placeholder="Enter fees (1Y)"
-        />
-      </Form.Group> */}
-      <Button variant="primary" type="submit">
-        Submit
+    
+      <Button style={{ margin: '0.9rem 0', alignSelf: 'center' }} variant="primary" type="submit">
+        Update Revenue model
       </Button>
-      <br />
+     
+      {responseMessage && <Alert className='alertSucess' variant="success">{responseMessage}</Alert>}
     </Form>
   );
 };

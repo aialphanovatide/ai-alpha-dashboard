@@ -1,0 +1,19 @@
+.revenueMain{
+    display: flex;
+    padding: 1rem 0;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.revenueTitle{
+    margin: 0 10px 0 0;
+    font-weight: bold;
+    /* background-color: antiquewhite; */
+    padding: 0.5rem;
+    border-radius: 2px;
+}
+
+.modalFormMain{
+    display: flex;
+    flex-direction: column;
+}

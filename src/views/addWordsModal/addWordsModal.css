@@ -1,10 +1,13 @@
-
+  .custom-modal {
+    width: 100%;
+  }
   
-  .titlemodal {
-    color: white;
-    display: flex;
-    justify-content: space-around;
 
+  .titlemodal {
+    color: #282828;
+    display: flex;
+
+    justify-content: space-around;
   }
   
   .button-row {
@@ -25,7 +28,8 @@
   }
   
   .espacio{
-    margin: 10px;
+    margin: 0;
+    /* border: #282828 1px solid; */
   }
 
   .modal-body{

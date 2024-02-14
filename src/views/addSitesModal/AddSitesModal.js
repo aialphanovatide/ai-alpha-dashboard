@@ -19,7 +19,13 @@ const AddSitesModal = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`)
+        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+          },
+        })
         if (response.ok) {
           const data = await response.json()
           setCoinBots(data.coin_bots)
@@ -53,6 +59,7 @@ const AddSitesModal = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
           },
           body: JSON.stringify({
             coin_bot_id: selectedCoinBot,
@@ -74,7 +81,7 @@ const AddSitesModal = () => {
           setTimeout(() => {
             setShowAlert(false)
             setVisible(false)
-          }, 3000)
+          }, 2000)
         } else {
           console.error('Error saving site:', data.message)
         }
@@ -87,21 +94,21 @@ const AddSitesModal = () => {
   }
 
   const handleCoinBotChange = (selectedCoinBotId) => {
-    console.log(selectedCoinBotId)
     setSelectedCoinBot(selectedCoinBotId)
   }
 
   return (
     <>
       <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
-        Add Sites
+        add source
       </CButton>
       <Modal show={visible} onHide={() => setVisible(false)} className="custom-modal-width">
-        <Modal.Title className="titlemodal">Add Sites</Modal.Title>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Label className="espacio">Select Coin:</Form.Label>
+      <span className='closeModalBtn' onClick={() => setVisible((prevVisible) => !prevVisible)}>X</span>
+        <Modal.Body className='formBody'>
+          <Form className='formMain'>
+          <h3>Add Source</h3>
+            <Form.Group className='formSubmain'>
+              <Form.Label className="espacio">Select Coin</Form.Label>
               <Form.Control
                 className="espacio"
                 as="select"
@@ -112,14 +119,14 @@ const AddSitesModal = () => {
                 {coinBots &&
                   coinBots.map((bot, index) => (
                     <option key={index} value={bot.id}>
-                      {bot.name || 'No Name'}
+                      {bot.name.toUpperCase() || 'No Name'}
                     </option>
                   ))}
               </Form.Control>
             </Form.Group>
             <div className="espacio"></div>
-            <Form.Group>
-              <Form.Label className="espacio">Site Name:</Form.Label>
+            <Form.Group className='formSubmain'>
+              <Form.Label className="espacio">Site Name</Form.Label>
               <InputGroup className="espacio">
                 <FormControl
                   type="text"
@@ -129,8 +136,8 @@ const AddSitesModal = () => {
                 />
               </InputGroup>
             </Form.Group>
-            <Form.Group>
-              <Form.Label className="espacio">Base URL:</Form.Label>
+            <Form.Group className='formSubmain'>
+              <Form.Label className="espacio">Base URL</Form.Label>
               <InputGroup className="espacio">
                 <FormControl
                   type="text"
@@ -140,8 +147,8 @@ const AddSitesModal = () => {
                 />
               </InputGroup>
             </Form.Group>
-            <Form.Group>
-              <Form.Label className="espacio">Data Source URL:</Form.Label>
+            <Form.Group className='formSubmain'>
+              <Form.Label className="espacio">Data Source URL</Form.Label>
               <InputGroup className="espacio">
                 <FormControl
                   type="text"
@@ -151,7 +158,7 @@ const AddSitesModal = () => {
                 />
               </InputGroup>
             </Form.Group>
-            <Form.Group>
+            <Form.Group className='formSubmain'>
               <Form.Check
                 type="checkbox"
                 label="Is URL Complete"
@@ -160,8 +167,8 @@ const AddSitesModal = () => {
                 className="espacio"
               />
             </Form.Group>
-            <Form.Group>
-              <Form.Label className="espacio">Main Container:</Form.Label>
+            <Form.Group className='formSubmain'>
+              <Form.Label className="espacio">Main Container</Form.Label>
               <InputGroup className="espacio">
                 <FormControl
                   type="text"
@@ -187,27 +194,24 @@ const AddSitesModal = () => {
         </Modal.Body>
         <Modal.Footer className="button-row">
           <Button
-            className="espacio close btn-primary"
-            variant="secondary"
-            onClick={() => setVisible((prevVisible) => !prevVisible)}
-          >
-            Close
-          </Button>
-          <Button
             className="espacio close addwords"
             variant="primary"
             onClick={() => {
               handleAddSite()
             }}
-            disabled={!selectedCoinBot}
+            disabled={!selectedCoinBot || !dataSourceUrl
+               || !siteName || !mainContainer 
+               || !baseUrl || !isURLComplete}
           >
-            Add Site
+            Add Source
           </Button>
         </Modal.Footer>
       </Modal>
     </>
   )
 }
+
+
 AddSitesModal.propTypes = {
   coinBots: PropTypes.array.isRequired,
 }

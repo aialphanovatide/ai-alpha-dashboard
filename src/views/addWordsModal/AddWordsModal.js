@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import classNames from 'classnames'
-import '../botsSettings/bs.css'
-import '../addWordsModal/addWordsModal.css'
 import { CButton, CModal, CModalBody, CModalHeader, CModalTitle, CModalFooter } from '@coreui/react'
 import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap'
 import config from '../../config'
+import './addWordsModal.css'
 
 const AddWordsModal = () => {
   const [showAlert, setShowAlert] = useState(false)
@@ -16,7 +14,13 @@ const AddWordsModal = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`)
+        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+          },
+        })
         if (response.ok) {
           const data = await response.json()
           setCoinBots(data.coin_bots)
@@ -43,6 +47,7 @@ const AddWordsModal = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
           },
           body: JSON.stringify({
             keyword: keywordValue,
@@ -69,23 +74,22 @@ const AddWordsModal = () => {
   }
 
   const handleCoinBotChange = (selectedCoinBotId) => {
-    console.log(selectedCoinBotId)
     setSelectedCoinBot(selectedCoinBotId)
   }
 
   return (
     <>
       <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
-        Add Words
+        add keyword
       </CButton>
       <Modal show={visible} onHide={() => setVisible(false)} className="custom-modal">
-        <Modal.Title className="titlemodal">Add Words to Keyword / Blacklist List</Modal.Title>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Label className="espacio">Select Coin:</Form.Label>
+      <span className='closeModalBtn' onClick={() => setVisible((prevVisible) => !prevVisible)}>X</span>
+        <Modal.Body className='formBody'>
+          <Form className='formMain'>
+          <h3>Add Keyword</h3>
+            <Form.Group className='formSubmain'>
+              <Form.Label>Select Coin</Form.Label>
               <Form.Control
-                className="espacio"
                 as="select"
                 value={selectedCoinBot}
                 onChange={(e) => handleCoinBotChange(e.target.value)}
@@ -94,21 +98,21 @@ const AddWordsModal = () => {
                 {coinBots &&
                   coinBots.map((bot, index) => (
                     <option key={index} value={bot.id}>
-                      {bot.name || 'No Name'}
+                      {bot.name.toUpperCase() || 'No Name'}
                     </option>
                   ))}
               </Form.Control>
             </Form.Group>
-            <div className="espacio"></div>
-            <Form.Group>
-              <Form.Label className="espacio">Add New Keyword / Blackword:</Form.Label>
-              <InputGroup className="espacio">
+          
+            <Form.Group className='formSubmain'>
+              <Form.Label>Add New Keyword</Form.Label>
+              <InputGroup>
                 <FormControl
                   type="text"
                   id="keywordInput"
                   value={keywordValue}
                   onChange={(e) => setKeywordValue(e.target.value)}
-                  placeholder="Enter Word..."
+                  placeholder="Type Word..."
                 />
               </InputGroup>
             </Form.Group>
@@ -128,21 +132,14 @@ const AddWordsModal = () => {
         </Modal.Body>
         <Modal.Footer className="button-row">
           <Button
-            className="espacio close btn-primary"
-            variant="secondary"
-            onClick={() => setVisible((prevVisible) => !prevVisible)}
-          >
-            Close
-          </Button>
-          <Button
             className="espacio close addwords"
             variant="primary"
             onClick={() => {
               handleAddWords()
             }}
-            disabled={!selectedCoinBot}
+            disabled={!selectedCoinBot || !keywordValue}
           >
-            Add Words
+            Add Keyword
           </Button>
         </Modal.Footer>
       </Modal>

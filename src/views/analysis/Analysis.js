@@ -124,8 +124,6 @@ const Analysis = () => {
     }
   };
 
-  console.log('content: ', content)
-  console.log('selectedImage: ', selectedImage)
 
   return (
 

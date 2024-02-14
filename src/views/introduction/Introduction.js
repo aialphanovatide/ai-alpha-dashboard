@@ -1,16 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Button, Modal } from 'react-bootstrap'
 import config from '../../config'
+import Swal from 'sweetalert2'
+
+// sucess
+// Swal.fire({
+//   icon: "success",
+//   title: responseData.message,
+//   showConfirmButton: false,
+//   timer: 1000
+// });
+// -------------------------------------------
+// Error
+// Swal.fire({
+//   icon: "error",
+//   title: responseData.message,
+//   showConfirmButton: false,
+// });
 
 const Introduction = () => {
+
   const [bots, setBots] = useState([])
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
   const [content, setContent] = useState('')
   const [website, setWebsite] = useState('')
   const [whitepaper, setWhitepaper] = useState('')
-  const [showModal, setShowModal] = useState(false)
   const [hasIntroductionData, setHasIntroductionData] = useState(false)
 
+  // Get all the coins
   useEffect(() => {
     const getAllBots = async () => {
       try {
@@ -36,49 +53,68 @@ const Introduction = () => {
     getAllBots()
   }, [])
 
+  // Get the introduction of the selected coin
+  useEffect(() => {
+    const getIntroductionData = async () => {
+      try {
+        const response = await fetch(`${config.BASE_URL}/get_introduction?id=${selectedCoinBot}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+          },
+        })
+
+        const data = await response.json()
+       
+        if (data.message.content) {
+          const { content, website, whitepaper } = data.message
+          setContent(content || '')
+          setWebsite(website || '')
+          setWhitepaper(whitepaper || '')
+          setHasIntroductionData(true) 
+        } else {
+          setContent('')
+          setWebsite('')
+          setWhitepaper('')
+          setHasIntroductionData(false) 
+        }
+      } catch (error) {
+        console.error('Error fetching introduction data:', error)
+      }
+    }
+    
+    if (selectedCoinBot){
+      getIntroductionData();
+    }
+  }, [selectedCoinBot]);
+
+
   const handleWebsiteChange = (value) => {
     setWebsite(value)
+  }
+
+  const handleContentChange = (value) => {
+    setContent(value)
   }
 
   const handleWhitepaperChange = (value) => {
     setWhitepaper(value)
   }
 
-  const handleCoinBotChange = async (value) => {
+  const handleSelectedCoin = (value) => {
     setSelectedCoinBot(value)
-
-    try {
-      const response = await fetch(`${config.BASE_URL}/get_introduction/${value}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
-        },
-      })
-
-      const data = await response.json()
-      console.log(data.message.content)
-      if (data.message.content) {
-        const { content, website, whitepaper } = data.message
-        setContent(content || '')
-        setWebsite(website || '')
-        setWhitepaper(whitepaper || '')
-        setHasIntroductionData(true) // Si hay datos de introducción, establecer el estado en true
-      } else {
-        setContent('')
-        setWebsite('')
-        setWhitepaper('')
-        setHasIntroductionData(false) // Si no hay datos de introducción, establecer el estado en false
-      }
-    } catch (error) {
-      console.error('Error fetching introduction data:', error)
-    }
   }
 
+  // Updates the introduction of a coin
   const handleUpdateClick = async () => {
     try {
       if (!selectedCoinBot) {
-        console.error('Please select a Coin Bot')
+        Swal.fire({
+          icon: "error",
+          title: "Please, select a coin",
+          showConfirmButton: false,
+        });
         return
       }
 
@@ -100,21 +136,45 @@ const Introduction = () => {
 
       const responseData = await response.json()
 
-      setShowModal(true)
+      if (responseData.status == 200){
+        Swal.fire({
+          icon: "success",
+          title: responseData.message,
+          showConfirmButton: false,
+          timer: 1000
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: responseData.message,
+          showConfirmButton: false,
+        });
+      }
+
       setContent('')
       setWebsite('')
       setWhitepaper('')
       setHasIntroductionData(false)
       setSelectedCoinBot('')
     } catch (error) {
-      console.error('Error updating content:', error)
+      Swal.fire({
+        icon: "error",
+        title: error,
+        showConfirmButton: false,
+      });
     }
   }
+
+  // create an introduction for a coin
   const handleCreateClick = async () => {
     try {
-      if (!selectedCoinBot) {
-        console.error('Please select a Coin Bot')
-        return
+      if (!selectedCoinBot || !content) {
+        Swal.fire({
+        icon: "error",
+        title: "Coin or content is missing",
+        showConfirmButton: false,
+      });
+      return
       }
 
       const data = {
@@ -135,7 +195,21 @@ const Introduction = () => {
 
       const responseData = await response.json()
 
-      setShowModal(true)
+      if (responseData.status === 200){
+        Swal.fire({
+          icon: "success",
+          title: responseData.message,
+          showConfirmButton: false,
+          timer: 3000
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: responseData.message,
+          showConfirmButton: false,
+        });
+      }
+
       setContent('')
       setWebsite('')
       setWhitepaper('')
@@ -143,46 +217,49 @@ const Introduction = () => {
       setSelectedCoinBot('')
       
     } catch (error) {
-      console.error('Error creating content:', error)
+      Swal.fire({
+      icon: "success",
+      title: error,
+      showConfirmButton: false,
+    });
     }
   }
 
-  const handleContentChange = (value) => {
-    setContent(value)
-  }
 
-  const handleCloseModal = () => {
-    setShowModal(false)
-  }
   return (
     <div style={{ margin: '20px' }}>
-      <h2>Introduction Sub-Section</h2>
+      <h2>Introduction</h2>
+      
+      {/* Select coin */}
       <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
         <Form.Label>Select Coin</Form.Label>
         <Form.Control
           as="select"
           value={selectedCoinBot}
-          onChange={(e) => handleCoinBotChange(e.target.value)}
+          onChange={(e) => handleSelectedCoin(e.target.value)}
         >
           <option value="">Select...</option>
-          {bots.map((bot) => (
+          {bots && bots?.map((bot) => (
             <option key={bot.id} value={bot.id}>
               {bot.name.toUpperCase() || 'No Name'}
             </option>
           ))}
         </Form.Control>
       </Form.Group>
+
+      {/* Content of the introduction */}
       <Form.Group controlId="contentInput" style={{ marginBottom: '15px' }}>
         <Form.Label>Content (Max 400 Characters)</Form.Label>
         <Form.Control
           required
-          style={{ height: '300px' }}
+          style={{ height: '180px' }}
           as="textarea"
           placeholder="Enter content..."
           value={content}
           onChange={(e) => handleContentChange(e.target.value.substring(0, 400))}
         />
       </Form.Group>
+
       <Form.Group controlId="websiteInput" style={{ marginBottom: '15px' }}>
         <Form.Label>Website</Form.Label>
         <Form.Control
@@ -198,7 +275,7 @@ const Introduction = () => {
         <Form.Label>Whitepaper</Form.Label>
         <Form.Control
           required
-          style={{ height: '400px' }}
+          style={{ height: '40px' }}
           as="textarea"
           placeholder="Enter whitepaper..."
           value={whitepaper}
@@ -206,29 +283,14 @@ const Introduction = () => {
         />
       </Form.Group>
       {hasIntroductionData ? (
-        <Button variant="primary" onClick={handleUpdateClick} style={{ marginRight: '10px' }}>
-          Update
+        <Button variant="primary" disabled={!selectedCoinBot} onClick={handleUpdateClick}>
+          Update Introduction
         </Button>
       ) : (
-        <Button variant="primary" onClick={handleCreateClick} style={{ marginRight: '10px' }}>
-          Create
+        <Button variant="primary" disabled={!selectedCoinBot || !content} onClick={handleCreateClick} >
+          Create Introduction
         </Button>
       )}
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update Result</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>
-            Successfully Post
-          </p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   )
 }

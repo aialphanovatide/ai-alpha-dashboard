@@ -6,19 +6,50 @@
     justify-content: space-around;
 
   }
+
+  .optioname{
+    text-transform: capitalize;
+  }
   
   .button-row {
-   /* Ajusta según sea necesario */
    display: flex;
    justify-content: space-around;
   }
 
-  
-  .espacio{
-    margin: 10px;
+  .modal-body{
+    padding: 2rem 0;
+    margin: 0;
   }
 
-  .modal-body{
-    margin-left: -20px;
-    padding: 20px;
+  .formMain{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
   }
+
+  .formSubmain{
+    /* border: 1px solid #282828; */
+    margin: 0 0 1rem 0;
+    width: 90%;
+  }
+
+  .closeModalBtn {
+    cursor: pointer;
+    align-self: flex-start;
+    padding: 10px 15px;
+    color: #e74c3c;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 15px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+  }
+  
+  .closeModalBtn:hover {
+    color: #c0392b; 
+  }
+  
+
+  
