@@ -10,7 +10,6 @@ const DApps = () => {
   const [bots, setBots] = useState([])
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
   const [dapps, setDApps] = useState([])
-  const [showCreateButton, setShowCreateButton] = useState(false)
   const [selectedDApp, setSelectedDApp] = useState(null)
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
@@ -55,18 +54,14 @@ const DApps = () => {
   
         const data = await response.json()
   
-        if (data && data.status == 200) {
+        if (data && data.status === 200) {
           setDApps(data.message)
-          // setShowCreateButton(data.message.length === 0)
-          // setShowCreateButton(true)
         } else {
           console.error('Error fetching DApps:', data.error)
-          // setShowCreateButton(true)
           setDApps([])
         }
       } catch (error) {
         console.error('Error:', error)
-        // setShowCreateButton(true)
         setDApps([])
       }
     }
@@ -124,12 +119,6 @@ const DApps = () => {
   const selectedBot = bots && selectedCoinBot? bots.find(bot => bot.id === Number(selectedCoinBot)) : '';
   const coin_name = selectedBot ? selectedBot.name.toUpperCase() : 'No Name';
 
-  // console.log('selectedCoinBot: ', selectedCoinBot)
-  // console.log('dapps: ', dapps)
-  // console.log('bots: ', bots)
-  // console.log('coin_name: ', coin_name)
-  console.log('selectedDApp: ', selectedDApp)
-  console.log('showEditModal: ', showEditModal)
 
   return (
     <div>

@@ -124,11 +124,11 @@
   }
 
   .activeBot{
-    background-color: #2EB85C;
+    background-color: #ccd5ae;
   }
 
   .inactiveBot{
-    background-color: #ff5733;
+    background-color: #ff758f;
   }
   
   @media screen and (max-width: 1200px) {
@@ -206,4 +206,7 @@
   .iconBotList{
     font-size: 20px;
 
+  }
+  .alertSucess{
+    margin: 1rem 0;
   }

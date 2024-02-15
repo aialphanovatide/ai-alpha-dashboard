@@ -1,68 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Table, Button } from 'react-bootstrap'
-import '../botsSettings/bs.css'
+import './tokenomics.css'
 import config from '../../config'
 import TokenomicsModal from './TokenomicsModal'
 import TokenomicsEditModal from './tokenomicsEditModal'
 
 const Tokenomics = () => {
+
   const [bots, setBots] = useState([])
-  const [selectedCoinBot, setSelectedCoinBot] = useState('')
   const [tokenomicsData, setTokenomicsData] = useState(null)
-  const [competitorsData, setCompetitorsData] = useState(null)
   const [showModal, setShowModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
-  const [selectedItemForEdit, setSelectedItemForEdit] = useState(null) // Estado para el ítem seleccionado para editar
+  const [selectedItemForEdit, setSelectedItemForEdit] = useState(null)
+  const [selectedCoinBot, setSelectedCoinBot] = useState('')
+  const [selectedCoinName, setSelectedCoinName] = useState(null)
 
-  // Agregar este useEffect para reiniciar el estado selectedCoinBot cuando cambie la lista de bots
-  useEffect(() => {
-    setSelectedCoinBot('') // Reiniciar el estado cuando cambie la lista de bots
-  }, [bots]) // Ejecutar el efecto cuando la lista de bots cambie
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${config.BASE_URL}/get_tokenomics/${selectedCoinBot}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
-        })
-        const data = await response.json()
-        console.log('tokenomicsData', data.message.tokenomics_data[0].tokenomics)
-
-        if (data.message) {
-          setTokenomicsData(data.message)
-        } else {
-          console.error('No tokenomics data received from the server')
-        }
-      } catch (error) {
-        setSelectedCoinBot('')
-        setTokenomicsData(null)
-        setCompetitorsData(null)
-        console.error('Error fetching data:', error)
-      }
-    }
-
-    if (selectedCoinBot) {
-      fetchData()
-    }
-  }, [selectedCoinBot])
-
-  const handleCoinBotChange = (value) => {
-    setSelectedCoinBot(value)
-  }
-
-  const handleClose = () => {
-    setShowModal(false)
-    setShowEditModal(false)
-    setSelectedCoinBot('')
-    setTokenomicsData(null)
-    setCompetitorsData(null)
-  }
-
-  useEffect(() => {
+   // Gets all the available coins
+   useEffect(() => {
     const getAllBots = async () => {
       try {
         const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`, {
@@ -77,25 +31,76 @@ const Tokenomics = () => {
         if (data && data.coin_bots) {
           setBots(data.coin_bots)
         } else {
-          console.error('Error fetching bots:', data.message)
+          console.error('Error fetching bots:', data.error)
         }
       } catch (error) {
-        console.error('Error:', error)
+        console.error('Error fetching bots:', error)
       }
     }
 
     getAllBots()
   }, [])
 
-  const handleEditButtonClick = (dataFromTokenomic) => {
-    setSelectedItemForEdit(dataFromTokenomic) // Establece el ítem seleccionado para editar
-    setShowEditModal(true) // Muestra el modal de edición
+  // Gets all the tokenomics of a coin - FUNCTION
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`${config.BASE_URL}/get_tokenomics?coin_bot_id=${selectedCoinBot}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+      })
+      const data = await response.json()
+
+      if(data.message) {
+        setTokenomicsData(data.message)
+      } else {
+        console.error(data.error)
+      }
+
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
   }
 
+  // Gets all the tokenomics of a coin
+  useEffect(() => {
+    if (selectedCoinBot) {
+      fetchData()
+    }
+  }, [selectedCoinBot])
+
+  const handleCoinBotChange = (value) => {
+    const selectedBot = bots.find((bot) => bot.id === Number(value));
+    setSelectedCoinBot(value);
+    setSelectedCoinName(selectedBot && tokenomicsData && tokenomicsData.tokenomics_data.length === 0 ? selectedBot.name : null);
+  };
+
+  const handleClose = () => {
+    setShowModal(false)
+    setShowEditModal(false)
+    setSelectedCoinBot('')
+    setTokenomicsData(null)
+  }
+
+  const handleEditButtonClick = (id, endpointName) => {
+    setSelectedItemForEdit({id, endpointName}) 
+    setShowEditModal(true)
+  }
+
+ console.log('tokenomicsData: ', tokenomicsData)
+
   return (
+<<<<<<< HEAD
     <div style={{ margin: '20px' }}>
       <h2>Tokenomics</h2>
       <br></br>
+=======
+    <div className='formGeneralMain' style={{ margin: '20px' }}>
+      <h2>Tokenomics</h2>
+
+>>>>>>> deded38f6a5f2a3f9171db9bac87b6f8940940b4
       <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
         <Form.Label>Select Coin</Form.Label>
         <Form.Control
@@ -112,161 +117,152 @@ const Tokenomics = () => {
         </Form.Control>
       </Form.Group>
 
-      {tokenomicsData && (
-        <>
-          <br></br>
-          <h3>Tokenomics</h3>
-          <br></br>
-          <Table striped bordered hover>
-            <tbody>
-              <tr>
-                <td>Total Supply</td>
-                <td>Circulating Supply</td>
-                <td>% Circulating Supply</td>
-                <td>Max Supply</td>
-                <td>Supply Model</td>
+      <Button disabled={!selectedCoinBot} onClick={() => setShowModal(true)}>Add Tokenomics</Button>
+
+            {/* TOKENOMICS */}
+      {tokenomicsData !== null && (
+        <div className='tokenomicsMain'>
+          {tokenomicsData.tokenomics_data.length > 0 && ( 
+            <Table className='tokenomicsTable' responsive striped bordered hover>
+            <h2 className='tableSubTitle'>Tokenomic</h2>
+            <tbody className='tableBody'>
+              <tr className='tableHead'>
+                <td className='thGeneral'>Token</td>
+                <td className='thGeneral'>Total Supply</td>
+                <td className='thGeneral'>Circulating Supply</td>
+                <td className='thGeneral'>% Circulating Supply</td>
+                <td className='thGeneral'>Max Supply</td>
+                <td className='thGeneral'>Supply Model</td>
               </tr>
-              {tokenomicsData && (
+              {tokenomicsData.tokenomics_data.length > 0 && (
                 <tr>
-                  <td>{tokenomicsData.tokenomics_data[0].tokenomics.total_supply}</td>
-                  <td>{tokenomicsData.tokenomics_data[0].tokenomics.circulating_supply}</td>
-                  <td>
+                  <td className='tdGeneral'>{tokenomicsData.tokenomics_data[0].tokenomics.token}</td>
+                  <td className='tdGeneral'>{tokenomicsData.tokenomics_data[0].tokenomics.total_supply}</td>
+                  <td className='tdGeneral'>{tokenomicsData.tokenomics_data[0].tokenomics.circulating_supply}</td>
+                  <td className='tdGeneral'>
                     {tokenomicsData.tokenomics_data[0].tokenomics.percentage_circulating_supply}
                   </td>
-                  <td>{tokenomicsData.tokenomics_data[0].tokenomics.max_supply}</td>
-                  <td>{tokenomicsData.tokenomics_data[0].tokenomics.supply_model}</td>
+                  <td className='tdGeneral'>{tokenomicsData.tokenomics_data[0].tokenomics.max_supply}</td>
+                  <td className='tdGeneral'>{tokenomicsData.tokenomics_data[0].tokenomics.supply_model}</td>
                 </tr>
               )}
-              <tr></tr>
-              <tr></tr>
-              <tr></tr>
             </tbody>
-          </Table>
-          <br></br>
-          <br></br>
-          <br></br>
-          <h3>Competitors Tokenomics</h3>
-          <br></br>
-          <Table striped bordered hover>
+          </Table>)}
+                {/* COMPETITORS TOKENOMICS */}
+         {tokenomicsData.tokenomics_data.length > 0 && (
+         <Table className='tokenomicsTable' striped bordered hover>
+           <h2 className='tableSubTitle'>Competitors Tokenomics</h2>
             <tbody>
               <tr>
-                <td>Total Supply</td>
-                <td>Circulating Supply</td>
-                <td>% Circulating Supply</td>
-                <td>Max Supply</td>
-                <td>Supply Model</td>
+                <td className='thGeneral'>Token</td>
+                <td className='thGeneral'>Total Supply</td>
+                <td className='thGeneral'>Circulating Supply</td>
+                <td className='thGeneral'>% Circulating Supply</td>
+                <td className='thGeneral'>Max Supply</td>
+                <td className='thGeneral'>Supply Model</td>
               </tr>
-              {tokenomicsData.tokenomics_data.slice(1).map((tokenomic, index) => (
+              {tokenomicsData.tokenomics_data.length > 1 && tokenomicsData.tokenomics_data.slice(1).map((tokenomic, index) => (
                 <tr key={index}>
-                  <td>{tokenomic.tokenomics.total_supply}</td>
-                  <td>{tokenomic.tokenomics.circulating_supply}</td>
-                  <td>{tokenomic.tokenomics.percentage_circulating_supply}</td>
-                  <td>{tokenomic.tokenomics.max_supply}</td>
-                  <td>{tokenomic.tokenomics.supply_model}</td>
+                  <td className='tdGeneral'>{tokenomic.tokenomics.token}</td>
+                  <td className='tdGeneral'>{tokenomic.tokenomics.total_supply}</td>
+                  <td className='tdGeneral'>{tokenomic.tokenomics.circulating_supply}</td>
+                  <td className='tdGeneral'>{tokenomic.tokenomics.percentage_circulating_supply}</td>
+                  <td className='tdGeneral'>{tokenomic.tokenomics.max_supply}</td>
+                  <td className='tdGeneral'>{tokenomic.tokenomics.supply_model}</td>
                 </tr>
               ))}
             </tbody>
-          </Table>
-          <br></br>
-          <h3>Token Distribution</h3>
-          {tokenomicsData &&
-            tokenomicsData.token_distribution &&
-            tokenomicsData.token_distribution[0] && (
-              <Table striped bordered hover>
+          </Table>)}
+                {/* TOKEN DISTRIBUTION */}
+          {tokenomicsData.token_distribution.length > 0 && (
+            <Table className='tokenomicsTable' striped bordered hover>
+                <h2 className='tableSubTitle'>Token Distribution</h2>
                 <tbody>
                   <tr>
-                    <td>Action</td>
-                    <td>Holder Category</td>
-                    <td>Percentage Held</td>
+                    <td className='thGeneral'>Action</td>
+                    <td className='thGeneral'>Holder Category</td>
+                    <td className='thGeneral'>Percentage Held</td>
                   </tr>
-                  <tr>
-                    <td>
-                      <Button onClick={() => handleEditButtonClick(tokenomicsData)}>Edit</Button>
+                  {tokenomicsData.token_distribution.map((value, index)=> (
+                    <tr key={index}>
+                    <td className='thGeneral'>
+                      <Button onClick={() => handleEditButtonClick(value.token_distributions.id, 'token distribution')}>Edit</Button>
                     </td>
-                    <td>
-                      {tokenomicsData.token_distribution[0].token_distributions.holder_category}
+                    <td className='tdGeneral'>
+                      {value.token_distributions.holder_category}
                     </td>
-                    <td>
-                      {tokenomicsData.token_distribution[0].token_distributions.percentage_held}
+                    <td className='tdGeneral'>
+                      {value.token_distributions.percentage_held}
                     </td>
                   </tr>
+                  ))}
+                  
                 </tbody>
               </Table>
             )}
-          <br />
-          <h3>Token Utility</h3>
-          {tokenomicsData && tokenomicsData.token_utility && tokenomicsData.token_utility[0] && (
-            <Table striped bordered hover>
+                  {/* TOKEN UTILITY */}
+          {tokenomicsData.token_utility.length > 0 && (
+            <Table className='tokenomicsTable' striped bordered hover>
+              <h2 className='tableSubTitle'>Token Utility</h2>
               <tbody>
                 <tr>
-                  <td>Action</td>
-                  <td>Token Applications</td>
-                  <td>Description</td>
+                  <td className='thGeneral'>Action</td>
+                  <td className='thGeneral'>Token Applications</td>
+                  <td className='thGeneral'>Description</td>
                 </tr>
-                <tr>
-                  <td>
-                    <Button onClick={() => handleEditButtonClick(tokenomicsData)}>Edit</Button>
-                  </td>
-                  <td>{tokenomicsData.token_utility[0].token_utilities.token_application}</td>
-                  <td>{tokenomicsData.token_utility[0].token_utilities.description}</td>
-                </tr>
+                {tokenomicsData.token_utility.map((value, index)=> (
+                    <tr key={index}>
+                    <td className='thGeneral'>
+                      <Button onClick={() => handleEditButtonClick(value.token_utilities.id, 'token utility')}>Edit</Button>
+                    </td>
+                    <td className='tdGeneral'>{value.token_utilities.token_application}</td>
+                    <td className='tdGeneral'>{value.token_utilities.description}</td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           )}
-          <br />
-          <h3>Value Accrual Mechanisms</h3>
-          {tokenomicsData &&
-            tokenomicsData.value_accrual_mechanisms &&
-            tokenomicsData.value_accrual_mechanisms[0] && (
-              <Table striped bordered hover>
+
+                  {/* VALUE ACCRUAL MECHANISM */}
+          { tokenomicsData.value_accrual_mechanisms.length > 0 && (
+              <Table className='tokenomicsTable' striped bordered hover>
+                <h2 className='tableSubTitle'>Value Accrual Mechanisms</h2>
                 <tbody>
                   <tr>
-                    <td>Action</td>
-                    <td>Mechanisms</td>
-                    <td>Description</td>
+                    <td className='thGeneral'>Action</td>
+                    <td className='thGeneral'>Mechanisms</td>
+                    <td className='thGeneral'>Description</td>
                   </tr>
-                  <tr>
-                    <td>
-                      <Button onClick={() => handleEditButtonClick(tokenomicsData)}>Edit</Button>
-                    </td>
-                    <td>
-                      {
-                        tokenomicsData.value_accrual_mechanisms[0].value_accrual_mechanisms
-                          .mechanism
-                      }
-                    </td>
-                    <td>
-                      {
-                        tokenomicsData.value_accrual_mechanisms[0].value_accrual_mechanisms
-                          .description
-                      }
-                    </td>
+                  {tokenomicsData.value_accrual_mechanisms.map((value, index)=>(
+                  <tr key={index}>
+                  <td className='thGeneral'>
+                    <Button onClick={() => handleEditButtonClick(value.value_accrual_mechanisms.id, 'value accrua mechanisms')}>Edit</Button>
+                  </td>
+                  <td className='tdGeneral'>{value.value_accrual_mechanisms.mechanism}</td>
+                  <td className='tdGeneral'>{value.value_accrual_mechanisms.description}</td>
                   </tr>
+                  ))}
                 </tbody>
               </Table>
             )}
-        </>
+        </div>
       )}
-      <br></br>
-      <br></br>
-      <h3>Actions</h3>
 
-      {/* Botón para abrir el modal */}
-      <Button onClick={() => setShowModal(true)}>Add Tokenomics Data</Button>
 
-      {/* Modal */}
+      {/* Modal for creation*/}
       <TokenomicsModal
         selectedCoinBot={selectedCoinBot}
         showModal={showModal}
         handleClose={handleClose}
+        coinName={selectedCoinName}
       />
-      {/* Modal de edición */}
+      {/* Modal for edition */}
       <TokenomicsEditModal
-        selectedItemForEdit={selectedItemForEdit}
-        showEditModal={showEditModal} // Cambiado de showEdit a showEditModal
-        handleClose={handleClose}
-        setShowEditModal={setShowEditModal}
         selectedCoinBot={selectedCoinBot}
+        showEditModal={showEditModal}
+        setShowEditModal={setShowEditModal}
+        selectedItemForEdit={selectedItemForEdit}
+        fetchData={fetchData}
       />
     </div>
   )

@@ -10,21 +10,17 @@ const RMForm = ({ onSubmit, onCancel, show }) => {
     e.preventDefault();
 
     try {
-      await onSubmit({
+      const response = await onSubmit({
         analized_revenue,
       });
-
-      // Muestra el mensaje de éxito
-      setSuccessMessage("Revenue model created successfully");
-
-      // Limpia los campos después de un breve retraso
+      setSuccessMessage(response);
       setTimeout(() => {
         setAnalizedRevenue("");
         setSuccessMessage(null);
         onCancel();
       }, 2000);
     } catch (error) {
-      console.error("Error creating Revenue Model:", error);
+      setSuccessMessage(error);
     }
   };
 
@@ -48,8 +44,7 @@ const RMForm = ({ onSubmit, onCancel, show }) => {
           <Button style={{ width: "100%" }} type="submit" variant="primary">
             Create Revenue Model
           </Button>
-          <br />
-          {/* Muestra el mensaje de éxito */}
+          
           {successMessage && (
             <Alert className="alertSucess" variant="success">
               {successMessage}

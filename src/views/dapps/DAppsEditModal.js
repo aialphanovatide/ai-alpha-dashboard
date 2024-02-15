@@ -77,7 +77,7 @@ const DAppsEditModal = ({ show, onClose, dapp  }) => {
         </Form>
       </Modal.Body>
       <Modal.Footer className='formGeneral'>
-        <Button variant="primary" onClick={handleSubmit}>
+        <Button className='createBtn' variant="primary" onClick={handleSubmit}>
           Save Changes
         </Button>
 

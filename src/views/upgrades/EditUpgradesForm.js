@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Alert } from "react-bootstrap";
 
 const EditUpgradesForm = ({ upgrade, onSubmit }) => {
+
+  const [responseMessage, setResponseMessage] = useState('')
   const [formData, setFormData] = useState({
     event: upgrade.upgrade.event,
     date: upgrade.upgrade.date,
     event_overview: upgrade.upgrade.event_overview,
     impact: upgrade.upgrade.impact,
     upgrade_id: upgrade.upgrade.id,
-    // Añade más campos según sea necesario
   });
 
   const handleChange = (e) => {
@@ -19,11 +20,12 @@ const EditUpgradesForm = ({ upgrade, onSubmit }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    const response = await onSubmit(formData);
+    setResponseMessage(response)
   };
-  console.log(formData)
+
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group controlId="event">
@@ -76,6 +78,7 @@ const EditUpgradesForm = ({ upgrade, onSubmit }) => {
         Save Changes
       </Button>
       <br />
+      {responseMessage && <Alert className='alertSucess' variant="success">{responseMessage}</Alert>}
     </Form>
   );
 };

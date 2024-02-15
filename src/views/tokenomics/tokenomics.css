@@ -1,9 +1,80 @@
+
+
+.tokenomicsMain{
+  margin: 1rem 0 0 0;
+  width: 100%;
+}
+
+.tableSubTitle{
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+/* .tableBody{
+  border: 1px solid #282828;
+  width: 90%;
+} */
+
+/* .tableHead{
+  border: 3px solid #282828;
+} */
+
+.tokenomicsTable{
+  width: 100%;
+  margin: 20px 0
+}
+
+.thGeneral{
+  text-align: center;
+  vertical-align: middle;
+  /* width: 15%; */
+}
+
+.tdGeneral{
+  text-align: center;
+  vertical-align: middle;
+}
+
+.modalForm{
+  padding: 1rem;
+  margin: 0 0 1rem 0;
+  border-radius: 3px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.modalFormBtn{
+  margin: 1rem 0 0 0;
+}
+
 .editButton {
     display: none;
   }
 
+.customInputMain{
+  margin: 0.5rem 0 0 0;
+}
+
+.customInputLanel{
+  font-weight: 600;
+}
+
+.ModalAlert{
+  margin: 1rem 0 0 0;
+}
   
 tr:hover .editButton {
     display: inline-block;
-  }
+}
+
+
+/* ----------------- STYLES FOR EDITION MODAL ---------------------------- */
+
+
+.editModalTitle{
+  text-transform: capitalize;
+}
+
+.alertGeneral{
+  margin: 1rem 0 0 0;
+}
   

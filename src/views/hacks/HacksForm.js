@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Alert } from 'react-bootstrap'
 
 const HackForm = ({ onSubmit }) => {
   const [hackName, setHackName] = useState('')
@@ -12,7 +12,6 @@ const HackForm = ({ onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    // Validaciones adicionales si es necesario
     const formData = {
       hackName,
       date,
@@ -20,14 +19,13 @@ const HackForm = ({ onSubmit }) => {
       consequences,
       mitigationMeasure,
     }
-    console.log('Form Data:', formData) // Agrega este console.log para ver los datos antes de enviarlos
     const response = await onSubmit(formData)
     setResponseMessage(response)
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group controlId="hackNameInput">
+    <Form className='formGeneral' onSubmit={handleSubmit}>
+      <Form.Group className='dappsInput' controlId="hackNameInput">
         <Form.Label>Hack name</Form.Label>
         <Form.Control
           type="text"
@@ -36,13 +34,13 @@ const HackForm = ({ onSubmit }) => {
           required
         />
       </Form.Group>
-      <br />
-      <Form.Group controlId="dateInput">
+      
+      <Form.Group className='dappsInput' controlId="dateInput">
         <Form.Label>Date</Form.Label>
         <Form.Control type="text" value={date} onChange={(e) => setDate(e.target.value)} required />
       </Form.Group>
-      <br />
-      <Form.Group controlId="incidentDescriptionInput">
+      
+      <Form.Group className='dappsInput' controlId="incidentDescriptionInput">
         <Form.Label>What was the Incident?</Form.Label>
         <Form.Control
           as="textarea"
@@ -52,8 +50,8 @@ const HackForm = ({ onSubmit }) => {
           required
         />
       </Form.Group>
-      <br />
-      <Form.Group controlId="consequencesInput">
+      
+      <Form.Group className='dappsInput' controlId="consequencesInput">
         <Form.Label>What were the Consequences?</Form.Label>
         <Form.Control
           as="textarea"
@@ -63,8 +61,8 @@ const HackForm = ({ onSubmit }) => {
           required
         />
       </Form.Group>
-      <br />
-      <Form.Group controlId="mitigationMeasureInput">
+      
+      <Form.Group className='dappsInput' controlId="mitigationMeasureInput">
         <Form.Label>What risk mitigation measures have been taken?</Form.Label>
         <Form.Control
           as="textarea"
@@ -74,11 +72,16 @@ const HackForm = ({ onSubmit }) => {
           required
         />
       </Form.Group>
-      <br />
-      <Button type="submit" variant="primary">
-        Create Hack Data
+      
+      <Button  className='createBtn' type="submit" variant="primary">
+        Create Hack
       </Button>
-      <br />
+      {responseMessage && (
+        <Alert className="alertSucess" variant="success">
+          {responseMessage}
+        </Alert>
+      )}
+      
     </Form>
   )
 }

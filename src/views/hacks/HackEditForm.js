@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Alert } from 'react-bootstrap'
 
 const HackEditForm = ({ hack, onSubmit }) => {
+
+  const [responseMessage, setResponseMessage] = useState('')
   const [formData, setFormData] = useState({
     hackName: hack.hack_name,
     date: hack.date,
@@ -10,7 +12,6 @@ const HackEditForm = ({ hack, onSubmit }) => {
     mitigationMeasure: hack.mitigation_measure,
   })
 
-  console.log(hack)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -20,14 +21,15 @@ const HackEditForm = ({ hack, onSubmit }) => {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    onSubmit(formData)
+    const response = await onSubmit(formData)
+    setResponseMessage(response)
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group controlId="hackName">
+    <Form  className='formGeneral' onSubmit={handleSubmit}>
+      <Form.Group className='dappsInput' controlId="hackName">
         <Form.Label>Hack Name</Form.Label>
         <Form.Control
           type="text"
@@ -36,13 +38,13 @@ const HackEditForm = ({ hack, onSubmit }) => {
           onChange={handleChange}
         />
       </Form.Group>
-      <br />
-      <Form.Group controlId="date">
+    
+      <Form.Group className='dappsInput' controlId="date">
         <Form.Label>Date</Form.Label>
         <Form.Control type="text" name="date" value={formData.date} onChange={handleChange} />
       </Form.Group>
-      <br />
-      <Form.Group controlId="incidentDescription">
+     
+      <Form.Group className='dappsInput' controlId="incidentDescription">
         <Form.Label>Incident Description</Form.Label>
         <Form.Control
           as="textarea"
@@ -52,31 +54,39 @@ const HackEditForm = ({ hack, onSubmit }) => {
           onChange={handleChange}
         />
       </Form.Group>
-      <br />
-      <Form.Group controlId="consequences">
+   
+      <Form.Group className='dappsInput' controlId="consequences">
         <Form.Label>Consequences</Form.Label>
         <Form.Control
           type="text"
+          as="textarea"
+          rows={3}
           name="consequences"
           value={formData.consequences}
           onChange={handleChange}
         />
       </Form.Group>
-      <br />
-      <Form.Group controlId="mitigationMeasure">
+     
+      <Form.Group className='dappsInput' controlId="mitigationMeasure">
         <Form.Label>Mitigation Measure</Form.Label>
         <Form.Control
           type="text"
+          as="textarea"
+          rows={3}
           name="mitigationMeasure"
           value={formData.mitigationMeasure}
           onChange={handleChange}
         />
       </Form.Group>
-      <br />
-      <Button variant="primary" type="submit">
+      
+      <Button className='createBtn' variant="primary" type="submit">
         Save Changes
       </Button>
-      <br />
+      {responseMessage && (
+        <Alert className="alertSucess" variant="success">
+          {responseMessage}
+        </Alert>
+      )}
     </Form>
   )
 }
