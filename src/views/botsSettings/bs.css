@@ -180,3 +180,30 @@
     width: 90%;
     margin: 0.8rem 0;
   }
+
+
+
+  .bot-item {
+    position: relative; /* Hacemos que la tarjeta sea relativa */
+  }
+  
+  .actdeactBtn{
+    position: relative;
+    float: right;
+    border: none;
+
+    margin-right: 20px;
+    margin-top: 20px;
+    scale: 2;
+
+  }
+  
+  .btn-options {
+    position: relative; /* Agregamos posición relativa para que los botones absolutos sean relativos a este */
+  }
+  
+
+  .iconBotList{
+    font-size: 20px;
+
+  }

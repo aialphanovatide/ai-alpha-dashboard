@@ -1,126 +1,99 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
-import PropTypes from "prop-types";
 import config from "../../config";
 
-const CompetitorsEditModal = ({
-  competitorInfo,
-  coinBotId,
-  handleClose,
-  handleSave,
-}) => {
-  const [editedCompetitor, setEditedCompetitor] = useState({
-    ...competitorInfo,
-  });
-  const [visible, setVisible] = useState(true);
-  const [successMessage, setSuccessMessage] = useState("");
+const CompetitorsEditModal = ({ handleEditSuccess, competitor, show, handleClose }) => {
+  const [editedData, setEditedData] = useState({});
+  const [originalData, setOriginalData] = useState({});
+  const [message, setMessage] = useState(null);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEditedCompetitor((prevData) => ({
+  useEffect(() => {
+    setEditedData(competitor.competitor);
+    setOriginalData(competitor.competitor);
+  }, [competitor]);
+
+  const handleInputChange = (e, key) => {
+    const { value } = e.target;
+    setEditedData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [key]: value,
     }));
   };
-
-  console.log("competitorInfo", competitorInfo);
-
-  const handleSaveClick = async () => {
+  const handleSubmit = async () => {
     try {
-      const response = await fetch(`${config.BASE_URL}/api/competitors/edit`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
+      const response = await fetch(
+        `${config.BASE_URL}/edit_competitors/${competitor.competitor.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ competitor_data: editedData }),
         },
-        body: JSON.stringify({
-          coin_bot_id: coinBotId,
-          competitor_data: editedCompetitor,
-        }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        handleSave({ ...competitorInfo, ...editedCompetitor });
-        setSuccessMessage("Updated successfully");
-        setTimeout(() => {
-          setSuccessMessage("");
-        }, 2000);
-        setTimeout(() => {
-          setVisible(false);
-          handleClose();
-        }, 4000);
-      } else {
-        console.error("Error updating competitor data:", data.error);
+      );
+
+      if (!response.ok) {
+        throw new Error("Error updating competitor");
       }
+
+      console.log("Competitor updated successfully");
+      setMessage("Competitor updated successfully");
+      setTimeout(() => {
+        handleClose();
+        handleEditSuccess(); // Llamada a la función de retorno para reinicializar estados en el componente padre
+      }, 2000); // Retraso de 2 segundos antes de cerrar el modal
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error updating competitor:", error.message);
+      // Puedes manejar el error de actualización aquí
     }
   };
-  console.log("editedCompetitor", editedCompetitor);
+
   return (
-    <Modal show={visible} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Edit Data</Modal.Title>
+        <Modal.Title>Edit Competitor</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {message && (
+          <Alert
+            variant={message.includes("successfully") ? "success" : "danger"}
+          >
+            {message}
+          </Alert>
+        )}
         <Form>
-          <Form.Group controlId="formCompetitor">
-            {Object.keys(editedCompetitor).map(
-              (field) =>
-                ![
-                  "coin_bot_id",
-                  "id",
-                  "created_at",
-                  "updated_at",
-                  "dynamic",
-                ].includes(field) && (
-                  <React.Fragment key={field}>
-                    <Form.Label>
-                      {editedCompetitor[field].competitor &&
-                        editedCompetitor[field].competitor.key}
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      name={field}
-                      value={
-                        editedCompetitor[field].competitor
-                          ? editedCompetitor[field].competitor.value || ""
-                          : ""
-                      }
-                      onChange={handleChange}
-                    />
-                  </React.Fragment>
-                ),
-            )}
-          </Form.Group>
+          {Object.entries(competitor.competitor).map(
+            ([key, value]) =>
+              ![
+                "coin_bot_id",
+                "id",
+                "created_at",
+                "updated_at",
+                "token",
+                "dynamic",
+              ].includes(key) && (
+                <Form.Group controlId={key} key={key}>
+                  <Form.Label>{key}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={editedData[key] || value}
+                    onChange={(e) => handleInputChange(e, key)}
+                  />
+                </Form.Group>
+              ),
+          )}
         </Form>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleSaveClick}>
+        <Button variant="primary" onClick={handleSubmit}>
           Save Changes
         </Button>
-        {successMessage && (
-          <Alert
-            variant="success"
-            onClose={() => setSuccessMessage("")}
-            dismissible
-          >
-            {successMessage}
-          </Alert>
-        )}
       </Modal.Footer>
     </Modal>
   );
-};
-
-CompetitorsEditModal.propTypes = {
-  competitorInfo: PropTypes.object,
-  coinBotId: PropTypes.string,
-  handleClose: PropTypes.func.isRequired,
-  handleSave: PropTypes.func.isRequired,
 };
 
 export default CompetitorsEditModal;

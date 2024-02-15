@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Form, Table, Button } from "react-bootstrap";
+import { Form, Table, Button, Modal } from "react-bootstrap";
 import CompetitorForm from "./CompetitorForm";
-import config from "../../config";
 import CompetitorsEditModal from "./CompetitorsEditModal";
+import config from "../../config";
 
 const Competitors = () => {
   const [bots, setBots] = useState([]);
   const [selectedCoinBot, setSelectedCoinBot] = useState("");
   const [competitorsData, setCompetitorsData] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedCompetitor, setSelectedCompetitor] = useState("");
+  const [selectedCompetitor, setSelectedCompetitor] = useState(null);
 
   useEffect(() => {
     const getAllBots = async () => {
@@ -91,19 +90,12 @@ const Competitors = () => {
         throw new Error(errorData.error || "Error creating competitor");
       }
 
-      const data = await response.json();
-
       // Puedes manejar la respuesta según tus necesidades (mostrar mensaje, cerrar modal, etc.)
       handleCloseModal();
     } catch (error) {
       console.error("Error creating competitor:", error.message);
       // Puedes mostrar un mensaje de error al usuario aquí
     }
-  };
-
-  const handleEditCompetitor = (competitor) => {
-    setSelectedCompetitor(competitor);
-    setShowEditModal(true);
   };
 
   const handleShowModal = () => {
@@ -120,37 +112,22 @@ const Competitors = () => {
     setSelectedCoinBot(value);
   };
 
-  const handleSaveEditCompetitor = async (editedCompetitorData) => {
-    try {
-      // Realiza la solicitud al servidor para guardar los cambios del competidor
-      const response = await fetch(`${config.BASE_URL}/update_competitor`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-        },
-        body: JSON.stringify({
-          competitor_id: editedCompetitorData.id, // Suponiendo que este es el ID del competidor
-          updated_data: editedCompetitorData, // Los datos actualizados del competidor
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error updating competitor");
-      }
-
-      // Puedes manejar la respuesta según tus necesidades
-      console.log("Competitor updated successfully");
-      // Cerrar el modal de edición
-      setShowEditModal(false);
-    } catch (error) {
-      console.error("Error updating competitor:", error.message);
-      // Puedes mostrar un mensaje de error al usuario aquí
-    }
+  const handleShowEditModal = (competitor) => {
+    setSelectedCompetitor(competitor);
+    setShowModal(true);
   };
 
-  // Función para agrupar los datos de competidores por token
+  const handleEditSuccess = () => {
+    setSelectedCoinBot(""); // Reiniciar el estado de selectedCoinBot
+    setCompetitorsData([]); // Reiniciar el estado de selectedCompetitor
+  };
+  
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedCompetitor(null); // Limpiar el competidor seleccionado al cerrar el modal
+  };
+
   const groupCompetitorsByToken = () => {
     const groupedCompetitors = {};
     competitorsData.forEach((competitor) => {
@@ -163,12 +140,10 @@ const Competitors = () => {
     return groupedCompetitors;
   };
 
-  console.log(selectedCompetitor);
-
   return (
     <div>
       <div style={{ margin: "20px", overflowX: "auto" }}>
-        <h2>Competitors Sub-Section</h2>
+        <h2>Competitors</h2>
         <br />
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: "15px" }}>
           <Form.Label>Select Coin</Form.Label>
@@ -186,7 +161,6 @@ const Competitors = () => {
           </Form.Control>
         </Form.Group>
 
-        {/* Generar una tabla para cada grupo de datos de competidores */}
         {Object.entries(groupCompetitorsByToken()).map(
           ([token, competitors]) => (
             <div key={token}>
@@ -198,15 +172,16 @@ const Competitors = () => {
                   <tr>
                     {Object.keys(competitors[0].competitor).map(
                       (feature) =>
-                        feature !== "coin_bot_id" &&
-                        feature !== "id" &&
-                        feature !== "created_at" &&
-                        feature !== "updated_at" &&
-                        feature !== "token" &&
-                        feature !== "dynamic" && (
-                          <th key={feature}>{feature}</th>
-                        ),
+                        ![
+                          "coin_bot_id",
+                          "id",
+                          "created_at",
+                          "updated_at",
+                          "token",
+                          "dynamic",
+                        ].includes(feature) && <th key={feature}>{feature}</th>,
                     )}
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -214,24 +189,29 @@ const Competitors = () => {
                     <tr key={index}>
                       {Object.keys(competitor.competitor).map(
                         (key) =>
-                          key !== "coin_bot_id" &&
-                          key !== "id" &&
-                          key !== "token" &&
-                          key !== "created_at" &&
-                          key !== "updated_at" &&
-                          key !== "dynamic" && (
+                          ![
+                            "coin_bot_id",
+                            "id",
+                            "token",
+                            "created_at",
+                            "updated_at",
+                            "dynamic",
+                          ].includes(key) && (
                             <td key={key}>{competitor.competitor[key]}</td>
                           ),
                       )}
+                      <td>
+                        <Button
+                          variant="primary"
+                          onClick={() => handleShowEditModal(competitor)}
+                        >
+                          Edit
+                        </Button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </Table>
-              <h3>Action:</h3>
-              <Button onClick={() => handleEditCompetitor(competitors)}>
-                Edit {token.toUpperCase()} Data
-              </Button>
-
               <br />
               <br />
             </div>
@@ -240,17 +220,17 @@ const Competitors = () => {
       </div>
       <Button onClick={handleShowModal}>Add Competitor</Button>
       <CompetitorForm
-        showModal={showModal}
+        showModal={showModal && !selectedCompetitor} // Mostrar el formulario solo si no hay un competidor seleccionado
         handleClose={handleCloseModal}
         selectedCoinBot={selectedCoinBot}
-        handleSave={(formData) => handleCreateFormSubmit(formData)} // Llamar a handleCreateFormSubmit con formData
+        handleSave={(formData) => handleCreateFormSubmit(formData)}
       />
-      {showEditModal && (
+      {selectedCompetitor && ( // Mostrar el modal de edición si hay un competidor seleccionado
         <CompetitorsEditModal
-          competitorInfo={selectedCompetitor}
-          coinBotId={selectedCoinBot}
-          handleClose={() => setShowEditModal(false)}
-          handleSave={handleSaveEditCompetitor}
+          competitor={selectedCompetitor}
+          show={showModal}
+          handleClose={handleModalClose}
+          handleEditSuccess={handleEditSuccess} // Pasar la función de retorno como prop
         />
       )}
     </div>
