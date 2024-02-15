@@ -128,7 +128,7 @@
   }
 
   .inactiveBot{
-    background-color: #ff5733;
+    border: #ff5733 3px solid;
   }
   
   @media screen and (max-width: 1200px) {

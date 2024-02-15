@@ -38,8 +38,6 @@ const GeneralAnalysis = ({success, onSuccess}) => {
             GeneralAnalysis()
         }
       }, [success])
-
-    console.log('generalAnalysis: ', generalAnalysis)
     
   return (
     <div className='allAnalysismain'>

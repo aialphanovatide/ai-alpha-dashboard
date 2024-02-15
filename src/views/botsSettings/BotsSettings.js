@@ -41,7 +41,6 @@ const BotsSettings = () => {
 
       try {
         const data = JSON.parse(responseText)
-        console.log('Data:', data)
 
         if (data && data.bots) {
           setBots(data.bots)
@@ -72,7 +71,6 @@ const BotsSettings = () => {
         const data = await response.json()
         if (data) {
           await getAllBots()
-          console.log(`Bot ${botCategory} Updated After:`, data.bot)
         } else {
           console.error(
             `Error At ${url === 'activate_bot' ? 'TurnON' : 'TurnOFF'} the bot ${botCategory}:`,

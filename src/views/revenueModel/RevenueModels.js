@@ -164,7 +164,10 @@ const RevenueModels = () => {
         </Form.Group>
 
         <div className='revenueMain'>
+          <div className='revenueTagMain'>
           <span className='revenueTitle'>Annualised Revenue:</span>
+          <span className='revenueTag'>*Cumulative last 1yr revenue</span>
+          </div>
           <span className='revenueValue'>{revenueModels && revenueModels.analized_revenue ?  revenueModels.analized_revenue : 'No revenue model'}</span>
         </div>
         {
