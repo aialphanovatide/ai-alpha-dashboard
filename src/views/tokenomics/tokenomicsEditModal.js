@@ -1,50 +1,117 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Button, Form } from 'react-bootstrap'
+import { Modal, Button, Form, Alert } from 'react-bootstrap'
 import config from '../../config'
 
-const TokenomicsEditModal = ({ selectedCoinBot, showEditModal, setShowEditModal }) => {
-  const [tokenomicsData, setTokenomicsData] = useState(null)
+const CustomInput = ({ controlId, label, placeholder, value, onChange, as  }) => (
+  <Form.Group className='customInputMain' controlId={controlId}>
+    <Form.Label className='customInputLanel'>{label}</Form.Label>
+    <Form.Control
+      type="text"
+      as={as && as}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target)}
+    />
+  </Form.Group>
+);
+
+const TokenomicsEditModal = ({ selectedCoinBot, showEditModal, setShowEditModal, selectedItemForEdit, fetchData }) => {
+
   const [tokenDistributionData, setTokenDistributionData] = useState({})
   const [tokenUtilityData, setTokenUtilityData] = useState({})
   const [valueAccrualMechanismsData, setValueAccrualMechanismsData] = useState({})
 
-  useEffect(() => {
-    const fetchData = async () => {
+  // States for responsemessages
+  const [responseMessage, setResponseMessage] = useState({'success': '', 'error': ''})
+
+    // Get token distribution item
+    const getTokenDistribution = async () => {
       try {
-        const tokenomicsResponse = await fetch(
-          `${config.BASE_URL}/get_tokenomics/${selectedCoinBot}`,
-          {
+        const response = await fetch(`${config.BASE_URL}/get_token_distribution/${selectedItemForEdit.id}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
               'ngrok-skip-browser-warning': 'true',
             },
           },
-        )
-        const data = await tokenomicsResponse.json()
-        setTokenomicsData(data.message)
-
-        // Actualizar los estados de los datos de tokenomics si los datos están disponibles
-        if (data.message) {
-          setTokenDistributionData(data.message.token_distribution[0].token_distributions)
-          setTokenUtilityData(data.message.token_utility[0].token_utilities)
-          setValueAccrualMechanismsData(
-            data.message.value_accrual_mechanisms[0].value_accrual_mechanisms,
-          )
+        );
+        const data = await response.json();
+        if (response.ok) {
+          setTokenDistributionData(data.data)
+        } else {
+          console.log('token distri response:', data.error);
         }
       } catch (error) {
-        console.error('Error fetching data:', error)
+        console.error('Error fetching token distribution:', error);
       }
-    }
+    };
 
-    if (selectedCoinBot) {
-      fetchData()
-    }
-  }, [selectedCoinBot])
+    // Gets a token utility
+    const getTokenUtility = async () => {
+      try {
+        const response = await fetch(`${config.BASE_URL}/get_token_utility/${selectedItemForEdit.id}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'ngrok-skip-browser-warning': 'true',
+            },
+          },
+        );
+        const data = await response.json();
+        if (response.ok) {
+          setTokenUtilityData(data.data)
+        } else {
+          console.log('token utility response:', data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching token utility:', error);
+      }
+    };
 
+    // Gets a value accrual mechanism
+    const getValueAccrual = async () => {
+      try {
+        const response = await fetch(`${config.BASE_URL}/get_value_accrual/${selectedItemForEdit.id}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'ngrok-skip-browser-warning': 'true',
+            },
+          },
+        );
+        const data = await response.json();
+        if (response.ok) {
+          setValueAccrualMechanismsData(data.data)
+        } else {
+          console.log('value accrual response:', data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching value accrual:', error);
+      }
+    };
+    
+    // Gets the data of the selected item to edit
+    useEffect(() => {
+        if (selectedItemForEdit) {
+          if (selectedItemForEdit.endpointName === 'token distribution') {
+            getTokenDistribution();
+          } else if (selectedItemForEdit.endpointName === 'token utility') {
+            getTokenUtility();
+          } else if (selectedItemForEdit.endpointName === 'value accrua mechanisms') {
+            getValueAccrual();
+          } else {
+            console.error('Unknown endpointName:', selectedItemForEdit.endpointName);
+          }
+        } else {
+          console.warn('No selectedItemForEdit');
+        }
+    }, [selectedItemForEdit]);
+
+  // Handle the edit
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
+
       const dataToSend = {
         token_distribution: {
           holder_category: tokenDistributionData.holder_category || '',
@@ -59,9 +126,8 @@ const TokenomicsEditModal = ({ selectedCoinBot, showEditModal, setShowEditModal 
           description: valueAccrualMechanismsData.description || '',
         },
       }
-      console.log('Data to send:', dataToSend)
-      console.log('ID: ', selectedCoinBot)
-      const response = await fetch(`${config.BASE_URL}/edit_tokenomics/${selectedCoinBot}`, {
+
+      const response = await fetch(`${config.BASE_URL}/edit_tokenomics/${selectedItemForEdit.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -70,137 +136,156 @@ const TokenomicsEditModal = ({ selectedCoinBot, showEditModal, setShowEditModal 
         body: JSON.stringify(dataToSend),
       })
       const data = await response.json()
-      console.log('Response:', data)
-      // Manejar la respuesta del servidor aquí según sea necesario
-      // Cerrar el modal después de enviar el formulario
-      setShowEditModal(false)
-      handleClose()
-    } catch (error) {
-      console.error('Error:', error)
-      // Manejar errores de solicitud aquí según sea necesario
-    }
-  }
 
-  const handleInputChange = (category, field, value) => {
-    switch (category) {
-      case 'token_distribution':
-        setTokenDistributionData({
-          ...tokenDistributionData,
-          [field]: value,
-        })
-        break
-      case 'token_utility':
-        setTokenUtilityData({
-          ...tokenUtilityData,
-          [field]: value,
-        })
-        break
-      case 'value_accrual_mechanisms':
-        setValueAccrualMechanismsData({
-          ...valueAccrualMechanismsData,
-          [field]: value,
-        })
-        break
-      default:
-        break
-    }
+      if (response.ok){
+        setResponseMessage({ success: data.message, error: '' });
+        fetchData()
+        setTimeout(() => {
+          handleClose()
+        }, 1200);
+      } else {
+        setResponseMessage({  error: data.error, success: '' });
+      }
+    } catch (error) {
+      setResponseMessage({  error: error, success: '' });
+    } 
   }
 
   const handleClose = () => {
-    // Cerrar el modal utilizando setShowEditModal
     setShowEditModal(false)
+    setTokenDistributionData({})
+    setValueAccrualMechanismsData({})
+    setTokenUtilityData({})
+    setResponseMessage({'success': '', 'error': ''})
   }
+
+
+  const handleTokenApplicationChange = ({id, value}) => {
+    setTokenUtilityData({
+      ...tokenUtilityData,
+      [id]: value,
+    })
+  };
+
+  const handleTokenDescriptionChange = ({id, value}) => {
+    setTokenUtilityData({
+      ...tokenUtilityData,
+      [id]: value,
+    })
+  };
+
+  const handleHolderCategoryChange = ({id, value}) => {
+        setTokenDistributionData({
+          ...tokenDistributionData,
+          [id]: value,
+        })
+      };
+
+  const handlePercentageHeldChange = ({id, value}) => {
+        setTokenDistributionData({
+          ...tokenDistributionData,
+          [id]: value,
+        })
+      };
+
+  const handleMechanismChange = ({id, value}) => {
+        setValueAccrualMechanismsData({
+          ...valueAccrualMechanismsData,
+          [id]: value,
+        })
+      };
+  const handleMechanismDescriptionChange = ({id, value}) => {
+        setValueAccrualMechanismsData({
+          ...valueAccrualMechanismsData,
+          [id]: value,
+        })
+      };
+
+console.log(responseMessage)
 
   return (
     <Modal show={showEditModal} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Edit Tokenomics Data</Modal.Title>
+        <Modal.Title className='editModalTitle'>{selectedItemForEdit && selectedItemForEdit.endpointName} </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-          {/* Formulario para Token Utility */}
-          <Form.Group controlId="tokenApplication">
-            <Form.Label>Token Application</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter token application"
-              value={tokenUtilityData.token_application || ''}
-              onChange={(e) =>
-                handleInputChange('token_utility', 'token_application', e.target.value)
-              }
+        {/* Token Utility Form */}
+        {
+          selectedItemForEdit && selectedItemForEdit.endpointName === 'token utility' && (
+          <div>
+            <CustomInput
+            controlId="token_application"
+            label="Token Application"
+            placeholder="Enter token application"
+            value={tokenUtilityData.token_application || ''}
+            onChange={handleTokenApplicationChange}
             />
-          </Form.Group>
-          <br />
-          <Form.Group controlId="tokenDescription">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              as="textarea"
-              placeholder="Enter description"
-              value={tokenUtilityData.description || ''}
-              onChange={(e) => handleInputChange('token_utility', 'description', e.target.value)}
+            <CustomInput
+            controlId="description"
+            label="Token Description"
+            as="textarea"
+            placeholder="Enter token description"
+            value={tokenUtilityData.description || ''}
+            onChange={handleTokenDescriptionChange}
             />
-          </Form.Group>
-          <br />
-          {/* Formulario para Token Distribution */}
-          <Form.Group controlId="holderCategory">
-            <Form.Label>Holder Category</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter holder category"
-              value={tokenDistributionData.holder_category || ''}
-              onChange={(e) =>
-                handleInputChange('token_distribution', 'holder_category', e.target.value)
-              }
+          </div>
+          )
+        }
+        
+        {/* Token Distribution Form */}
+        {
+          selectedItemForEdit && selectedItemForEdit.endpointName === 'token distribution' && (
+          <div>
+            <CustomInput
+            controlId="holder_category"
+            label="Holder Category"
+            placeholder="Enter holder category"
+            value={tokenDistributionData.holder_category || ''}
+            onChange={handleHolderCategoryChange}
             />
-          </Form.Group>
-          <br />
-          <Form.Group controlId="percentageHeld">
-            <Form.Label>Percentage Held</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter percentage held"
-              value={tokenDistributionData.percentage_held || ''}
-              onChange={(e) =>
-                handleInputChange('token_distribution', 'percentage_held', e.target.value)
-              }
+            <CustomInput
+            controlId="percentage_held"
+            label="Percentage Held"
+            placeholder="Enter token description"
+            value={tokenDistributionData.percentage_held || ''}
+            onChange={handlePercentageHeldChange}
             />
-          </Form.Group>
-          <br />
-          {/* Formulario para Value Accrual Mechanisms */}
-          <Form.Group controlId="mechanism">
-            <Form.Label>Mechanism</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter mechanism"
-              value={valueAccrualMechanismsData.mechanism || ''}
-              onChange={(e) =>
-                handleInputChange('value_accrual_mechanisms', 'mechanism', e.target.value)
-              }
+          </div>
+          )
+        }
+        
+        {/* Value Accrual Mechanisms Form */}
+        {
+          selectedItemForEdit && selectedItemForEdit.endpointName === 'value accrua mechanisms' && (
+          <div>
+            <CustomInput
+            controlId="mechanism"
+            label="Mechanism in place"
+            placeholder="Enter mechanism"
+            value={valueAccrualMechanismsData.mechanism || ''}
+            onChange={handleMechanismChange}
             />
-          </Form.Group>
-          <br />
-          <Form.Group controlId="mechanismDescription">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              as="textarea"
-              placeholder="Enter mechanism description"
-              value={valueAccrualMechanismsData.description || ''}
-              onChange={(e) =>
-                handleInputChange('value_accrual_mechanisms', 'description', e.target.value)
-              }
+            <CustomInput
+            controlId="description"
+            label="Description"
+            as='textarea'
+            placeholder="Enter mechanism description"
+            value={valueAccrualMechanismsData.description || ''}
+            onChange={handleMechanismDescriptionChange}
             />
-          </Form.Group>
-          <br />
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
+          </div>
+          )
+        }
+
+        <Button className='modalFormBtn' variant="primary" type="submit">
+          Submit
+        </Button>
+       
+        {responseMessage.success && <Alert className='alertGeneral' variant="success">{responseMessage.success}</Alert>}
+      {responseMessage.error && <Alert className='alertGeneral' variant="danger">{responseMessage.error}</Alert>}
         </Form>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-      </Modal.Footer>
     </Modal>
   )
 }
