@@ -40,7 +40,7 @@ const RMForm = ({ onSubmit, onCancel, show }) => {
               required
             />
           </Form.Group>
-          <br />
+          <hr />
           <Button style={{ width: "100%" }} type="submit" variant="primary">
             Create Revenue Model
           </Button>

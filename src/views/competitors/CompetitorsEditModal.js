@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import config from "../../config";
 
-const CompetitorsEditModal = ({ handleEditSuccess, competitor, show, handleClose }) => {
+const CompetitorsEditModal = ({
+  handleEditSuccess,
+  competitor,
+  show,
+  handleClose,
+}) => {
   const [editedData, setEditedData] = useState({});
   const [originalData, setOriginalData] = useState({});
   const [message, setMessage] = useState(null);
@@ -54,14 +59,7 @@ const CompetitorsEditModal = ({ handleEditSuccess, competitor, show, handleClose
         <Modal.Title>Edit Competitor</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {message && (
-          <Alert
-            variant={message.includes("successfully") ? "success" : "danger"}
-          >
-            {message}
-          </Alert>
-        )}
-        <Form>
+        <Form style={{ padding: "10px" }}>
           {Object.entries(competitor.competitor).map(
             ([key, value]) =>
               ![
@@ -79,16 +77,26 @@ const CompetitorsEditModal = ({ handleEditSuccess, competitor, show, handleClose
                     value={editedData[key] || value}
                     onChange={(e) => handleInputChange(e, key)}
                   />
+                  <br />
                 </Form.Group>
               ),
           )}
         </Form>
       </Modal.Body>
+      {message && (
+        <Alert
+        style={{ margin: "2%" }}
+          variant={message.includes("successfully") ? "success" : "danger"}
+        >
+          {message}
+        </Alert>
+      )}
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleSubmit}>
+        <Button
+          variant="primary"
+          style={{ width: "100%" }}
+          onClick={handleSubmit}
+        >
           Save Changes
         </Button>
       </Modal.Footer>

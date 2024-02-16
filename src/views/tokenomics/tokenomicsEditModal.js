@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Modal, Button, Form, Alert } from 'react-bootstrap'
 import config from '../../config'
 
+
 const CustomInput = ({ controlId, label, placeholder, value, onChange, as  }) => (
   <Form.Group className='customInputMain' controlId={controlId}>
     <Form.Label className='customInputLanel'>{label}</Form.Label>
@@ -278,7 +279,7 @@ console.log(responseMessage)
           )
         }
 
-        <Button className='modalFormBtn' variant="primary" type="submit">
+        <Button className='modalFormBtn' style={{ width: "100%" }} variant="primary" type="submit">
           Submit
         </Button>
        

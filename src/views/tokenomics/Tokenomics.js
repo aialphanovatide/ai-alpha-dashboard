@@ -92,15 +92,9 @@ const Tokenomics = () => {
  console.log('tokenomicsData: ', tokenomicsData)
 
   return (
-<<<<<<< HEAD
-    <div style={{ margin: '20px' }}>
-      <h2>Tokenomics</h2>
-      <br></br>
-=======
     <div className='formGeneralMain' style={{ margin: '20px' }}>
       <h2>Tokenomics</h2>
 
->>>>>>> deded38f6a5f2a3f9171db9bac87b6f8940940b4
       <Form.Group controlId="coinBotSelect" style={{ marginBottom: '15px' }}>
         <Form.Label>Select Coin</Form.Label>
         <Form.Control

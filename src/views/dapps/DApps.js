@@ -140,13 +140,14 @@ const DApps = () => {
             ))}
           </Form.Control>
         </Form.Group>
-
+  
         <Button disabled={!selectedCoinBot} variant="primary" onClick={handleCreateButtonClick}>
           Create DApp
         </Button>
-
+        <br />
         {dapps && dapps.length > 0 && (
           <>
+          <br />
             <Table className='dappsTable' striped bordered hover>
               <thead>
                 <tr>

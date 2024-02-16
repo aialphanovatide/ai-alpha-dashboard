@@ -281,7 +281,7 @@ const TokenomicsModal = ({ selectedCoinBot, showModal, handleClose, coinName }) 
         onChange={handleSupplyModelChange}
         />
         <div>
-        <Button className='modalFormBtn' variant="primary" type="submit">
+        <Button className='modalFormBtn' style={{ width: "100%" }}  variant="primary" type="submit">
           Add Tokenomics
         </Button>
         {responseMessageTokenomics.success && <Alert className='ModalAlert' variant="success">{responseMessageTokenomics.success}</Alert>}
@@ -309,7 +309,7 @@ const TokenomicsModal = ({ selectedCoinBot, showModal, handleClose, coinName }) 
         />
         
         <div>
-        <Button className='modalFormBtn' variant="primary" type="submit">
+        <Button className='modalFormBtn' style={{ width: "100%" }}  variant="primary" type="submit">
         Add Token Utility
         </Button>
         {responseMessageTokenUtility.success && <Alert className='ModalAlert' variant="success">{responseMessageTokenUtility.success}</Alert>}
@@ -336,7 +336,7 @@ const TokenomicsModal = ({ selectedCoinBot, showModal, handleClose, coinName }) 
         />
 
         <div>
-        <Button className='modalFormBtn' variant="primary" type="submit">
+        <Button className='modalFormBtn' style={{ width: "100%" }}  variant="primary" type="submit">
         Add Token Distribution
         </Button>
         {responseMessageTokenDistri.success && <Alert className='ModalAlert' variant="success">{responseMessageTokenDistri.success}</Alert>}
@@ -364,7 +364,7 @@ const TokenomicsModal = ({ selectedCoinBot, showModal, handleClose, coinName }) 
           />
          
           <div>
-        <Button className='modalFormBtn' variant="primary" type="submit">
+        <Button className='modalFormBtn' style={{ width: "100%" }}  variant="primary" type="submit">
         Add Value Accrual Mechanisms
         </Button>
         {responseMessageValueAccrual.success && <Alert className='ModalAlert' variant="success">{responseMessageValueAccrual.success}</Alert>}

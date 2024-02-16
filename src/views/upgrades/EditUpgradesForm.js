@@ -72,7 +72,7 @@ const EditUpgradesForm = ({ upgrade, onSubmit }) => {
           onChange={handleChange}
         />
       </Form.Group>
-      <br />
+      <hr />
       {/* Agrega más campos según sea necesario */}
       <Button variant="primary" type="submit" style={{ width: "100%" }}>
         Save Changes

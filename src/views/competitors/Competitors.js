@@ -11,6 +11,8 @@ const Competitors = () => {
   const [competitorsData, setCompetitorsData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedCompetitor, setSelectedCompetitor] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+
 
   // gets all the coins
   useEffect(() => {
