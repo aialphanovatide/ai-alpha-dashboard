@@ -9,12 +9,10 @@ const CompetitorsEditModal = ({
   handleClose,
 }) => {
   const [editedData, setEditedData] = useState({});
-  const [originalData, setOriginalData] = useState({});
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
     setEditedData(competitor.competitor);
-    setOriginalData(competitor.competitor);
   }, [competitor]);
 
   const handleInputChange = (e, key) => {
@@ -24,6 +22,7 @@ const CompetitorsEditModal = ({
       [key]: value,
     }));
   };
+
   const handleSubmit = async () => {
     try {
       const response = await fetch(
@@ -85,7 +84,7 @@ const CompetitorsEditModal = ({
       </Modal.Body>
       {message && (
         <Alert
-        style={{ margin: "2%" }}
+          style={{ margin: "2%" }}
           variant={message.includes("successfully") ? "success" : "danger"}
         >
           {message}

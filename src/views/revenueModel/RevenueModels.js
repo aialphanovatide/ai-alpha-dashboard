@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Form, Button, Modal, Table } from 'react-bootstrap'
+import { Form, Button, Modal } from 'react-bootstrap'
 import config from '../../config'
 import RMForm from './RMForm'
 import RMEditForm from './RMEditForm'
@@ -58,7 +58,7 @@ const RevenueModels = () => {
         )
 
         const data = await response.json()
-        if (data && data.status == 200) {
+        if (data && data.status === 200) {
           setRevenueModels(data.revenue_model)
         
         } else {

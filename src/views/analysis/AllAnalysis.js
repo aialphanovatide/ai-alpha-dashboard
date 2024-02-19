@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import config from 'src/config';
 import Swal from 'sweetalert2'
 import CIcon from '@coreui/icons-react'

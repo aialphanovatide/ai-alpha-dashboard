@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Form, Table, Button, Modal } from "react-bootstrap";
+import { Form, Table, Button } from "react-bootstrap";
 import CompetitorForm from "./CompetitorForm";
 import CompetitorsEditModal from "./CompetitorsEditModal";
 import config from "../../config";
 
 const Competitors = () => {
-  
   const [bots, setBots] = useState([]);
   const [selectedCoinBot, setSelectedCoinBot] = useState("");
   const [competitorsData, setCompetitorsData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedCompetitor, setSelectedCompetitor] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-
 
   // gets all the coins
   useEffect(() => {
@@ -41,7 +38,6 @@ const Competitors = () => {
 
     getAllBots();
   }, []);
-
 
   // Gets all the competitor of a coin
   useEffect(() => {
@@ -76,32 +72,6 @@ const Competitors = () => {
     }
   }, [selectedCoinBot]);
 
-   // Edits a competitor
-   const handleSaveEditCompetitor = async (editedCompetitorData) => {
-    try {
-      const response = await fetch(`${config.BASE_URL}/update_competitor`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-        },
-        body: JSON.stringify({
-          competitor_id: editedCompetitorData.id, // Suponiendo que este es el ID del competidor
-          updated_data: editedCompetitorData, // Los datos actualizados del competidor
-        }),
-      });
-      
-      const data = await response.json();
-      if (!response.ok) {
-        console.log('response edited: ', data)
-      }
-      setShowEditModal(false);
-    } catch (error) {
-      console.error("Error updating competitor:", error.message);
-    }
-  };
-
-  // Creates a new competitor
   const handleCreateFormSubmit = async (formData) => {
     try {
       const response = await fetch(`${config.BASE_URL}/create_competitor`, {
@@ -118,9 +88,7 @@ const Competitors = () => {
 
       const data = await response.json();
       if (!response.ok) {
-        console.log('response creation: ', data)
-        // Si la respuesta no es exitosa, lanza un error con el mensaje de la respuesta
-        // throw new Error(errorData.error || "Error creating competitor");
+        console.log("response creation: ", data);
       }
       handleCloseModal(); // Close the creation modal
     } catch (error) {
@@ -151,7 +119,6 @@ const Competitors = () => {
     setSelectedCoinBot(""); // Reiniciar el estado de selectedCoinBot
     setCompetitorsData([]); // Reiniciar el estado de selectedCompetitor
   };
-  
 
   const handleModalClose = () => {
     setShowModal(false);
@@ -167,12 +134,10 @@ const Competitors = () => {
       }
       groupedCompetitors[token].push(competitor);
     });
-    // console.log('groupedCompetitors: ', groupedCompetitors)
     return groupedCompetitors;
   };
 
-  // console.log('selectedCompetitor: ', selectedCompetitor);
-  console.log('competitorsData: ', competitorsData);
+  console.log("competitorsData: ", competitorsData);
 
   return (
     <div>
