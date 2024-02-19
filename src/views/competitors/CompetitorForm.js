@@ -83,8 +83,8 @@ const CompetitorForm = ({
         <Modal.Title>Add Competitor</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
-          <Form.Group className="modalFormGNR" controlId="token">
+        <Form style={{ margin: "20px" }}>
+          <Form.Group controlId="token">
             <Form.Label>Token</Form.Label>
             <br />
             <Form.Control

@@ -78,7 +78,7 @@ console.log('edited: ', editedData)
           )}
         </Form>
       </Modal.Body>
-      
+
       <Modal.Footer>
         <Button
           variant="primary"
