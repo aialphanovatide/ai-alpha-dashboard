@@ -8,6 +8,9 @@ import './topStories.css'
 
 
 const Modal = ({ item, base64Image, onClose }) => {
+
+  const formattedSummary = item.summary.replace(/\n/g, '<br>')
+
     return (
       <div className="modalOverlay" onClick={onClose}>
         <div className="modalContent" onClick={(e) => e.stopPropagation()}>
@@ -18,7 +21,7 @@ const Modal = ({ item, base64Image, onClose }) => {
               alt="top sotry"
             />
           )}
-        <span className="modalText" dangerouslySetInnerHTML={{ __html: item.summary }} />
+        <span className="modalText" dangerouslySetInnerHTML={{ __html: formattedSummary }} />
           <button className="closeButton" onClick={onClose}>
             Close
           </button>
@@ -51,6 +54,8 @@ const Item = ({ item, base64Image, onDelete }) => {
     const handleCloseModal = () => {
       setIsModalOpen(false);
     };
+
+    const formattedSummary = item.summary.replace(/\n/g, '<br>')
   
     return (
       <>
@@ -62,7 +67,7 @@ const Item = ({ item, base64Image, onDelete }) => {
               alt="Analysis"
             />
           )}
-          <span className="itemContent" dangerouslySetInnerHTML={{ __html: item.summary }} />
+          <span className="itemContent" dangerouslySetInnerHTML={{ __html: formattedSummary }} />
           {onDelete && <CIcon size="xxl" icon={cilTrash} className="deleteBtn" onClick={handleClick} />}
         </li>
         {isModalOpen && (
@@ -143,8 +148,6 @@ const TopStories = () => {
     useEffect(()=> {
         getTopStories()
     }, [])
-
-    console.log('topStories: ', topStories)
     
   return (
     <div className='alltopStoriesmain'>

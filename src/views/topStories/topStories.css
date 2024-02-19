@@ -41,10 +41,9 @@
   
   .itemContent {
     width: 68%;
-    height: 160px;
-    overflow: hidden; 
-    margin: 0 1rem 0 1rem;
+    height: 170px;
     text-overflow: ellipsis;
+    overflow:hidden;
   }
   
   .deleteBtn:hover{

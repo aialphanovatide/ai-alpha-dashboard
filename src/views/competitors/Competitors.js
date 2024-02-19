@@ -204,18 +204,9 @@ const Competitors = () => {
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                    {Object.keys(competitors[0].competitor).map(
-                      (feature) =>
-                        ![
-                          "coin_bot_id",
-                          "id",
-                          "created_at",
-                          "updated_at",
-                          "token",
-                          "dynamic",
-                        ].includes(feature) && <th key={feature}>{feature}</th>,
-                    )}
-                    <th>Actions</th>
+                  <th>Feature</th>
+                  <th>Data</th>
+                  <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -246,13 +237,12 @@ const Competitors = () => {
                   ))}
                 </tbody>
               </Table>
-              <br />
-              <br />
+            
             </div>
           ),
         )}
       </div>
-      <Button onClick={handleShowModal}>Add Competitor</Button>
+      <Button disabled={!selectedCoinBot} onClick={handleShowModal}>Add Competitor</Button>
       <CompetitorForm
         showModal={showModal && !selectedCompetitor} // Mostrar el formulario solo si no hay un competidor seleccionado
         handleClose={handleCloseModal}
@@ -272,3 +262,16 @@ const Competitors = () => {
 };
 
 export default Competitors;
+
+
+  {/* {Object.keys(competitors[0].competitor).map(
+                      (feature) =>
+                        ![
+                          "coin_bot_id",
+                          "id",
+                          "created_at",
+                          "updated_at",
+                          "token",
+                          "dynamic",
+                        ].includes(feature) && <th key={feature}>Feature</th>,
+                    )} */}

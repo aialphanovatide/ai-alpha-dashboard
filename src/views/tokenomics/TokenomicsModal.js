@@ -18,7 +18,7 @@ const CustomInput = ({ controlId, label, placeholder, value, onChange, as  }) =>
 
 
 const TokenomicsModal = ({ selectedCoinBot, showModal, handleClose, coinName }) => {
-
+ 
   
   const [token, setToken] = useState('') 
   const [tokenApplication, setTokenApplication] = useState('')
@@ -236,7 +236,7 @@ const TokenomicsModal = ({ selectedCoinBot, showModal, handleClose, coinName }) 
       </Modal.Header>
       <Modal.Body>
 
-        <h3>Tokenomics</h3>
+        <h3 className='tokenomicsTitle'>Tokenomics</h3>
         <Form className='modalForm' onSubmit={handleSubmitTokenomics}>
         <CustomInput
         controlId="token"
