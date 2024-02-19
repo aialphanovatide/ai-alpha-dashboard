@@ -72,6 +72,32 @@ const Competitors = () => {
     }
   }, [selectedCoinBot]);
 
+  const getCompetitorsData = async () => {
+      try {
+        const response = await fetch(
+          `${config.BASE_URL}/get_competitors/${selectedCoinBot}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        const data = await response.json();
+
+        if (data && data.competitors) {
+          setCompetitorsData(data.competitors);
+        } else {
+          console.error("Error fetching competitors:", data.message);
+          setCompetitorsData([]);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setCompetitorsData([]);
+      }
+    };
+
   const handleCreateFormSubmit = async (formData) => {
     try {
       const response = await fetch(`${config.BASE_URL}/create_competitor`, {
@@ -89,8 +115,7 @@ const Competitors = () => {
       const data = await response.json();
       if (!response.ok) {
         console.log("response creation: ", data);
-      }
-      handleCloseModal(); // Close the creation modal
+      } // Close the creation modal
     } catch (error) {
       console.error("Error creating competitor:", error.message);
     }
@@ -101,9 +126,9 @@ const Competitors = () => {
   };
 
   const handleCloseModal = () => {
+    getCompetitorsData();
     setShowModal(false);
-    setSelectedCoinBot("");
-    setCompetitorsData([]);
+
   };
 
   const handleCoinBotChange = (value) => {
@@ -113,11 +138,11 @@ const Competitors = () => {
   const handleShowEditModal = (competitor) => {
     setSelectedCompetitor(competitor);
     setShowModal(true);
+
   };
 
   const handleEditSuccess = () => {
-    setSelectedCoinBot(""); // Reiniciar el estado de selectedCoinBot
-    setCompetitorsData([]); // Reiniciar el estado de selectedCompetitor
+    getCompetitorsData();// Reiniciar el estado de selectedCompetitor
   };
 
   const handleModalClose = () => {
@@ -169,7 +194,7 @@ const Competitors = () => {
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                    {Object.keys(competitors[0].competitor).map(
+                    {/* {Object.keys(competitors[0].competitor).map(
                       (feature) =>
                         ![
                           "coin_bot_id",
@@ -178,14 +203,16 @@ const Competitors = () => {
                           "updated_at",
                           "token",
                           "dynamic",
-                        ].includes(feature) && <th key={feature}>{feature}</th>,
-                    )}
-                    <th>Actions</th>
+                        ].includes(feature) && <th key={feature}>Feature</th>,
+                    )} */}
+                    <th className="thGeneral">Feature</th>
+                    <th className="thGeneral">Data</th>
+                    <th className="thGeneral">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {competitors.map((competitor, index) => (
-                    <tr key={index}>
+                    <tr className="thGeneral" key={index}>
                       {Object.keys(competitor.competitor).map(
                         (key) =>
                           ![

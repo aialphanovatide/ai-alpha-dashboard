@@ -85,7 +85,7 @@ const UpgradesForm = ({ onSubmit, onClose, coinName }) => {
 
       <br />
       {successMessage && (
-        <Alert className="alertSucess" variant="success">
+        <Alert className="alertSucess" style={{ margin: "1rem" }} variant="success">
           {successMessage}
         </Alert>
       )}

@@ -29,7 +29,7 @@ const RMEditForm = ({ onSubmit, revenueModel }) => {
       <Button style={{ width:'100%' }} variant="primary" type="submit">
         Update Revenue model
       </Button>
-      {responseMessage && <Alert className='alertSucess' variant="success">{responseMessage}</Alert>}
+      {responseMessage && <Alert className='alertSucess' style={{ margin:'1rem' }} variant="success">{responseMessage}</Alert>}
     </Form>
   );
 };

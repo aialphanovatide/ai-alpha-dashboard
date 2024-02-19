@@ -78,7 +78,7 @@ const EditUpgradesForm = ({ upgrade, onSubmit }) => {
         Save Changes
       </Button>
       <br />
-      {responseMessage && <Alert className='alertSucess' variant="success">{responseMessage}</Alert>}
+      {responseMessage && <Alert style={{ margin: "1rem" }} className='alertSucess' variant="success">{responseMessage}</Alert>}
     </Form>
   );
 };

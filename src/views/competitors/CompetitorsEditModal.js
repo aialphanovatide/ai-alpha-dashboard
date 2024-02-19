@@ -82,14 +82,7 @@ const CompetitorsEditModal = ({
           )}
         </Form>
       </Modal.Body>
-      {message && (
-        <Alert
-          style={{ margin: "2%" }}
-          variant={message.includes("successfully") ? "success" : "danger"}
-        >
-          {message}
-        </Alert>
-      )}
+      
       <Modal.Footer>
         <Button
           variant="primary"
@@ -99,6 +92,14 @@ const CompetitorsEditModal = ({
           Save Changes
         </Button>
       </Modal.Footer>
+      {message && (
+        <Alert
+          style={{ margin: "1rem" }}
+          variant={message.includes("successfully") ? "success" : "danger"}
+        >
+          {message}
+        </Alert>
+      )}
     </Modal>
   );
 };

@@ -46,7 +46,7 @@ const RMForm = ({ onSubmit, onCancel, show }) => {
           </Button>
           
           {successMessage && (
-            <Alert className="alertSucess" variant="success">
+            <Alert className="alertSucess" style={{ margin:'1rem' }}  variant="success">
               {successMessage}
             </Alert>
           )}
