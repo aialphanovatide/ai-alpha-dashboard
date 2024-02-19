@@ -6,7 +6,6 @@ import DeleteWordsModal from '../deleteWordsModal/DeleteWordsModal'
 import AddSitesModal from '../addSitesModal/AddSitesModal'
 import config from '../../config'
 import DeleteSitesModal from '../deleteSitesModal/DeleteSitesModal'
-import Loader from '../loader/loader'
 import BotList from './botList'
 //bots settings
 
@@ -41,6 +40,7 @@ const BotsSettings = () => {
 
       try {
         const data = JSON.parse(responseText)
+        console.log('Data:', data)
 
         if (data && data.bots) {
           setBots(data.bots)
@@ -71,6 +71,7 @@ const BotsSettings = () => {
         const data = await response.json()
         if (data) {
           await getAllBots()
+          console.log(`Bot ${botCategory} Updated After:`, data.bot)
         } else {
           console.error(
             `Error At ${url === 'activate_bot' ? 'TurnON' : 'TurnOFF'} the bot ${botCategory}:`,
@@ -106,10 +107,7 @@ const BotsSettings = () => {
       <h3 className="botsTitle">
         Bot settings
       </h3>
-
       <BotList bots={bots}/>
-   
-
       <CButtonGroup className="mb-2 btn-group-main">
         <div className="d-flex align-items-center main-button">
           <CButton

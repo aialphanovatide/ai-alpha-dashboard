@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from 'react'
-import 'quill/dist/quill.snow.css'
-import config from '../../config'
-import DropdownMenu from '../helpers/selectCoin/SelectCoin'
-import './analysis.css'
-import ImageUpload from '../helpers/selectImage/selectImage'
-import RichTextEditor from '../helpers/textEditor/textEditor'
-import Swal from 'sweetalert2'
-import {AllAnalysis} from './AllAnalysis'
-import GeneralAnalysis from './GeneralAnalysis'
+import React, { useEffect, useState, useCallback } from "react";
+import "quill/dist/quill.snow.css";
+import config from "../../config";
+import DropdownMenu from "../helpers/selectCoin/SelectCoin";
+import "./analysis.css";
+import ImageUpload from "../helpers/selectImage/selectImage";
+import RichTextEditor from "../helpers/textEditor/textEditor";
+import Swal from "sweetalert2";
+import { AllAnalysis } from "./AllAnalysis";
+import GeneralAnalysis from "./GeneralAnalysis";
 
 const Analysis = () => {
-
   const [selectedCoin, setSelectedCoin] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [content, setContent] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [items, setItems] = useState([]);
-
-  const [isAnalysisCreated, setIsAnalysisCreated ]= useState(false)
+  const [isAnalysisCreated, setIsAnalysisCreated] = useState(false);
 
   const handleSelectCoin = (coinId) => {
     setSelectedCoin(coinId);
@@ -31,28 +29,31 @@ const Analysis = () => {
     setContent(content);
   };
 
-  // Gets all analysis for a coin
-  const fetchAnalysis = async () => {
+  // Define fetchAnalysis as a useCallback to prevent unnecessary re-renders
+  const fetchAnalysis = useCallback(async () => {
     try {
-      const response = await fetch(`${config.BASE_URL}/get_analysis/${selectedCoin}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
+      const response = await fetch(
+        `${config.BASE_URL}/get_analysis/${selectedCoin}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
         },
-      })
+      );
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (response.ok) {
-        setItems(data.message)
+        setItems(data.message);
       } else {
-        console.error('Error fetching coin bots:', response.statusText)
+        console.error("Error fetching coin bots:", response.statusText);
       }
     } catch (error) {
-      console.error('Error fetching coin bots:', error)
+      console.error("Error fetching coin bots:", error);
     }
-  }
+  }, [selectedCoin]); // selectedCoin is added as a dependency
 
   // Calls right away all the analysis when the component mounts
   useEffect(() => {
@@ -63,17 +64,16 @@ const Analysis = () => {
     };
 
     fetchData();
-  }, [selectedCoin]);
+  }, [selectedCoin, fetchAnalysis]); // Include fetchAnalysis as a dependency
 
-  // handles the submit of the three values needed - coin Id, content and image
+  // handles the submit of the three values needed - coin Id, content, and image
   const handleSubmit = async () => {
-
-    if (selectedCoin === null || selectedImage === null || content === null){
+    if (selectedCoin === null || selectedImage === null || content === null) {
       return Swal.fire({
         icon: "error",
         title: "One or more required fields are missing",
         showConfirmButton: false,
-        timer: 1000
+        timer: 1000,
       });
     }
     setIsSubmitting(true);
@@ -86,19 +86,18 @@ const Analysis = () => {
 
     try {
       const response = await fetch(`${config.BASE_URL}/post_analysis`, {
-        method: 'POST',
+        method: "POST",
         body: formData,
       });
 
-      let responseData = await response.json()
+      let responseData = await response.json();
 
       if (response.ok) {
-
         Swal.fire({
           icon: "success",
           title: responseData.message,
           showConfirmButton: false,
-          timer: 1000
+          timer: 1000,
         });
         // fetchAnalysis()
         setIsAnalysisCreated(true)
@@ -110,7 +109,7 @@ const Analysis = () => {
           icon: "error",
           title: "Error creating analysis",
           showConfirmButton: false,
-          timer: 1000
+          timer: 1000,
         });
       }
     } catch (error) {
@@ -118,13 +117,12 @@ const Analysis = () => {
         icon: "error",
         title: error,
         showConfirmButton: false,
-        timer: 1000
+        timer: 1000,
       });
     } finally {
       setIsSubmitting(false);
     }
   };
-
 
   return (
 
@@ -136,19 +134,20 @@ const Analysis = () => {
         <RichTextEditor handleImageSelect={handleImageSelect} images={selectedImage} success={isAnalysisCreated} onSuccess={setIsAnalysisCreated} onContentChange={handleContentChange} />
 
         <button
-          className='submitAnalisys'
+          className="submitAnalisys"
           onClick={handleSubmit}
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Submitting...' : 'Submit'}
+          {isSubmitting ? "Submitting..." : "Submit"}
         </button>
       </div>
-      <AllAnalysis items={items} fetchAnalysis={fetchAnalysis}/>
-      <GeneralAnalysis success={isAnalysisCreated} onSuccess={setIsAnalysisCreated}/>
+      <AllAnalysis items={items} fetchAnalysis={fetchAnalysis} />
+      <GeneralAnalysis
+        success={isAnalysisCreated}
+        onSuccess={setIsAnalysisCreated}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default Analysis
-
-
+export default Analysis;

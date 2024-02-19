@@ -8,14 +8,8 @@ const CompetitorsEditModal = ({
   show,
   handleClose,
 }) => {
-  const [editedData, setEditedData] = useState({});
-  const [originalData, setOriginalData] = useState({});
+  const [editedData, setEditedData] = useState(competitor.competitor);
   const [message, setMessage] = useState(null);
-
-  useEffect(() => {
-    setEditedData(competitor.competitor);
-    setOriginalData(competitor.competitor);
-  }, [competitor]);
 
   const handleInputChange = (e, key) => {
     const { value } = e.target;
@@ -24,6 +18,7 @@ const CompetitorsEditModal = ({
       [key]: value,
     }));
   };
+
   const handleSubmit = async () => {
     try {
       const response = await fetch(
@@ -52,7 +47,7 @@ const CompetitorsEditModal = ({
       // Puedes manejar el error de actualización aquí
     }
   };
-
+console.log('edited: ', editedData)
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -83,14 +78,7 @@ const CompetitorsEditModal = ({
           )}
         </Form>
       </Modal.Body>
-      {message && (
-        <Alert
-        style={{ margin: "2%" }}
-          variant={message.includes("successfully") ? "success" : "danger"}
-        >
-          {message}
-        </Alert>
-      )}
+      
       <Modal.Footer>
         <Button
           variant="primary"
@@ -100,6 +88,14 @@ const CompetitorsEditModal = ({
           Save Changes
         </Button>
       </Modal.Footer>
+      {message && (
+        <Alert
+          style={{ margin: "1rem" }}
+          variant={message.includes("successfully") ? "success" : "danger"}
+        >
+          {message}
+        </Alert>
+      )}
     </Modal>
   );
 };

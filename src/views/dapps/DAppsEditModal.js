@@ -106,12 +106,12 @@ const DAppsEditModal = ({ show, onClose, dapp }) => {
         </Button>
 
         {responseMessage.success && (
-          <Alert className="alertSucess" variant="success">
+          <Alert style={{ width: "100%" }} className="alertSucess" variant="success">
             {responseMessage.success}
           </Alert>
         )}
         {responseMessage.error && (
-          <Alert className="alertSucess" variant="danger">
+          <Alert style={{ width: "100%" }} className="alertSucess" variant="danger">
             {responseMessage.error}
           </Alert>
         )}

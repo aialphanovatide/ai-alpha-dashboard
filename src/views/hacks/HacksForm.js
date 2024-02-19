@@ -72,12 +72,13 @@ const HackForm = ({ onSubmit }) => {
           required
         />
       </Form.Group>
-      
-      <Button  className='createBtn' type="submit" variant="primary">
+      <hr />
+      <Button style={{width: '100%'}} disabled={!date || !hackName || !incidentDescription || !mitigationMeasure || !consequences}  className='createBtn' type="submit" variant="primary">
         Create Hack
       </Button>
+      
       {responseMessage && (
-        <Alert className="alertSucess" variant="success">
+        <Alert className="alertSucess" style={{ margin: "1rem" }}  variant="success">
           {responseMessage}
         </Alert>
       )}

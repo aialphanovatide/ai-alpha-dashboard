@@ -79,13 +79,13 @@ const UpgradesForm = ({ onSubmit, onClose, coinName }) => {
         />
       </Form.Group>
       <br />
-      <Button type="submit" variant="primary" style={{ width: "100%" }}>
+      <Button disabled={!event || !date || !event_overview || !impact} type="submit" variant="primary" style={{ width: "100%" }}>
         Create Upgrade
       </Button>
 
       <br />
       {successMessage && (
-        <Alert className="alertSucess" variant="success">
+        <Alert className="alertSucess" style={{ margin: "1rem" }} variant="success">
           {successMessage}
         </Alert>
       )}

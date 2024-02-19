@@ -1,20 +1,21 @@
-import React, { useState } from 'react'
-import Introduction from '../introduction/Introduction'
-import Tokenomics from '../tokenomics/Tokenomics'
-import Competitors from '../competitors/Competitors'
-import classnames from 'classnames'
-import RevenueModels from '../revenueModel/RevenueModels'
-import Hacks from '../hacks/Hacks'
-import DApps from '../dapps/DApps'
-import Upgrades from '../upgrades/Upgrades'
-import './fundamentals.css'
+import React, { useState } from "react";
+import Introduction from "../introduction/Introduction";
+import Tokenomics from "../tokenomics/Tokenomics";
+import Competitors from "../competitors/Competitors";
+import classnames from "classnames";
+import RevenueModels from "../revenueModel/RevenueModels";
+import Hacks from "../hacks/Hacks";
+import DApps from "../dapps/DApps";
+import Upgrades from "../upgrades/Upgrades";
+import "./fundamentals.css";
 
 const Fundamentals = () => {
   const [activeTab, setActiveTab] = useState('introduction')
 
+
   const toggleTab = (tab) => {
-    setActiveTab(tab)
-  }
+    setActiveTab(tab);
+  };
 
   return (
     <div className="container mt-4">
@@ -22,95 +23,109 @@ const Fundamentals = () => {
         <div className="card-header">
           <ul className="nav nav-pills">
             <li className="nav-item">
-              <a
-                className={classnames('nav-link', { active: activeTab === 'introduction' })}
-                onClick={() => toggleTab('introduction')}
+              <button
+                className={classnames("nav-link", {
+                  active: activeTab === "introduction",
+                })}
+                onClick={() => toggleTab("introduction")}
               >
                 Introduction
-              </a>
+              </button>
             </li>
             <li className="nav-item">
-              <a
-                className={classnames('nav-link', { active: activeTab === 'tokenomics' })}
-                onClick={() => toggleTab('tokenomics')}
+              <button
+                className={classnames("nav-link", {
+                  active: activeTab === "tokenomics",
+                })}
+                onClick={() => toggleTab("tokenomics")}
               >
                 Tokenomics
-              </a>
+              </button>
             </li>
             <li className="nav-item">
-              <a
-                className={classnames('nav-link', { active: activeTab === 'competitors' })}
-                onClick={() => toggleTab('competitors')}
+              <button
+                className={classnames("nav-link", {
+                  active: activeTab === "competitors",
+                })}
+                onClick={() => toggleTab("competitors")}
               >
                 Competitors
-              </a>
+              </button>
             </li>
             <li className="nav-item">
-              <a
-                className={classnames('nav-link', { active: activeTab === 'revenueModels' })}
-                onClick={() => toggleTab('revenueModels')}
+              <button
+                className={classnames("nav-link", {
+                  active: activeTab === "revenueModels",
+                })}
+                onClick={() => toggleTab("revenueModels")}
               >
                 Revenue Model
-              </a>
+              </button>
             </li>
             <li className="nav-item">
-              <a
-                className={classnames('nav-link', { active: activeTab === 'hacks' })}
-                onClick={() => toggleTab('hacks')}
+              <button
+                className={classnames("nav-link", {
+                  active: activeTab === "hacks",
+                })}
+                onClick={() => toggleTab("hacks")}
               >
                 Hacks
-              </a>
+              </button>
             </li>
             <li className="nav-item">
-              <a
-                className={classnames('nav-link', { active: activeTab === 'upgrades' })}
-                onClick={() => toggleTab('upgrades')}
+              <button
+                className={classnames("nav-link", {
+                  active: activeTab === "upgrades",
+                })}
+                onClick={() => toggleTab("upgrades")}
               >
                 Upgrades
-              </a>
+              </button>
             </li>
             <li className="nav-item">
-              <a
-                className={classnames('nav-link', { active: activeTab === 'dapps' })}
-                onClick={() => toggleTab('dapps')}
+              <button
+                className={classnames("nav-link", {
+                  active: activeTab === "dapps",
+                })}
+                onClick={() => toggleTab("dapps")}
               >
                 DApps
-              </a>
+              </button>
             </li>
           </ul>
         </div>
         <div className="card-body">
-          {activeTab === 'introduction' && (
+          {activeTab === "introduction" && (
             <div>
               <Introduction />
             </div>
           )}
-          {activeTab === 'tokenomics' && (
+          {activeTab === "tokenomics" && (
             <div>
               <Tokenomics />
             </div>
           )}
-          {activeTab === 'competitors' && (
+          {activeTab === "competitors" && (
             <div>
               <Competitors />
             </div>
           )}
-          {activeTab === 'revenueModels' && (
+          {activeTab === "revenueModels" && (
             <div>
               <RevenueModels />
             </div>
           )}
-          {activeTab === 'hacks' && (
+          {activeTab === "hacks" && (
             <div>
               <Hacks />
             </div>
           )}
-          {activeTab === 'upgrades' && (
+          {activeTab === "upgrades" && (
             <div>
               <Upgrades />
             </div>
           )}
-          {activeTab === 'dapps' && (
+          {activeTab === "dapps" && (
             <div>
               <DApps />
             </div>
@@ -118,7 +133,7 @@ const Fundamentals = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Fundamentals
+export default Fundamentals;

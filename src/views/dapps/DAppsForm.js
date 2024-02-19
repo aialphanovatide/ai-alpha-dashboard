@@ -60,7 +60,7 @@ const DAppsForm = ({ onSubmit, coinName }) => {
         <Form.Label>TVL</Form.Label>
         <Form.Control type="text" value={tvl} onChange={(e) => setTVL(e.target.value)} required />
       </Form.Group>
-      <Button className='createBtn' disabled={!description || !tvl}  type="submit" variant="primary">
+      <Button className='createBtn' style={{ width: "100%" }} disabled={!description || !tvl}  type="submit" variant="primary">
         Create DApp
       </Button>
       {responseMessage.success && <Alert className='alertSucess' variant="success">{responseMessage.success}</Alert>}

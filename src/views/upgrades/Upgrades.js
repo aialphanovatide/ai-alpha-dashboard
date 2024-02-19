@@ -6,14 +6,12 @@ import EditUpgradesForm from "./EditUpgradesForm";
 import config from "../../config";
 
 const Upgrades = () => {
-
   const [bots, setBots] = useState([]);
   const [selectedCoinBot, setSelectedCoinBot] = useState("");
   const [upgrades, setUpgrades] = useState([]);
   const [showEditForm, setShowEditForm] = useState(false); // Definir el estado de mostrar el modal de edición
   const [selectedUpgrade, setSelectedUpgrade] = useState(null); // Definir el estado del upgrade seleccionado para editar
   const [showCreateForm, setShowCreateForm] = useState(false);
-
 
   // Gets all the available coins
   useEffect(() => {
@@ -41,20 +39,49 @@ const Upgrades = () => {
     getAllBots();
   }, []);
 
-  // If a coins is selected gets the upgrades data for it
-  useEffect(()=>{
-    const getUpgrades = async () => {
-      try {
-        const response = await fetch(`${config.BASE_URL}/get_upgrades?coin_bot_id=${selectedCoinBot}`, {
+  const getUpgradesData = async () => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/get_upgrades?coin_bot_id=${selectedCoinBot}`,
+        {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
           },
-        });
-  
+        },
+      );
+
+      const data = await response.json();
+
+      if (data.status === 200) {
+        setUpgrades(data.message);
+      } else {
+        setUpgrades([]);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setUpgrades([]);
+    }
+  };
+
+  // If a coins is selected gets the upgrades data for it
+  useEffect(() => {
+    const getUpgrades = async () => {
+      try {
+        const response = await fetch(
+          `${config.BASE_URL}/get_upgrades?coin_bot_id=${selectedCoinBot}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "true",
+            },
+          },
+        );
+
         const data = await response.json();
-  
+
         if (data.status === 200) {
           setUpgrades(data.message);
         } else {
@@ -66,10 +93,10 @@ const Upgrades = () => {
       }
     };
 
-    if (selectedCoinBot){
-      getUpgrades()
+    if (selectedCoinBot) {
+      getUpgrades();
     }
-  }, [selectedCoinBot])
+  }, [selectedCoinBot]);
 
   const handleEditButtonClick = (upgrade) => {
     setSelectedUpgrade(upgrade); // Establecer el upgrade seleccionado para editar
@@ -77,7 +104,7 @@ const Upgrades = () => {
   };
 
   const handleCloseCreateForm = () => {
-    setShowCreateForm(false); 
+    setShowCreateForm(false);
   };
 
   const handleCreateButtonClick = () => {
@@ -109,13 +136,11 @@ const Upgrades = () => {
       setTimeout(() => {
         setShowEditForm(false);
       }, 1200);
-      return data.message
-     
+      return data.message;
     } catch (error) {
       console.error("Error editing upgrade:", error);
     } finally {
-      setSelectedCoinBot("");
-      setUpgrades([]); 
+      getUpgradesData();
     }
   };
 
@@ -135,19 +160,19 @@ const Upgrades = () => {
       });
 
       const data = await response.json();
-      return data.message
-      } catch (error) {
-      return error
+      return data.message;
+    } catch (error) {
+      return error;
     } finally {
-      setUpgrades([]);
-      setSelectedCoinBot('')
+      getUpgradesData();
     }
   };
 
-  const selectedBot = bots && selectedCoinBot? bots.find(bot => bot.id === Number(selectedCoinBot)) : '';
-  const coin_name = selectedBot ? selectedBot.name.toUpperCase() : 'No Name';
-
-
+  const selectedBot =
+    bots && selectedCoinBot
+      ? bots.find((bot) => bot.id === Number(selectedCoinBot))
+      : "";
+  const coin_name = selectedBot ? selectedBot.name.toUpperCase() : "No Name";
 
   return (
     <div>
@@ -170,41 +195,46 @@ const Upgrades = () => {
           </Form.Control>
         </Form.Group>
 
-        <Button disabled={!selectedCoinBot} variant="primary" onClick={handleCreateButtonClick}>
-            Create Upgrade
-          </Button>
+        <Button
+          disabled={!selectedCoinBot}
+          variant="primary"
+          onClick={handleCreateButtonClick}
+        >
+          Create Upgrade
+        </Button>
 
         {upgrades && upgrades.length > 0 && (
           <>
             <Table className="tableGeneral" striped bordered hover>
               <thead>
                 <tr>
-                  <th>Action</th>
                   <th>Event</th>
                   <th>Date</th>
                   <th>Event Overview</th>
                   <th>Impact</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(upgrades) && (
+                {Array.isArray(upgrades) &&
                   upgrades.map((upgrade) => (
                     <tr key={upgrade.upgrade.id}>
-                      <td>
-                        <button onClick={() => handleEditButtonClick(upgrade)}>
-                          Edit
-                        </button>
-                      </td>
                       <td>{upgrade.upgrade.event}</td>
                       <td>{upgrade.upgrade.date}</td>
                       <td>{upgrade.upgrade.event_overview}</td>
                       <td>{upgrade.upgrade.impact}</td>
+                      <td>
+                        <Button
+                          variant="primary"
+                          onClick={() => handleEditButtonClick(upgrade)}
+                        >
+                          Edit
+                        </Button>
+                      </td>
                     </tr>
-                  ))
-                )}
+                  ))}
               </tbody>
             </Table>
-           
           </>
         )}
       </div>

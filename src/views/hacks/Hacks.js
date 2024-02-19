@@ -3,10 +3,9 @@ import { Form, Table, Button, Modal } from "react-bootstrap";
 import HackForm from "./HacksForm";
 import HackEditForm from "./HackEditForm";
 import config from "../../config";
-import './hacks.css'
+import "./hacks.css";
 
 const Hacks = () => {
-
   const [bots, setBots] = useState([]);
   const [selectedCoinBot, setSelectedCoinBot] = useState("");
   const [hacks, setHacks] = useState([]);
@@ -41,7 +40,7 @@ const Hacks = () => {
   }, []);
 
   // Gets the hacks data of the selected coin
-  useEffect(()=> {
+  useEffect(() => {
     const getHacks = async () => {
       try {
         const response = await fetch(
@@ -54,38 +53,36 @@ const Hacks = () => {
             },
           },
         );
-  
+
         const data = await response.json();
-  
+
         if (data && data.status === 200) {
           setHacks(data.message);
         } else {
           console.error("Error fetching Hacks:", data.message);
-          setHacks([]); 
+          setHacks([]);
         }
       } catch (error) {
         console.error("Error:", error.message);
-        setHacks([]); 
+        setHacks([]);
       }
     };
 
-    if (selectedCoinBot){
-      getHacks()
+    if (selectedCoinBot) {
+      getHacks();
     }
-  }, [selectedCoinBot])
+  }, [selectedCoinBot]);
 
-  
   const handleCreateButtonClick = () => {
     setShowCreateForm(true);
   };
-  const handleSelectedCoin = value => {
+  const handleSelectedCoin = (value) => {
     setSelectedCoinBot(value);
   };
   const handleEditButtonClick = (hack) => {
     setSelectedHackForEdit(hack);
     setShowEditForm(true);
   };
-  
 
   // Edits a hack record
   const handleEditFormSubmit = async (formData) => {
@@ -104,20 +101,45 @@ const Hacks = () => {
 
       const data = await response.json();
 
-      if (data && data.status === 200){
+      if (data && data.status === 200) {
         setTimeout(() => {
-          setShowEditForm(false)
+          setShowEditForm(false);
         }, 1200);
-        return data.message
+        return data.message;
       } else {
-        return data.message
+        return data.message;
       }
-     
     } catch (error) {
-       return error.message
+      return error.message;
     } finally {
-      setHacks([]); 
-      setSelectedCoinBot("");
+      getHacks();
+    }
+  };
+
+  const getHacks = async () => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/api/hacks?coin_bot_id=${selectedCoinBot}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data && data.status === 200) {
+        setHacks(data.message);
+      } else {
+        console.error("Error fetching Hacks:", data.message);
+        setHacks([]);
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+      setHacks([]);
     }
   };
 
@@ -141,10 +163,10 @@ const Hacks = () => {
       });
 
       const data = await response.json();
-      console.log('data: ', data)
+      console.log("data: ", data);
       if (response.status === 201) {
         setTimeout(() => {
-          setShowCreateForm(false)
+          setShowCreateForm(false);
         }, 1200);
         return data.message;
       } else {
@@ -152,10 +174,9 @@ const Hacks = () => {
       }
     } catch (error) {
       console.error("Error creating hack:", error.message);
-      return error.message
+      return error.message;
     } finally {
-      setSelectedCoinBot('');
-      setHacks([]);
+      getHacks();
     }
   };
 
@@ -163,7 +184,7 @@ const Hacks = () => {
     <div>
       <div style={{ margin: "20px", overflowX: "auto" }}>
         <h2>Hacks</h2>
-       
+
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: "20px" }}>
           <Form.Label>Select Coin</Form.Label>
           <Form.Control
@@ -180,42 +201,50 @@ const Hacks = () => {
           </Form.Control>
         </Form.Group>
 
-          <Button className="hackCreateBtn" disabled={!selectedCoinBot} variant="primary" onClick={handleCreateButtonClick}>
-            Create Hack
-          </Button>
+        <Button
+          className="hackCreateBtn"
+          disabled={!selectedCoinBot}
+          variant="primary"
+          onClick={handleCreateButtonClick}
+        >
+          Create Hack
+        </Button>
 
         {hacks && hacks.length > 0 && (
           <>
-           
             <Table className="hacksTable" striped bordered hover>
               <thead>
                 <tr>
-                  <th className="thCenter">Action</th>
                   <th className="thCenter">Hack name</th>
                   <th className="thCenter">Date</th>
                   <th className="thCenter">What was the Incident?</th>
                   <th className="thCenter">What were the Consequences?</th>
-                  <th className="thCenter">What risk mitigation measures have been taken?</th>
+                  <th className="thCenter">
+                    What risk mitigation measures have been taken?
+                  </th>
+                  <th className="thCenter">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {hacks.map((hack) => (
                   <tr key={hack.id}>
-                    <td>
-                      <button onClick={() => handleEditButtonClick(hack)}>
-                        Edit
-                      </button>
-                    </td>
                     <td>{hack.hack_name}</td>
                     <td>{hack.date}</td>
                     <td>{hack.incident_description}</td>
                     <td>{hack.consequences}</td>
                     <td>{hack.mitigation_measure}</td>
+                    <td>
+                      <Button
+                        variant="primary"
+                        onClick={() => handleEditButtonClick(hack)}
+                      >
+                        Edit
+                      </Button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </Table>
-         
           </>
         )}
       </div>
@@ -244,4 +273,4 @@ const Hacks = () => {
   );
 };
 
-    export default Hacks;
+export default Hacks;

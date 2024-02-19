@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Form, Button, Modal } from 'react-bootstrap'
+import { Form, Button } from 'react-bootstrap'
 import config from '../../config'
 import Swal from 'sweetalert2'
 
@@ -136,7 +136,7 @@ const Introduction = () => {
 
       const responseData = await response.json()
 
-      if (responseData.status == 200){
+      if (responseData.status === 200){
         Swal.fire({
           icon: "success",
           title: responseData.message,

@@ -91,7 +91,11 @@ const HackEditForm = ({ hack, onSubmit }) => {
         Save Changes
       </Button>
       {responseMessage && (
-        <Alert className="alertSucess" variant="success">
+        <Alert
+          className="alertSucess"
+          variant="success"
+          style={{ margin: "1rem" }}
+        >
           {responseMessage}
         </Alert>
       )}

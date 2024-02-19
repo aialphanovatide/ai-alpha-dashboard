@@ -11,7 +11,6 @@ import {
   CSidebarNav,
   CSidebarToggler,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
 
 import { AppSidebarNav } from './AppSidebarNav'
 import SimpleBar from 'simplebar-react'

@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Form, Table, Button, Modal } from "react-bootstrap";
+import { Form, Table, Button } from "react-bootstrap";
 import CompetitorForm from "./CompetitorForm";
 import CompetitorsEditModal from "./CompetitorsEditModal";
 import config from "../../config";
 
 const Competitors = () => {
-  
   const [bots, setBots] = useState([]);
   const [selectedCoinBot, setSelectedCoinBot] = useState("");
   const [competitorsData, setCompetitorsData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedCompetitor, setSelectedCompetitor] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-
 
   // gets all the coins
   useEffect(() => {
@@ -41,7 +38,6 @@ const Competitors = () => {
 
     getAllBots();
   }, []);
-
 
   // Gets all the competitor of a coin
   useEffect(() => {
@@ -76,32 +72,32 @@ const Competitors = () => {
     }
   }, [selectedCoinBot]);
 
-   // Edits a competitor
-   const handleSaveEditCompetitor = async (editedCompetitorData) => {
-    try {
-      const response = await fetch(`${config.BASE_URL}/update_competitor`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-        },
-        body: JSON.stringify({
-          competitor_id: editedCompetitorData.id, // Suponiendo que este es el ID del competidor
-          updated_data: editedCompetitorData, // Los datos actualizados del competidor
-        }),
-      });
-      
-      const data = await response.json();
-      if (!response.ok) {
-        console.log('response edited: ', data)
-      }
-      setShowEditModal(false);
-    } catch (error) {
-      console.error("Error updating competitor:", error.message);
-    }
-  };
+  const getCompetitorsData = async () => {
+      try {
+        const response = await fetch(
+          `${config.BASE_URL}/get_competitors/${selectedCoinBot}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
 
-  // Creates a new competitor
+        const data = await response.json();
+
+        if (data && data.competitors) {
+          setCompetitorsData(data.competitors);
+        } else {
+          console.error("Error fetching competitors:", data.message);
+          setCompetitorsData([]);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setCompetitorsData([]);
+      }
+    };
+
   const handleCreateFormSubmit = async (formData) => {
     try {
       const response = await fetch(`${config.BASE_URL}/create_competitor`, {
@@ -118,11 +114,8 @@ const Competitors = () => {
 
       const data = await response.json();
       if (!response.ok) {
-        console.log('response creation: ', data)
-        // Si la respuesta no es exitosa, lanza un error con el mensaje de la respuesta
-        // throw new Error(errorData.error || "Error creating competitor");
-      }
-      handleCloseModal(); // Close the creation modal
+        console.log("response creation: ", data);
+      } // Close the creation modal
     } catch (error) {
       console.error("Error creating competitor:", error.message);
     }
@@ -133,9 +126,9 @@ const Competitors = () => {
   };
 
   const handleCloseModal = () => {
+    getCompetitorsData();
     setShowModal(false);
-    setSelectedCoinBot("");
-    setCompetitorsData([]);
+
   };
 
   const handleCoinBotChange = (value) => {
@@ -145,13 +138,12 @@ const Competitors = () => {
   const handleShowEditModal = (competitor) => {
     setSelectedCompetitor(competitor);
     setShowModal(true);
+
   };
 
   const handleEditSuccess = () => {
-    setSelectedCoinBot(""); // Reiniciar el estado de selectedCoinBot
-    setCompetitorsData([]); // Reiniciar el estado de selectedCompetitor
+    getCompetitorsData();// Reiniciar el estado de selectedCompetitor
   };
-  
 
   const handleModalClose = () => {
     setShowModal(false);
@@ -167,12 +159,10 @@ const Competitors = () => {
       }
       groupedCompetitors[token].push(competitor);
     });
-    // console.log('groupedCompetitors: ', groupedCompetitors)
     return groupedCompetitors;
   };
 
-  // console.log('selectedCompetitor: ', selectedCompetitor);
-  console.log('competitorsData: ', competitorsData);
+  console.log("competitorsData: ", competitorsData);
 
   return (
     <div>
@@ -204,14 +194,25 @@ const Competitors = () => {
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                  <th>Feature</th>
-                  <th>Data</th>
-                  <th>Actions</th>
+                    {/* {Object.keys(competitors[0].competitor).map(
+                      (feature) =>
+                        ![
+                          "coin_bot_id",
+                          "id",
+                          "created_at",
+                          "updated_at",
+                          "token",
+                          "dynamic",
+                        ].includes(feature) && <th key={feature}>Feature</th>,
+                    )} */}
+                    <th className="thGeneral">Feature</th>
+                    <th className="thGeneral">Data</th>
+                    <th className="thGeneral">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {competitors.map((competitor, index) => (
-                    <tr key={index}>
+                    <tr className="thGeneral" key={index}>
                       {Object.keys(competitor.competitor).map(
                         (key) =>
                           ![
@@ -264,14 +265,3 @@ const Competitors = () => {
 export default Competitors;
 
 
-  {/* {Object.keys(competitors[0].competitor).map(
-                      (feature) =>
-                        ![
-                          "coin_bot_id",
-                          "id",
-                          "created_at",
-                          "updated_at",
-                          "token",
-                          "dynamic",
-                        ].includes(feature) && <th key={feature}>Feature</th>,
-                    )} */}

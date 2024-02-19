@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import classNames from 'classnames'
 import '../botsSettings/bs.css'
 import '../deleteWordsModal/deleteWordsModal.css'
-import { CButton, CModal, CModalBody, CModalHeader, CModalTitle, CModalFooter } from '@coreui/react'
-import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap'
+import { CButton } from '@coreui/react'
+import { Form, Alert, Modal, Button } from 'react-bootstrap'
 import config from '../../config'
 
 const DeleteWordsModal = () => {

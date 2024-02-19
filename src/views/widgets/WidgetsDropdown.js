@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { useLocation } from 'react-router-dom'
-import { CRow, CCol, CCard, CCardBody, CCardText } from '@coreui/react'
+import { CRow, CCol, CCard, CCardBody } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import config from '../../config'
 
 const WidgetsDropdown = (props) => {
-  const location = useLocation()
   const [botStatuses, setBotStatuses] = useState([])
   const [allBotsInactive, setAllBotsInactive] = useState(true)
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import config from 'src/config';
 import Swal from 'sweetalert2'
 import CIcon from '@coreui/icons-react'
@@ -116,7 +116,7 @@ const AllAnalysis = ({items, fetchAnalysis}) => {
     
   return (
     <div className='allAnalysismain'>
-      <h3 className='allAnalysisTitle'>All Coins Analysis</h3>
+      <h3 className='allAnalysisTitle'>Selected Coin Analysis</h3>
       {items && items.length > 0 ?
       <ul className='allAnalysisUL'>
       {items.map(item => (

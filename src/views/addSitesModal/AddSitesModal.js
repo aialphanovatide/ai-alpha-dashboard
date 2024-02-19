@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { CButton, CModal, CModalBody, CModalHeader, CModalTitle, CModalFooter } from '@coreui/react'
+import { CButton } from '@coreui/react'
 import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import config from '../../config'

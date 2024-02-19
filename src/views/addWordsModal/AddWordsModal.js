@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { CButton, CModal, CModalBody, CModalHeader, CModalTitle, CModalFooter } from '@coreui/react'
+import React, { useEffect, useState } from 'react'
+import { CButton } from '@coreui/react'
 import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap'
 import config from '../../config'
 import './addWordsModal.css'
