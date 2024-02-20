@@ -11,7 +11,7 @@ import GeneralAnalysis from "./GeneralAnalysis";
 
 const Analysis = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState([]);
   const [content, setContent] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [items, setItems] = useState([]);
@@ -47,6 +47,7 @@ const Analysis = () => {
 
       if (response.ok) {
         setItems(data.message);
+        setSelectedImage("");
       } else {
         console.error("Error fetching coin bots:", response.statusText);
       }
@@ -78,11 +79,10 @@ const Analysis = () => {
     }
     setIsSubmitting(true);
 
-  
     const formData = new FormData();
-    formData.append('coinBot', selectedCoin);
-    formData.append('content', content);
-    formData.append('image', selectedImage.file);
+    formData.append("coinBot", selectedCoin);
+    formData.append("content", content);
+    formData.append("images", selectedImage);
 
     try {
       const response = await fetch(`${config.BASE_URL}/post_analysis`, {
@@ -99,11 +99,17 @@ const Analysis = () => {
           showConfirmButton: false,
           timer: 1000,
         });
-        // fetchAnalysis()
-        setIsAnalysisCreated(true)
-        setSelectedImage(null)
-        setContent(null)
-       
+        setIsAnalysisCreated(true);
+        setContent(null);
+
+        console.log("Before clearing selectedImage:", selectedImage[0]);
+
+        // Limpiar el selector de imagen
+        setSelectedImage([]);
+
+        console.log("After clearing selectedImage:", selectedImage);
+
+        await fetchAnalysis();
       } else {
         Swal.fire({
           icon: "error",
@@ -128,13 +134,25 @@ const Analysis = () => {
   // console.log('content: ', content)
 
   return (
-
-    <div className='analysisMain'>
-      <h3 className='analysisTitle'>Analysis</h3>
-      <div className='analysisSubmain'>
-        <DropdownMenu selectedCoin={selectedCoin} onSelectCoin={handleSelectCoin} />
-        <ImageUpload success={isAnalysisCreated} onSuccess={setIsAnalysisCreated} onImageSelect={handleImageSelect} />
-        <RichTextEditor handleImageSelect={handleImageSelect} images={selectedImage} success={isAnalysisCreated} onSuccess={setIsAnalysisCreated} onContentChange={handleContentChange} />
+    <div className="analysisMain">
+      <h3 className="analysisTitle">Analysis</h3>
+      <div className="analysisSubmain">
+        <DropdownMenu
+          selectedCoin={selectedCoin}
+          onSelectCoin={handleSelectCoin}
+        />
+        {/* <ImageUpload
+          success={isAnalysisCreated}
+          onSuccess={setIsAnalysisCreated}
+          onImagesSelect={handleImageSelect}
+        /> */}
+        <RichTextEditor
+          handleImageSelect={handleImageSelect}
+          images={selectedImage}
+          success={isAnalysisCreated}
+          onSuccess={setIsAnalysisCreated}
+          onContentChange={handleContentChange}
+        />
 
         <button
           className="submitAnalisys"

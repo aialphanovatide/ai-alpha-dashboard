@@ -93,7 +93,8 @@ const AllAnalysis = ({items, fetchAnalysis}) => {
                     showConfirmButton: false,
                     timer: 1500
                 });
-                fetchAnalysis() 
+                fetchAnalysis()
+                
             } else {
                 console.error('Error fetching coin bots:', response.statusText);
                 Swal.fire({
@@ -120,7 +121,7 @@ const AllAnalysis = ({items, fetchAnalysis}) => {
       {items && items.length > 0 ?
       <ul className='allAnalysisUL'>
       {items.map(item => (
-        <Item key={item.analysis_id} item={item} base64Image={item.analysis_images[0].image} onDelete={handleDelete} />
+        <Item key={item.analysis_id} item={item} onDelete={handleDelete} />
       ))}
         </ul>: <span>No Analysis found for this coin</span>
       }

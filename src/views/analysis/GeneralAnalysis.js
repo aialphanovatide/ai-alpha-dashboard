@@ -45,7 +45,7 @@ const GeneralAnalysis = ({success, onSuccess}) => {
       {generalAnalysis && generalAnalysis.length > 0 ?
       <ul className='allAnalysisUL'>
       {generalAnalysis?.map(item => (
-        <Item key={item.analysis_id} item={item} base64Image={item.analysis_images[0].image} />
+        <Item key={item.analysis_id} item={item} />
       ))}
         </ul>: <span>No Analysis yet</span>
       }
