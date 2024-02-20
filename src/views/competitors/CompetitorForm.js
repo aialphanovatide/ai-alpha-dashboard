@@ -65,8 +65,9 @@ const CompetitorForm = ({
         data: formData.keyValues,
         coin_bot_id: selectedCoinBot,
       };
-      await handleSave(competitorData);
-      setSuccessMessage("Competitor added successfully.");
+      const response = await handleSave(competitorData);
+      
+      setSuccessMessage(response);
       setShowSuccessMessage(true);
       setTimeout(() => {
         setShowSuccessMessage(false);

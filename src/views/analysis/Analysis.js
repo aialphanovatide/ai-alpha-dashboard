@@ -130,6 +130,9 @@ const Analysis = () => {
     }
   };
 
+  console.log('selectedImage: ', selectedImage)
+  // console.log('content: ', content)
+
   return (
     <div className="analysisMain">
       <h3 className="analysisTitle">Analysis</h3>
