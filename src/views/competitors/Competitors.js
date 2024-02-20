@@ -49,11 +49,13 @@ const Competitors = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
+              'ngrok-skip-browser-warning': 'true',
             },
           },
         );
 
         const data = await response.json();
+        console.log('data: ', data)
 
         if (data && data.competitors) {
           setCompetitorsData(data.competitors);
@@ -80,11 +82,13 @@ const Competitors = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
+              'ngrok-skip-browser-warning': 'true',
             },
           },
         );
 
         const data = await response.json();
+       
 
         if (data && data.competitors) {
           setCompetitorsData(data.competitors);
@@ -113,11 +117,13 @@ const Competitors = () => {
       });
 
       const data = await response.json();
-      if (!response.ok) {
-        console.log("response creation: ", data);
-      } // Close the creation modal
+      if (response.ok) {
+        return data.message
+      } else {
+        return data.error
+      }
     } catch (error) {
-      console.error("Error creating competitor:", error.message);
+      console.error("Error creating competitor:", error.message);  
     }
   };
 
@@ -162,7 +168,6 @@ const Competitors = () => {
     return groupedCompetitors;
   };
 
-  console.log("competitorsData: ", competitorsData);
 
   return (
     <div>

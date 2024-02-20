@@ -82,7 +82,7 @@ const Analysis = () => {
     const formData = new FormData();
     formData.append('coinBot', selectedCoin);
     formData.append('content', content);
-    formData.append('images', selectedImage);
+    formData.append('image', selectedImage.file);
 
     try {
       const response = await fetch(`${config.BASE_URL}/post_analysis`, {
@@ -124,13 +124,16 @@ const Analysis = () => {
     }
   };
 
+  console.log('selectedImage: ', selectedImage)
+  // console.log('content: ', content)
+
   return (
 
     <div className='analysisMain'>
       <h3 className='analysisTitle'>Analysis</h3>
       <div className='analysisSubmain'>
         <DropdownMenu selectedCoin={selectedCoin} onSelectCoin={handleSelectCoin} />
-        <ImageUpload success={isAnalysisCreated} onSuccess={setIsAnalysisCreated} onImagesSelect={handleImageSelect} />
+        <ImageUpload success={isAnalysisCreated} onSuccess={setIsAnalysisCreated} onImageSelect={handleImageSelect} />
         <RichTextEditor handleImageSelect={handleImageSelect} images={selectedImage} success={isAnalysisCreated} onSuccess={setIsAnalysisCreated} onContentChange={handleContentChange} />
 
         <button
