@@ -44,9 +44,13 @@ const RMForm = ({ onSubmit, onCancel, show }) => {
           <Button style={{ width: "100%" }} type="submit" variant="primary">
             Create Revenue Model
           </Button>
-          
+
           {successMessage && (
-            <Alert className="alertSucess" style={{ margin:'1rem' }}  variant="success">
+            <Alert
+              className="alertSucess"
+              style={{ margin: "1rem" }}
+              variant="success"
+            >
               {successMessage}
             </Alert>
           )}

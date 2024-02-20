@@ -180,6 +180,32 @@ const Hacks = () => {
     }
   };
 
+  const handleDeleteHack = async (hackId) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/api/hacks/delete/${hackId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data && data.status === 200) {
+        // Eliminación exitosa, actualiza la lista de DApps
+        getHacks();
+      } else {
+        console.error("Error deleting DApp:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <div>
       <div style={{ margin: "20px", overflowX: "auto" }}>
@@ -222,7 +248,7 @@ const Hacks = () => {
                   <th className="thCenter">
                     What risk mitigation measures have been taken?
                   </th>
-                  <th className="thCenter">Action</th>
+                  <th className="thCenter">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -239,6 +265,13 @@ const Hacks = () => {
                         onClick={() => handleEditButtonClick(hack)}
                       >
                         Edit
+                      </Button>
+                      <Button
+                        style={{ marginLeft: "10px" }}
+                        variant="danger"
+                        onClick={() => handleDeleteHack(hack.id)}
+                      >
+                        Delete
                       </Button>
                     </td>
                   </tr>

@@ -59,12 +59,14 @@ const DAppsForm = ({ onSubmit, coinName }) => {
       <Form.Group className='dappsInput' controlId="tvlInput">
         <Form.Label>TVL</Form.Label>
         <Form.Control type="text" value={tvl} onChange={(e) => setTVL(e.target.value)} required />
+        <hr />
       </Form.Group>
       <Button className='createBtn' style={{ width: "100%" }} disabled={!description || !tvl}  type="submit" variant="primary">
         Create DApp
       </Button>
-      {responseMessage.success && <Alert className='alertSucess' variant="success">{responseMessage.success}</Alert>}
-      {responseMessage.error && <Alert className='alertSucess' variant="danger">{responseMessage.error}</Alert>}
+      <br />
+      {responseMessage.success && <Alert className='alertSucess' style={{ margin: "1rem" }}  variant="success">{responseMessage.success}</Alert>}
+      {responseMessage.error && <Alert className='alertSucess' style={{ margin: "1rem" }}  variant="danger">{responseMessage.error}</Alert>}
 
     </Form>
   )
