@@ -95,7 +95,7 @@ const CompetitorForm = ({
             />
           </Form.Group>
           {/* Nuevo campo para ingresar dinámicamente pares key-value */}
-          <Form.Group>
+          <Form.Group className="modalFormGNR">
             <br />
             <Form.Label>New Feature-Data Pair</Form.Label>
             <br />
@@ -128,14 +128,14 @@ const CompetitorForm = ({
           {formData.keyValues.map((pair, index) => (
             <div key={index} style={{ marginBottom: "10px" }}>
               <Form.Control
-                style={{ marginRight: "10px" }}
+                className="modalFormGNRCompetitor"
                 type="text"
                 value={pair.key}
                 readOnly
               />
               <br />
               <Form.Control
-                style={{ marginRight: "10px" }}
+               className="modalFormGNRCompetitor"
                 type="text"
                 value={pair.value}
                 readOnly

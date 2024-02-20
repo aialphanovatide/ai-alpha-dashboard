@@ -8,12 +8,8 @@ const CompetitorsEditModal = ({
   show,
   handleClose,
 }) => {
-  const [editedData, setEditedData] = useState({});
+  const [editedData, setEditedData] = useState(competitor.competitor);
   const [message, setMessage] = useState(null);
-
-  useEffect(() => {
-    setEditedData(competitor.competitor);
-  }, [competitor]);
 
   const handleInputChange = (e, key) => {
     const { value } = e.target;
@@ -51,7 +47,7 @@ const CompetitorsEditModal = ({
       // Puedes manejar el error de actualización aquí
     }
   };
-
+console.log('edited: ', editedData)
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>

@@ -3,13 +3,30 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './textEditor.css'
 
-const RichTextEditor = ({ onContentChange, success, onSuccess }) => {
+const RichTextEditor = ({ handleImageSelect, images, onContentChange, success, onSuccess }) => {
   const [content, setContent] = useState('');
+  
+  useEffect(()=>{
+    setContent('')
+  }, [images])
+
 
   const handleQuillChange = (value) => {
-    setContent(value);
-    onContentChange(value);
+    // Process the content and replace image markers with actual images
+    let updatedContent = value;
+
+    images.forEach((image, index) => {
+      const marker = `{image ${index + 1}}`;
+      updatedContent = updatedContent.replace(marker, `<img  src="${image.previewUrl}" alt="${image.file.name}" />`);
+    });
+
+    setContent(updatedContent);
+    onContentChange(updatedContent);
   };
+
+  // console.log('content: ', content)
+  // console.log('images: ', images)
+
 
   useEffect(()=>{
     if (success){

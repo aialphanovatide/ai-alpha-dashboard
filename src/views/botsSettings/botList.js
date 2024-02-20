@@ -5,6 +5,14 @@ import baseURL from "../../config";
 import CIcon from "@coreui/icons-react";
 import { cilToggleOn, cilToggleOff } from "@coreui/icons";
 
+const SpinnerComponent = () => {
+  return (
+    <div className="spinnergnral">
+      <span className="spinner-border spinner-border-lg" aria-hidden="true"></span>
+    </div>
+  );
+};
+
 const BotList = ({ bots }) => {
   const [botList, setBotList] = useState([]);
 
@@ -25,8 +33,7 @@ const BotList = ({ bots }) => {
         const response = await fetch(url, { method: "POST" });
         if (response.ok) {
           const data = await response.json();
-          console.log(data.message);
-          // Actualizar el estado del bot
+          
           const updatedBots = [...botList];
           updatedBots[index].isActive = !bot.isActive;
           setBotList(updatedBots);
@@ -40,7 +47,7 @@ const BotList = ({ bots }) => {
       console.error("Bot or botList is undefined.");
     }
   };
-
+ 
   return (
     <div className="bot-list-container">
       {botList && botList.length > 0 ? (
@@ -50,7 +57,7 @@ const BotList = ({ bots }) => {
             className={`bot-item ${bot.isActive ? "activeBot" : "inactiveBot"}`}
           >
             <div className="bot-icon">
-              <img src={`${baseURL.BASE_URL}${bot.icon}`} alt={bot.alias} />
+            <img src={`${baseURL.BASE_URL}${bot.icon}`} alt={bot.alias} />
             </div>
             <div className="bot-details">
               <div className="bot-category">{bot.category}</div>
@@ -67,7 +74,8 @@ const BotList = ({ bots }) => {
           </div>
         ))
       ) : (
-        <Loader />
+        // <Loader />
+        <SpinnerComponent/>
       )}
     </div>
   );

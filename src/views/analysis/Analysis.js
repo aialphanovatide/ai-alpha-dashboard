@@ -78,10 +78,11 @@ const Analysis = () => {
     }
     setIsSubmitting(true);
 
+  
     const formData = new FormData();
-    formData.append("coinBot", selectedCoin);
-    formData.append("content", content);
-    formData.append("image", selectedImage.file);
+    formData.append('coinBot', selectedCoin);
+    formData.append('content', content);
+    formData.append('images', selectedImage);
 
     try {
       const response = await fetch(`${config.BASE_URL}/post_analysis`, {
@@ -98,10 +99,11 @@ const Analysis = () => {
           showConfirmButton: false,
           timer: 1000,
         });
-        fetchAnalysis();
-        setIsAnalysisCreated(true);
-        setSelectedImage(null);
-        setContent(null);
+        // fetchAnalysis()
+        setIsAnalysisCreated(true)
+        setSelectedImage(null)
+        setContent(null)
+       
       } else {
         Swal.fire({
           icon: "error",
@@ -123,23 +125,13 @@ const Analysis = () => {
   };
 
   return (
-    <div className="analysisMain">
-      <h3 className="analysisTitle">Analysis</h3>
-      <div className="analysisSubmain">
-        <DropdownMenu
-          selectedCoin={selectedCoin}
-          onSelectCoin={handleSelectCoin}
-        />
-        <ImageUpload
-          success={isAnalysisCreated}
-          onSuccess={setIsAnalysisCreated}
-          onImageSelect={handleImageSelect}
-        />
-        <RichTextEditor
-          success={isAnalysisCreated}
-          onSuccess={setIsAnalysisCreated}
-          onContentChange={handleContentChange}
-        />
+
+    <div className='analysisMain'>
+      <h3 className='analysisTitle'>Analysis</h3>
+      <div className='analysisSubmain'>
+        <DropdownMenu selectedCoin={selectedCoin} onSelectCoin={handleSelectCoin} />
+        <ImageUpload success={isAnalysisCreated} onSuccess={setIsAnalysisCreated} onImagesSelect={handleImageSelect} />
+        <RichTextEditor handleImageSelect={handleImageSelect} images={selectedImage} success={isAnalysisCreated} onSuccess={setIsAnalysisCreated} onContentChange={handleContentChange} />
 
         <button
           className="submitAnalisys"

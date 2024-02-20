@@ -210,7 +210,7 @@ console.log(responseMessage)
         <Modal.Title className='editModalTitle'>{selectedItemForEdit && selectedItemForEdit.endpointName} </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form className='modalFormGNR' onSubmit={handleSubmit}>
         {/* Token Utility Form */}
         {
           selectedItemForEdit && selectedItemForEdit.endpointName === 'token utility' && (

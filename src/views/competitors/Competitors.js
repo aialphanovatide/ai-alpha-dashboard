@@ -238,13 +238,12 @@ const Competitors = () => {
                   ))}
                 </tbody>
               </Table>
-              <br />
-              <br />
+            
             </div>
           ),
         )}
       </div>
-      <Button onClick={handleShowModal}>Add Competitor</Button>
+      <Button disabled={!selectedCoinBot} onClick={handleShowModal}>Add Competitor</Button>
       <CompetitorForm
         showModal={showModal && !selectedCompetitor} // Mostrar el formulario solo si no hay un competidor seleccionado
         handleClose={handleCloseModal}
@@ -264,3 +263,5 @@ const Competitors = () => {
 };
 
 export default Competitors;
+
+

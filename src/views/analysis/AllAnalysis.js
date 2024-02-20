@@ -25,50 +25,50 @@ const Modal = ({ item, base64Image, onClose }) => {
   };
 
 
-  const Item = ({ item, onDelete, base64Image }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const Item = ({ item, onDelete, base64Image }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleClick = () => {
-        onDelete(item.analysis_id);
-      };
-  
-      const handleItemClick = (e) => {
-         // Check if the click target or its parent has the deleteBtn class
-         if (
-          e.target.classList.contains('deleteBtn') ||
-          e.target.parentElement.classList.contains('deleteBtn')
-          ) {
-              // If it is, do not open the modal
-              return;
-          }
-    
-        // Otherwise, open the modal
-        setIsModalOpen(true);
-      };
-  
-    const handleCloseModal = () => {
-      setIsModalOpen(false);
+  const handleClick = () => {
+      onDelete(item.analysis_id);
     };
+
+    const handleItemClick = (e) => {
+        // Check if the click target or its parent has the deleteBtn class
+        if (
+        e.target.classList.contains('deleteBtn') ||
+        e.target.parentElement.classList.contains('deleteBtn')
+        ) {
+            // If it is, do not open the modal
+            return;
+        }
   
-    return (
-      <>
-        <li className="allAnalysisLI" onClick={handleItemClick}>
-          {base64Image && (
-            <img
-              className="itemImage"
-              src={`data:image/png;base64,${base64Image}`}
-              alt="Analysis"
-            />
-          )}
-          <span className="itemContent" dangerouslySetInnerHTML={{ __html: item.analysis }} />
-          {onDelete && <CIcon size="xxl" icon={cilTrash} className="deleteBtn" onClick={handleClick} />}
-        </li>
-        {isModalOpen && (
-          <Modal item={item} base64Image={base64Image} onClose={handleCloseModal} />
-        )}
-      </>
-    );
+      // Otherwise, open the modal
+      setIsModalOpen(true);
+    };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
+
+  return (
+    <>
+      <li className="allAnalysisLI" onClick={handleItemClick}>
+        {base64Image && (
+          <img
+            className="itemImage"
+            src={`data:image/png;base64,${base64Image}`}
+            alt="Analysis"
+          />
+        )}
+        <span className="itemContent" dangerouslySetInnerHTML={{ __html: item.analysis }} />
+        {onDelete && <CIcon size="xxl" icon={cilTrash} className="deleteBtn" onClick={handleClick} />}
+      </li>
+      {isModalOpen && (
+        <Modal item={item} base64Image={base64Image} onClose={handleCloseModal} />
+      )}
+    </>
+  );
+};
   
 
 const AllAnalysis = ({items, fetchAnalysis}) => {
@@ -116,7 +116,7 @@ const AllAnalysis = ({items, fetchAnalysis}) => {
     
   return (
     <div className='allAnalysismain'>
-      <h3 className='allAnalysisTitle'>All Coins Analysis</h3>
+      <h3 className='allAnalysisTitle'>Selected Coin Analysis</h3>
       {items && items.length > 0 ?
       <ul className='allAnalysisUL'>
       {items.map(item => (

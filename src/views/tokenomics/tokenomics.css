@@ -35,12 +35,24 @@
   vertical-align: middle;
 }
 
+.tokenomicsTitle{
+  margin: 0 0 0 1rem;
+}
+
 .modalForm{
   padding: 1rem;
-  margin: 0 0 1rem 0;
+  margin: 1rem;
   border-radius: 3px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  /* border: 1px solid #282828; */
 }
+
+.modalFormGNR{
+  margin: 0 1rem;
+  border-radius: 3px;
+}
+
+
 
 .modalFormBtn{
   margin: 1rem 0 0 0;

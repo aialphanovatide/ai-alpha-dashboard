@@ -73,7 +73,7 @@ const HackForm = ({ onSubmit }) => {
         />
       </Form.Group>
       <hr />
-      <Button  className='createBtn' type="submit" variant="primary">
+      <Button style={{width: '100%'}} disabled={!date || !hackName || !incidentDescription || !mitigationMeasure || !consequences}  className='createBtn' type="submit" variant="primary">
         Create Hack
       </Button>
       
