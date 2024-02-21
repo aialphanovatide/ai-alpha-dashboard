@@ -141,12 +141,20 @@
   overflow-y: scroll;
 }
 
-.modalText { 
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
+
+.modalText .ql-align-left {
+  text-align: left;
 }
+
+.modalText .ql-align-right {
+  text-align: right;
+}
+
+.modalText .ql-align-center {
+  text-align: center;
+}
+
+
 
 .modalImage {
   height: auto;

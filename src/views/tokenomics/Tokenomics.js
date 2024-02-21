@@ -96,86 +96,111 @@ const Tokenomics = () => {
     setShowEditModal(true);
   };
 
-
-const handleDeleteTokenDistribution = async (tokenDistributionId) => {
-  try {
-    const response = await fetch(
-      `${config.BASE_URL}/delete_token_distribution/${tokenDistributionId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
+  const handleDeleteTokenomic = async (tokenomicId) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/delete_tokenomic/${tokenomicId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
         },
-      },
-    );
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data && data.status === 200) {
-      // Eliminación exitosa, actualiza la lista de upgrades
-      fetchData();
-    } else {
-      console.error("Error deleting upgrade:", data.error);
+      if (data && data.status === 200) {
+        // Eliminación exitosa, actualiza la lista de upgrades
+        fetchData();
+      } else {
+        console.error("Error deleting upgrade:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
     }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
+  };
 
-const handleDeleteTokenUtility = async (tokenUtilityId) => {
-  try {
-    const response = await fetch(
-      `${config.BASE_URL}/delete_token_utility/${tokenUtilityId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
+  const handleDeleteTokenDistribution = async (tokenDistributionId) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/delete_token_distribution/${tokenDistributionId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
         },
-      },
-    );
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data && data.status === 200) {
-      // Eliminación exitosa, actualiza la lista de upgrades
-      fetchData();
-    } else {
-      console.error("Error deleting TokenUtility:", data.error);
+      if (data && data.status === 200) {
+        // Eliminación exitosa, actualiza la lista de upgrades
+        fetchData();
+      } else {
+        console.error("Error deleting upgrade:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
     }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
+  };
 
-const handleDeleteValueAccrualMechanisms = async (valueAcrrualMechanismId) => {
-  try {
-    const response = await fetch(
-      `${config.BASE_URL}/delete_value_accrual_mechanism/${valueAcrrualMechanismId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
+  const handleDeleteTokenUtility = async (tokenUtilityId) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/delete_token_utility/${tokenUtilityId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
         },
-      },
-    );
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data && data.status === 200) {
-      // Eliminación exitosa, actualiza la lista de upgrades
-      fetchData();
-    } else {
-      console.error("Error deleting ValueAccrualMechanisms:", data.error);
+      if (data && data.status === 200) {
+        // Eliminación exitosa, actualiza la lista de upgrades
+        fetchData();
+      } else {
+        console.error("Error deleting TokenUtility:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
     }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
+  };
 
- 
+  const handleDeleteValueAccrualMechanisms = async (
+    valueAcrrualMechanismId,
+  ) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/delete_value_accrual_mechanism/${valueAcrrualMechanismId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data && data.status === 200) {
+        // Eliminación exitosa, actualiza la lista de upgrades
+        fetchData();
+      } else {
+        console.error("Error deleting ValueAccrualMechanisms:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <div className="formGeneralMain" style={{ margin: "20px" }}>
@@ -221,6 +246,7 @@ const handleDeleteValueAccrualMechanisms = async (valueAcrrualMechanismId) => {
                   <td className="thGeneral">% Circulating Supply</td>
                   <td className="thGeneral">Max Supply</td>
                   <td className="thGeneral">Supply Model</td>
+                  <td className="thGeneral">Action</td>
                 </tr>
                 {tokenomicsData.tokenomics_data.length > 0 && (
                   <tr>
@@ -254,6 +280,18 @@ const handleDeleteValueAccrualMechanisms = async (valueAcrrualMechanismId) => {
                           .supply_model
                       }
                     </td>
+                    <td className="tdGeneral">
+                      <Button
+                        onClick={() =>
+                          handleEditButtonClick(
+                            tokenomicsData.tokenomics_data[0].tokenomics.id,
+                            "tokenomics",
+                          )
+                        }
+                      >
+                        Edit
+                      </Button>
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -271,6 +309,7 @@ const handleDeleteValueAccrualMechanisms = async (valueAcrrualMechanismId) => {
                   <td className="thGeneral">% Circulating Supply</td>
                   <td className="thGeneral">Max Supply</td>
                   <td className="thGeneral">Supply Model</td>
+                  <td className="thGeneral">Actions</td>
                 </tr>
                 {tokenomicsData.tokenomics_data.length > 1 &&
                   tokenomicsData.tokenomics_data
@@ -294,6 +333,27 @@ const handleDeleteValueAccrualMechanisms = async (valueAcrrualMechanismId) => {
                         </td>
                         <td className="tdGeneral">
                           {tokenomic.tokenomics.supply_model}
+                        </td>
+                        <td className="tdGeneral">
+                          <Button
+                            onClick={() =>
+                              handleEditButtonClick(
+                                tokenomic.tokenomics.id,
+                                "tokenomics",
+                              )
+                            }
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            style={{ marginLeft: "10px" }}
+                            variant="danger"
+                            onClick={() =>
+                              handleDeleteTokenomic(tokenomic.tokenomics.id)
+                            }
+                          >
+                            Delete
+                          </Button>
                         </td>
                       </tr>
                     ))}
@@ -330,14 +390,16 @@ const handleDeleteValueAccrualMechanisms = async (valueAcrrualMechanismId) => {
                         Edit
                       </Button>
                       <Button
-                          style={{ marginLeft: "10px" }}
-                          variant="danger"
-                          onClick={() =>
-                            handleDeleteTokenDistribution(value.token_distributions.id)
-                          }
-                        >
-                          Delete
-                        </Button>
+                        style={{ marginLeft: "10px" }}
+                        variant="danger"
+                        onClick={() =>
+                          handleDeleteTokenDistribution(
+                            value.token_distributions.id,
+                          )
+                        }
+                      >
+                        Delete
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -374,14 +436,14 @@ const handleDeleteValueAccrualMechanisms = async (valueAcrrualMechanismId) => {
                         Edit
                       </Button>
                       <Button
-                          style={{ marginLeft: "10px" }}
-                          variant="danger"
-                          onClick={() =>
-                            handleDeleteTokenUtility(value.token_utilities.id)
-                          }
-                        >
-                          Delete
-                        </Button>
+                        style={{ marginLeft: "10px" }}
+                        variant="danger"
+                        onClick={() =>
+                          handleDeleteTokenUtility(value.token_utilities.id)
+                        }
+                      >
+                        Delete
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -419,15 +481,17 @@ const handleDeleteValueAccrualMechanisms = async (valueAcrrualMechanismId) => {
                         Edit
                       </Button>
                       <Button
-                          style={{ marginLeft: "10px" }}
-                          variant="danger"
-                          onClick={() =>
-                            handleDeleteValueAccrualMechanisms(value.value_accrual_mechanisms.id)
-                          }
-                        >
-                          Delete
-                        </Button>
-                      </td>
+                        style={{ marginLeft: "10px" }}
+                        variant="danger"
+                        onClick={() =>
+                          handleDeleteValueAccrualMechanisms(
+                            value.value_accrual_mechanisms.id,
+                          )
+                        }
+                      >
+                        Delete
+                      </Button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

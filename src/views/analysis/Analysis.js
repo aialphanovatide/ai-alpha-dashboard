@@ -89,7 +89,7 @@ const Analysis = () => {
         method: "POST",
         body: formData,
       });
-
+      console.log(formData)
       let responseData = await response.json();
 
       if (response.ok) {
@@ -131,7 +131,8 @@ const Analysis = () => {
   };
 
   console.log('selectedImage: ', selectedImage)
-  // console.log('content: ', content)
+   console.log('content: ', content)
+
 
   return (
     <div className="analysisMain">

@@ -168,7 +168,6 @@ const Competitors = () => {
     return groupedCompetitors;
   };
 
-<<<<<<< HEAD
   const handleDeleteCompetitor = async (competitorId) => {
     try {
       const response = await fetch(
@@ -197,8 +196,6 @@ const Competitors = () => {
   
 
   console.log("competitorsData: ", competitorsData);
-=======
->>>>>>> b176632acd7f08ee87bfb346410996a7becf9130
 
   return (
     <div>

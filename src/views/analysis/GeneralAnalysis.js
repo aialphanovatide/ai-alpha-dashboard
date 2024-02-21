@@ -18,7 +18,7 @@ const GeneralAnalysis = ({success, onSuccess}) => {
             });
     
             const data = await response.json();
-    
+            
             if (response.ok) {
                 setGeneralAnalysis(data.message)
             } else {
@@ -45,7 +45,7 @@ const GeneralAnalysis = ({success, onSuccess}) => {
       {generalAnalysis && generalAnalysis.length > 0 ?
       <ul className='allAnalysisUL'>
       {generalAnalysis?.map(item => (
-        <Item key={item.analysis_id} item={item} />
+        <Item key={item.analysis_id} item={item}  />
       ))}
         </ul>: <span>No Analysis yet</span>
       }
