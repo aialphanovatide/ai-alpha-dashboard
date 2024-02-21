@@ -42,7 +42,7 @@ const Upgrades = () => {
   const getUpgradesData = async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL}/get_upgrades?coin_bot_id=${selectedCoinBot}`,
+        `${config.BASE_URL}/api/get_upgrades?coin_bot_id=${selectedCoinBot}`,
         {
           method: "GET",
           headers: {
@@ -70,7 +70,7 @@ const Upgrades = () => {
     const getUpgrades = async () => {
       try {
         const response = await fetch(
-          `${config.BASE_URL}/get_upgrades?coin_bot_id=${selectedCoinBot}`,
+          `${config.BASE_URL}/api/get_upgrades?coin_bot_id=${selectedCoinBot}`,
           {
             method: "GET",
             headers: {

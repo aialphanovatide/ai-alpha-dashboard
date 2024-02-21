@@ -44,7 +44,7 @@ const Tokenomics = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL}/get_tokenomics?coin_bot_id=${selectedCoinBot}`,
+        `${config.BASE_URL}/api/get_tokenomics?coin_bot_id=${selectedCoinBot}`,
         {
           method: "GET",
           headers: {
