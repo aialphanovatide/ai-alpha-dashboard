@@ -57,7 +57,7 @@ const Introduction = () => {
   useEffect(() => {
     const getIntroductionData = async () => {
       try {
-        const response = await fetch(`${config.BASE_URL}/get_introduction?id=${selectedCoinBot}`, {
+        const response = await fetch(`${config.BASE_URL}/api/get_introduction?id=${selectedCoinBot}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
