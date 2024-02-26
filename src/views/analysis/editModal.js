@@ -24,11 +24,11 @@
     };
 
     const handleContentChange = (content) => {
-        setEditedContent(content);
+        setEditedContent(content);  
     };
 
     return (
-        <Modal show={true} onHide={onClose}>
+        <Modal show={true} onHide={onClose} className="editModal">
         <Modal.Header closeButton>
             <Modal.Title>Edit Analysis</Modal.Title>
         </Modal.Header>

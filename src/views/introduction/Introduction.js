@@ -235,11 +235,6 @@ const Introduction = () => {
       {/* Select coin */}
       <Form.Group controlId="coinBotSelect" style={{ marginBottom: "15px" }}>
         <Form.Label>Select Coin</Form.Label>
-        <img
-          src="https://ethaialpha.s3.us-east-2.amazonaws.com/DecentralisedRectDark.jpg"
-          alt="DecentralisedRectDark"
-        />
-
         <Form.Control
           as="select"
           value={selectedCoinBot}

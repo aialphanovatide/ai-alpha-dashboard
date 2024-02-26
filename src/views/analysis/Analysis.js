@@ -3,7 +3,7 @@ import "quill/dist/quill.snow.css";
 import config from "../../config";
 import DropdownMenu from "../helpers/selectCoin/SelectCoin";
 import "./analysis.css";
-import ImageUpload from "../helpers/selectImage/selectImage";
+//import ImageUpload from "../helpers/selectImage/selectImage";
 import RichTextEditor from "../helpers/textEditor/textEditor";
 import Swal from "sweetalert2";
 import { AllAnalysis } from "./AllAnalysis";
@@ -16,6 +16,7 @@ const Analysis = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [items, setItems] = useState([]);
   const [isAnalysisCreated, setIsAnalysisCreated] = useState(false);
+  const [showPostLaterModal, setShowPostLaterModal] = useState(false);
 
   const handleSelectCoin = (coinId) => {
     setSelectedCoin(coinId);
@@ -161,6 +162,12 @@ const Analysis = () => {
           disabled={isSubmitting}
         >
           {isSubmitting ? "Submitting..." : "Submit"}
+        </button>
+        <button
+          className="postLaterButton"
+          onClick={handleSubmit}
+        >
+          Post Later
         </button>
       </div>
       <AllAnalysis items={items} fetchAnalysis={fetchAnalysis} />

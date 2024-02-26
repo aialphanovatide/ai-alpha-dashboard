@@ -25,12 +25,35 @@
     background-color: white;
     transition: background-color 0.3s ease;
   }
+
+  .postLaterButton{
+      display: inline-block;
+      margin: 6rem 0 0rem 0;
+      margin-left: 10px;
+      align-self: flex-start;
+      padding: 8px 18px;
+      font-size: 15px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      border: 2px solid #5856d6; 
+      color: #5856d6; 
+      border-radius: 5px;
+      background-color: white;
+      transition: background-color 0.3s ease;
+  }
   
   .submitAnalisys:hover {
     background-color: #5856d6; /* Green background color on hover */
     color: white;
   }
   
+  .postLaterButton:hover {
+    background-color: #5856d6; /* Green background color on hover */
+    color: white;
+  }
+
   .submitAnalisys:disabled {
     background-color: #d3d3d3; /* Light gray background when disabled */
     border: 2px solid #d3d3d3; /* Light gray border when disabled */
@@ -183,7 +206,6 @@
 
 
 
-
 p{
   color:#282828;
 }
@@ -192,3 +214,8 @@ p{
 .modalText p {
   color: #282828;
 }
+
+.editModal {
+  width: 100%; 
+}
+
