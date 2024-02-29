@@ -56,7 +56,7 @@ const Competitors = () => {
 
         const data = await response.json();
         console.log('data: ', data)
-
+          
         if (data && data.competitors) {
           setCompetitorsData(data.competitors);
         } else {

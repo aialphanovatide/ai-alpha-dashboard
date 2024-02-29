@@ -201,7 +201,7 @@ const TokenomicsEditModal = ({
         },
       );
       const data = await response.json();
-      
+
       if (response.ok) {
         setResponseMessage({ success: data.message, error: "" });
         fetchData();
@@ -246,10 +246,13 @@ const TokenomicsEditModal = ({
   };
 
   const handlePercentageHeldChange = ({ id, value }) => {
-    setTokenDistributionData({
-      ...tokenDistributionData,
-      [id]: value,
-    });
+    // Verificar si el valor ingresado es un número o está vacío
+    if (!isNaN(value) || value === "") {
+      setTokenDistributionData({
+        ...tokenDistributionData,
+        [id]: value,
+      });
+    }
   };
 
   const handleMechanismChange = ({ id, value }) => {

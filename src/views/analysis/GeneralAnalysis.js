@@ -4,7 +4,7 @@ import config from "src/config";
 import "./analysis.css";
 import EditModal from "./editModal";
 
-const GeneralAnalysis = ({ success, onSuccess }) => {
+const GeneralAnalysis = ({ success, onSuccess, fetchAnalysis }) => {
   const [generalAnalysis, setGeneralAnalysis] = useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
@@ -42,7 +42,6 @@ const GeneralAnalysis = ({ success, onSuccess }) => {
   };
 
   const handleSave = async (analysis_id, editedContent) => {
-    console.log('data que llega para edit', analysis_id, editedContent)
     try {
       const response = await fetch(
         `${config.BASE_URL}/edit_analysis/${analysis_id}`,
@@ -52,16 +51,16 @@ const GeneralAnalysis = ({ success, onSuccess }) => {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
           },
-          body: JSON.stringify({ content: editedContent }), 
-        }
+          body: JSON.stringify({ content: editedContent }),
+        },
       );
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
-        console.log("Analysis updated successfully:", data);
+        fetchAnalysis();
         fetchGeneralAnalysis();
-        closeEditModal(); // Cerrar el modal después de guardar
+        closeEditModal();
       } else {
         console.error("Error updating analysis:", data.error);
       }
@@ -69,7 +68,6 @@ const GeneralAnalysis = ({ success, onSuccess }) => {
       console.error("Error updating analysis:", error);
     }
   };
-  
 
   useEffect(() => {
     fetchGeneralAnalysis();
@@ -92,6 +90,7 @@ const GeneralAnalysis = ({ success, onSuccess }) => {
               item={item}
               openEditModal={openEditModal}
             />
+            
           ))}
         </ul>
       ) : (
@@ -102,6 +101,7 @@ const GeneralAnalysis = ({ success, onSuccess }) => {
           item={selectedAnalysis}
           onSave={handleSave}
           onClose={closeEditModal}
+          fetchAnalysis={fetchAnalysis} // Aquí pasamos fetchAnalysis como prop
         />
       )}
     </div>

@@ -252,16 +252,13 @@ const Introduction = () => {
 
       {/* Content of the introduction */}
       <Form.Group controlId="contentInput" style={{ marginBottom: "15px" }}>
-        <Form.Label>Content (Max 400 Characters)</Form.Label>
         <Form.Control
           required
           style={{ height: "180px" }}
           as="textarea"
           placeholder="Enter content..."
           value={content}
-          onChange={(e) =>
-            handleContentChange(e.target.value.substring(0, 400))
-          }
+          onChange={(e) => handleContentChange(e.target.value)}
         />
       </Form.Group>
 

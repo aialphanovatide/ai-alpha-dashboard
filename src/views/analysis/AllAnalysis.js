@@ -12,7 +12,7 @@ const Item = ({ item, onDelete, base64Image, openEditModal }) => {
   };
 
   const handleItemClick = () => {
-    openEditModal(item); // Llama a la función openEditModal con el análisis correspondiente
+    openEditModal(item);
   };
 
   return (
@@ -38,17 +38,19 @@ const Item = ({ item, onDelete, base64Image, openEditModal }) => {
       )}
     </li>
   );
+  
 };
 
-const AllAnalysis = ({ items, fetchAnalysis }) => {
+const AllAnalysis = ({ items, fetchAnalysis}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = useState(null); 
 
   const openEditModal = (item) => {
-    console.log("Opening edit modal for analysis:", item);
     setSelectedAnalysis(item);
     setIsModalOpen(true); 
   };
+
+
 
   // Deletes an analysis
   const handleDelete = async (analysis_id) => {
@@ -73,7 +75,7 @@ const AllAnalysis = ({ items, fetchAnalysis }) => {
           showConfirmButton: false,
           timer: 1500,
         });
-        fetchAnalysis(); // Actualiza la lista de análisis
+        fetchAnalysis();
       } else {
         console.error("Error deleting analysis:", response.statusText);
         Swal.fire({
@@ -96,12 +98,35 @@ const AllAnalysis = ({ items, fetchAnalysis }) => {
 
   // Función para cerrar el modal de edición
   const closeEditModal = () => {
-    setIsModalOpen(false); // Cierra el modal
+    setIsModalOpen(false)
   };
 
-  // Función para guardar los cambios en el análisis
   const handleSave = async (analysis_id, editedContent) => {
-    // Implementa la lógica para guardar los cambios en el análisis
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/edit_analysis/${analysis_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+          body: JSON.stringify({ content: editedContent }), 
+        }
+      );
+  
+      const data = await response.json();
+        
+      if (response.ok) {
+        console.log("Analysis updated successfully:", data);
+        fetchAnalysis();
+        closeEditModal(); // Cerrar el modal después de guardar
+      } else {
+        console.error("Error updating analysis:", data.error);
+      }
+    } catch (error) {
+      console.error("Error updating analysis:", error);
+    }
   };
 
   return (
@@ -126,6 +151,7 @@ const AllAnalysis = ({ items, fetchAnalysis }) => {
           item={selectedAnalysis}
           onSave={handleSave}
           onClose={closeEditModal}
+          fetchAnalysis={fetchAnalysis} 
         />
       )}
       {/* Renderiza el modal si isModalOpen es true */}
