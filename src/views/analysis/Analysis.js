@@ -315,6 +315,7 @@ const Analysis = () => {
             <hr />
             <p>Set a Title:</p>
             <input
+              required
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -329,6 +330,7 @@ const Analysis = () => {
               timeFormat="HH:mm"
               timeIntervals={1}
               dateFormat="Pp"
+              required
               placeholderText="Select date and time"
             />
 
