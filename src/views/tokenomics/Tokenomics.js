@@ -87,8 +87,6 @@ const Tokenomics = () => {
   const handleClose = () => {
     setShowModal(false);
     setShowEditModal(false);
-    setSelectedCoinBot("");
-    setTokenomicsData(null);
   };
 
   const handleEditButtonClick = (id, endpointName) => {

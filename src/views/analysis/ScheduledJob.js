@@ -3,25 +3,17 @@ import CIcon from "@coreui/icons-react";
 import { cilTrash } from "@coreui/icons";
 
 const ScheduledJob = ({ job, onDelete }) => {
-  // Dividir job.args en dos partes usando la coma como delimitador
-  const [, htmlString] = job.args.split(',');
-
-  // Eliminar espacios en blanco al principio y al final de la cadena HTML
-  const trimmedHtmlString = htmlString.trim();
-
-  // Crear un nuevo parser HTML
-  const parser = new DOMParser();
-  const parsedHtml = parser.parseFromString(trimmedHtmlString, "text/html");
-
-  // Obtener el título del elemento HTML
-  const titleElement = parsedHtml.querySelector("p");
-  const title = titleElement ? titleElement.textContent : "";
+  console.log("job,", job);
 
   // Extraer fecha y hora de job.trigger
   const dateMatch = job.trigger.match(/\[(.*?)\]/);
   const nextRunDateTime = dateMatch
     ? dateMatch[1].replace(/ -\d{2}$/, "")
     : "Unknown";
+
+  // Extraer título de job.args
+  const titleMatch = job.args.match(/Title:\s*(.*?)\\r\\n/);
+  const title = titleMatch ? titleMatch[1] : "Unknown";
 
   const handleDeleteClick = () => {
     // Llamar a la función onDelete pasada como prop
@@ -37,7 +29,7 @@ const ScheduledJob = ({ job, onDelete }) => {
       <CIcon
         size="xxl"
         icon={cilTrash}
-        style={{ position: "absolute", right: "20%"}}
+        style={{ position: "absolute", right: "20%" }}
         className="deleteBtn"
         onClick={handleDeleteClick}
       />

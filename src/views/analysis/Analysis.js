@@ -21,6 +21,7 @@ const Analysis = () => {
   const [showPostLaterSection, setShowPostLaterSection] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [scheduledJobs, setScheduledJobs] = useState([]);
+  const [title, setTitle] = useState("");
 
   const deleteScheduled = async (jobId) => {
     try {
@@ -56,6 +57,10 @@ const Analysis = () => {
     } catch (error) {
       console.error("Error deleting scheduled job:", error);
     }
+  };
+
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
   };
 
   const handleSelectCoin = (coinId) => {
@@ -118,7 +123,8 @@ const Analysis = () => {
       selectedCoin === null ||
       selectedImage === null ||
       content === null ||
-      selectedDate === null
+      selectedDate === null ||
+      title === null
     ) {
       return Swal.fire({
         icon: "error",
@@ -144,10 +150,13 @@ const Analysis = () => {
       "",
     );
 
+    const combinedContent = `Title: ${title}\n${content}`;
+    console.log('combinedContent', combinedContent)
     const formDataToSchedule = new FormData();
     formDataToSchedule.append("coinBot", selectedCoin);
-    formDataToSchedule.append("content", content);
+    formDataToSchedule.append("content", combinedContent); // Sending combined content
     formDataToSchedule.append("scheduledDate", cleanedSelectedDate);
+
     try {
       const response = await fetch(`${config.BASE_URL}/schedule_post`, {
         method: "POST",
@@ -163,13 +172,13 @@ const Analysis = () => {
           showConfirmButton: false,
           timer: 1000,
         });
-        setSelectedCoin(null)
+        setSelectedCoin(null);
         setIsAnalysisCreated(true);
         setContent(null);
-        setSelectedDate(null); 
+        setSelectedDate(null);
         setSelectedImage([]);
         await fetchAnalysis();
-        handleGetJobs(); 
+        handleGetJobs();
       } else {
         Swal.fire({
           icon: "error",
@@ -304,14 +313,25 @@ const Analysis = () => {
         {showPostLaterSection && (
           <div className="postLaterSection">
             <hr />
+            <p>Set a Title:</p>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter post title"
+            />
+            <hr />
             <p>Choose date and time to post analysis:</p>
             <DatePicker
               selected={selectedDate}
               onChange={handleDateChange}
               showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={1}
               dateFormat="Pp"
               placeholderText="Select date and time"
             />
+
             <button className="schButton" onClick={handleScheduleSubmit}>
               Schedule Post
             </button>
@@ -328,7 +348,12 @@ const Analysis = () => {
         <h3>Scheduled Analysis Posts</h3>
         {scheduledJobs.length > 0 ? (
           scheduledJobs.map((job) => (
-            <ScheduledJob key={job.id} job={job} onDelete={deleteScheduled} />
+            <ScheduledJob
+              key={job.id}
+              title={title}
+              job={job}
+              onDelete={deleteScheduled}
+            />
           ))
         ) : (
           <p>No scheduled posts</p>
