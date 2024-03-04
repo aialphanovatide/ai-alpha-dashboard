@@ -10,6 +10,7 @@ const CompetitorForm = ({
 }) => {
   const initialFormData = {
     token: "",
+    selectedKey: "",
     newKeyValuePair: { key: "", value: "" },
     keyValues: [],
   };
@@ -17,6 +18,22 @@ const CompetitorForm = ({
   const [formData, setFormData] = useState(initialFormData);
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  const keysOptions = [
+    "Type of token",
+    "Circulating supply",
+    "Token supply model",
+    "Current Market Cap (Nov 2023)",
+    "TVL",
+    "Daily active users",
+    "Transaction fees",
+    "Transaction speed",
+    "Inflation rate 2022",
+    "Inflation rate 2023",
+    "APR",
+    "Active developers",
+    "Revenue",
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,11 +55,12 @@ const CompetitorForm = ({
   };
 
   const handleAddKeyValuePair = () => {
-    const { newKeyValuePair, keyValues } = formData;
-    if (newKeyValuePair.key && newKeyValuePair.value) {
+    const { selectedKey, newKeyValuePair, keyValues } = formData;
+    const key = selectedKey || newKeyValuePair.key; 
+    if (key && newKeyValuePair.value) {
       setFormData({
         ...formData,
-        keyValues: [...keyValues, newKeyValuePair],
+        keyValues: [...keyValues, { key, value: newKeyValuePair.value }],
         newKeyValuePair: { key: "", value: "" },
       });
     }
@@ -66,7 +84,7 @@ const CompetitorForm = ({
         coin_bot_id: selectedCoinBot,
       };
       const response = await handleSave(competitorData);
-      
+
       setSuccessMessage(response);
       setShowSuccessMessage(true);
       setTimeout(() => {
@@ -78,6 +96,7 @@ const CompetitorForm = ({
       console.error("Error saving competitor:", error);
     }
   };
+
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -94,6 +113,23 @@ const CompetitorForm = ({
               value={formData.token}
               onChange={handleChange}
             />
+          </Form.Group>
+          {/* Dropdown para seleccionar la key */}
+          <Form.Group controlId="selectedKey">
+            <Form.Label>Select Key</Form.Label>
+            <Form.Control
+              as="select"
+              name="selectedKey"
+              value={formData.selectedKey}
+              onChange={handleChange}
+            >
+              <option value="">Select...</option>
+              {keysOptions.map((key, index) => (
+                <option key={index} value={key}>
+                  {key}
+                </option>
+              ))}
+            </Form.Control>
           </Form.Group>
           {/* Nuevo campo para ingresar dinámicamente pares key-value */}
           <Form.Group className="modalFormGNR">
@@ -136,7 +172,7 @@ const CompetitorForm = ({
               />
               <br />
               <Form.Control
-               className="modalFormGNRCompetitor"
+                className="modalFormGNRCompetitor"
                 type="text"
                 value={pair.value}
                 readOnly
