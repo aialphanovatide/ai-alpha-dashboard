@@ -1,136 +1,162 @@
-import React, { useState } from 'react';
-import config from 'src/config';
-import Swal from 'sweetalert2'
-import CIcon from '@coreui/icons-react'
-import { cilTrash } from '@coreui/icons'
+import React, { useState } from "react";
+import config from "src/config";
+import Swal from "sweetalert2";
+import CIcon from "@coreui/icons-react";
+import { cilTrash } from "@coreui/icons";
+import EditModal from "./editModal";
 
-const Modal = ({ item, base64Image, onClose }) => {
-    return (
-      <div className="modalOverlay" onClick={onClose}>
-        <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-          {base64Image && (
-            <img
-              className="modalImage"
-              src={`data:image/png;base64,${base64Image}`}
-              alt="Analysis"
-            />
-          )}
-        <span className="modalText" dangerouslySetInnerHTML={{ __html: item.analysis }} />
-          <button className="closeButton" onClick={onClose}>
-            Close
-          </button>
-        </div>
-      </div>
-    );
+const Item = ({ item, onDelete, base64Image, openEditModal }) => {
+  const handleDeleteClick = (event) => {
+    event.stopPropagation(); // Detiene la propagación del evento click
+    onDelete(item.analysis_id); // Llama a la función onDelete con el ID del análisis
   };
 
-
-const Item = ({ item, onDelete, base64Image }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleClick = () => {
-      onDelete(item.analysis_id);
-    };
-
-    const handleItemClick = (e) => {
-        // Check if the click target or its parent has the deleteBtn class
-        if (
-        e.target.classList.contains('deleteBtn') ||
-        e.target.parentElement.classList.contains('deleteBtn')
-        ) {
-            // If it is, do not open the modal
-            return;
-        }
-  
-      // Otherwise, open the modal
-      setIsModalOpen(true);
-    };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleItemClick = () => {
+    openEditModal(item);
   };
 
   return (
-    <>
-      <li className="allAnalysisLI" onClick={handleItemClick}>
-        {base64Image && (
-          <img
-            className="itemImage"
-            src={`data:image/png;base64,${base64Image}`}
-            alt="Analysis"
-          />
-        )}
-        <span className="itemContent" dangerouslySetInnerHTML={{ __html: item.analysis }} />
-        {onDelete && <CIcon size="xxl" icon={cilTrash} className="deleteBtn" onClick={handleClick} />}
-      </li>
-      {isModalOpen && (
-        <Modal item={item} base64Image={base64Image} onClose={handleCloseModal} />
+    <li className="allAnalysisLI" onClick={handleItemClick}>
+      {base64Image && (
+        <img
+          className="itemImage"
+          src={`data:image/png;base64,${base64Image}`}
+          alt="Analysis"
+        />
       )}
-    </>
+      <span
+        className="itemContent"
+        dangerouslySetInnerHTML={{ __html: item.analysis }}
+      />
+      {onDelete && (
+        <CIcon
+          size="xxl"
+          icon={cilTrash}
+          className="deleteBtn"
+          onClick={handleDeleteClick}
+        />
+      )}
+    </li>
   );
-};
   
+};
 
-const AllAnalysis = ({items, fetchAnalysis}) => {
+const AllAnalysis = ({ items, fetchAnalysis}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null); 
 
-    // Deletes an analysis
-    const handleDelete = async (analysis_id) => {
-        try {
-            const response = await fetch(`${config.BASE_URL}/delete_analysis/${analysis_id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'ngrok-skip-browser-warning': 'true',
-                },
-            });
-    
-            const data = await response.json();
-    
-            if (response.ok) {
-                Swal.fire({
-                    icon: "success",
-                    title: data.message,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                fetchAnalysis()
-                
-            } else {
-                console.error('Error fetching coin bots:', response.statusText);
-                Swal.fire({
-                    icon: "error",
-                    title: data.error,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        } catch (error) {
-            console.error('Error fetching coin bots:', error);
-            Swal.fire({
-                icon: "error",
-                title: error,
-                showConfirmButton: false,
-                timer: 1500
-            });
-        }
-    };
-    
-  return (
-    <div className='allAnalysismain'>
-      <h3 className='allAnalysisTitle'>Selected Coin Analysis</h3>
-      {items && items.length > 0 ?
-      <ul className='allAnalysisUL'>
-      {items.map(item => (
-        <Item key={item.analysis_id} item={item} onDelete={handleDelete} />
-      ))}
-        </ul>: <span>No Analysis found for this coin</span>
+  const openEditModal = (item) => {
+    setSelectedAnalysis(item);
+    setIsModalOpen(true); 
+  };
+
+
+
+  // Deletes an analysis
+  const handleDelete = async (analysis_id) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/delete_analysis/${analysis_id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Swal.fire({
+          icon: "success",
+          title: data.message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        fetchAnalysis();
+      } else {
+        console.error("Error deleting analysis:", response.statusText);
+        Swal.fire({
+          icon: "error",
+          title: data.error,
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
+    } catch (error) {
+      console.error("Error deleting analysis:", error);
+      Swal.fire({
+        icon: "error",
+        title: error.message || "An error occurred",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  };
+
+  // Función para cerrar el modal de edición
+  const closeEditModal = () => {
+    setIsModalOpen(false)
+  };
+
+  const handleSave = async (analysis_id, editedContent) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/edit_analysis/${analysis_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+          body: JSON.stringify({ content: editedContent }), 
+        }
+      );
+  
+      const data = await response.json();
+        
+      if (response.ok) {
+        console.log("Analysis updated successfully:", data);
+        fetchAnalysis();
+        closeEditModal(); // Cerrar el modal después de guardar
+      } else {
+        console.error("Error updating analysis:", data.error);
+      }
+    } catch (error) {
+      console.error("Error updating analysis:", error);
+    }
+  };
+
+  return (
+    <div className="allAnalysismain">
+      <h3 className="allAnalysisTitle">Selected Coin Analysis</h3>
+      {items && items.length > 0 ? (
+        <ul className="allAnalysisUL">
+          {items.map((item) => (
+            <Item
+              key={item.analysis_id}
+              item={item}
+              onDelete={handleDelete}
+              openEditModal={openEditModal}
+            />
+          ))}
+        </ul>
+      ) : (
+        <span>No Analysis found for this coin</span>
+      )}
+      {isModalOpen && (
+        <EditModal
+          item={selectedAnalysis}
+          onSave={handleSave}
+          onClose={closeEditModal}
+          fetchAnalysis={fetchAnalysis} 
+        />
+      )}
+      {/* Renderiza el modal si isModalOpen es true */}
     </div>
   );
 };
 
-export {AllAnalysis, Item, Modal}
-
-
-
-
+export { AllAnalysis, Item, EditModal };

@@ -150,6 +150,32 @@ const DApps = () => {
     getDappsData(); // Vuelve a cargar los datos de dapps
   };
 
+  const handleDeleteDApp = async (dappId) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/api/dapps/delete/${dappId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data && data.status === 200) {
+        // Eliminación exitosa, actualiza la lista de DApps
+        getDappsData();
+      } else {
+        console.error("Error deleting DApp:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   const selectedBot =
     bots && selectedCoinBot
       ? bots.find((bot) => bot.id === Number(selectedCoinBot))
@@ -194,7 +220,7 @@ const DApps = () => {
                   <th>DApp</th>
                   <th>Description</th>
                   <th>TVL</th>
-                  <th>Action</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -209,6 +235,13 @@ const DApps = () => {
                         onClick={() => handleEditDApp(dapp)}
                       >
                         Edit
+                      </Button>
+                      <Button
+                        style={{ marginLeft: "10px" }}
+                        variant="danger"
+                        onClick={() => handleDeleteDApp(dapp.id)}
+                      >
+                        Delete
                       </Button>
                     </td>
                   </tr>

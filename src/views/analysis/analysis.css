@@ -9,6 +9,25 @@
     padding: 1rem;
 }
 
+
+.schButton {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 8px 18px;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid #5856d6; 
+  color: #5856d6; 
+  border-radius: 5px;
+  background-color: white;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+}
+
+
 .submitAnalisys {
     display: inline-block;
     margin: 6rem 0 0rem 0;
@@ -25,12 +44,42 @@
     background-color: white;
     transition: background-color 0.3s ease;
   }
+
+  .postLaterButton{
+      display: inline-block;
+      margin: 6rem 0 0rem 0;
+      margin-left: 10px;
+      align-self: flex-start;
+      padding: 8px 18px;
+      font-size: 15px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      border: 2px solid #5856d6; 
+      color: #5856d6; 
+      border-radius: 5px;
+      background-color: white;
+      transition: background-color 0.3s ease;
+  }
   
   .submitAnalisys:hover {
     background-color: #5856d6; /* Green background color on hover */
     color: white;
   }
   
+  .postLaterButton:hover {
+    background-color: #5856d6; /* Green background color on hover */
+    color: white;
+  }
+
+  .postLaterButton:disabled {
+    background-color: #d3d3d3; /* Light gray background when disabled */
+    border: 2px solid #d3d3d3; /* Light gray border when disabled */
+    color: #808080; /* Gray text color when disabled */
+    cursor: not-allowed;
+  }
+
   .submitAnalisys:disabled {
     background-color: #d3d3d3; /* Light gray background when disabled */
     border: 2px solid #d3d3d3; /* Light gray border when disabled */
@@ -61,6 +110,32 @@
   width: 100%;
   margin: 1rem;
   border-radius: 5px;
+}
+
+.titleSched{
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  padding: 10px;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  background-color: #fff;
+  border-radius: 5px;
+  display: flex;
+  height: 200px;
+  align-items: center;
+  /* overflow: hidden; */
+  position: relative;
+  cursor: pointer;
+}
+
+.schedtitl{ 
+width: 20%;
+}
+
+.pSchedule{
+  width: 100%;  
+  top: 4%;
+  left: 10%;
+  position: relative
 }
 
 .allAnalysisUL {
@@ -111,6 +186,7 @@
   cursor: pointer;
 }
 
+
 /* -------------------- MODAL -------------------------------- */
 
 .modalOverlay {
@@ -141,12 +217,23 @@
   overflow-y: scroll;
 }
 
-.modalText { 
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
+
+.modalText .ql-align-left {
+  text-align: left;
+  color:#282828;  
 }
+
+.modalText .ql-align-right {
+  text-align: right;
+  color:#282828;  
+}
+
+.modalText .ql-align-center {
+  text-align: center;
+  color:#282828;  
+}
+
+
 
 .modalImage {
   height: auto;
@@ -170,6 +257,14 @@
   
 }
 
+p{
+  color:#282828;
+}
+
+
+.modalText p {
+  color: #282828;
+}
 
 
 

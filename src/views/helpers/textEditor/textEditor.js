@@ -9,13 +9,14 @@ const RichTextEditor = ({
   onContentChange,
   success,
   onSuccess,
+  initialContent,
 }) => {
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(initialContent || "");
   const [quillRef, setQuillRef] = useState(null);
 
   useEffect(() => {
-    setContent("");
-  }, [images]);
+    setContent(initialContent || "");
+  }, [initialContent]);
 
   useEffect(() => {
     if (success) {
@@ -185,7 +186,7 @@ const RichTextEditor = ({
         theme="snow"
         modules={modules}
         formats={formats}
-        placeholder="Write your content..."
+        placeholder={initialContent} // Usar el contenido inicial como placeholder
         onChange={handleQuillChange}
         value={content}
         className="textEditor"

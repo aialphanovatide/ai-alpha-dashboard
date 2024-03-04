@@ -18,7 +18,11 @@ const DAppsEditModal = ({ show, onClose, dapp }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditedDApp({ ...editedDApp, [name]: value });
+    if ((name === "tvl" && !isNaN(value)) || value === "") {
+      setEditedDApp({ ...editedDApp, [name]: value });
+    } else if (name !== "tvl") {
+      setEditedDApp({ ...editedDApp, [name]: value });
+    }
   };
 
   const handleSubmit = async () => {
@@ -106,12 +110,20 @@ const DAppsEditModal = ({ show, onClose, dapp }) => {
         </Button>
 
         {responseMessage.success && (
-          <Alert style={{ width: "100%" }} className="alertSucess" variant="success">
+          <Alert
+            style={{ width: "100%" }}
+            className="alertSucess"
+            variant="success"
+          >
             {responseMessage.success}
           </Alert>
         )}
         {responseMessage.error && (
-          <Alert style={{ width: "100%" }} className="alertSucess" variant="danger">
+          <Alert
+            style={{ width: "100%" }}
+            className="alertSucess"
+            variant="danger"
+          >
             {responseMessage.error}
           </Alert>
         )}

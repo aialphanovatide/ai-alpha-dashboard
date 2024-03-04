@@ -56,7 +56,7 @@ const Competitors = () => {
 
         const data = await response.json();
         console.log('data: ', data)
-
+          
         if (data && data.competitors) {
           setCompetitorsData(data.competitors);
         } else {
@@ -168,6 +168,34 @@ const Competitors = () => {
     return groupedCompetitors;
   };
 
+  const handleDeleteCompetitor = async (competitorId) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/delete_competitor/${competitorId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
+  
+      const data = await response.json();
+  
+      if (data && data.status === 200) {
+        // Eliminación exitosa, actualiza la lista de competidores
+        getCompetitorsData();
+      } else {
+        console.error("Error deleting competitor:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  
+
+  console.log("competitorsData: ", competitorsData);
 
   return (
     <div>
@@ -237,6 +265,15 @@ const Competitors = () => {
                           onClick={() => handleShowEditModal(competitor)}
                         >
                           Edit
+                        </Button>
+                        <Button
+                          style={{ marginLeft: "10px" }}
+                          variant="danger"
+                          onClick={() =>
+                            handleDeleteCompetitor(competitor.competitor.id)
+                          }
+                        >
+                          Delete
                         </Button>
                       </td>
                     </tr>

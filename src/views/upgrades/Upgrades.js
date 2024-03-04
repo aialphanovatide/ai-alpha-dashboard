@@ -42,7 +42,7 @@ const Upgrades = () => {
   const getUpgradesData = async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL}/get_upgrades?coin_bot_id=${selectedCoinBot}`,
+        `${config.BASE_URL}/api/get_upgrades?coin_bot_id=${selectedCoinBot}`,
         {
           method: "GET",
           headers: {
@@ -70,7 +70,7 @@ const Upgrades = () => {
     const getUpgrades = async () => {
       try {
         const response = await fetch(
-          `${config.BASE_URL}/get_upgrades?coin_bot_id=${selectedCoinBot}`,
+          `${config.BASE_URL}/api/get_upgrades?coin_bot_id=${selectedCoinBot}`,
           {
             method: "GET",
             headers: {
@@ -168,6 +168,34 @@ const Upgrades = () => {
     }
   };
 
+  const handleDeleteUpgrade = async (upgradeId) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/delete_upgrade/${upgradeId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data && data.status === 200) {
+        // Eliminación exitosa, actualiza la lista de upgrades
+        getUpgradesData();
+      } else {
+        console.error("Error deleting upgrade:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  
+
   const selectedBot =
     bots && selectedCoinBot
       ? bots.find((bot) => bot.id === Number(selectedCoinBot))
@@ -212,7 +240,7 @@ const Upgrades = () => {
                   <th>Date</th>
                   <th>Event Overview</th>
                   <th>Impact</th>
-                  <th>Action</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -229,6 +257,16 @@ const Upgrades = () => {
                           onClick={() => handleEditButtonClick(upgrade)}
                         >
                           Edit
+                        </Button>
+
+                        <Button
+                          style={{ marginLeft: "10px" }}
+                          variant="danger"
+                          onClick={() =>
+                            handleDeleteUpgrade(upgrade.upgrade.id)
+                          }
+                        >
+                          Delete
                         </Button>
                       </td>
                     </tr>

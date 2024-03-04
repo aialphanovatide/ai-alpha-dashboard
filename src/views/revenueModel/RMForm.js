@@ -36,17 +36,27 @@ const RMForm = ({ onSubmit, onCancel, show }) => {
             <Form.Control
               type="text"
               value={analized_revenue}
-              onChange={(e) => setAnalizedRevenue(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (!isNaN(value) || value === "") {
+                  setAnalizedRevenue(value);
+                }
+              }}
               required
             />
           </Form.Group>
+
           <hr />
           <Button style={{ width: "100%" }} type="submit" variant="primary">
             Create Revenue Model
           </Button>
-          
+
           {successMessage && (
-            <Alert className="alertSucess" style={{ margin:'1rem' }}  variant="success">
+            <Alert
+              className="alertSucess"
+              style={{ margin: "1rem" }}
+              variant="success"
+            >
               {successMessage}
             </Alert>
           )}

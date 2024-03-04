@@ -44,7 +44,7 @@ const Tokenomics = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL}/get_tokenomics?coin_bot_id=${selectedCoinBot}`,
+        `${config.BASE_URL}/api/get_tokenomics?coin_bot_id=${selectedCoinBot}`,
         {
           method: "GET",
           headers: {
@@ -87,8 +87,6 @@ const Tokenomics = () => {
   const handleClose = () => {
     setShowModal(false);
     setShowEditModal(false);
-    setSelectedCoinBot("");
-    setTokenomicsData(null);
   };
 
   const handleEditButtonClick = (id, endpointName) => {
@@ -96,7 +94,111 @@ const Tokenomics = () => {
     setShowEditModal(true);
   };
 
-  console.log("tokenomicsData: ", tokenomicsData);
+  const handleDeleteTokenomic = async (tokenomicId) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/delete_tokenomic/${tokenomicId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data && data.status === 200) {
+        // Eliminación exitosa, actualiza la lista de upgrades
+        fetchData();
+      } else {
+        console.error("Error deleting upgrade:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleDeleteTokenDistribution = async (tokenDistributionId) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/delete_token_distribution/${tokenDistributionId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data && data.status === 200) {
+        // Eliminación exitosa, actualiza la lista de upgrades
+        fetchData();
+      } else {
+        console.error("Error deleting upgrade:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleDeleteTokenUtility = async (tokenUtilityId) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/delete_token_utility/${tokenUtilityId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data && data.status === 200) {
+        // Eliminación exitosa, actualiza la lista de upgrades
+        fetchData();
+      } else {
+        console.error("Error deleting TokenUtility:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleDeleteValueAccrualMechanisms = async (
+    valueAcrrualMechanismId,
+  ) => {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/delete_value_accrual_mechanism/${valueAcrrualMechanismId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data && data.status === 200) {
+        // Eliminación exitosa, actualiza la lista de upgrades
+        fetchData();
+      } else {
+        console.error("Error deleting ValueAccrualMechanisms:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <div className="formGeneralMain" style={{ margin: "20px" }}>
@@ -142,6 +244,7 @@ const Tokenomics = () => {
                   <td className="thGeneral">% Circulating Supply</td>
                   <td className="thGeneral">Max Supply</td>
                   <td className="thGeneral">Supply Model</td>
+                  <td className="thGeneral">Action</td>
                 </tr>
                 {tokenomicsData.tokenomics_data.length > 0 && (
                   <tr>
@@ -175,6 +278,18 @@ const Tokenomics = () => {
                           .supply_model
                       }
                     </td>
+                    <td className="tdGeneral">
+                      <Button
+                        onClick={() =>
+                          handleEditButtonClick(
+                            tokenomicsData.tokenomics_data[0].tokenomics.id,
+                            "tokenomics",
+                          )
+                        }
+                      >
+                        Edit
+                      </Button>
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -192,6 +307,7 @@ const Tokenomics = () => {
                   <td className="thGeneral">% Circulating Supply</td>
                   <td className="thGeneral">Max Supply</td>
                   <td className="thGeneral">Supply Model</td>
+                  <td className="thGeneral">Actions</td>
                 </tr>
                 {tokenomicsData.tokenomics_data.length > 1 &&
                   tokenomicsData.tokenomics_data
@@ -216,6 +332,27 @@ const Tokenomics = () => {
                         <td className="tdGeneral">
                           {tokenomic.tokenomics.supply_model}
                         </td>
+                        <td className="tdGeneral">
+                          <Button
+                            onClick={() =>
+                              handleEditButtonClick(
+                                tokenomic.tokenomics.id,
+                                "tokenomics",
+                              )
+                            }
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            style={{ marginLeft: "10px" }}
+                            variant="danger"
+                            onClick={() =>
+                              handleDeleteTokenomic(tokenomic.tokenomics.id)
+                            }
+                          >
+                            Delete
+                          </Button>
+                        </td>
                       </tr>
                     ))}
               </tbody>
@@ -227,12 +364,18 @@ const Tokenomics = () => {
               <h2 className="tableSubTitle">Token Distribution</h2>
               <tbody>
                 <tr>
-                  <td className="thGeneral">Action</td>
                   <td className="thGeneral">Holder Category</td>
                   <td className="thGeneral">Percentage Held</td>
+                  <td className="thGeneral">Action</td>
                 </tr>
                 {tokenomicsData.token_distribution.map((value, index) => (
                   <tr key={index}>
+                    <td className="tdGeneral">
+                      {value.token_distributions.holder_category}
+                    </td>
+                    <td className="tdGeneral">
+                      {value.token_distributions.percentage_held}
+                    </td>
                     <td className="thGeneral">
                       <Button
                         onClick={() =>
@@ -244,12 +387,17 @@ const Tokenomics = () => {
                       >
                         Edit
                       </Button>
-                    </td>
-                    <td className="tdGeneral">
-                      {value.token_distributions.holder_category}
-                    </td>
-                    <td className="tdGeneral">
-                      {value.token_distributions.percentage_held}
+                      <Button
+                        style={{ marginLeft: "10px" }}
+                        variant="danger"
+                        onClick={() =>
+                          handleDeleteTokenDistribution(
+                            value.token_distributions.id,
+                          )
+                        }
+                      >
+                        Delete
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -262,12 +410,18 @@ const Tokenomics = () => {
               <h2 className="tableSubTitle">Token Utility</h2>
               <tbody>
                 <tr>
-                  <td className="thGeneral">Action</td>
                   <td className="thGeneral">Token Applications</td>
                   <td className="thGeneral">Description</td>
+                  <td className="thGeneral">Action</td>
                 </tr>
                 {tokenomicsData.token_utility.map((value, index) => (
                   <tr key={index}>
+                    <td className="tdGeneral">
+                      {value.token_utilities.token_application}
+                    </td>
+                    <td className="tdGeneral">
+                      {value.token_utilities.description}
+                    </td>
                     <td className="thGeneral">
                       <Button
                         onClick={() =>
@@ -279,12 +433,15 @@ const Tokenomics = () => {
                       >
                         Edit
                       </Button>
-                    </td>
-                    <td className="tdGeneral">
-                      {value.token_utilities.token_application}
-                    </td>
-                    <td className="tdGeneral">
-                      {value.token_utilities.description}
+                      <Button
+                        style={{ marginLeft: "10px" }}
+                        variant="danger"
+                        onClick={() =>
+                          handleDeleteTokenUtility(value.token_utilities.id)
+                        }
+                      >
+                        Delete
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -298,12 +455,18 @@ const Tokenomics = () => {
               <h2 className="tableSubTitle">Value Accrual Mechanisms</h2>
               <tbody>
                 <tr>
-                  <td className="thGeneral">Action</td>
                   <td className="thGeneral">Mechanisms</td>
                   <td className="thGeneral">Description</td>
+                  <td className="thGeneral">Actions</td>
                 </tr>
                 {tokenomicsData.value_accrual_mechanisms.map((value, index) => (
                   <tr key={index}>
+                    <td className="tdGeneral">
+                      {value.value_accrual_mechanisms.mechanism}
+                    </td>
+                    <td className="tdGeneral">
+                      {value.value_accrual_mechanisms.description}
+                    </td>
                     <td className="thGeneral">
                       <Button
                         onClick={() =>
@@ -315,12 +478,17 @@ const Tokenomics = () => {
                       >
                         Edit
                       </Button>
-                    </td>
-                    <td className="tdGeneral">
-                      {value.value_accrual_mechanisms.mechanism}
-                    </td>
-                    <td className="tdGeneral">
-                      {value.value_accrual_mechanisms.description}
+                      <Button
+                        style={{ marginLeft: "10px" }}
+                        variant="danger"
+                        onClick={() =>
+                          handleDeleteValueAccrualMechanisms(
+                            value.value_accrual_mechanisms.id,
+                          )
+                        }
+                      >
+                        Delete
+                      </Button>
                     </td>
                   </tr>
                 ))}
