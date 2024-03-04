@@ -56,12 +56,13 @@ const CompetitorForm = ({
 
   const handleAddKeyValuePair = () => {
     const { selectedKey, newKeyValuePair, keyValues } = formData;
-    const key = selectedKey || newKeyValuePair.key; 
+    const key = selectedKey || newKeyValuePair.key;
     if (key && newKeyValuePair.value) {
       setFormData({
         ...formData,
         keyValues: [...keyValues, { key, value: newKeyValuePair.value }],
         newKeyValuePair: { key: "", value: "" },
+        selectedKey: "", // Limpiar el campo de selección
       });
     }
   };
@@ -115,8 +116,9 @@ const CompetitorForm = ({
             />
           </Form.Group>
           {/* Dropdown para seleccionar la key */}
+          <br></br>
           <Form.Group controlId="selectedKey">
-            <Form.Label>Select Key</Form.Label>
+            <Form.Label>Select Feature</Form.Label>
             <Form.Control
               as="select"
               name="selectedKey"
