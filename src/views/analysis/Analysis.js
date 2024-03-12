@@ -154,7 +154,7 @@ const Analysis = () => {
     console.log('combinedContent', combinedContent)
     const formDataToSchedule = new FormData();
     formDataToSchedule.append("coinBot", selectedCoin);
-    formDataToSchedule.append("content", combinedContent); // Sending combined content
+    formDataToSchedule.append("content", combinedContent); 
     formDataToSchedule.append("scheduledDate", cleanedSelectedDate);
 
     try {
