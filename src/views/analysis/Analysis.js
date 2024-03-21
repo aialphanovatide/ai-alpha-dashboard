@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { AllAnalysis } from "./AllAnalysis";
 import GeneralAnalysis from "./GeneralAnalysis";
 import ScheduledJob from "./ScheduledJob";
+import CategoryDropdown from "./CategoryDropdown";
 
 const Analysis = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -22,6 +23,7 @@ const Analysis = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [scheduledJobs, setScheduledJobs] = useState([]);
   const [title, setTitle] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const deleteScheduled = async (jobId) => {
     try {
@@ -57,6 +59,10 @@ const Analysis = () => {
     } catch (error) {
       console.error("Error deleting scheduled job:", error);
     }
+  };
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
   };
 
   const handleTitleChange = (e) => {
@@ -151,11 +157,12 @@ const Analysis = () => {
     );
 
     const combinedContent = `Title: ${title}\n${content}`;
-    console.log('combinedContent', combinedContent)
+    console.log("combinedContent", combinedContent);
     const formDataToSchedule = new FormData();
     formDataToSchedule.append("coinBot", selectedCoin);
-    formDataToSchedule.append("content", combinedContent); 
+    formDataToSchedule.append("content", combinedContent);
     formDataToSchedule.append("scheduledDate", cleanedSelectedDate);
+    formDataToSchedule.append("category_name", selectedCategory);
 
     try {
       const response = await fetch(`${config.BASE_URL}/schedule_post`, {
@@ -202,7 +209,7 @@ const Analysis = () => {
 
   // handles the submit of the three values needed - coin Id, content, and image
   const handleSubmit = async () => {
-    if (selectedCoin === null || selectedImage === null || content === null) {
+    if (selectedCoin === null || selectedImage === null || content === null ) {
       return Swal.fire({
         icon: "error",
         title: "One or more required fields are missing",
@@ -216,6 +223,7 @@ const Analysis = () => {
     formData.append("coinBot", selectedCoin);
     formData.append("content", content);
     formData.append("images", selectedImage);
+    formData.append("category_name", selectedCategory);
 
     try {
       const response = await fetch(`${config.BASE_URL}/post_analysis`, {
@@ -286,10 +294,17 @@ const Analysis = () => {
     <div className="analysisMain">
       <h3 className="analysisTitle">Analysis</h3>
       <div className="analysisSubmain">
-        <DropdownMenu
-          selectedCoin={selectedCoin}
-          onSelectCoin={handleSelectCoin}
-        />
+        <div className="selectors-container">
+          <DropdownMenu
+            selectedCoin={selectedCoin}
+            onSelectCoin={handleSelectCoin}
+          />
+          <CategoryDropdown
+            selectedCategory={selectedCategory}
+            onSelectCategory={handleCategorySelect}
+          />
+        </div>
+
         <RichTextEditor
           handleImageSelect={handleImageSelect}
           images={selectedImage}

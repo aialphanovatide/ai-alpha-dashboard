@@ -38,14 +38,14 @@ const DropdownMenu = ({ selectedCoin, onSelectCoin }) => {
 
   return (
     <div className="dropdown-container">
-      <label htmlFor="coinBotDropdown" className="label">Coin</label>
+      <label htmlFor="coinBotDropdown" className="label marLeft"></label>
       <select
         id="coinBotDropdown"
         onChange={handleDropdownChange}
         value={selectedCoin || ''}
         className="select-dropdown"
       >
-        <option value="" disabled>Select...</option>
+        <option value="" disabled>Select Coin...</option>
         {coinBots.map((coinBot) => (
           <option key={coinBot.id} value={coinBot.id}>
             {coinBot.name.toUpperCase()}
