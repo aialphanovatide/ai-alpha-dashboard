@@ -7,7 +7,8 @@ import AddSitesModal from '../addSitesModal/AddSitesModal'
 import config from '../../config'
 import DeleteSitesModal from '../deleteSitesModal/DeleteSitesModal'
 import BotList from './botList'
-//bots settings
+import UsedKeywordsModal from '../usedKeywordsModal/UsedKeywordsModal'
+
 
 
 const SpinnerComponent = () => {
@@ -130,6 +131,7 @@ const BotsSettings = () => {
           <DeleteWordsModal />
           <AddSitesModal />
           <DeleteSitesModal />
+          <UsedKeywordsModal />
         </div>
       </div>
     
