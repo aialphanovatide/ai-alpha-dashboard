@@ -130,7 +130,7 @@ const Analysis = () => {
       selectedImage === null ||
       content === null ||
       selectedDate === null ||
-      title === null
+      title === null 
     ) {
       return Swal.fire({
         icon: "error",

@@ -35,11 +35,20 @@ const CompetitorForm = ({
     "Revenue",
   ];
 
+  // Agrega las opciones específicas para "Transaction fees"
+  const transactionFeesOptions = ["Select Feature...", "Transaction Fee: TOKEN", "Transaction Fee: USD", "Transaction Fee: %", "Transaction Fee: VARIABLE", "Transaction Fee: N/A"];
+
+  // Modifica la función handleChange para mostrar el campo de entrada de valores dependiendo de la opción seleccionada
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
+      // Aquí verificamos si la opción seleccionada es "Transaction fees", y mostramos el campo de entrada de valores en consecuencia
+      newKeyValuePair: {
+        ...formData.newKeyValuePair,
+        [name]: value === "Transaction fees" ? transactionFeesOptions[0] : "",
+      },
     });
   };
 
@@ -90,7 +99,7 @@ const CompetitorForm = ({
       setShowSuccessMessage(true);
       setTimeout(() => {
         setShowSuccessMessage(false);
-        handleClose(); // Cambiar handleModalClose por handleClose
+        handleClose();
         setFormData(initialFormData);
       }, 2000);
     } catch (error) {
@@ -139,15 +148,33 @@ const CompetitorForm = ({
             <Form.Label>New Feature-Data Pair</Form.Label>
             <br />
             <div style={{ display: "flex", marginBottom: "10px" }}>
-              <Form.Control
-                style={{ marginRight: "10px" }}
-                type="text"
-                placeholder="Feature"
-                name="key"
-                value={formData.newKeyValuePair.key}
-                onChange={handleNewKeyValuePairChange}
-              />
-              <br />
+              {/* Cambia el campo "Feature" a un select cuando se selecciona "Transaction fees" */}
+              {formData.selectedKey === "Transaction fees" ? (
+                <Form.Control
+                  style={{ marginRight: "10px" }}
+                  as="select"
+                  name="key"
+                  value={formData.newKeyValuePair.key}
+                  onChange={handleNewKeyValuePairChange}
+                >
+                  {transactionFeesOptions.map((option, index) => (
+                    <option key={index} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </Form.Control>
+              ) : (
+                // Mantiene el input para "Feature" en otros casos
+                <Form.Control
+                  style={{ marginRight: "10px" }}
+                  type="text"
+                  placeholder="Feature"
+                  name="key"
+                  value={formData.newKeyValuePair.key}
+                  onChange={handleNewKeyValuePairChange}
+                />
+              )}
+              {/* Mantiene el input para "Data" en todos los casos */}
               <Form.Control
                 style={{ marginRight: "10px" }}
                 type="text"
@@ -162,6 +189,7 @@ const CompetitorForm = ({
               </Button>
             </div>
           </Form.Group>
+
           <br />
           {/* Mostrar los pares key-value ingresados */}
           {formData.keyValues.map((pair, index) => (
