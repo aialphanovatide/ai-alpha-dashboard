@@ -2,21 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import config from "../../config";
 import Swal from "sweetalert2";
-
-// sucess
-// Swal.fire({
-//   icon: "success",
-//   title: responseData.message,
-//   showConfirmButton: false,
-//   timer: 1000
-// });
-// -------------------------------------------
-// Error
-// Swal.fire({
-//   icon: "error",
-//   title: responseData.message,
-//   showConfirmButton: false,
-// });
+import RichTextEditor from "../../views/helpers/textEditor/textEditor"; 
 
 const Introduction = () => {
   const [bots, setBots] = useState([]);
@@ -249,28 +235,23 @@ const Introduction = () => {
             ))}
         </Form.Control>
       </Form.Group>
-
-      {/* Content of the introduction */}
-      <Form.Group controlId="contentInput" style={{ marginBottom: "15px" }}>
-        <Form.Control
-          required
-          style={{ height: "180px" }}
-          as="textarea"
-          placeholder="Enter content..."
-          value={content}
-          onChange={(e) => handleContentChange(e.target.value)}
-        />
-      </Form.Group>
-
+      <Form.Label>Content</Form.Label>        
+      <RichTextEditor
+        initialContent={content} 
+        onContentChange={setContent} 
+      />
+      <br></br>
+      <br></br>
+      <br></br>
       <Form.Group controlId="websiteInput" style={{ marginBottom: "15px" }}>
         <Form.Label>Website</Form.Label>
         <Form.Control
           required
           style={{ height: "40px" }}
-          as="textarea"
+          type="text"
           placeholder="Enter website..."
           value={website}
-          onChange={(e) => handleWebsiteChange(e.target.value)}
+          onChange={(e) => setWebsite(e.target.value)}
         />
       </Form.Group>
       <Form.Group controlId="whitepaperInput" style={{ marginBottom: "15px" }}>
@@ -278,10 +259,10 @@ const Introduction = () => {
         <Form.Control
           required
           style={{ height: "40px" }}
-          as="textarea"
+          type="text"
           placeholder="Enter whitepaper..."
           value={whitepaper}
-          onChange={(e) => handleWhitepaperChange(e.target.value)}
+          onChange={(e) => setWhitepaper(e.target.value)}
         />
       </Form.Group>
       {hasIntroductionData ? (
