@@ -37,6 +37,12 @@ const _nav = [
   },
   {
     component: CNavItem,
+    name: 'Narrative Trading',
+    to: '/narrativeTrading',
+    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: 'Fundamentals',
     to: '/fundamentals',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,

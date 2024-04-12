@@ -40,7 +40,7 @@ export const AppSidebarNav = ({ items }) => {
         {...(rest.to &&
           !rest.items && {
             component: NavLink,
-            to: rest.to, // Agregado
+            to: rest.to, 
           })}
         key={index}
         {...rest}
