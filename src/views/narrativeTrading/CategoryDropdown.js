@@ -18,20 +18,9 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
         className="select-dropdown"
       >
         <option value="" disabled>Select Category...</option>
-        <option value="TOTAL 3">TOTAL 3</option>
-        <option value="Bitcoin">Bitcoin</option>
-        <option value="Ethereum">Ethereum</option>
-        <option value="RootLink">Layer 0</option>
-        <option value="BaseBlock">Layer 1 - Large Market Cap</option>
-        <option value="CoreChain">Layer 1 - Mid Market Cap</option>
-        <option value="X Payments">Cross Border Payments</option>
-        <option value="Lsd">LSDs</option>
-        <option value="BoostLayer">Layer 2</option>
-        <option value="TruthNodes">Oracles</option>
-        <option value="CycleSwap">Defi - DEX Perpetuals</option>
-        <option value="NexTrade">Defi - DEX</option>
-        <option value="DiverseFi">Defi - Other</option>
-        <option value="IntelliChain">AI</option>
+        <option value="TOTAL 3">AI</option>
+        <option value="Bitcoin">RWA</option>
+        
       </select>
     </div>
   );
