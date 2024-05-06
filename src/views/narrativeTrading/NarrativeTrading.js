@@ -28,7 +28,7 @@ const NarrativeTrading = () => {
   const deleteScheduled = async (jobId) => {
     try {
       const response = await fetch(
-        `${config.BASE_URL}/delete_scheduled_job/${jobId}`,
+        `${config.BASE_URL}/delete_scheduled_narrative_job/${jobId}`,
         {
           method: "DELETE",
           headers: {
