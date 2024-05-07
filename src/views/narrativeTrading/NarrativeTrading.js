@@ -150,6 +150,7 @@ const NarrativeTrading = () => {
       minute: "2-digit",
       second: "2-digit",
     });
+    
 
     const cleanedSelectedDate = selectedDateStr.replace(
       " GMT-0300 (Argentina Standard Time)",
