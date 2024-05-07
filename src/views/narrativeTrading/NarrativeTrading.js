@@ -337,7 +337,7 @@ const NarrativeTrading = () => {
               placeholder="Enter post title"
             />
             <hr />
-            <p>Choose date and time to post Narrative Trading:</p>
+            <p>Choose date and time to post:</p>
             <DatePicker
               selected={selectedDate}
               onChange={handleDateChange}
