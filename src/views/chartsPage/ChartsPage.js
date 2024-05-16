@@ -33,7 +33,7 @@ const ChartsPage = () => {
   const [pairValue, setPairValue] = useState('')
 
   const temporalities = ['1h', '4h', '1d', '1w']
-  const pairs = ['usdt', 'btc']
+  const pairs = ['usdt', 'btc', 'eth']
 
   // Gets all the coins
   useEffect(() => {
