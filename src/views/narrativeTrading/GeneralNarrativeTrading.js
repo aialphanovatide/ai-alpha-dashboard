@@ -101,7 +101,7 @@ const GeneralNarrativeTrading = ({ success, onSuccess, fetchNarrativeTrading }) 
           item={selectedNarrativeTrading}
           onSave={handleSave}
           onClose={closeEditModal}
-          fetchNarrativeTrading={fetchNarrativeTrading} // Aquí pasamos fetchAnalysis como prop
+          fetchNarrativeTrading={fetchNarrativeTrading} 
         />
       )}
     </div>

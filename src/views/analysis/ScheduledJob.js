@@ -16,7 +16,6 @@ const ScheduledJob = ({ job, onDelete }) => {
   const title = titleMatch ? titleMatch[1] : "Unknown";
 
   const handleDeleteClick = () => {
-    // Llamar a la función onDelete pasada como prop
     onDelete(job.id); // Suponiendo que job tiene una propiedad id
   };
 
