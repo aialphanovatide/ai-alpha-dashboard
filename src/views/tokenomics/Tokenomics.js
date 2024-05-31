@@ -15,6 +15,8 @@ const Tokenomics = () => {
   const [selectedCoinName, setSelectedCoinName] = useState(null);
   const [selectedNameBot, setSelectedNameBot] = useState("");
   const [novatideData, setNovatideData] = useState(null);
+  const [competitorsCoinNames, setCompetitorsCoinNames] = useState([]);
+  const [cometitorsTokenomicData, setCompetitorsTokenomicData] = useState([]);
 
   useEffect(() => {
     const getAllBots = async () => {
@@ -40,6 +42,18 @@ const Tokenomics = () => {
 
     getAllBots();
   }, []);
+
+  useEffect(() => {
+    if (tokenomicsData && tokenomicsData.tokenomics_data.length > 1) {
+      const competitorsNames = tokenomicsData.tokenomics_data
+        .slice(1)
+        .map((tokenomic) => tokenomic.tokenomics.token.trim().toLowerCase());
+      setCompetitorsCoinNames(competitorsNames);
+    }
+  }, [tokenomicsData]);
+
+  console.log(competitorsCoinNames);
+  console.log(cometitorsTokenomicData);
 
   const fetchData = async () => {
     try {
@@ -89,6 +103,37 @@ const Tokenomics = () => {
       console.error("Error fetching data:", error);
     }
   };
+
+  useEffect(() => {
+    const fetchTokenData = async (tokenSymbol) => {
+      try {
+        const response = await fetch(
+          `https://fsxbdb84-5000.uks1.devtunnels.ms/get/token_data?token_symbol=${tokenSymbol}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "true",
+            },
+          },
+        );
+        const data = await response.json();
+        return data.data;
+      } catch (error) {
+        console.error(`Error fetching data for ${tokenSymbol}:`, error);
+        return null;
+      }
+    };
+
+    if (competitorsCoinNames.length > 0) {
+      Promise.all(
+        competitorsCoinNames.map((tokenSymbol) => fetchTokenData(tokenSymbol)),
+      ).then((results) => {
+        const filteredResults = results.filter((result) => result !== null);
+        setCompetitorsTokenomicData(filteredResults);
+      });
+    }
+  }, [competitorsCoinNames]);
 
   useEffect(() => {
     if (selectedCoinBot) {
@@ -334,55 +379,94 @@ const Tokenomics = () => {
                   <td className="thGeneral">Supply Model</td>
                   <td className="thGeneral">Actions</td>
                 </tr>
-                {tokenomicsData.tokenomics_data.length > 1 &&
-                  tokenomicsData.tokenomics_data
-                    .slice(1)
-                    .map((tokenomic, index) => (
+                {cometitorsTokenomicData && cometitorsTokenomicData.length > 0
+                  ? cometitorsTokenomicData.map((tokenomic, index) => (
                       <tr key={index}>
                         <td className="tdGeneral">
-                          {tokenomic.tokenomics.token}
+                          {tokenomic.tokenname} / {tokenomic.symbol}
                         </td>
                         <td className="tdGeneral">
-                          {tokenomic.tokenomics.total_supply}
+                          {tokenomic.total_supply}
                         </td>
                         <td className="tdGeneral">
-                          {tokenomic.tokenomics.circulating_supply}
+                          {tokenomic.circulating_supply}
                         </td>
                         <td className="tdGeneral">
-                          {tokenomic.tokenomics.percentage_circulating_supply}
+                          {tokenomic.percentage_circulating_supply.toFixed(2)}
                         </td>
                         <td className="tdGeneral">
-                          {tokenomic.tokenomics.max_supply}
+                        {tokenomic && tokenomic.max_supply
+                      ? tokenomic.max_supply
+                      : "∞"}
                         </td>
                         <td className="tdGeneral">
-                          {tokenomic.tokenomics.supply_model}
+                          {tokenomic.supply_model}
                         </td>
                         <td className="tdGeneral">
                           <Button
-                            onClick={() =>
-                              handleEditButtonClick(
-                                tokenomic.tokenomics.id,
-                                "tokenomics",
-                              )
-                            }
+                            disabled
                           >
                             Edit
                           </Button>
                           <Button
                             style={{ marginLeft: "10px" }}
                             variant="danger"
-                            onClick={() =>
-                              handleDeleteTokenomic(tokenomic.tokenomics.id)
-                            }
+                            disabled
                           >
                             Delete
                           </Button>
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  : tokenomicsData.tokenomics_data
+                      .slice(1)
+                      .map((tokenomic, index) => (
+                        <tr key={index}>
+                          <td className="tdGeneral">
+                            {tokenomic.tokenomics.token}
+                          </td>
+                          <td className="tdGeneral">
+                            {tokenomic.tokenomics.total_supply}
+                          </td>
+                          <td className="tdGeneral">
+                            {tokenomic.tokenomics.circulating_supply}
+                          </td>
+                          <td className="tdGeneral">
+                            {tokenomic.tokenomics.percentage_circulating_supply}
+                          </td>
+                          <td className="tdGeneral">
+                            {tokenomic.tokenomics.max_supply}
+                          </td>
+                          <td className="tdGeneral">
+                            {tokenomic.tokenomics.supply_model}
+                          </td>
+                          <td className="tdGeneral">
+                            <Button
+                              onClick={() =>
+                                handleEditButtonClick(
+                                  tokenomic.tokenomics.id,
+                                  "tokenomics",
+                                )
+                              }
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              style={{ marginLeft: "10px" }}
+                              variant="danger"
+                              onClick={() =>
+                                handleDeleteTokenomic(tokenomic.tokenomics.id)
+                              }
+                            >
+                              Delete
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
               </tbody>
             </Table>
           )}
+
           {/* TOKEN DISTRIBUTION */}
           {tokenomicsData.token_distribution.length > 0 && (
             <Table className="tokenomicsTable" striped bordered hover>

@@ -10,6 +10,9 @@ const Competitors = () => {
   const [competitorsData, setCompetitorsData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedCompetitor, setSelectedCompetitor] = useState(null);
+  const [competitorsCoinNames, setCompetitorsCoinNames] = useState([]);
+  const [competitorsTokenomicData, setCompetitorsTokenomicData] = useState([]);
+  const [competitorKeyData, setCompetitorKeyData] = useState([]);
 
   // gets all the coins
   useEffect(() => {
@@ -39,68 +42,68 @@ const Competitors = () => {
     getAllBots();
   }, []);
 
-  // Gets all the competitor of a coin
+  // Gets all the competitors of a coin
   useEffect(() => {
-    const getCompetitorsData = async () => {
-      try {
-        const response = await fetch(
-          `${config.BASE_URL}/get_competitors/${selectedCoinBot}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              'ngrok-skip-browser-warning': 'true',
-            },
-          },
-        );
-
-        const data = await response.json();
-        console.log('data: ', data)
-          
-        if (data && data.competitors) {
-          setCompetitorsData(data.competitors);
-        } else {
-          console.error("Error fetching competitors:", data.message);
-          setCompetitorsData([]);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setCompetitorsData([]);
-      }
-    };
-
-    if (selectedCoinBot) {
-      getCompetitorsData();
-    }
+    getCompetitorsData()
   }, [selectedCoinBot]);
 
   const getCompetitorsData = async () => {
-      try {
+    try {
+      const response = await fetch(
+        `${config.BASE_URL}/get_competitors/${selectedCoinBot}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            'ngrok-skip-browser-warning': 'true',
+          },
+        },
+      );
+
+      const data = await response.json();
+      console.log('data: ', data)
+        
+      if (data && data.competitors) {
+        setCompetitorsData(data.competitors);
+        const coinNames = data.competitors.map(competitor => competitor.competitor.token.trim());
+        setCompetitorsCoinNames([...new Set(coinNames)]);
+      } else {
+        console.error("Error fetching competitors:", data.message);
+        setCompetitorsData([]);
+        setCompetitorsCoinNames([]);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setCompetitorsData([]);
+      setCompetitorsCoinNames([]);
+    }
+  };
+
+
+  useEffect(() => {
+    const fetchTokenomicsData = async () => {
+      const tokenomicsData = await Promise.all(competitorsCoinNames.map(async (tokenSymbol) => {
         const response = await fetch(
-          `${config.BASE_URL}/get_competitors/${selectedCoinBot}`,
+          `https://fsxbdb84-5000.uks1.devtunnels.ms/get/token_data?token_symbol=${tokenSymbol}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              'ngrok-skip-browser-warning': 'true',
+              "ngrok-skip-browser-warning": "true",
             },
           },
         );
-
         const data = await response.json();
-       
+        return { token: tokenSymbol, data: data.data };
+      }));
 
-        if (data && data.competitors) {
-          setCompetitorsData(data.competitors);
-        } else {
-          console.error("Error fetching competitors:", data.message);
-          setCompetitorsData([]);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setCompetitorsData([]);
-      }
+      setCompetitorsTokenomicData(tokenomicsData);
     };
+
+    if (competitorsCoinNames.length > 0) {
+      fetchTokenomicsData();
+    }
+  }, [competitorsCoinNames]);
 
   const handleCreateFormSubmit = async (formData) => {
     try {
@@ -159,7 +162,7 @@ const Competitors = () => {
   const groupCompetitorsByToken = () => {
     const groupedCompetitors = {};
     competitorsData.forEach((competitor) => {
-      const token = competitor.competitor.token;
+      const token = competitor.competitor.token.trim();
       if (!groupedCompetitors[token]) {
         groupedCompetitors[token] = [];
       }
@@ -168,6 +171,7 @@ const Competitors = () => {
     return groupedCompetitors;
   };
 
+  
   const handleDeleteCompetitor = async (competitorId) => {
     try {
       const response = await fetch(
@@ -193,10 +197,54 @@ const Competitors = () => {
       console.error("Error:", error);
     }
   };
+
+
+  useEffect(() => {
+    // Extraer todos los tokens únicos de los competidores
+    const uniqueTokens = [...new Set(competitorsData.map(competitor => competitor.competitor.token.trim()))];
   
-
-  console.log("competitorsData: ", competitorsData);
-
+    // Crear un objeto para almacenar los datos de los competidores por token
+    const tokenCompetitorData = {};
+  
+    // Iterar sobre cada token único
+    uniqueTokens.forEach(token => {
+      // Filtrar los competidores por el token actual
+      const competitorsByToken = competitorsData.filter(competitor => competitor.competitor.token.trim() === token);
+  
+      // Crear un array para almacenar los pares de clave-valor de cada competidor
+      const tokenData = [];
+  
+      // Iterar sobre cada competidor y almacenar sus valores
+      competitorsByToken.forEach(competitor => {
+        // Obtener el competidor actual
+        const competitorInfo = competitor.competitor;
+  
+        // Iterar sobre las claves de cada competidor
+        Object.entries(competitorInfo).forEach(([key, value]) => {
+          // Excluir las claves que no queremos incluir en el resultado final
+          if (!["coin_bot_id", "id", "token", "created_at", "updated_at", "dynamic"].includes(key)) {
+            // Almacenar solo los valores
+            if (typeof value === "string") {
+              tokenData.push(value.trim());
+            }
+          }
+        });
+      });
+  
+      // Agrupar los pares de clave-valor en pares consecutivos
+      const pairedTokenData = [];
+      for (let i = 0; i < tokenData.length; i += 2) {
+        pairedTokenData.push([tokenData[i], tokenData[i + 1]]);
+      }
+  
+      // Almacenar los datos del token en el objeto tokenCompetitorData
+      tokenCompetitorData[token] = pairedTokenData;
+    });
+  
+    // Actualizar el estado competitorKeyData con los datos de los competidores agrupados por token
+    setCompetitorKeyData(tokenCompetitorData);
+  }, [competitorsData]);
+  
   return (
     <div>
       <div style={{ margin: "20px", overflowX: "auto" }}>
@@ -217,7 +265,7 @@ const Competitors = () => {
             ))}
           </Form.Control>
         </Form.Group>
-
+  
         {Object.entries(groupCompetitorsByToken()).map(
           ([token, competitors]) => (
             <div key={token}>
@@ -233,66 +281,84 @@ const Competitors = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {competitors.map((competitor, index) => (
-                    <tr className="thGeneral" key={index}>
-                      {Object.keys(competitor.competitor).map(
-                        (key) =>
-                          ![
-                            "coin_bot_id",
-                            "id",
-                            "token",
-                            "created_at",
-                            "updated_at",
-                            "dynamic",
-                          ].includes(key) && (
-                            <td key={key}>{competitor.competitor[key]}</td>
-                          ),
-                      )}
-                      <td>
-                        <Button
-                          variant="primary"
-                          onClick={() => handleShowEditModal(competitor)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          style={{ marginLeft: "10px" }}
-                          variant="danger"
-                          onClick={() =>
-                            handleDeleteCompetitor(competitor.competitor.id)
-                          }
-                        >
-                          Delete
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
+                  {competitors.map((competitor, index) => {
+                    let disableButtons = index >= 1 && index <= 4;// Deshabilitar las primeras 4 filas
+                    return (
+                      <tr className="thGeneral" key={index}>
+                        {Object.keys(competitor.competitor).map(
+                          (key) =>
+                            ![
+                              "coin_bot_id",
+                              "id",
+                              "token",
+                              "created_at",
+                              "updated_at",
+                              "dynamic",
+                            ].includes(key) && (
+                              <td key={key}>{competitor.competitor[key]}</td>
+                            ),
+                        )}
+                        <td>
+                          <Button
+                            variant="primary"
+                            onClick={() => handleShowEditModal(competitor)}
+                            disabled={disableButtons}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            style={{ marginLeft: "10px" }}
+                            variant="danger"
+                            onClick={() =>
+                              handleDeleteCompetitor(competitor.competitor.id)
+                            }
+                            disabled={disableButtons}
+                          >
+                            Delete
+                          </Button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </Table>
-            
             </div>
           ),
         )}
       </div>
-      <Button disabled={!selectedCoinBot} onClick={handleShowModal}>Add Competitor</Button>
+      <Button disabled={!selectedCoinBot} onClick={handleShowModal}>
+        Add Competitor
+      </Button>
       <CompetitorForm
-        showModal={showModal && !selectedCompetitor} // Mostrar el formulario solo si no hay un competidor seleccionado
+        showModal={showModal && !selectedCompetitor}
         handleClose={handleCloseModal}
         selectedCoinBot={selectedCoinBot}
         handleSave={(formData) => handleCreateFormSubmit(formData)}
       />
-      {selectedCompetitor && ( // Mostrar el modal de edición si hay un competidor seleccionado
+      {selectedCompetitor && (
         <CompetitorsEditModal
           competitor={selectedCompetitor}
           show={showModal}
           handleClose={handleModalClose}
-          handleEditSuccess={handleEditSuccess} // Pasar la función de retorno como prop
+          handleEditSuccess={handleEditSuccess}
         />
       )}
     </div>
   );
+  
 };
 
 export default Competitors;
+
+
+
+
+
+
+
+
+
+
+
 
 
