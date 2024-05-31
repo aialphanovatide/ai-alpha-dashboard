@@ -227,17 +227,6 @@ const Competitors = () => {
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                    {/* {Object.keys(competitors[0].competitor).map(
-                      (feature) =>
-                        ![
-                          "coin_bot_id",
-                          "id",
-                          "created_at",
-                          "updated_at",
-                          "token",
-                          "dynamic",
-                        ].includes(feature) && <th key={feature}>Feature</th>,
-                    )} */}
                     <th className="thGeneral">Feature</th>
                     <th className="thGeneral">Data</th>
                     <th className="thGeneral">Actions</th>

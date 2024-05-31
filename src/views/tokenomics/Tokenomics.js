@@ -13,8 +13,9 @@ const Tokenomics = () => {
   const [selectedItemForEdit, setSelectedItemForEdit] = useState(null);
   const [selectedCoinBot, setSelectedCoinBot] = useState("");
   const [selectedCoinName, setSelectedCoinName] = useState(null);
+  const [selectedNameBot, setSelectedNameBot] = useState("");
+  const [novatideData, setNovatideData] = useState(null);
 
-  // Gets all the available coins
   useEffect(() => {
     const getAllBots = async () => {
       try {
@@ -40,7 +41,6 @@ const Tokenomics = () => {
     getAllBots();
   }, []);
 
-  // Gets all the tokenomics of a coin - FUNCTION
   const fetchData = async () => {
     try {
       const response = await fetch(
@@ -65,16 +65,43 @@ const Tokenomics = () => {
     }
   };
 
-  // Gets all the tokenomics of a coin
+  const fetchNovatideData = async () => {
+    try {
+      const response = await fetch(
+        `https://fsxbdb84-5000.uks1.devtunnels.ms/get/token_data?token_symbol=${selectedNameBot}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
+      const data = await response.json();
+
+      if (data) {
+        setNovatideData(data.data);
+        console.log("fetch novatide", data.data);
+      } else {
+        console.error(data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
     if (selectedCoinBot) {
       fetchData();
+      fetchNovatideData();
     }
   }, [selectedCoinBot]);
 
   const handleCoinBotChange = (value) => {
     const selectedBot = bots.find((bot) => bot.id === Number(value));
+    const selectedNameBot = bots.find((bot) => bot.id === Number(value));
     setSelectedCoinBot(value);
+    setSelectedNameBot(selectedNameBot ? selectedNameBot.name : "");
     setSelectedCoinName(
       selectedBot &&
         tokenomicsData &&
@@ -110,7 +137,6 @@ const Tokenomics = () => {
       const data = await response.json();
 
       if (data && data.status === 200) {
-        // Eliminación exitosa, actualiza la lista de upgrades
         fetchData();
       } else {
         console.error("Error deleting upgrade:", data.error);
@@ -136,7 +162,6 @@ const Tokenomics = () => {
       const data = await response.json();
 
       if (data && data.status === 200) {
-        // Eliminación exitosa, actualiza la lista de upgrades
         fetchData();
       } else {
         console.error("Error deleting upgrade:", data.error);
@@ -162,7 +187,6 @@ const Tokenomics = () => {
       const data = await response.json();
 
       if (data && data.status === 200) {
-        // Eliminación exitosa, actualiza la lista de upgrades
         fetchData();
       } else {
         console.error("Error deleting TokenUtility:", data.error);
@@ -190,7 +214,6 @@ const Tokenomics = () => {
       const data = await response.json();
 
       if (data && data.status === 200) {
-        // Eliminación exitosa, actualiza la lista de upgrades
         fetchData();
       } else {
         console.error("Error deleting ValueAccrualMechanisms:", data.error);
@@ -224,7 +247,6 @@ const Tokenomics = () => {
         Add Tokenomics
       </Button>
 
-      {/* TOKENOMICS */}
       {tokenomicsData !== null && (
         <div className="tokenomicsMain">
           {tokenomicsData.tokenomics_data.length > 0 && (
@@ -246,56 +268,59 @@ const Tokenomics = () => {
                   <td className="thGeneral">Supply Model</td>
                   <td className="thGeneral">Action</td>
                 </tr>
-                {tokenomicsData.tokenomics_data.length > 0 && (
-                  <tr>
-                    <td className="tdGeneral">
-                      {tokenomicsData.tokenomics_data[0].tokenomics.token}
-                    </td>
-                    <td className="tdGeneral">
-                      {
-                        tokenomicsData.tokenomics_data[0].tokenomics
-                          .total_supply
+                <tr>
+                  <td className="tdGeneral">
+                    {novatideData
+                      ? novatideData.tokenname
+                      : tokenomicsData.tokenomics_data[0].tokenomics.token}
+                  </td>
+                  <td className="tdGeneral">
+                    {novatideData
+                      ? novatideData.total_supply
+                      : tokenomicsData.tokenomics_data[0].tokenomics
+                          .total_supply}
+                  </td>
+                  <td className="tdGeneral">
+                    {novatideData
+                      ? novatideData.circulating_supply
+                      : tokenomicsData.tokenomics_data[0].tokenomics
+                          .circulating_supply}
+                  </td>
+                  <td className="tdGeneral">
+                    {novatideData
+                      ? novatideData.percentage_circulating_supply.toFixed(2)
+                      : tokenomicsData.tokenomics_data[0].tokenomics
+                          .percentage_circulating_supply}
+                  </td>
+                  <td className="tdGeneral">
+                    {novatideData && novatideData.max_supply
+                      ? novatideData.max_supply
+                      : tokenomicsData.tokenomics_data[0].tokenomics.max_supply}
+                  </td>
+
+                  <td className="tdGeneral">
+                    {novatideData
+                      ? novatideData.supply_model
+                      : tokenomicsData.tokenomics_data[0].tokenomics
+                          .supply_model}
+                  </td>
+                  <td className="tdGeneral">
+                    <Button
+                      onClick={() =>
+                        handleEditButtonClick(
+                          tokenomicsData.tokenomics_data[0].tokenomics.id,
+                          "tokenomics",
+                        )
                       }
-                    </td>
-                    <td className="tdGeneral">
-                      {
-                        tokenomicsData.tokenomics_data[0].tokenomics
-                          .circulating_supply
-                      }
-                    </td>
-                    <td className="tdGeneral">
-                      {
-                        tokenomicsData.tokenomics_data[0].tokenomics
-                          .percentage_circulating_supply
-                      }
-                    </td>
-                    <td className="tdGeneral">
-                      {tokenomicsData.tokenomics_data[0].tokenomics.max_supply}
-                    </td>
-                    <td className="tdGeneral">
-                      {
-                        tokenomicsData.tokenomics_data[0].tokenomics
-                          .supply_model
-                      }
-                    </td>
-                    <td className="tdGeneral">
-                      <Button
-                        onClick={() =>
-                          handleEditButtonClick(
-                            tokenomicsData.tokenomics_data[0].tokenomics.id,
-                            "tokenomics",
-                          )
-                        }
-                      >
-                        Edit
-                      </Button>
-                    </td>
-                  </tr>
-                )}
+                      disabled={!!novatideData} // Deshabilita si novatideData existe
+                    >
+                      Edit
+                    </Button>
+                  </td>
+                </tr>
               </tbody>
             </Table>
           )}
-          {/* COMPETITORS TOKENOMICS */}
           {tokenomicsData.tokenomics_data.length > 0 && (
             <Table className="tokenomicsTable" striped bordered hover>
               <h2 className="tableSubTitle">Competitors Tokenomics</h2>
@@ -498,14 +523,12 @@ const Tokenomics = () => {
         </div>
       )}
 
-      {/* Modal for creation*/}
       <TokenomicsModal
         selectedCoinBot={selectedCoinBot}
         showModal={showModal}
         handleClose={handleClose}
         coinName={selectedCoinName}
       />
-      {/* Modal for edition */}
       <TokenomicsEditModal
         selectedCoinBot={selectedCoinBot}
         showEditModal={showEditModal}
