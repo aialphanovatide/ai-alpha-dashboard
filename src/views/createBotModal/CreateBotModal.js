@@ -6,6 +6,7 @@ import './CreateBotModal.css'
 
 const CreateBotModal = () => {
   const [showAlert, setShowAlert] = useState(false)
+  const [alertVariant, setAlertVariant] = useState('success')
   const [categories, setCategories] = useState([])
   const [name, setName] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
@@ -48,14 +49,15 @@ const CreateBotModal = () => {
     setBlacklist('')
     setDallePrompt('')
     setShowAlert(false)
+    setAlertMessage('')
+    setAlertVariant('success')
   }
-
 
   const handleCreateBot = async () => {
     if (!url.startsWith('https://news.google.com/search?q=')) {
       setAlertMessage('The URL must start with "https://news.google.com/search?q=".')
+      setAlertVariant('danger')
       setShowAlert(true)
-
       return
     }
     try {
@@ -77,14 +79,18 @@ const CreateBotModal = () => {
       const result = await response.json()
       if (response.ok) {
         setAlertMessage('Bot created successfully.')
+        setAlertVariant('success')
         setShowAlert(true)
         clearFields()
+        setTimeout(() => setVisible(false), 2000) // Hide modal after 2 seconds
       } else {
         setAlertMessage(result.error || 'Error creating bot.')
+        setAlertVariant('danger')
         setShowAlert(true)
       }
     } catch (error) {
       setAlertMessage('Error creating bot: ' + error.message)
+      setAlertVariant('danger')
       setShowAlert(true)
     }
   }
@@ -165,7 +171,7 @@ const CreateBotModal = () => {
             {showAlert && (
               <Alert
                 className="espacio"
-                variant="success"
+                variant={alertVariant}
                 onClose={() => setShowAlert(false)}
                 dismissible
               >

@@ -8,6 +8,7 @@ import config from "../../config";
 import BotList from "./botList";
 import UsedKeywordsModal from "../usedKeywordsModal/UsedKeywordsModal";
 import CreateBotModal from "../createBotModal/CreateBotModal";
+import CreateCategoryModal from "../createCategoryModal/CreateCategoryModal";
 import AddBlacklistWordsModal from "../addBlacklistWordsModal/AddBlacklistWordsModal";
 
 
@@ -133,6 +134,7 @@ const BotsSettings = () => {
       <div className="actionmain">
         <h4 className="actionsTitle">Actions</h4>
         <div className="actionsSubMain">
+          <CreateCategoryModal />
           <CreateBotModal />
           <AddWordsModal />
           <DeleteWordsModal />
