@@ -17,7 +17,7 @@ const UsedKeywordsModal = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`, {
+        const response = await fetch(`${config.BOTS_V2_API}/get_all_coin_bots`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -46,20 +46,20 @@ const UsedKeywordsModal = () => {
 
       try {
         const response = await fetch(
-          `${config.BASE_URL}/api/get_used_keywords_to_download?coin_bot_id=${selectedCoinBot}&time_period=${selectedTemporalidad}`,
+          `${config.BOTS_V2_API}/api/get_used_keywords_to_download?bot_id=${selectedCoinBot}&time_period=${selectedTemporalidad}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
-          },
+          }
         );
 
         if (response.ok) {
           const { keywords } = await response.json();
           // Filtrar elementos vacíos de la matriz de palabras clave
           const filteredKeywords = keywords.filter(
-            (keyword) => keyword.trim() !== "",
+            (keyword) => keyword.trim() !== ""
           );
           setKeywords(filteredKeywords);
 

@@ -19,7 +19,7 @@ const CreateBotModal = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://zztc5v98-5001.uks1.devtunnels.ms/categories`, {
+        const response = await fetch(`${config.BOTS_V2_API}/categories`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ const CreateBotModal = () => {
         })
         if (response.ok) {
           const data = await response.json()
-          console.log("CATEGORIES", data.data.categories)
+
           setCategories(data.data.categories)
         } else {
           console.error('Error fetching Categories:', response.statusText)
@@ -50,9 +50,16 @@ const CreateBotModal = () => {
     setShowAlert(false)
   }
 
+
   const handleCreateBot = async () => {
+    if (!url.startsWith('https://news.google.com/search?q=')) {
+      setAlertMessage('The URL must start with "https://news.google.com/search?q=".')
+      setShowAlert(true)
+
+      return
+    }
     try {
-      const response = await fetch(`https://zztc5v98-5001.uks1.devtunnels.ms/create_bot`, {
+      const response = await fetch(`${config.BOTS_V2_API}/create_bot`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -172,7 +179,7 @@ const CreateBotModal = () => {
             className="espacio close"
             variant="primary"
             onClick={handleCreateBot}
-            disabled={!name || !selectedCategory || !url || !keywords || !blacklist || !dallePrompt}
+            disabled={!name || !selectedCategory || !url || !url.startsWith('https://news.google.com/search?q=') || !keywords || !blacklist || !dallePrompt}
           >
             Create Bot
           </Button>

@@ -1,124 +1,121 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import '../botsSettings/bs.css'
-import '../deleteWordsModal/deleteWordsModal.css'
-import { CButton } from '@coreui/react'
-import { Form, Alert, Modal, Button } from 'react-bootstrap'
-import config from '../../config'
+import React, { useEffect, useState, useCallback } from "react";
+import "../botsSettings/bs.css";
+import "../deleteWordsModal/deleteWordsModal.css";
+import { CButton } from "@coreui/react";
+import { Form, Alert, Modal, Button } from "react-bootstrap";
+import config from "../../config";
 
 const DeleteWordsModal = () => {
-  const [showAlert, setShowAlert] = useState(false)
-  const [coinBots, setCoinBots] = useState([])
-  const [selectedCoinBot, setSelectedCoinBot] = useState('')
-  const [keywords, setKeywords] = useState([])
-  const [selectedKeyword, setSelectedKeyword] = useState('')
-  const [visible, setVisible] = useState(false)
+  const [showAlert, setShowAlert] = useState(false);
+  const [coinBots, setCoinBots] = useState([]);
+  const [selectedCoinBot, setSelectedCoinBot] = useState("");
+  const [keywords, setKeywords] = useState([]);
+  const [selectedKeyword, setSelectedKeyword] = useState("");
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`, {
-          method: 'GET',
+        const response = await fetch(`${config.BOTS_V2_API}/get_all_coin_bots`, {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
           },
-        })
+        });
         if (response.ok) {
-          const data = await response.json()
-          setCoinBots(data.coin_bots)
+          const data = await response.json();
+          setCoinBots(data.coin_bots);
         } else {
-          console.error('Error fetching coin bots:', response.statusText)
+          console.error("Error fetching coin bots:", response.statusText);
         }
       } catch (error) {
-        console.error('Error fetching coin bots:', error)
+        console.error("Error fetching coin bots:", error);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   const handleCoinBotChange = async (selectedCoinBotId) => {
-    setSelectedCoinBot(selectedCoinBotId)
+    setSelectedCoinBot(selectedCoinBotId);
     try {
       const response = await fetch(
-        `${config.BASE_URL}/get_keywords_for_coin_bot/${selectedCoinBotId}`, 
+        `${config.BOTS_V2_API}/get_keywords_for_coin_bot/${selectedCoinBotId}`,
         {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
           },
         }
-      )
+      );
       if (response.ok) {
-        const data = await response.json()
-        setKeywords(data.keywords || [])
+        const data = await response.json();
+        setKeywords(data.keywords || []);
       } else {
-        console.error('Error fetching keywords:', response.statusText)
+        console.error("Error fetching keywords:", response.statusText);
       }
     } catch (error) {
-      console.error('Error fetching keywords:', error)
+      console.error("Error fetching keywords:", error);
     }
-  }
+  };
 
   const clearFields = useCallback(() => {
-    setSelectedCoinBot('')
-    setKeywords([])
-    setSelectedKeyword('')
-    setShowAlert(false)
-  }, []) 
+    setSelectedCoinBot("");
+    setKeywords([]);
+    setSelectedKeyword("");
+    setShowAlert(false);
+  }, []);
 
   const handleDeleteKeyword = async () => {
     try {
       if (selectedKeyword) {
-        const response = await fetch(`${config.BASE_URL}/delete_keyword`, {
-          method: 'POST',
+        const response = await fetch(`${config.BOTS_V2_API}/delete_keyword?keyword_id=${selectedKeyword}`, {
+          method: "DELETE", // Cambiado a DELETE
           headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
           },
-          body: JSON.stringify({
-            keyword_id: selectedKeyword,
-          }),
-        })
+        });
 
-        const data = await response.json()
+        const data = await response.json();
+        console.log(data);
         if (data.success) {
-          clearFields()
-          setShowAlert(true)
+          clearFields();
+          setShowAlert(true);
           setTimeout(() => {
-            setShowAlert(false)
-          }, 2000)
+            setShowAlert(false);
+          }, 2000);
         } else {
-          console.error('Error deleting keyword:', data.message)
+          console.error("Error deleting keyword:", data.message);
         }
       } else {
-        console.error('No selected keyword available.')
+        console.error("No selected keyword available.");
       }
     } catch (error) {
-      console.error('Error deleting keyword:', error)
+      console.error("Error deleting keyword:", error);
     }
-  }
+  };
+
   return (
     <>
       <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
         delete keyword
       </CButton>
       <Modal show={visible} onHide={() => setVisible(false)} className="custom-modal">
-          <span className='closeModalBtn' onClick={() => setVisible((prevVisible) => !prevVisible)}>X</span>
-        <Modal.Body className='formBody'>
-          <Form className='formMain'>
-          <h3>Delete Keyword</h3>
-            <Form.Group className='formSubmain'>
+        <span className="closeModalBtn" onClick={() => setVisible((prevVisible) => !prevVisible)}>
+          X
+        </span>
+        <Modal.Body className="formBody">
+          <Form className="formMain">
+            <h3>Delete Keyword</h3>
+            <Form.Group className="formSubmain">
               <Form.Label>Select Coin</Form.Label>
-              <Form.Control
-                as="select"
-                value={selectedCoinBot}
-                onChange={(e) => handleCoinBotChange(e.target.value)}
-              >
+              <Form.Control as="select" value={selectedCoinBot} onChange={(e) => handleCoinBotChange(e.target.value)}>
                 <option value="">Select...</option>
                 {coinBots.map((bot) => (
                   <option key={bot.id} value={bot.id}>
-                    {bot.name && bot.name.toUpperCase() || 'No Name'}
+                    {(bot.name && bot.name.toUpperCase()) || "No Name"}
                   </option>
                 ))}
               </Form.Control>
@@ -126,45 +123,40 @@ const DeleteWordsModal = () => {
             </Form.Group>
 
             {keywords.length > 0 && (
-              <Form.Group className='formSubmain'>
+              <Form.Group className="formSubmain">
                 <Form.Label>Select Keyword to Delete</Form.Label>
                 <Form.Control
-                  className='optioname'
+                  className="optioname"
                   as="select"
                   value={selectedKeyword}
                   onChange={(e) => setSelectedKeyword(e.target.value)}
                 >
                   <option value="">Select...</option>
                   {keywords.map((keyword) => (
-                    <option className='optioname' key={keyword.id} value={keyword.id}>
-                      {keyword.word || 'No Keyword'}
+                    <option className="optioname" key={keyword.id} value={keyword.id}>
+                      {keyword.word || "No Keyword"}
                     </option>
                   ))}
                 </Form.Control>
-        
               </Form.Group>
             )}
-              
+
             {showAlert && (
-              <Alert className='espacio' variant="success" onClose={() => setShowAlert(false)} dismissible>
-              Keyword deleted successfully.
-            </Alert>
+              <Alert className="espacio" variant="success" onClose={() => setShowAlert(false)} dismissible>
+                Keyword deleted successfully.
+              </Alert>
             )}
           </Form>
         </Modal.Body>
 
-        <Modal.Footer  className="button-row">
-          <Button
-            variant="primary"
-            onClick={handleDeleteKeyword}
-            disabled={!selectedKeyword || !selectedCoinBot}
-          >
+        <Modal.Footer className="button-row">
+          <Button variant="primary" onClick={handleDeleteKeyword} disabled={!selectedKeyword || !selectedCoinBot}>
             Delete Keyword
           </Button>
         </Modal.Footer>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default DeleteWordsModal
+export default DeleteWordsModal;

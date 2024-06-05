@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { CButton } from '@coreui/react'
 import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap'
 import config from '../../config'
-import './addWordsModal.css'
+import '../addWordsModal/addWordsModal.css'
 
-const AddWordsModal = () => {
+const AddBlacklistWordsModal = () => {
   const [showAlert, setShowAlert] = useState(false)
   const [coinBots, setCoinBots] = useState([])
   const [selectedCoinBot, setSelectedCoinBot] = useState('')
@@ -12,6 +12,7 @@ const AddWordsModal = () => {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
+    console.log(config.BOTS_V2);
     const fetchData = async () => {
       try {
         const response = await fetch(`${config.BOTS_V2_API}/get_all_coin_bots`, {
@@ -43,14 +44,14 @@ const AddWordsModal = () => {
   const handleAddWords = async () => {
     try {
       if (selectedCoinBot) {
-        const response = await fetch(`${config.BOTS_V2_API}/add_keyword`, {
+        const response = await fetch(`${config.BOTS_V2_API}/add_to_blacklist`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'ngrok-skip-browser-warning': 'true',
           },
           body: JSON.stringify({
-            keyword: keywordValue,
+            blacklist: keywordValue,
             bot_id: selectedCoinBot,
           }),
         })
@@ -80,13 +81,13 @@ const AddWordsModal = () => {
   return (
     <>
       <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
-        add keyword
+        add keyword to blacklist
       </CButton>
       <Modal show={visible} onHide={() => setVisible(false)} className="custom-modal">
       <span className='closeModalBtn' onClick={() => setVisible((prevVisible) => !prevVisible)}>X</span>
         <Modal.Body className='formBody'>
           <Form className='formMain'>
-          <h3>Add Keyword</h3>
+          <h3>Add Keyword to blacklist</h3>
             <Form.Group className='formSubmain'>
               <Form.Label>Select Coin</Form.Label>
               <Form.Control
@@ -147,4 +148,4 @@ const AddWordsModal = () => {
   )
 }
 
-export default AddWordsModal
+export default AddBlacklistWordsModal

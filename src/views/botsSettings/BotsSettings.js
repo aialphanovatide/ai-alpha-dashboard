@@ -3,12 +3,13 @@ import "../botsSettings/bs.css";
 import { CButton, CButtonGroup } from "@coreui/react";
 import AddWordsModal from "../addWordsModal/AddWordsModal";
 import DeleteWordsModal from "../deleteWordsModal/DeleteWordsModal";
-import AddSitesModal from "../addSitesModal/AddSitesModal";
+import DeleteBlacklistWordsModal from "../deleteBlacklistWordsModal/DeleteBlacklistWordsModal";
 import config from "../../config";
-import DeleteSitesModal from "../deleteSitesModal/DeleteSitesModal";
 import BotList from "./botList";
 import UsedKeywordsModal from "../usedKeywordsModal/UsedKeywordsModal";
 import CreateBotModal from "../createBotModal/CreateBotModal";
+import AddBlacklistWordsModal from "../addBlacklistWordsModal/AddBlacklistWordsModal";
+
 
 const SpinnerComponent = () => {
   return (
@@ -28,7 +29,7 @@ const BotsSettings = () => {
   // get all the botss
   const getAllBots = useCallback(async () => {
     try {
-      const response = await fetch(`${config.BASE_URL}/get_all_bots`, {
+      const response = await fetch(`${config.BOTS_V2_API}/get_all_bots`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -40,8 +41,6 @@ const BotsSettings = () => {
 
       try {
         const data = JSON.parse(responseText);
-        console.log("Data:", data);
-
         if (data && data.bots) {
           setBots(data.bots);
         } else {
@@ -91,12 +90,12 @@ const BotsSettings = () => {
 
   const turnOnAllBots = useCallback(() => {
     setLoading(true);
-    updateBotState(`${config.BASE_URL}/activate_all_bots`);
+    updateBotState(`${config.BOTS_V2_API}/activate_all_categories`);
   }, [updateBotState]);
 
   const turnOffAllBots = useCallback(() => {
     setLoading(true);
-    updateBotState(`${config.BASE_URL}/deactivate_all_bots`);
+    updateBotState(`${config.BOTS_V2_API}/deactivate_all_categories`);
   }, [updateBotState]);
 
   // Loads bots
@@ -137,8 +136,8 @@ const BotsSettings = () => {
           <CreateBotModal />
           <AddWordsModal />
           <DeleteWordsModal />
-          <AddSitesModal />
-          <DeleteSitesModal />
+          <AddBlacklistWordsModal />
+          <DeleteBlacklistWordsModal />
           <UsedKeywordsModal />
         </div>
       </div>

@@ -282,7 +282,7 @@ const Competitors = () => {
                 </thead>
                 <tbody>
                   {competitors.map((competitor, index) => {
-                    let disableButtons = index >= 1 && index <= 4;// Deshabilitar las primeras 4 filas
+                    let disableButtons = index >= 1 && index <= 4;
                     return (
                       <tr className="thGeneral" key={index}>
                         {Object.keys(competitor.competitor).map(

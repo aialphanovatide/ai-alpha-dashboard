@@ -13,6 +13,21 @@ const SpinnerComponent = () => {
   );
 };
 
+// Función para formatear la fecha
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const options = {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+  // Formatear la fecha y hora según las opciones
+  return date.toLocaleString("en-GB", options).replace(/,/, "");
+};
+
 const BotList = ({ bots }) => {
   const [botList, setBotList] = useState([]);
 
@@ -26,14 +41,14 @@ const BotList = ({ bots }) => {
     if (botList && botList[index]) {
       const bot = botList[index];
       const url = bot.isActive
-        ? `${baseURL.BASE_URL}/deactivate_bot_by_id/${bot.category}`
-        : `${baseURL.BASE_URL}/activate_bot_by_id/${bot.category}`;
+        ? `${baseURL.BOTS_V2_API}/deactivate_bot_by_id/${bot.category}`
+        : `${baseURL.BOTS_V2_API}/activate_bot_by_id/${bot.category}`;
 
       try {
         const response = await fetch(url, { method: "POST" });
         if (response.ok) {
           const data = await response.json();
-          
+
           const updatedBots = [...botList];
           updatedBots[index].isActive = !bot.isActive;
           setBotList(updatedBots);
@@ -47,7 +62,7 @@ const BotList = ({ bots }) => {
       console.error("Bot or botList is undefined.");
     }
   };
- 
+
   return (
     <div className="bot-list-container">
       {botList && botList.length > 0 ? (
@@ -57,11 +72,14 @@ const BotList = ({ bots }) => {
             className={`bot-item ${bot.isActive ? "activeBot" : "inactiveBot"}`}
           >
             <div className="bot-icon">
-            <img src={`${baseURL.BASE_URL}${bot.icon}`} alt={bot.alias} />
+              <img src={`${baseURL.BOTS_V2_API}${bot.icon}`} alt={bot.alias} />
             </div>
             <div className="bot-details">
               <div className="bot-category">{bot.category}</div>
               <div className="bot-alias">{bot.alias}</div>
+              <div className="bot-alias">
+                Last Run: {formatDate(bot.updated_at)}
+              </div>
             </div>
             <button
               className={`actdeactBtn ${
@@ -69,13 +87,13 @@ const BotList = ({ bots }) => {
               }`}
               onClick={() => toggleBotState(index)}
             >
-              {bot.isActive ? <CIcon icon={cilToggleOn}/> : <CIcon icon={cilToggleOff}/>}
+              {bot.isActive ? <CIcon icon={cilToggleOn} /> : <CIcon icon={cilToggleOff} />}
             </button>
           </div>
         ))
       ) : (
         // <Loader />
-        <SpinnerComponent/>
+        <SpinnerComponent />
       )}
     </div>
   );

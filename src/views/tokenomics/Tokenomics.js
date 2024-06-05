@@ -52,8 +52,6 @@ const Tokenomics = () => {
     }
   }, [tokenomicsData]);
 
-  console.log(competitorsCoinNames);
-  console.log(cometitorsTokenomicData);
 
   const fetchData = async () => {
     try {
