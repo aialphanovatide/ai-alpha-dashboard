@@ -30,7 +30,7 @@ const BotsSettings = () => {
   // get all the botss
   const getAllBots = useCallback(async () => {
     try {
-      const response = await fetch(`https://zztc5v98-5001.uks1.devtunnels.ms/get_all_bots`, {
+      const response = await fetch(`${config.BOTS_V2_API}/get_all_bots`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
