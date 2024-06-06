@@ -105,7 +105,7 @@ const DeleteBlacklistWordsModal = () => {
   return (
     <>
       <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
-        erase blacklist keywords
+        Remove keyword from blacklist
       </CButton>
       <Modal show={visible} onHide={() => setVisible(false)} className="custom-modal">
           <span className='closeModalBtn' onClick={() => setVisible((prevVisible) => !prevVisible)}>X</span>
