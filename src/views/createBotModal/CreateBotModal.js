@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react'
-import { CButton } from '@coreui/react'
-import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap'
-import config from '../../config'
-import './CreateBotModal.css'
+import React, { useEffect, useState } from 'react';
+import { CButton } from '@coreui/react';
+import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap';
+import config from '../../config';
+import './CreateBotModal.css';
 
 const CreateBotModal = () => {
-  const [showAlert, setShowAlert] = useState(false)
-  const [alertVariant, setAlertVariant] = useState('success')
-  const [categories, setCategories] = useState([])
-  const [name, setName] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('')
-  const [url, setUrl] = useState('')
-  const [keywords, setKeywords] = useState('')
-  const [blacklist, setBlacklist] = useState('')
-  const [dallePrompt, setDallePrompt] = useState('')
-  const [visible, setVisible] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertVariant, setAlertVariant] = useState('success');
+  const [categories, setCategories] = useState([]);
+  const [name, setName] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [url, setUrl] = useState('');
+  const [keywords, setKeywords] = useState('');
+  const [blacklist, setBlacklist] = useState('');
+  const [dallePrompt, setDallePrompt] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,42 +26,41 @@ const CreateBotModal = () => {
             'Content-Type': 'application/json',
             'ngrok-skip-browser-warning': 'true',
           },
-        })
+        });
         if (response.ok) {
-          const data = await response.json()
-
-          setCategories(data.data.categories)
+          const data = await response.json();
+          setCategories(data.data.categories);
         } else {
-          console.error('Error fetching Categories:', response.statusText)
+          console.error('Error fetching Categories:', response.statusText);
         }
       } catch (error) {
-        console.error('Error fetching Categories:', error)
+        console.error('Error fetching Categories:', error);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   const clearFields = () => {
-    setName('')
-    setSelectedCategory('')
-    setUrl('')
-    setKeywords('')
-    setBlacklist('')
-    setDallePrompt('')
-    setShowAlert(false)
-    setAlertMessage('')
-    setAlertVariant('success')
-  }
+    setName('');
+    setSelectedCategory('');
+    setUrl('');
+    setKeywords('');
+    setBlacklist('');
+    setDallePrompt('');
+    setShowAlert(false);
+    setAlertMessage('');
+    setAlertVariant('success');
+  };
 
   const handleCreateBot = async () => {
     if (!url.startsWith('https://news.google.com/search?q=')) {
-      setAlertMessage('The URL must start with "https://news.google.com/search?q=".')
-      setAlertVariant('danger')
-      setShowAlert(true)
-      return
+      setAlertMessage('The URL must start with "https://news.google.com/search?q=".');
+      setAlertVariant('danger');
+      setShowAlert(true);
+      return;
     }
     try {
-      const response = await fetch(`${config.BOTS_V2_API}/create_bot`, {
+      const createBotResponse = await fetch(`${config.BOTS_V2_API}/create_bot`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,25 +74,50 @@ const CreateBotModal = () => {
           blacklist,
           dalle_prompt: dallePrompt,
         }),
-      })
-      const result = await response.json()
-      if (response.ok) {
-        setAlertMessage('Bot created successfully.')
-        setAlertVariant('success')
-        setShowAlert(true)
-        clearFields()
-        setTimeout(() => setVisible(false), 2000) // Hide modal after 2 seconds
-      } else {
-        setAlertMessage(result.error || 'Error creating bot.')
-        setAlertVariant('danger')
-        setShowAlert(true)
+      });
+
+      const createBotResult = await createBotResponse.json();
+      if (!createBotResponse.ok) {
+        setAlertMessage(createBotResult.error || 'Error creating bot.');
+        setAlertVariant('danger');
+        setShowAlert(true);
+        return;
       }
+
+      const createCoinBotResponse = await fetch(`${config.BASE_URL}/create_coin_bot`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: JSON.stringify({
+          bot_name: name,
+          category_id: selectedCategory,
+          url,
+          keywords,
+          blacklist,
+        }),
+      });
+
+      const createCoinBotResult = await createCoinBotResponse.json();
+      if (!createCoinBotResponse.ok) {
+        setAlertMessage(createCoinBotResult.error || 'Error creating coin bot.');
+        setAlertVariant('danger');
+        setShowAlert(true);
+        return;
+      }
+
+      setAlertMessage('Bot created successfully.');
+      setAlertVariant('success');
+      setShowAlert(true);
+      clearFields();
+      setTimeout(() => setVisible(false), 2000); // Hide modal after 2 seconds
     } catch (error) {
-      setAlertMessage('Error creating bot: ' + error.message)
-      setAlertVariant('danger')
-      setShowAlert(true)
+      setAlertMessage('Error creating bot: ' + error.message);
+      setAlertVariant('danger');
+      setShowAlert(true);
     }
-  }
+  };
 
   return (
     <>
@@ -192,7 +216,7 @@ const CreateBotModal = () => {
         </Modal.Footer>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default CreateBotModal
+export default CreateBotModal;
