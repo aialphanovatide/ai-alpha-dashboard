@@ -74,6 +74,46 @@ const CreateCategoryModal = () => {
     }
   }
 
+  const handleCreateCategoryServer2 = async () => {
+    try {
+      const response = await fetch(`${config.BASE_URL}/create_category`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          category: name,
+          category_name: alias,
+          time_interval: timeInterval,
+          is_active: true,
+          border_color: borderColor,
+          icon,
+        }),
+      })
+      const result = await response.json()
+      if (result.success) {
+        setAlertMessage('Category created successfully in Server 2.')
+        setAlertVariant('success')
+        setShowAlert(true)
+        clearFields()
+        setTimeout(() => setVisible(false), 2000)
+      } else {
+        setAlertMessage(result.error || 'Error creating category.')
+        setAlertVariant('danger')
+        setShowAlert(true)
+      }
+    } catch (error) {
+      setAlertMessage('Error creating category: ' + error.message)
+      setAlertVariant('danger')
+      setShowAlert(true)
+    }
+  }
+
+  const handleCreateBothCategories = async () => {
+    await handleCreateCategory()
+    await handleCreateCategoryServer2()
+  }
+
   return (
     <>
       <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
@@ -164,7 +204,7 @@ const CreateCategoryModal = () => {
           <Button
             className="espacio close"
             variant="primary"
-            onClick={handleCreateCategory}
+            onClick={handleCreateBothCategories}
             disabled={!name || !alias || !slackChannel}
           >
             Create Category
