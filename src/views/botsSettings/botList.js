@@ -8,7 +8,10 @@ import { cilToggleOn, cilToggleOff } from "@coreui/icons";
 const SpinnerComponent = () => {
   return (
     <div className="spinnergnral">
-      <span className="spinner-border spinner-border-lg" aria-hidden="true"></span>
+      <span
+        className="spinner-border spinner-border-lg"
+        aria-hidden="true"
+      ></span>
     </div>
   );
 };
@@ -62,6 +65,7 @@ const BotList = ({ bots }) => {
       console.error("Bot or botList is undefined.");
     }
   };
+  console.log("icon: " + botList.bot);
 
   return (
     <div className="bot-list-container">
@@ -72,7 +76,11 @@ const BotList = ({ bots }) => {
             className={`bot-item ${bot.isActive ? "activeBot" : "inactiveBot"}`}
           >
             <div className="bot-icon">
-              <img src={`${baseURL.BOTS_V2_API}${bot.icon}`} alt={bot.alias} />
+              <img
+                src={`https://aialphaicons.s3.us-east-2.amazonaws.com/${bot.alias.toLowerCase()}.png`}
+                alt={bot.alias}
+                style={{ width: "100%", height: "100%" }}
+              />
             </div>
             <div className="bot-details">
               <div className="bot-category">{bot.category}</div>
@@ -87,7 +95,11 @@ const BotList = ({ bots }) => {
               }`}
               onClick={() => toggleBotState(index)}
             >
-              {bot.isActive ? <CIcon icon={cilToggleOn} /> : <CIcon icon={cilToggleOff} />}
+              {bot.isActive ? (
+                <CIcon icon={cilToggleOn} />
+              ) : (
+                <CIcon icon={cilToggleOff} />
+              )}
             </button>
           </div>
         ))

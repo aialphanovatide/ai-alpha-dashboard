@@ -1,85 +1,97 @@
-import React, { useState } from 'react'
-import { CButton } from '@coreui/react'
-import { Form, FormControl, Alert, Modal, Button } from 'react-bootstrap'
-import config from '../../config'
+import React, { useState } from "react";
+import { CButton } from "@coreui/react";
+import {
+  Form,
+  FormControl,
+  Alert,
+  Modal,
+  Button,
+  FormCheck,
+} from "react-bootstrap";
+import config from "../../config";
 
 const CreateCategoryModal = () => {
-  const [showAlert, setShowAlert] = useState(false)
-  const [alertVariant, setAlertVariant] = useState('success')
-  const [name, setName] = useState('')
-  const [alias, setAlias] = useState('')
-  const [prompt, setPrompt] = useState('')
-  const [timeInterval, setTimeInterval] = useState(50)
-  const [slackChannel, setSlackChannel] = useState('')
-  const [borderColor, setBorderColor] = useState('')
-  const [icon, setIcon] = useState('')
-  const [visible, setVisible] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertVariant, setAlertVariant] = useState("success");
+  const [name, setName] = useState("");
+  const [alias, setAlias] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [timeInterval, setTimeInterval] = useState(50);
+  const [slackChannel, setSlackChannel] = useState("");
+  const [borderColor, setBorderColor] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showInApp, setShowInApp] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
 
   const clearFields = () => {
-    setName('')
-    setAlias('')
-    setPrompt('')
-    setTimeInterval(3)
-    setSlackChannel('')
-    setBorderColor('')
-    setIcon('')
-    setShowAlert(false)
-    setAlertMessage('')
-    setAlertVariant('success')
-  }
+    setName("");
+    setAlias("");
+    setPrompt("");
+    setTimeInterval(3);
+    setSlackChannel("");
+    setBorderColor("");
+    setShowAlert(false);
+    setAlertMessage("");
+    setAlertVariant("success");
+    setShowInApp(false);
+    setImageFile(null);
+  };
 
   const handleCreateCategory = async () => {
     if (!name || !alias || !slackChannel) {
-      setAlertMessage('Name, Alias, and Slack Channel are required.')
-      setAlertVariant('danger')
-      setShowAlert(true)
-      return
+      setAlertMessage("Name, Alias, and Slack Channel are required.");
+      setAlertVariant("danger");
+      setShowAlert(true);
+      return;
     }
+
     try {
+      const formData = new FormData();
+      formData.append("image", imageFile);
+
+      // Other data in JSON format
+      const otherData = {
+        name,
+        alias,
+        prompt,
+        time_interval: timeInterval,
+        slack_channel: slackChannel,
+        border_color: borderColor,
+      };
+
+      formData.append("data", JSON.stringify(otherData));
+
       const response = await fetch(`${config.BOTS_V2_API}/add_new_category`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
-        },
-        body: JSON.stringify({
-          name,
-          alias,
-          prompt,
-          time_interval: timeInterval,
-          slack_channel: slackChannel,
-          border_color: borderColor,
-          icon
-        }),
-      })
-      const result = await response.json()
-      console.log(result.success)
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
       if (result.success) {
-        setAlertMessage('Category created successfully.')
-        setAlertVariant('success')
-        console.log("Category created successfully")
-        setShowAlert(true)
-        clearFields()
-        setTimeout(() => setVisible(false), 2000) // Hide modal after 2 seconds
+        setAlertMessage("Category created successfully.");
+        setAlertVariant("success");
+        setShowAlert(true);
+        clearFields();
+        setTimeout(() => setVisible(false), 2000);
       } else {
-        setAlertMessage(result.error || 'Error creating category.')
-        setAlertVariant('danger')
-        setShowAlert(true)
+        setAlertMessage(result.error || "Error creating category.");
+        setAlertVariant("danger");
+        setShowAlert(true);
       }
     } catch (error) {
-      setAlertMessage('Error creating category: ' + error.message)
-      setAlertVariant('danger')
-      setShowAlert(true)
+      setAlertMessage("Error creating category: " + error.message);
+      setAlertVariant("danger");
+      setShowAlert(true);
     }
-  }
+  };
 
   const handleCreateCategoryServer2 = async () => {
     try {
       const response = await fetch(`${config.BASE_URL}/create_category`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           category: name,
@@ -87,44 +99,54 @@ const CreateCategoryModal = () => {
           time_interval: timeInterval,
           is_active: true,
           border_color: borderColor,
-          icon,
         }),
-      })
-      const result = await response.json()
+      });
+      const result = await response.json();
       if (result.success) {
-        setAlertMessage('Category created successfully in Server 2.')
-        setAlertVariant('success')
-        setShowAlert(true)
-        clearFields()
-        setTimeout(() => setVisible(false), 2000)
+        setAlertMessage("Category created successfully in Server 2.");
+        setAlertVariant("success");
+        setShowAlert(true);
+        clearFields();
+        setTimeout(() => setVisible(false), 2000);
       } else {
-        setAlertMessage(result.error || 'Error creating category.')
-        setAlertVariant('danger')
-        setShowAlert(true)
+        setAlertMessage(result.error || "Error creating category.");
+        setAlertVariant("danger");
+        setShowAlert(true);
       }
     } catch (error) {
-      setAlertMessage('Error creating category: ' + error.message)
-      setAlertVariant('danger')
-      setShowAlert(true)
+      setAlertMessage("Error creating category: " + error.message);
+      setAlertVariant("danger");
+      setShowAlert(true);
     }
-  }
+  };
 
   const handleCreateBothCategories = async () => {
-    await handleCreateCategory()
-    await handleCreateCategoryServer2()
-  }
+    await handleCreateCategory();
+    if (showInApp) {
+      await handleCreateCategoryServer2();
+    }
+  };
 
   return (
     <>
       <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
         Create a new Category
       </CButton>
-      <Modal show={visible} onHide={() => setVisible(false)} className="custom-modal">
-        <span className='closeModalBtn' onClick={() => setVisible((prevVisible) => !prevVisible)}>X</span>
-        <Modal.Body className='formBody'>
-          <Form className='formMain'>
+      <Modal
+        show={visible}
+        onHide={() => setVisible(false)}
+        className="custom-modal"
+      >
+        <span
+          className="closeModalBtn"
+          onClick={() => setVisible((prevVisible) => !prevVisible)}
+        >
+          X
+        </span>
+        <Modal.Body className="formBody">
+          <Form className="formMain">
             <h3>Create New Category</h3>
-            <Form.Group className='formSubmain'>
+            <Form.Group className="formSubmain">
               <Form.Label>Name</Form.Label>
               <FormControl
                 type="text"
@@ -133,7 +155,7 @@ const CreateCategoryModal = () => {
                 placeholder="Enter category name"
               />
             </Form.Group>
-            <Form.Group className='formSubmain'>
+            <Form.Group className="formSubmain">
               <Form.Label>Alias</Form.Label>
               <FormControl
                 type="text"
@@ -142,7 +164,7 @@ const CreateCategoryModal = () => {
                 placeholder="Enter category alias"
               />
             </Form.Group>
-            <Form.Group className='formSubmain'>
+            <Form.Group className="formSubmain">
               <Form.Label>Prompt</Form.Label>
               <FormControl
                 type="text"
@@ -151,7 +173,7 @@ const CreateCategoryModal = () => {
                 placeholder="Enter DALL-E prompt"
               />
             </Form.Group>
-            <Form.Group className='formSubmain'>
+            <Form.Group className="formSubmain">
               <Form.Label>Time Interval</Form.Label>
               <FormControl
                 type="number"
@@ -160,7 +182,7 @@ const CreateCategoryModal = () => {
                 placeholder="Enter time interval (default 50)"
               />
             </Form.Group>
-            <Form.Group className='formSubmain'>
+            <Form.Group className="formSubmain">
               <Form.Label>Slack Channel</Form.Label>
               <FormControl
                 type="text"
@@ -169,7 +191,7 @@ const CreateCategoryModal = () => {
                 placeholder="Enter Slack channel"
               />
             </Form.Group>
-            <Form.Group className='formSubmain'>
+            <Form.Group className="formSubmain">
               <Form.Label>Border Color</Form.Label>
               <FormControl
                 type="text"
@@ -178,17 +200,23 @@ const CreateCategoryModal = () => {
                 placeholder="Enter border color"
               />
             </Form.Group>
-            <Form.Group className='formSubmain'>
-              <Form.Label>Icon</Form.Label>
+            <Form.Group className="formSubmain">
+              <Form.Label>Upload Icon (use only PNG)</Form.Label>
               <FormControl
-                type="text"
-                value={icon}
-                onChange={(e) => setIcon(e.target.value)}
-                placeholder="Enter icon URL"
+                type="file"
+                onChange={(e) => setImageFile(e.target.files[0])}
+                placeholder="Upload only png icons"
+              />
+            </Form.Group>
+            <Form.Group className="formSubmain">
+              <FormCheck
+                type="checkbox"
+                label="Show in App"
+                checked={showInApp}
+                onChange={(e) => setShowInApp(e.target.checked)}
               />
             </Form.Group>
 
-            {/* Flash message */}
             {showAlert && (
               <Alert
                 variant={alertVariant}
@@ -212,7 +240,7 @@ const CreateCategoryModal = () => {
         </Modal.Footer>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default CreateCategoryModal
+export default CreateCategoryModal;
