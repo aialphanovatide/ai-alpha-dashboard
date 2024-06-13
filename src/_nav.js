@@ -49,6 +49,12 @@ const _nav = [
   },
   {
     component: CNavItem,
+    name: 'Search Tool',
+    to: '/searchTool',
+    icon: <CIcon icon={cilSitemap} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: 'Top Stories',
     to: '/topStories',
     icon: <CIcon icon={cilLibrary} customClassName="nav-icon" />,
