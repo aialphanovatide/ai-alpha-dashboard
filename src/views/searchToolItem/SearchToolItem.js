@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import './SearchToolItem.css';
+import React, { useState } from "react";
+import "./SearchToolItem.css";
 
 const SearchToolItem = ({ article }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -20,19 +20,24 @@ const SearchToolItem = ({ article }) => {
   };
 
   return (
-    <div className='search-tool-item' style={{ width: '20em' }} onClick={openModal}>
-      <h3>{article.title}</h3> 
-      <p>{article.date}</p>
+    <div className="search-tool-item" style={{ width: "20em" }} onClick={openModal}>
+      <h3>{article.title}</h3>
       <p>{article.content.slice(0, 300)}...</p>
+      <span className={`tag ${article.unwanted ? "bin" : "valid"}`}>
+        {article.unwanted ? "Bin" : "Valid"}
+      </span>
+      <p style={{ float: "left", fontSize: "12px" }}>{article.date}</p>
 
       {modalOpen && (
-        <div className={`modal ${imageLoaded ? '' : 'loading'}`}>
+        <div className={`modal ${imageLoaded ? "" : "loading"}`}>
           <div className="modal-content">
-            <button className="close" onClick={closeModal}>&times;</button>
+            <button className="close" onClick={closeModal}>
+              &times;
+            </button>
 
             {!imageLoaded && <div className="loader"></div>}
             <img
-              className={`img-modal-news ${imageLoaded ? 'img-modal-news-show' : 'img-modal-news-hide'}`}
+              className={`img-modal-news ${imageLoaded ? "img-modal-news-show" : "img-modal-news-hide"}`}
               src={`https://sitesnewsposters.s3.us-east-2.amazonaws.com/${article.image}`}
               onLoad={handleImageLoaded}
               alt={article.title}
@@ -48,9 +53,3 @@ const SearchToolItem = ({ article }) => {
 };
 
 export default SearchToolItem;
-
-
-
-
-
-

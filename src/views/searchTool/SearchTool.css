@@ -1,5 +1,3 @@
-/* src/components/SearchTool.css */
-
 .search-tool {
     margin: 20px;
     text-align: left;
@@ -7,12 +5,27 @@
     margin: 0 auto;
   }
   
-  .search-tool label {
-    margin-right: 10px;
-    display: inline-block;
+  .search-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
   }
   
-  .search-tool input[type="checkbox"] {
+  .search-header input[type="text"] {
+    margin-right: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    flex: 1;
+  }
+  
+  .search-header label {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-header input[type="checkbox"] {
     margin-right: 5px;
   }
   
@@ -22,5 +35,4 @@
     gap: 20px;
     margin-top: 20px;
   }
-  
   
