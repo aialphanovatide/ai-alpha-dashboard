@@ -84,3 +84,7 @@
     object-fit: cover;
   }
   
+  .search-tool-item .tag.bot {
+    background-color: orange;
+  }
+  

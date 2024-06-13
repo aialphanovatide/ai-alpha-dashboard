@@ -1,32 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./SearchToolItem.css";
+import baseURL from "../../config";
 
 const SearchToolItem = ({ article }) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false); // Estado para controlar la carga de la imagen
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [botName, setBotName] = useState("");
+
+  useEffect(() => {
+    const fetchBotName = async () => {
+      try {
+        const response = await fetch(`${baseURL.BOTS_V2_API}/bots`);
+        if (response.ok) {
+          const responseData = await response.json();
+          if (responseData.success && Array.isArray(responseData.data)) {
+            const bot = responseData.data.find(bot => bot.id === article.bot_id);
+            if (bot) {
+              setBotName(bot.name);
+            } else {
+              console.error(`Bot with ID ${article.bot_id} not found`);
+            }
+          } else {
+            console.error("Response data format is incorrect:", responseData);
+          }
+        } else {
+          console.error("Failed to fetch bots");
+        }
+      } catch (error) {
+        console.error("Error fetching bots:", error);
+      }
+    };
+
+    if (article.bot_id) {
+      fetchBotName();
+    }
+  }, [article.bot_id]);
 
   const openModal = () => {
     setModalOpen(true);
   };
 
   const closeModal = (e) => {
-    e.stopPropagation(); // Evitar la propagación del evento
+    e.stopPropagation();
     setModalOpen(false);
-    setImageLoaded(false); // Reiniciar el estado cuando se cierra el modal
+    setImageLoaded(false);
   };
 
   const handleImageLoaded = () => {
-    setImageLoaded(true); // Callback para manejar la carga completa de la imagen
+    setImageLoaded(true);
   };
 
   return (
-    <div className="search-tool-item" style={{ width: "20em" }} onClick={openModal}>
-      <h3>{article.title}</h3>
-      <p>{article.content.slice(0, 300)}...</p>
+    <div className="search-tool-item" style={{ width: "25em" }} onClick={openModal}>
+      <h3>{article.title.slice(0, 100)}</h3>
+      <p>{article.date}</p>
+      <p>{article.content.slice(0, 250)}...</p>
       <span className={`tag ${article.unwanted ? "bin" : "valid"}`}>
         {article.unwanted ? "Bin" : "Valid"}
       </span>
-      <p style={{ float: "left", fontSize: "12px" }}>{article.date}</p>
+
+      {botName && (
+        <span className="tag bot" style={{ marginRight: "4.5em" }} >{`Bot: ${botName}`}</span>
+      )}
 
       {modalOpen && (
         <div className={`modal ${imageLoaded ? "" : "loading"}`}>

@@ -36,3 +36,16 @@
     margin-top: 20px;
   }
   
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left:140%;
+    margin-top:40%;
+    height: 200px; /* Ajusta según sea necesario */
+  }
+  
+  .loading-spinner svg {
+    color: #ff9500; /* Cambia el color del spinner si lo necesitas */
+  }
+  

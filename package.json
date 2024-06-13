@@ -29,6 +29,8 @@
     "@coreui/react": "^5.0.0-rc.0",
     "@coreui/react-chartjs": "^3.0.0-rc.0",
     "@coreui/utils": "^2.0.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@popperjs/core": "^2.11.8",
     "aws-sdk": "^2.1639.0",
     "chart.js": "^4.4.0",
