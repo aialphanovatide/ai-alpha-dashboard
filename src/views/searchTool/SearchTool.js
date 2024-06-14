@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import SearchToolItem from "../searchToolItem/SearchToolItem";
+import Pagination from "../pagination/Pagination";
 import "./SearchTool.css";
 import baseURL from "../../config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,6 +13,8 @@ const SearchTool = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const articlesPerPage = 15; // Number of articles per page
 
   const articlesRef = useRef([]);
   const errorRef = useRef(null);
@@ -68,7 +71,7 @@ const SearchTool = () => {
   useEffect(() => {
     fetchArticles(); // Performs the initial fetch when the component mounts
 
-    const intervalId = setInterval(fetchArticles, 600000); // Fetches every 3 minutes
+    const intervalId = setInterval(fetchArticles, 600000); // Fetches every 10 minutes
 
     return () => {
       clearInterval(intervalId); // Cleans up the interval when the component unmounts
@@ -110,11 +113,16 @@ const SearchTool = () => {
     }
   };
 
+  // Calculate the articles to display based on the current page
+  const indexOfLastArticle = currentPage * articlesPerPage;
+  const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
+  const currentArticles = articles.slice(indexOfFirstArticle, indexOfLastArticle);
+
   return (
     <div className="search-tool">
-        <h2>Article Search Tool</h2>
-        <br></br>
-        
+      <h2>Article Search Tool</h2>
+      <br></br>
+
       <div className="search-header">
         <input
           type="text"
@@ -148,7 +156,7 @@ const SearchTool = () => {
           </div>
         )}
         {!loading &&
-          articles
+          currentArticles
             .filter((article) =>
               article.title.toLowerCase().includes(searchTerm.toLowerCase())
             )
@@ -156,6 +164,14 @@ const SearchTool = () => {
               <SearchToolItem key={index} article={article} />
             ))}
       </div>
+      {!loading && (
+        <Pagination
+          totalArticles={articles.length}
+          articlesPerPage={articlesPerPage}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
     </div>
   );
 };

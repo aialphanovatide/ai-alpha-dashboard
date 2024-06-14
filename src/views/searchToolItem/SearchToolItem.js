@@ -51,16 +51,25 @@ const SearchToolItem = ({ article }) => {
   };
 
   return (
-    <div className="search-tool-item" style={{ width: "25em" }} onClick={openModal}>
+    <div className="search-tool-item" style={{ width: "100%" }} onClick={openModal}>
+        <img
+              className={`img-modal-news-card`}
+              src={`https://sitesnewsposters.s3.us-east-2.amazonaws.com/${article.image}`}
+              onLoad={handleImageLoaded}
+              alt={article.title}
+            />
       <h3>{article.title.slice(0, 100)}</h3>
       <p>{article.date}</p>
       <p>{article.content.slice(0, 250)}...</p>
+      <br></br>
+      <br></br>
+      <br></br>
       <span className={`tag ${article.unwanted ? "bin" : "valid"}`}>
         {article.unwanted ? "Bin" : "Valid"}
       </span>
 
       {botName && (
-        <span className="tag bot" style={{ marginRight: "4.5em" }} >{`Bot: ${botName}`}</span>
+        <span className="tag bot" style={{ marginRight: "4.5em" }}>{`${botName.toUpperCase()}`}</span>
       )}
 
       {modalOpen && (
