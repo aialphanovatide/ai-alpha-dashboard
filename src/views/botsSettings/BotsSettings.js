@@ -12,14 +12,10 @@ import CreateCategoryModal from "../createCategoryModal/CreateCategoryModal";
 import AddBlacklistWordsModal from "../addBlacklistWordsModal/AddBlacklistWordsModal";
 import DeleteCategoryModal from "../deleteCategoryModal/DeleteCategoryModal";
 
-
 const SpinnerComponent = () => {
   return (
     <div className="spinnergnral">
-      <span
-        className="spinner-border spinner-border-sm"
-        aria-hidden="true"
-      ></span>
+      <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
     </div>
   );
 };
@@ -28,7 +24,6 @@ const BotsSettings = () => {
   const [bots, setBots] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // get all the botss
   const getAllBots = useCallback(async () => {
     try {
       const response = await fetch(`${config.BOTS_V2_API}/get_all_bots`, {
@@ -40,11 +35,11 @@ const BotsSettings = () => {
       });
 
       const responseText = await response.text();
-      console.log("responseText : ", responseText)
+      console.log("responseText : ", responseText);
 
       try {
         const data = JSON.parse(responseText);
-        console.log("data : ", data)
+        console.log("data : ", data);
         if (data && data.bots) {
           setBots(data.bots);
         } else {
@@ -80,7 +75,7 @@ const BotsSettings = () => {
             `Error At ${
               url === "activate_bot" ? "TurnON" : "TurnOFF"
             } the bot ${botCategory}:`,
-            data.message,
+            data.message
           );
         }
       } catch (error) {
@@ -89,7 +84,7 @@ const BotsSettings = () => {
         setLoading(false);
       }
     },
-    [getAllBots],
+    [getAllBots]
   );
 
   const turnOnAllBots = useCallback(() => {
@@ -102,7 +97,6 @@ const BotsSettings = () => {
     updateBotState(`${config.BOTS_V2_API}/deactivate_all_categories`);
   }, [updateBotState]);
 
-  // Loads bots
   useEffect(() => {
     getAllBots();
   }, [getAllBots]);
@@ -116,14 +110,13 @@ const BotsSettings = () => {
           <CButton
             className={`btn ${
               bots.every((bot) => bot.isActive) ? "btn-danger" : "btn-success"
-            }
-                bot-btn`}
+            } bot-btn`}
             onClick={
               loading
                 ? null
                 : bots.every((bot) => bot.isActive)
-                  ? turnOffAllBots
-                  : turnOnAllBots
+                ? turnOffAllBots
+                : turnOnAllBots
             }
           >
             {bots.every((bot) => bot.isActive)
@@ -145,7 +138,6 @@ const BotsSettings = () => {
           <AddBlacklistWordsModal />
           <DeleteBlacklistWordsModal />
           <UsedKeywordsModal />
-
         </div>
       </div>
     </div>

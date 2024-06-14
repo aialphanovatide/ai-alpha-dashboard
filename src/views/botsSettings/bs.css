@@ -1,213 +1,201 @@
 .botsettingsMain {
-    display: flex;
-    flex-direction: column;
-    margin: 0 0 2rem 0;
-    padding: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 2rem 0;
+  padding: 0;
 }
 
-.botsTitle{
-    margin: 0;
-    align-self: flex-start;
+.botsTitle {
+  margin: 0;
+  align-self: flex-start;
 }
 
-.bot-btn{
-    padding: 1rem;
-    color: white;
-    font-size: 20px;
-    font-weight: 600;
+.bot-btn {
+  padding: 1rem;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
 }
 
-
-
-.botIcon{
-    width: 20px;
-    height: 10px;
+.botIcon {
+  width: 20px;
+  height: 10px;
 }
 
-.botname{
-    font-size: 1.3rem;
-    text-transform: capitalize;
-    width: 80%;
+.botname {
+  font-size: 1.3rem;
+  text-transform: capitalize;
+  width: 80%;
 }
 
-.modal-btn{
-    height: 90px;
-    width: 250px;
-    color: white; 
-    font-size: 18px;
-    font-weight: 600;
-    background-color: orange;
-    margin-right: 20px;
-    margin-left: 10px;
-    text-transform: capitalize;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+.modal-btn {
+  height: 90px;
+  width: 250px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: orange;
+  margin-right: 20px;
+  margin-left: 10px;
+  text-transform: capitalize;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
-.modal-btn:hover{
-    color: #fff;
-    background-color: rgb(255, 188, 62);
+.modal-btn:hover {
+  color: #fff;
+  background-color: rgb(255, 188, 62);
 }
 
-
-.d-flex{
-    margin: 0 10px 0 0; 
+.d-flex {
+  margin: 0 10px 0 0;
 }
 
-.actionsTitle{
-    margin: 1rem 0 1rem 0;
+.actionsTitle {
+  margin: 1rem 0 1rem 0;
 }
 
-.actionsMain{
-    display: flex;
+.actionsMain {
+  display: flex;
 }
 
-.actionsSubMain{
-    display: flex;
+.actionsSubMain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.spinnergnral{
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   background-color: transparent;
-   border: none;
+.spinnergnral {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
 }
 
-/* ------------------------------------ */
 .bot-list-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 20px;
-    padding: 10px;
-    flex-wrap: wrap;
-    min-height: 300px;
-    
-  }
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+  padding: 10px;
+  flex-wrap: wrap;
+  min-height: 300px;
+}
+
+.bot-item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem;
+  padding: 10px;
+  width: 30%;
+  height: 100px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.bot-icon {
+  margin-right: 15px;
+  width: 20%;
+}
+
+.bot-details {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 80%;
+}
+
+.bot-category {
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.bot-alias {
+  font-size: 14px;
+  color: #333;
+}
+
+.activeBot {
+  background-color: #2eb85c;
+}
+
+.inactiveBot {
+  background-color: #ff758f;
+}
+
+@media screen and (max-width: 1200px) {
   .bot-item {
-    box-sizing: border-box; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 1rem;
-    padding: 10px;
-    width: 30%;
-    height: 100px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    width: 40%;
   }
+}
 
+@media screen and (max-width: 800px) {
+  .bot-item {
+    width: 40%;
+  }
+}
 
-  
-  .bot-icon {
-    margin-right: 15px;
-    width: 20%;
-  }
-  
-  .bot-details {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    width: 80%;
-  }
-  
-  .bot-category {
-    font-size: 18px;
-    font-weight: bold;
-    text-transform: capitalize;
-  }
-  
-  .bot-alias {
-    font-size: 14px;
-    color: #333;
-  }
-
-  .activeBot{
-    background-color: #2eb85c;
-  }
-
-  .inactiveBot{
-    background-color: #ff758f;
-  }
-  
-  @media screen and (max-width: 1200px) {
-    .bot-item {
-      width: 40%;
-      
-    }
-  }
-  @media screen and (max-width: 800px) {
-    .bot-item {
-      width: 40%;
-  }
-  }
-  @media screen and (max-width: 300px) {
-    .bot-item {
-      width: 100%;
-  }
-  }
-
-
-
-  /* ------------ DAPPS STYLES ------------- */
-
-
-  .dappsTable{
-    margin: 1.8rem 0;
-  }
-
-  .dappsInput{
-    margin: 0.8rem 0;
-    width: 90%;
-  }
-
-  .formDescription{
-    height: 80px;
-    text-align: left;
-    vertical-align: top;
-  }
-
-  .formGeneral{
-    display: flex;
+@media screen and (max-width: 300px) {
+  .bot-item {
     width: 100%;
-    flex-direction: column;
-    justify-content:center;
-    align-items: center;
   }
+}
 
-  .createBtn{
-    width: 90%;
-    margin: 0.8rem 0;
-  }
+/* ------------ DAPPS STYLES ------------- */
 
+.dappsTable {
+  margin: 1.8rem 0;
+}
 
+.dappsInput {
+  margin: 0.8rem 0;
+  width: 90%;
+}
 
-  .bot-item {
-    position: relative; /* Hacemos que la tarjeta sea relativa */
-  }
-  
-  .actdeactBtn{
-    position: relative;
-    float: right;
-    border: none;
+.formDescription {
+  height: 80px;
+  text-align: left;
+  vertical-align: top;
+}
 
-    margin-right: 20px;
-    margin-top: 20px;
-    scale: 2;
+.formGeneral {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
-  }
-  
-  .btn-options {
-    position: relative; /* Agregamos posición relativa para que los botones absolutos sean relativos a este */
-  }
-  
+.createBtn {
+  width: 90%;
+  margin: 0.8rem 0;
+}
 
-  .iconBotList{
-    font-size: 20px;
+.bot-item {
+  position: relative;
+}
 
-  }
-  .alertSucess{
-    margin: 1rem 0;
-  }
+.actdeactBtn {
+  position: relative;
+  float: right;
+  border: none;
+  margin-right: 20px;
+  margin-top: 20px;
+  scale: 2;
+}
+
+.btn-options {
+  position: relative;
+}
+
+.iconBotList {
+  font-size: 20px;
+}
+
+.alertSucess {
+  margin: 1rem 0;
+}
