@@ -91,11 +91,12 @@ const SearchTool = () => {
         return false; // Should not happen since one checkbox will always be selected
       }
     }));
+    setCurrentPage(1); // Reset to first page when filters change
   }, [validArticles, unwantedArticles]);
 
   const handleSearch = (event) => {
     if (event.key === "Enter") {
-      fetchArticles();
+      setCurrentPage(1); // Reset to first page when search is performed
     }
   };
 
@@ -113,10 +114,15 @@ const SearchTool = () => {
     }
   };
 
+  // Filter articles based on search term
+  const filteredArticles = articles.filter((article) =>
+    article.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   // Calculate the articles to display based on the current page
   const indexOfLastArticle = currentPage * articlesPerPage;
   const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
-  const currentArticles = articles.slice(indexOfFirstArticle, indexOfLastArticle);
+  const currentArticles = filteredArticles.slice(indexOfFirstArticle, indexOfLastArticle);
 
   return (
     <div className="search-tool">
@@ -156,17 +162,13 @@ const SearchTool = () => {
           </div>
         )}
         {!loading &&
-          currentArticles
-            .filter((article) =>
-              article.title.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((article, index) => (
-              <SearchToolItem key={index} article={article} />
-            ))}
+          currentArticles.map((article, index) => (
+            <SearchToolItem key={index} article={article} />
+          ))}
       </div>
       {!loading && (
         <Pagination
-          totalArticles={articles.length}
+          totalArticles={filteredArticles.length}
           articlesPerPage={articlesPerPage}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}

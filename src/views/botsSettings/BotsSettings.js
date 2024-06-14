@@ -10,6 +10,7 @@ import UsedKeywordsModal from "../usedKeywordsModal/UsedKeywordsModal";
 import CreateBotModal from "../createBotModal/CreateBotModal";
 import CreateCategoryModal from "../createCategoryModal/CreateCategoryModal";
 import AddBlacklistWordsModal from "../addBlacklistWordsModal/AddBlacklistWordsModal";
+import DeleteCategoryModal from "../deleteCategoryModal/DeleteCategoryModal";
 
 
 const SpinnerComponent = () => {
@@ -137,12 +138,14 @@ const BotsSettings = () => {
         <h4 className="actionsTitle">Actions</h4>
         <div className="actionsSubMain">
           <CreateCategoryModal />
+          <DeleteCategoryModal />
           <CreateBotModal />
           <AddWordsModal />
           <DeleteWordsModal />
           <AddBlacklistWordsModal />
           <DeleteBlacklistWordsModal />
           <UsedKeywordsModal />
+
         </div>
       </div>
     </div>
