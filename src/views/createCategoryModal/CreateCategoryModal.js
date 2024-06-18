@@ -170,7 +170,7 @@ const CreateCategoryModal = () => {
                 type="text"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Enter DALL-E prompt"
+                placeholder="Enter Article Generator prompt"
               />
             </Form.Group>
             <Form.Group className="formSubmain">
