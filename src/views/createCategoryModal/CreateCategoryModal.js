@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { CButton } from "@coreui/react";
+import "./CreateCat.css";
+import { FaInfoCircle } from "react-icons/fa";
 import {
   Form,
   FormControl,
@@ -166,6 +168,16 @@ const CreateCategoryModal = () => {
             </Form.Group>
             <Form.Group className="formSubmain">
               <Form.Label>Prompt</Form.Label>
+              <div className="info-icon">
+                <FaInfoCircle className="info-icon" />
+                <div className="info-tooltip">
+                  An example of use could be: &quot;Imagine that you are one of the
+                  world&apos;s foremost experts on Bitcoin and also a globally
+                  renowned journalist skilled at summarizing articles about
+                  Bitcoin...&quot;
+                </div>
+              </div>
+
               <FormControl
                 type="text"
                 value={prompt}

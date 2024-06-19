@@ -1,0 +1,29 @@
+.info-icon {
+    display: inline-block;
+    margin-left: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .info-tooltip {
+    visibility: hidden;
+    width: 200px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .info-icon:hover .info-tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
