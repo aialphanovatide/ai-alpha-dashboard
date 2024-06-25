@@ -89,7 +89,7 @@ const SearchToolItem = ({ article }) => {
             <h2>{article.title}</h2>
             <p>{article.date}</p>
             <p>{article.content}</p>
-
+            <p>{article.is_article_efficent}</p>
           </div>
         </div>
       )}
