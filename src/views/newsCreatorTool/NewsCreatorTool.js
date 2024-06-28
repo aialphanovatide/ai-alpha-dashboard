@@ -354,6 +354,7 @@ const NewsCreatorTool = () => {
               src={previewData.image}
               alt="Article Poster"
               className="preview-image"
+              style={{ width: "300px", height: "300px" }}
             />
             <br></br>
             <Button
