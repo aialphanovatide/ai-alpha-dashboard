@@ -1,0 +1,29 @@
+/* NewsCreatorTool.css */
+
+.preview-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.preview-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.preview-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.article-image {
+  max-width: 300px;
+  max-height: 300px;
+  margin-top: 10px;
+}

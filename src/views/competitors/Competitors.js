@@ -14,7 +14,7 @@
 //   const [competitorsTokenomicData, setCompetitorsTokenomicData] = useState([]);
 //   const [competitorKeyData, setCompetitorKeyData] = useState([]);
 
-//   // gets all the coins
+//   // Gets all the coins
 //   useEffect(() => {
 //     const getAllBots = async () => {
 //       try {
@@ -42,68 +42,120 @@
 //     getAllBots();
 //   }, []);
 
-//   // Gets all the competitors of a coin
-//   useEffect(() => {
-//     getCompetitorsData()
-//   }, [selectedCoinBot]);
-
+//   // Fetch competitors data for selected coin bot
 //   const getCompetitorsData = async () => {
 //     try {
-//       const response = await fetch(
-//         `${config.BASE_URL}/get_competitors/${selectedCoinBot}`,
-//         {
-//           method: "GET",
-//           headers: {
-//             "Content-Type": "application/json",
-//             'ngrok-skip-browser-warning': 'true',
-//           },
-//         },
-//       );
+//       if (selectedCoinBot) {
+//         const response = await fetch(
+//           `${config.BASE_URL}/get_competitors/${selectedCoinBot}`,
+//           {
+//             method: "GET",
+//             headers: {
+//               "Content-Type": "application/json",
+//               "ngrok-skip-browser-warning": "true",
+//             },
+//           }
+//         );
 
-//       const data = await response.json();
-//       console.log('data: ', data)
-        
-//       if (data && data.competitors) {
-//         setCompetitorsData(data.competitors);
-//         const coinNames = data.competitors.map(competitor => competitor.competitor.token.trim());
-//         setCompetitorsCoinNames([...new Set(coinNames)]);
-//       } else {
-//         console.error("Error fetching competitors:", data.message);
-//         setCompetitorsData([]);
-//         setCompetitorsCoinNames([]);
+//         const data = await response.json();
+//         if (data && data.competitors) {
+//           setCompetitorsData(data.competitors);
+//           const coinNames = data.competitors.map(
+//             (comp) => comp.competitor.token
+//           );
+//           setCompetitorsCoinNames(coinNames);
+//         } else {
+//           console.error("Error fetching competitors:", data.message);
+//           setCompetitorsData([]);
+//         }
 //       }
 //     } catch (error) {
 //       console.error("Error:", error);
 //       setCompetitorsData([]);
-//       setCompetitorsCoinNames([]);
 //     }
 //   };
 
-//   // INCORPORAR EL FETCH 
-//   // useEffect(() => { 
-//   //   const fetchTokenomicsData = async () => {
-//   //     const tokenomicsData = await Promise.all(competitorsCoinNames.map(async (tokenSymbol) => {
-//   //       const response = await fetch(
-//   //         `https://fsxbdb84-5000.uks1.devtunnels.ms/gset/token_data?token_symbol=${tokenSymbol}`,
-//   //         {
-//   //           method: "GET",
-//   //           headers: {
-//   //             "Content-Type": "application/json",
-//   //             "ngrok-skip-browser-warning": "true",
-//   //           },
-//   //         },
-//   //       );
-//   //       const data = await response.json();
-//   //       return { token: tokenSymbol, data: data.data };
-//   //     }));
+//   useEffect(() => {
+//     getCompetitorsData();
+//   }, [selectedCoinBot]);
 
-//   //     setCompetitorsTokenomicData(tokenomicsData);
-//   //   };
+//   useEffect(() => {
+//     const tokenCompetitorData = {};
+//     competitorsData.forEach((competitor) => {
+//       const token = competitor.competitor.token.trim();
+//       if (!tokenCompetitorData[token]) {
+//         tokenCompetitorData[token] = [];
+//       }
+//       const competitorData = {};
+//       Object.entries(competitor.competitor).forEach(([key, value]) => {
+//         if (
+//           ![
+//             "coin_bot_id",
+//             "created_at",
+//             "updated_at",
+//             "dynamic",
+//           ].includes(key)
+//         ) {
+//           // Verificar que value sea una cadena de texto antes de llamar a trim()
+//           const trimmedValue = typeof value === 'string' ? value.trim() : value;
+//           competitorData[key.replace(/ /g, "_")] = trimmedValue;
+//         }
+//       });
+//       competitorData.id = competitor.competitor.id; // Incluir el ID del competidor
+//       tokenCompetitorData[token].push(competitorData);
+//     });
+//     setCompetitorKeyData(tokenCompetitorData);
+//   }, [competitorsData]);
 
-//   //   if (competitorsCoinNames.length > 0) {
-//   //     fetchTokenomicsData();
-//   //   }
-//   // }, [competitorsCoinNames]);
+//   useEffect(() => {
+//     const fetchTokenomicsData = async () => {
+//       // Eliminamos tokens duplicados antes de hacer las solicitudes fetch
+//       const uniqueTokenSymbols = Array.from(new Set(competitorsCoinNames.map(token => token.trim())));
+
+//       const tokenomicsData = await Promise.all(uniqueTokenSymbols.map(async (tokenSymbol) => {
+//         const response = await fetch(
+//           `https://fsxbdb84-5000.uks1.devtunnels.ms/get/token_data?token_symbol=${tokenSymbol}`,
+//           {
+//             method: "GET",
+//             headers: {
+//               "Content-Type": "application/json",
+//               "ngrok-skip-browser-warning": "true",
+//             },
+//           }
+//         );
+//         const data = await response.json();
+//         console.log("data", data)
+//         // Mapear los datos relevantes y estructurar como objeto con pares clave-valor
+//         const tokenData = {
+//           token: tokenSymbol,
+//           symbol: data.data.symbol,
+//           tokenname: data.data.tokenname,
+//           description: data.data.description,
+//           current_price: data.data.current_price,
+//           ath: data.data.ath,
+//           ath_change_percentage: data.data.ath_change_percentage,
+//           market_cap_usd: data.data.market_cap_usd,
+//           circulating_supply: data.data.circulating_supply,
+//           total_supply: data.data.total_supply,
+//           percentage_circulating_supply: data.data.percentage_circulating_supply,
+//           tvl: data.data.tvl,
+//           chains: data.data.chains,
+//           categories: data.data.categories,
+//           website: data.data.website,
+//           whitepaper: data.data.whitepaper,
+//         };
+//         return tokenData;
+//       }));
+
+//       console.log("TOKENOMIC DATA DE NOVATIDE: ", tokenomicsData);
+//       setCompetitorsTokenomicData(tokenomicsData);
+//     };
+
+//     // Verificamos que haya nombres de tokens únicos antes de realizar la solicitud
+//     if (competitorsCoinNames.length > 0) {
+//       fetchTokenomicsData();
+//     }
+//   }, [competitorsCoinNames]);
 
 //   const handleCreateFormSubmit = async (formData) => {
 //     try {
@@ -121,12 +173,13 @@
 
 //       const data = await response.json();
 //       if (response.ok) {
-//         return data.message
+//         console.log("Competitor created:", data.message);
+//         getCompetitorsData(); // Actualizar la lista de competidores después de crear uno nuevo
 //       } else {
-//         return data.error
+//         console.error("Error creating competitor:", data.error);
 //       }
 //     } catch (error) {
-//       console.error("Error creating competitor:", error.message);  
+//       console.error("Error creating competitor:", error.message);
 //     }
 //   };
 
@@ -135,9 +188,8 @@
 //   };
 
 //   const handleCloseModal = () => {
-//     getCompetitorsData();
 //     setShowModal(false);
-
+//     getCompetitorsData(); // Actualizar la lista de competidores al cerrar el modal
 //   };
 
 //   const handleCoinBotChange = (value) => {
@@ -147,32 +199,13 @@
 //   const handleShowEditModal = (competitor) => {
 //     setSelectedCompetitor(competitor);
 //     setShowModal(true);
-
 //   };
 
 //   const handleEditSuccess = () => {
-//     getCompetitorsData();// Reiniciar el estado de selectedCompetitor
+//     getCompetitorsData(); // Actualizar la lista de competidores después de editar
+//     setSelectedCompetitor(null); // Limpiar el competidor seleccionado al cerrar el modal de edición
 //   };
 
-//   const handleModalClose = () => {
-//     setShowModal(false);
-//     setSelectedCompetitor(null); // Limpiar el competidor seleccionado al cerrar el modal
-//   };
-
-//   const groupCompetitorsByToken = () => {
-//     const groupedCompetitors = {};
-//     competitorsData.forEach((competitor) => {
-//       const token = competitor.competitor.token.trim();
-//       if (!groupedCompetitors[token]) {
-//         groupedCompetitors[token] = [];
-//       }
-//       groupedCompetitors[token].push(competitor);
-//     });
-//     console.log("groupedCompetitors: ", groupedCompetitors)
-//     return groupedCompetitors;
-//   };
-
-  
 //   const handleDeleteCompetitor = async (competitorId) => {
 //     try {
 //       const response = await fetch(
@@ -183,69 +216,25 @@
 //             "Content-Type": "application/json",
 //             "ngrok-skip-browser-warning": "true",
 //           },
-//         },
+//         }
 //       );
-  
+
 //       const data = await response.json();
-  
-//       if (data && data.status === 200) {
-//         // Eliminación exitosa, actualiza la lista de competidores
-//         getCompetitorsData();
+//       if (response.ok) {
+//         getCompetitorsData(); // Actualizar la lista de competidores después de eliminar uno
 //       } else {
 //         console.error("Error deleting competitor:", data.error);
 //       }
 //     } catch (error) {
-//       console.error("Error:", error);
+//       console.error("Error deleting competitor:", error.message);
 //     }
 //   };
 
-//   useEffect(() => {
-//     // Extraer todos los tokens únicos de los competidores
-//     const uniqueTokens = [...new Set(competitorsData.map(competitor => competitor.competitor.token.trim()))];
-  
-//     // Crear un objeto para almacenar los datos de los competidores por token
-//     const tokenCompetitorData = {};
-  
-//     // Iterar sobre cada token único
-//     uniqueTokens.forEach(token => {
-//       // Filtrar los competidores por el token actual
-//       const competitorsByToken = competitorsData.filter(competitor => competitor.competitor.token.trim() === token);
-  
-//       // Crear un array para almacenar los pares de clave-valor de cada competidor
-//       const tokenData = [];
-  
-//       // Iterar sobre cada competidor y almacenar sus valores
-//       competitorsByToken.forEach(competitor => {
-//         // Obtener el competidor actual
-//         const competitorInfo = competitor.competitor;
-//         // Iterar sobre las claves de cada competidor
-//         Object.entries(competitorInfo).forEach(([key, value]) => {
-//           // Excluir las claves que no queremos incluir en el resultado final
-//           if (!["coin_bot_id", "id", "token", "created_at", "updated_at", "dynamic"].includes(key)) {
-//             // Almacenar solo los valores
-//             if (typeof value === "string") {
-//               tokenData.push(value.trim());
-//             }
-//           }
-//         });
-//       });
-  
-//       // Agrupar los pares de clave-valor en pares consecutivos
-//       const pairedTokenData = [];
-//       for (let i = 0; i < tokenData.length; i += 2) {
-//         pairedTokenData.push([tokenData[i], tokenData[i + 1]]);
-//       }
-  
-//       // Almacenar los datos del token en el objeto tokenCompetitorData
-//       tokenCompetitorData[token] = pairedTokenData;
-//     });
-  
-//     console.log("tokenCompetitorData", tokenCompetitorData);
-//     // Actualizar el estado competitorKeyData con los datos de los competidores agrupados por token
-//     setCompetitorKeyData(tokenCompetitorData);
-//   }, [competitorsData]);
-  
-  
+//   const handleModalClose = () => {
+//     setShowModal(false);
+//     setSelectedCompetitor(null);
+//   };
+
 //   return (
 //     <div>
 //       <div style={{ margin: "20px", overflowX: "auto" }}>
@@ -266,74 +255,59 @@
 //             ))}
 //           </Form.Control>
 //         </Form.Group>
-  
-//         {Object.entries(groupCompetitorsByToken()).map(
-//           ([token, competitors]) => (
-//             <div key={token}>
-//               <br />
-//               <h3>{token.toUpperCase()}</h3>
-//               <br />
-//               <Table striped bordered hover>
-//                 <thead>
-//                   <tr>
-//                     <th className="thGeneral">Feature</th>
-//                     <th className="thGeneral">Data</th>
-//                     <th className="thGeneral">Actions</th>
+
+//         {Object.entries(competitorKeyData).map(([token, data]) => (
+//           <div key={token}>
+//             <br />
+//             <h3>{token.toUpperCase()}</h3>
+//             <br />
+//             <Table striped bordered hover>
+//               <thead>
+//                 <tr>
+//                   <th className="thGeneral">Feature</th>
+//                   <th className="thGeneral">Data</th>
+//                   <th className="thGeneral">Actions</th>
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {data.map((item, index) => (
+//                   <tr key={index}>
+//                     <td>{item.key}</td>
+//                     <td>{item.value}</td>
+//                     <td>
+//                       <Button
+//                         variant="primary"
+//                         onClick={() => handleShowEditModal(item)}
+//                       >
+//                         Edit
+//                       </Button>
+//                       <Button
+//                         style={{ marginLeft: "10px" }}
+//                         variant="danger"
+//                         onClick={() => handleDeleteCompetitor(item.id)} // Asegúrate de pasar el ID correcto para eliminar
+//                       >
+//                         Delete
+//                       </Button>
+//                     </td>
 //                   </tr>
-//                 </thead>
-//                 <tbody>
-//                   {competitors.map((competitor, index) => {
-//                     return (
-//                       <tr className="thGeneral" key={index}>
-//                         {Object.keys(competitor.competitor).map(
-//                           (key) =>
-//                             ![
-//                               "coin_bot_id",
-//                               "id",
-//                               "token",
-//                               "created_at",
-//                               "updated_at",
-//                               "dynamic",
-//                             ].includes(key) && (
-//                               <td key={key}>{competitor.competitor[key]}</td>
-//                             ),
-//                         )}
-//                         <td>
-//                           <Button
-//                             variant="primary"
-//                             onClick={() => handleShowEditModal(competitor)}
-                            
-//                           >
-//                             Edit
-//                           </Button>
-//                           <Button
-//                             style={{ marginLeft: "10px" }}
-//                             variant="danger"
-//                             onClick={() =>
-//                               handleDeleteCompetitor(competitor.competitor.id)
-//                             }
-//                           >
-//                             Delete
-//                           </Button>
-//                         </td>
-//                       </tr>
-//                     );
-//                   })}
-//                 </tbody>
-//               </Table>
-//             </div>
-//           ),
-//         )}
+//                 ))}
+//               </tbody>
+//             </Table>
+//           </div>
+//         ))}
 //       </div>
+
 //       <Button disabled={!selectedCoinBot} onClick={handleShowModal}>
 //         Add Competitor
 //       </Button>
+
 //       <CompetitorForm
 //         showModal={showModal && !selectedCompetitor}
 //         handleClose={handleCloseModal}
 //         selectedCoinBot={selectedCoinBot}
 //         handleSave={(formData) => handleCreateFormSubmit(formData)}
 //       />
+
 //       {selectedCompetitor && (
 //         <CompetitorsEditModal
 //           competitor={selectedCompetitor}
@@ -344,11 +318,9 @@
 //       )}
 //     </div>
 //   );
-  
 // };
 
 // export default Competitors;
-
 
 import React, { useState, useEffect } from "react";
 import { Form, Table, Button } from "react-bootstrap";
@@ -363,10 +335,10 @@ const Competitors = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedCompetitor, setSelectedCompetitor] = useState(null);
   const [competitorsCoinNames, setCompetitorsCoinNames] = useState([]);
-  const [competitorsTokenomicData, setCompetitorsTokenomicData] = useState([]);
-  const [competitorKeyData, setCompetitorKeyData] = useState([]);
+  const [finalCompetitorTokenomicData, setFinalCompetitorTokenomicData] =
+    useState({});
 
-  // gets all the coins
+  // Gets all the coins
   useEffect(() => {
     const getAllBots = async () => {
       try {
@@ -394,48 +366,12 @@ const Competitors = () => {
     getAllBots();
   }, []);
 
+  // Fetch competitors data for selected coin bot
   const getCompetitorsData = async () => {
     try {
-      const response = await fetch(
-        `${config.BASE_URL}/get_competitors/${selectedCoinBot}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            'ngrok-skip-browser-warning': 'true',
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      if (data && data.competitors) {
-        setCompetitorsData(data.competitors);
-        const coinNames = data.competitors.map(comp => comp.competitor.token);
-        setCompetitorsCoinNames(coinNames);
-      } else {
-        console.error("Error fetching competitors:", data.message);
-        setCompetitorsData([]);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setCompetitorsData([]);
-    }
-  };
-
-  // Gets all the competitor of a coin
-  useEffect(() => {
-    if (selectedCoinBot) {
-      getCompetitorsData();
-    }
-  }, [selectedCoinBot]);
-
-  useEffect(() => { 
-    console.log("competitorsCoinNames:", competitorsCoinNames); // Verifica el estado de competitorsCoinNames
-    const fetchTokenomicsData = async () => {
-      const tokenomicsData = await Promise.all(competitorsCoinNames.map(async (tokenSymbol) => {
+      if (selectedCoinBot) {
         const response = await fetch(
-          `https://fsxbdb84-5000.uks1.devtunnels.ms/gset/token_data?token_symbol=${tokenSymbol}`,
+          `${config.BASE_URL}/get_competitors/${selectedCoinBot}`,
           {
             method: "GET",
             headers: {
@@ -444,17 +380,118 @@ const Competitors = () => {
             },
           },
         );
+
         const data = await response.json();
-        return { token: tokenSymbol, data: data.data };
-      }));
-      console.log("TOKENOMIC DATA DE NOVATIDE: ", tokenomicsData);
-      setCompetitorsTokenomicData(tokenomicsData);
+        if (data && data.competitors) {
+          setCompetitorsData(data.competitors);
+          const coinNames = data.competitors.map(
+            (comp) => comp.competitor.token,
+          );
+          setCompetitorsCoinNames(coinNames);
+        } else {
+          console.error("Error fetching competitors:", data.message);
+          setCompetitorsData([]);
+        }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setCompetitorsData([]);
+    }
+  };
+
+  useEffect(() => {
+    getCompetitorsData();
+  }, [selectedCoinBot]);
+
+  useEffect(() => {
+    const fetchTokenomicsData = async () => {
+      // Eliminamos tokens duplicados antes de hacer las solicitudes fetch
+      const uniqueTokenSymbols = Array.from(
+        new Set(competitorsCoinNames.map((token) => token.trim())),
+      );
+
+      const tokenomicsData = await Promise.all(
+        uniqueTokenSymbols.map(async (tokenSymbol) => {
+          const response = await fetch(
+            `https://fsxbdb84-5000.uks1.devtunnels.ms/get/token_data?token_symbol=${tokenSymbol}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true",
+              },
+            },
+          );
+          const data = await response.json();
+          // Mapear los datos relevantes y estructurar como objeto con pares clave-valor
+          const tokenData = {
+            token: tokenSymbol,
+            symbol: data.data.symbol,
+            tokenname: data.data.tokenname,
+            description: data.data.description,
+            current_price: data.data.current_price,
+            ath: data.data.ath,
+            ath_change_percentage: data.data.ath_change_percentage,
+            market_cap_usd: data.data.market_cap_usd,
+            circulating_supply: data.data.circulating_supply,
+            total_supply: data.data.total_supply,
+            percentage_circulating_supply:
+              data.data.percentage_circulating_supply,
+            tvl: data.data.tvl,
+            chains: data.data.chains,
+            categories: data.data.categories,
+            website: data.data.website,
+            whitepaper: data.data.whitepaper,
+          };
+          return tokenData;
+        }),
+      );
+
+      // Combinar datos de competidores y tokenómicos
+      const finalData = {};
+      competitorsData.forEach((competitor) => {
+        const token = competitor.competitor.token.trim();
+        if (!finalData[token]) {
+          finalData[token] = {
+            competitors: [],
+            tokenomicData: null, // Aquí se almacenará el objeto tokenomicData una vez encontrado
+          };
+        }
+        const competitorData = {};
+        Object.entries(competitor.competitor).forEach(([key, value]) => {
+          if (
+            !["coin_bot_id", "created_at", "updated_at", "dynamic"].includes(
+              key,
+            )
+          ) {
+            const trimmedValue =
+              typeof value === "string" ? value.trim() : value;
+            competitorData[key.replace(/ /g, "_")] = trimmedValue;
+          }
+        });
+        competitorData.id = competitor.competitor.id;
+
+        // Buscar los datos tokenómicos correspondientes
+        const tokenomicData = tokenomicsData.find(
+          (data) => data.token === token,
+        );
+        if (tokenomicData) {
+          // Almacenar tokenomicData en finalData[token]
+          finalData[token].tokenomicData = { ...tokenomicData };
+        }
+        // Agregar competitorData a finalData[token].competitors
+        finalData[token].competitors.push(competitorData);
+      });
+
+      console.log("FINAL DATA: ", finalData);
+      setFinalCompetitorTokenomicData(finalData);
     };
 
-    if (competitorsCoinNames.length > 0) {
+    // Verificar que haya nombres de tokens únicos antes de realizar la solicitud
+    if (competitorsCoinNames.length > 0 && competitorsData.length > 0) {
       fetchTokenomicsData();
     }
-  }, [competitorsCoinNames]);
+  }, [competitorsCoinNames, competitorsData]);
 
   const handleCreateFormSubmit = async (formData) => {
     try {
@@ -472,12 +509,13 @@ const Competitors = () => {
 
       const data = await response.json();
       if (response.ok) {
-        return data.message
+        console.log("Competitor created:", data.message);
+        getCompetitorsData(); // Actualizar la lista de competidores después de crear uno nuevo
       } else {
-        return data.error
+        console.error("Error creating competitor:", data.error);
       }
     } catch (error) {
-      console.error("Error creating competitor:", error.message);  
+      console.error("Error creating competitor:", error.message);
     }
   };
 
@@ -486,8 +524,8 @@ const Competitors = () => {
   };
 
   const handleCloseModal = () => {
-    getCompetitorsData();
     setShowModal(false);
+    getCompetitorsData(); // Actualizar la lista de competidores al cerrar el modal
   };
 
   const handleCoinBotChange = (value) => {
@@ -500,24 +538,8 @@ const Competitors = () => {
   };
 
   const handleEditSuccess = () => {
-    getCompetitorsData(); // Reiniciar el estado de selectedCompetitor
-  };
-
-  const handleModalClose = () => {
-    setShowModal(false);
-    setSelectedCompetitor(null); // Limpiar el competidor seleccionado al cerrar el modal
-  };
-
-  const groupCompetitorsByToken = () => {
-    const groupedCompetitors = {};
-    competitorsData.forEach((competitor) => {
-      const token = competitor.competitor.token;
-      if (!groupedCompetitors[token]) {
-        groupedCompetitors[token] = [];
-      }
-      groupedCompetitors[token].push(competitor);
-    });
-    return groupedCompetitors;
+    getCompetitorsData(); // Actualizar la lista de competidores después de editar
+    setSelectedCompetitor(null); // Limpiar el competidor seleccionado al cerrar el modal de edición
   };
 
   const handleDeleteCompetitor = async (competitorId) => {
@@ -532,18 +554,21 @@ const Competitors = () => {
           },
         },
       );
-  
+
       const data = await response.json();
-  
-      if (data && data.status === 200) {
-        // Eliminación exitosa, actualiza la lista de competidores
-        getCompetitorsData();
+      if (response.ok) {
+        getCompetitorsData(); // Actualizar la lista de competidores después de eliminar uno
       } else {
         console.error("Error deleting competitor:", data.error);
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error deleting competitor:", error.message);
     }
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedCompetitor(null);
   };
 
   return (
@@ -566,37 +591,39 @@ const Competitors = () => {
             ))}
           </Form.Control>
         </Form.Group>
-
-        {Object.entries(groupCompetitorsByToken()).map(
-          ([token, competitors]) => (
-            <div key={token}>
-              <br />
-              <h3>{token.toUpperCase()}</h3>
-              <br />
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th className="thGeneral">Feature</th>
-                    <th className="thGeneral">Data</th>
-                    <th className="thGeneral">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {competitors.map((competitor, index) => (
-                    <tr className="thGeneral" key={index}>
-                      {Object.keys(competitor.competitor).map(
-                        (key) =>
-                          ![
-                            "coin_bot_id",
-                            "id",
-                            "token",
-                            "created_at",
-                            "updated_at",
-                            "dynamic",
-                          ].includes(key) && (
-                            <td key={key}>{competitor.competitor[key]}</td>
-                          ),
-                      )}
+        {Object.entries(finalCompetitorTokenomicData).map(([token, data]) => (
+          <div key={token}>
+            <br />
+            <h3>{token.toUpperCase()}</h3>
+            <br />
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th className="thGeneral">Feature</th>
+                  <th className="thGeneral">Data</th>
+                  <th className="thGeneral">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.competitors
+                  .filter(
+                    (competitor) =>
+                      ![
+                        "circulating supply",
+                        "tvl",
+                        "website",
+                        "token",
+                        "whitepaper",
+                      ].includes(competitor.key),
+                  )
+                  .map((competitor, index) => (
+                    <tr key={index}>
+                      <td>{competitor.key}</td>
+                      <td>
+                        {typeof competitor.value === "number"
+                          ? competitor.value.toFixed(2)
+                          : competitor.value}
+                      </td>
                       <td>
                         <Button
                           variant="primary"
@@ -607,35 +634,64 @@ const Competitors = () => {
                         <Button
                           style={{ marginLeft: "10px" }}
                           variant="danger"
-                          onClick={() =>
-                            handleDeleteCompetitor(competitor.competitor.id)
-                          }
+                          onClick={() => handleDeleteCompetitor(competitor.id)}
                         >
                           Delete
                         </Button>
                       </td>
                     </tr>
                   ))}
-                </tbody>
-              </Table>
-            
-            </div>
-          ),
-        )}
+                {data.tokenomicData &&
+                  Object.entries(data.tokenomicData)
+                    .filter(
+                      ([key, value]) =>
+                        key !== "chains" &&
+                        key !== "categories" &&
+                        key !== "website" &&
+                        key !== "token" &&
+                        key !== "symbol" &&
+                        key !== "tokenname" &&
+                        key !== "description" &&
+                        key !== "current_price" &&
+                        key !== "symbol" &&
+                        key !== "ath" &&
+                        key !== "ath_change_percentage" &&
+                        key !== "market_cap_usd" &&
+                        key !== "whitepaper",
+                    )
+                    .map(([key, value]) => (
+                      <tr key={key}>
+                        <td>{key.replace("_", " ")}</td>
+                        <td>
+                          {typeof value === "number" ? value.toFixed(2) : value}
+                        </td>
+                        <td>{"No Actions - Novatide Dashboard Data"}</td>
+                        {/* Si es necesario, puedes añadir acciones aquí */}
+                      </tr>
+                    ))}
+              </tbody>
+            </Table>
+          </div>
+        ))}
       </div>
-      <Button disabled={!selectedCoinBot} onClick={handleShowModal}>Add Competitor</Button>
+
+      <Button disabled={!selectedCoinBot} onClick={handleShowModal}>
+        Add Competitor
+      </Button>
+
       <CompetitorForm
-        showModal={showModal && !selectedCompetitor} // Mostrar el formulario solo si no hay un competidor seleccionado
+        showModal={showModal && !selectedCompetitor}
         handleClose={handleCloseModal}
         selectedCoinBot={selectedCoinBot}
         handleSave={(formData) => handleCreateFormSubmit(formData)}
       />
-      {selectedCompetitor && ( // Mostrar el modal de edición si hay un competidor seleccionado
+
+      {selectedCompetitor && (
         <CompetitorsEditModal
           competitor={selectedCompetitor}
           show={showModal}
           handleClose={handleModalClose}
-          handleEditSuccess={handleEditSuccess} // Pasar la función de retorno como prop
+          handleEditSuccess={handleEditSuccess}
         />
       )}
     </div>
@@ -643,7 +699,3 @@ const Competitors = () => {
 };
 
 export default Competitors;
-
-
-
-// La data de la db llega, se exhibe, pero queda que se muestre la data de novatide

@@ -8,20 +8,14 @@ import {
   cilSpeedometer,
   cilLibrary
 } from '@coreui/icons'
-import {  CNavItem } from '@coreui/react'
+import { CNavItem } from '@coreui/react'
 
 const _nav = [
   {
     component: CNavItem,
-    name: 'Dashboard',
-    to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'News Bots Settings',
-    to: '/botsSettings',
-    icon: <CIcon icon={cilSitemap} customClassName="nav-icon" />,
+    name: 'Analysis',
+    to: '/analysis',
+    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
@@ -31,9 +25,15 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Analysis',
-    to: '/analysis',
-    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+    name: 'Dashboard',
+    to: '/dashboard',
+    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Fundamentals',
+    to: '/fundamentals',
+    icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
@@ -43,9 +43,15 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Fundamentals',
-    to: '/fundamentals',
-    icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+    name: 'News Bots Settings',
+    to: '/botsSettings',
+    icon: <CIcon icon={cilSitemap} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'News Creator Tool',
+    to: '/newsCreatorTool',
+    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
@@ -59,6 +65,6 @@ const _nav = [
     to: '/topStories',
     icon: <CIcon icon={cilLibrary} customClassName="nav-icon" />,
   },
-]
+].sort((a, b) => a.name.localeCompare(b.name));
 
-export default _nav
+export default _nav;

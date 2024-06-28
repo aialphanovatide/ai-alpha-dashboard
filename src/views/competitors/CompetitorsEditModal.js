@@ -8,7 +8,7 @@ const CompetitorsEditModal = ({
   show,
   handleClose,
 }) => {
-  const [editedData, setEditedData] = useState(competitor.competitor);
+  const [editedData, setEditedData] = useState(competitor);
   const [message, setMessage] = useState(null);
 
   const handleInputChange = (e, key) => {
@@ -19,10 +19,12 @@ const CompetitorsEditModal = ({
     }));
   };
 
+  
+
   const handleSubmit = async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL}/edit_competitors/${competitor.competitor.id}`,
+        `${config.BASE_URL}/edit_competitors/${competitor.id}`,
         {
           method: "PUT",
           headers: {
@@ -47,7 +49,9 @@ const CompetitorsEditModal = ({
       // Puedes manejar el error de actualización aquí
     }
   };
-console.log('edited: ', editedData)
+
+
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -55,7 +59,7 @@ console.log('edited: ', editedData)
       </Modal.Header>
       <Modal.Body>
         <Form style={{ padding: "10px" }}>
-          {Object.entries(competitor.competitor).map(
+          {Object.entries(competitor).map(
             ([key, value]) =>
               ![
                 "coin_bot_id",
