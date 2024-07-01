@@ -54,7 +54,7 @@ const NewsCreatorTool = () => {
   const handleGenerate = async () => {
     setIsLoadingRegenerateArticle(true);
     try {
-      const articleResponse = await fetch("${config.BOTS_V2_API}/generate_article", {
+      const articleResponse = await fetch(`${config.BOTS_V2_API}/generate_article`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,7 +72,7 @@ const NewsCreatorTool = () => {
         return;
       }
 
-      const imageResponse = await fetch("${config.BOTS_V2_API}/generate_image", {
+      const imageResponse = await fetch(`${config.BOTS_V2_API}/generate_image`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -122,7 +122,7 @@ const NewsCreatorTool = () => {
   const handleSave = async () => {
     setIsLoadingSave(true);
     try {
-      const response = await fetch("${config.BOTS_V2_API}/add_new_article", {
+      const response = await fetch(`${config.BOTS_V2_API}/add_new_article`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -161,7 +161,7 @@ const NewsCreatorTool = () => {
   const handleRegenerateArticle = async () => {
     setIsLoadingRegenerateArticle(true);
     try {
-      const response = await fetch("${config.BOTS_V2_API}/generate_article", {
+      const response = await fetch(`${config.BOTS_V2_API}/generate_article`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -200,7 +200,7 @@ const NewsCreatorTool = () => {
   const handleRegenerateImage = async () => {
     setIsLoadingRegenerateImage(true);
     try {
-      const response = await fetch("${config.BOTS_V2_API}/generate_image", {
+      const response = await fetch(`${config.BOTS_V2_API}/generate_image`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
