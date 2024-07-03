@@ -83,6 +83,7 @@ const TextExtractor = ({ setAnalysis }) => {
           </Form.Group>
         ) : selectedExtractType === "pdf" ? (
           <Form.Group controlId="pdfFile">
+            <br />
             <Form.Label>PDF File</Form.Label>
             <Form.Control
               type="file"
