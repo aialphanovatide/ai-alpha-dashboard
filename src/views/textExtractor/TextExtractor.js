@@ -76,7 +76,7 @@ const TextExtractor = ({ setAnalysis }) => {
             <Form.Label>Link</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter link"
+              placeholder="Enter link. (If you are trying to extract Google Docs text, make sure the document sharing option is set to 'Anyone with the link can edit'.)"
               value={link}
               onChange={(e) => setLink(e.target.value)}
             />

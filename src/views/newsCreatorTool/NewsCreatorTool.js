@@ -22,6 +22,8 @@ const NewsCreatorTool = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [articleToBeSaved, setArticleToBeSaved] = useState(null);
   const [imageToBeSaved, setImageToBeSaved] = useState(null);
+  const [charLimitError, setCharLimitError] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   useEffect(() => {
     const fetchCategoriesAndBots = async () => {
@@ -44,6 +46,32 @@ const NewsCreatorTool = () => {
 
     fetchCategoriesAndBots();
   }, []);
+
+  const checkIfAllFieldsFilled = () => {
+    if (
+      selectedCategory &&
+      selectedBot &&
+      analysis &&
+      usedKeywords &&
+      isArticleEfficient &&
+      !charLimitError
+    ) {
+      setIsButtonDisabled(false);
+    } else {
+      setIsButtonDisabled(true);
+    }
+  };
+
+  useEffect(() => {
+    checkIfAllFieldsFilled();
+  }, [
+    selectedCategory,
+    selectedBot,
+    analysis,
+    usedKeywords,
+    isArticleEfficient,
+    charLimitError,
+  ]);
 
   const handleGenerate = async () => {
     setIsLoadingRegenerateArticle(true);
@@ -243,6 +271,12 @@ const NewsCreatorTool = () => {
     setImageToBeSaved(null);
   };
 
+  const handleAnalysisChange = (e) => {
+    const value = e.target.value;
+    setAnalysis(value);
+    setCharLimitError(value.length > 3000);
+  };
+
   return (
     <div className="news-creator-tool">
       <h1>News Creator Tool</h1>
@@ -287,14 +321,21 @@ const NewsCreatorTool = () => {
             as="textarea"
             rows={15}
             value={analysis}
-            onChange={(e) => setAnalysis(e.target.value)}
+            onChange={handleAnalysisChange}
+            isInvalid={charLimitError}
           />
+          {charLimitError && (
+            <Form.Control.Feedback type="invalid">
+              Analysis text exceeds the 3000 character limit.
+            </Form.Control.Feedback>
+          )}
         </Form.Group>
         <br />
         <Form.Group controlId="usedKeywords">
           <Form.Label>Used Keywords</Form.Label>
           <Form.Control
             type="text"
+            placeholder="Use this phrase format: phrase, phrase, phrase"
             value={usedKeywords}
             onChange={(e) => setUsedKeywords(e.target.value)}
           />
@@ -312,7 +353,7 @@ const NewsCreatorTool = () => {
         <Button
           variant="primary"
           onClick={handleGenerate}
-          disabled={isLoadingRegenerateArticle || isLoadingRegenerateImage}
+          disabled={isButtonDisabled || isLoadingRegenerateArticle}
         >
           {isLoadingRegenerateArticle ? (
             <Spinner
