@@ -25,7 +25,7 @@ const TextExtractor = ({ setAnalysis }) => {
               : undefined,
         };
 
-        const response = await fetch(`http://127.0.0.1:5001/extract_content`, {
+        const response = await fetch(`${config.BOTS_V2_API}/extract_content`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
