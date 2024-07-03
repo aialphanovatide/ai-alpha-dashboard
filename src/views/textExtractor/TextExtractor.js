@@ -73,6 +73,7 @@ const TextExtractor = ({ setAnalysis }) => {
         {selectedExtractType === "link" ||
         selectedExtractType === "google_docs" ? (
           <Form.Group controlId="link">
+            <br />
             <Form.Label>Link</Form.Label>
             <Form.Control
               type="text"
