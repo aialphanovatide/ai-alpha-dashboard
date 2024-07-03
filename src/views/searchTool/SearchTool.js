@@ -27,7 +27,7 @@ const SearchTool = () => {
 
     try {
       const response1 = await fetch(
-        `${baseURL.BOTS_V2_API}/get_last_articles?limit=50`
+        `${baseURL.BOTS_V2_API}/get_last_articles?limit=100`
       );
       const data1 = await response1.json();
       
