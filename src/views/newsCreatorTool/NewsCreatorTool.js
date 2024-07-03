@@ -1,8 +1,7 @@
-// NewsCreatorTool.js
 import React, { useState, useEffect } from "react";
 import { Form, Button, Spinner, Alert } from "react-bootstrap";
 import config from "../../config";
-import TextExtractor from "../textExtractor/TextExtractor"
+import TextExtractor from "../textExtractor/TextExtractor";
 import "./NewsCreatorTool.css";
 
 const NewsCreatorTool = () => {
@@ -10,7 +9,6 @@ const NewsCreatorTool = () => {
   const [bots, setBots] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedBot, setSelectedBot] = useState("");
-  const [articles, setArticles] = useState([]);
   const [analysis, setAnalysis] = useState("");
   const [usedKeywords, setUsedKeywords] = useState("");
   const [isArticleEfficient, setIsArticleEfficient] = useState("");
@@ -29,28 +27,14 @@ const NewsCreatorTool = () => {
     const fetchCategoriesAndBots = async () => {
       try {
         const categoriesResponse = await fetch(
-          `${config.BOTS_V2_API}/categories`
+          `${config.BOTS_V2_API}/categories`,
         );
         const categoriesData = await categoriesResponse.json();
-        if (
-          categoriesData &&
-          categoriesData.data &&
-          categoriesData.data.categories
-        ) {
-          setCategories(categoriesData.data.categories);
-        } else {
-          console.error("Error fetching categories:", categoriesData.message);
-          setCategories([]);
-        }
+        setCategories(categoriesData.data?.categories || []);
 
         const botsResponse = await fetch(`${config.BOTS_V2_API}/bots`);
         const botsData = await botsResponse.json();
-        if (botsData && botsData.data) {
-          setBots(botsData.data);
-        } else {
-          console.error("Error fetching bots:", botsData.message);
-          setBots([]);
-        }
+        setBots(botsData.data || []);
       } catch (error) {
         console.error("Error fetching data:", error);
         setCategories([]);
@@ -76,7 +60,7 @@ const NewsCreatorTool = () => {
             content: analysis,
             category_id: selectedCategory,
           }),
-        }
+        },
       );
 
       const articleData = await articleResponse.json();
@@ -97,13 +81,10 @@ const NewsCreatorTool = () => {
             content: articleData.data.content,
             bot_id: selectedBot,
           }),
-        }
+        },
       );
 
       const imageData = await imageResponse.json();
-      setIsLoadingRegenerateArticle(false);
-      setIsLoadingRegenerateImage(false);
-
       if (!imageResponse.ok) {
         console.error("Error generating image:", imageData.error);
         return;
@@ -114,7 +95,6 @@ const NewsCreatorTool = () => {
         content: articleData.data.content,
         image: imageData.data.image_url,
       });
-
       setArticleToBeSaved({
         title: articleData.data.title,
         content: articleData.data.content,
@@ -124,12 +104,12 @@ const NewsCreatorTool = () => {
         category_id: selectedCategory,
         bot_id: selectedBot,
       });
-
       setImageToBeSaved(imageData.data.image_url);
 
       setShowPreview(true);
     } catch (error) {
       console.error("Error generating article or image:", error.message);
+    } finally {
       setIsLoadingRegenerateArticle(false);
       setIsLoadingRegenerateImage(false);
     }
@@ -158,11 +138,12 @@ const NewsCreatorTool = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setShowSuccessMessage(true);
-        setTimeout(() => setShowSuccessMessage(false), 10000);
-        setArticles((prevArticles) => [...prevArticles, data.article]);
-        setPreviewData(null);
-        setShowPreview(false);
+        setShowSuccessMessage(true); // Show success message
+        console.log("Article saved successfully!");
+        setTimeout(() => {
+          setShowSuccessMessage(false); // Hide after 5 seconds
+          startOver(); // Reset form after hiding success message
+        }, 5000);
       } else {
         console.error("Error saving article:", data.message);
       }
@@ -188,12 +169,10 @@ const NewsCreatorTool = () => {
             content: analysis,
             category_id: selectedCategory,
           }),
-        }
+        },
       );
 
       const articleData = await articleResponse.json();
-      setIsLoadingRegenerateArticle(false);
-
       if (!articleResponse.ok) {
         console.error("Error regenerating article:", articleData.error);
         return;
@@ -204,7 +183,6 @@ const NewsCreatorTool = () => {
         title: articleData.data.title,
         content: articleData.data.content,
       }));
-
       setArticleToBeSaved((prevData) => ({
         ...prevData,
         title: articleData.data.title,
@@ -212,6 +190,7 @@ const NewsCreatorTool = () => {
       }));
     } catch (error) {
       console.error("Error regenerating article:", error.message);
+    } finally {
       setIsLoadingRegenerateArticle(false);
     }
   };
@@ -231,12 +210,10 @@ const NewsCreatorTool = () => {
             content: previewData.content,
             bot_id: selectedBot,
           }),
-        }
+        },
       );
 
       const imageData = await imageResponse.json();
-      setIsLoadingRegenerateImage(false);
-
       if (!imageResponse.ok) {
         console.error("Error regenerating image:", imageData.error);
         return;
@@ -246,20 +223,32 @@ const NewsCreatorTool = () => {
         ...prevData,
         image: imageData.data.image_url,
       }));
-
       setImageToBeSaved(imageData.data.image_url);
     } catch (error) {
       console.error("Error regenerating image:", error.message);
+    } finally {
       setIsLoadingRegenerateImage(false);
     }
+  };
+
+  const startOver = () => {
+    setSelectedCategory("");
+    setSelectedBot("");
+    setAnalysis("");
+    setUsedKeywords("");
+    setIsArticleEfficient("");
+    setPreviewData(null);
+    setShowPreview(false);
+    setArticleToBeSaved(null);
+    setImageToBeSaved(null);
   };
 
   return (
     <div className="news-creator-tool">
       <h1>News Creator Tool</h1>
       <Form>
-      <TextExtractor setAnalysis={setAnalysis} />
-      <br></br>
+        <TextExtractor setAnalysis={setAnalysis} />
+        <br />
         <Form.Group controlId="category">
           <Form.Label>Category</Form.Label>
           <Form.Control
@@ -275,15 +264,15 @@ const NewsCreatorTool = () => {
             ))}
           </Form.Control>
         </Form.Group>
-        <br></br>
+        <br />
         <Form.Group controlId="bot">
-          <Form.Label>Bot</Form.Label>
+          <Form.Label>Coin</Form.Label>
           <Form.Control
             as="select"
             value={selectedBot}
             onChange={(e) => setSelectedBot(e.target.value)}
           >
-            <option value="">Select Bot</option>
+            <option value="">Select Coin</option>
             {bots.map((bot) => (
               <option key={bot.id} value={bot.id}>
                 {bot.name}
@@ -291,16 +280,17 @@ const NewsCreatorTool = () => {
             ))}
           </Form.Control>
         </Form.Group>
-        <br></br>
+        <br />
         <Form.Group controlId="analysis">
           <Form.Label>Article Analysis</Form.Label>
           <Form.Control
-            type="text"
+            as="textarea"
+            rows={15}
             value={analysis}
             onChange={(e) => setAnalysis(e.target.value)}
           />
         </Form.Group>
-        <br></br>
+        <br />
         <Form.Group controlId="usedKeywords">
           <Form.Label>Used Keywords</Form.Label>
           <Form.Control
@@ -309,24 +299,22 @@ const NewsCreatorTool = () => {
             onChange={(e) => setUsedKeywords(e.target.value)}
           />
         </Form.Group>
-        <br></br>
+        <br />
         <Form.Group controlId="isArticleEfficient">
-          <Form.Label>Is Article Efficient?</Form.Label>
+          <Form.Label>Is Article Efficient</Form.Label>
           <Form.Control
             type="text"
             value={isArticleEfficient}
             onChange={(e) => setIsArticleEfficient(e.target.value)}
           />
         </Form.Group>
-        <br></br>
+        <br />
         <Button
           variant="primary"
           onClick={handleGenerate}
-          disabled={
-            isLoadingRegenerateArticle || isLoadingRegenerateImage || !analysis
-          }
+          disabled={isLoadingRegenerateArticle || isLoadingRegenerateImage}
         >
-          {isLoadingRegenerateArticle || isLoadingRegenerateImage ? (
+          {isLoadingRegenerateArticle ? (
             <Spinner
               as="span"
               animation="border"
@@ -335,18 +323,46 @@ const NewsCreatorTool = () => {
               aria-hidden="true"
             />
           ) : (
-            "Generate"
+            "Create Article"
           )}
         </Button>
-        <br></br>
-        <br></br>
-        {showPreview && previewData && (
-          <div className="preview-section">
-            <h2>News Preview</h2>
-            <br></br>
-            <h3>{previewData.title}</h3>
-            <p>{previewData.content}</p>
-            <br></br>
+      </Form>
+      <br />
+      {showPreview && previewData && (
+        <div className="preview-section">
+          <h2>News Preview</h2>
+          <br />
+          {previewData.image && (
+            <img
+              src={previewData.image}
+              style={{ width: "300px", height: "300px" }}
+              alt="Generated"
+            />
+          )}
+          <br />
+          <br />
+          <Button
+            variant="secondary"
+            onClick={handleRegenerateImage}
+            disabled={isLoadingRegenerateImage}
+          >
+            {isLoadingRegenerateImage ? (
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            ) : (
+              "Regenerate Image"
+            )}
+          </Button>
+          <br />
+          <br />
+          <h3>{previewData.title}</h3>
+          <p>{previewData.content}</p>
+          <div className="button-group">
             <Button
               variant="secondary"
               onClick={handleRegenerateArticle}
@@ -364,30 +380,8 @@ const NewsCreatorTool = () => {
                 "Regenerate Article"
               )}
             </Button>
-            <br></br>
-            <br></br>
-            <img src={previewData.image} style={{width:'300px', height:'300px'}} alt="Generated Visual" />
-            <br></br>
-            <br></br>
-            <Button
-              variant="secondary"
-              onClick={handleRegenerateImage}
-              disabled={isLoadingRegenerateImage}
-            >
-              {isLoadingRegenerateImage ? (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-              ) : (
-                "Regenerate Image"
-              )}
-            </Button>
-            <br></br>
-            <br></br>
+            <br />
+            <br />
             <Button
               variant="success"
               onClick={handleSave}
@@ -407,21 +401,23 @@ const NewsCreatorTool = () => {
             </Button>
             <Button
               variant="danger"
-              onClick={handleSave}
-              disabled={isLoadingSave}
+              style={{ marginLeft: "10px" }}
+              onClick={startOver}
             >
               Start Over
             </Button>
-            <br></br>
-            <br></br>
-            {showSuccessMessage && (
-              <Alert variant="success">
-                News created successfully!
-              </Alert>
-            )}
+            <br />
+            <br />
           </div>
-        )}
-      </Form>
+        </div>
+      )}
+      {showSuccessMessage && (
+        <Alert variant="success" className="mt-3">
+          Article created successfully!
+        </Alert>
+      )}
+      <br />
+      <br />
     </div>
   );
 };

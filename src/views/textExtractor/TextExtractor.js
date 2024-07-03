@@ -37,6 +37,9 @@ const TextExtractor = ({ setAnalysis }) => {
         const data = await response.json();
         if (response.ok) {
           setAnalysis(data.response);
+          setSelectedExtractType("")
+        setLink("")
+        setPdfFile(null)
         } else {
           console.error("Error extracting content:", data.response);
         }
@@ -45,6 +48,8 @@ const TextExtractor = ({ setAnalysis }) => {
       console.error("Error extracting content:", error.message);
     } finally {
       setIsExtracting(false);
+    
+
     }
   };
 
@@ -64,7 +69,7 @@ const TextExtractor = ({ setAnalysis }) => {
             <option value="pdf">PDF</option>
           </Form.Control>
         </Form.Group>
-
+        <br />
         {selectedExtractType === "link" ||
         selectedExtractType === "google_docs" ? (
           <Form.Group controlId="link">
