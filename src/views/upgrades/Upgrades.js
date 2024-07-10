@@ -16,7 +16,7 @@ const Upgrades = () => {
   // Function to parse dates
   const parseDate = (dateStr) => {
     if (dateStr.toLowerCase() === "ongoing") {
-      return new Date(9999, 0, 1); // Fecha lejana en el futuro para "Ongoing"
+      return new Date(9999, 0, 1); 
     }
     const dateParts = dateStr.split(' ');
     if (dateParts.length === 2) {
