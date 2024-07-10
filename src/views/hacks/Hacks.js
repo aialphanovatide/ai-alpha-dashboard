@@ -13,6 +13,23 @@ const Hacks = () => {
   const [selectedHackForEdit, setSelectedHackForEdit] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
 
+  // Function to parse dates
+  const parseDate = (dateStr) => {
+    const dateParts = dateStr.split(' ');
+    if (dateParts.length === 2) {
+      return new Date(Date.parse(dateStr));
+    } else if (dateParts.length === 3) {
+      return new Date(Date.parse(dateStr));
+    } else {
+      return new Date(dateStr);
+    }
+  };
+
+  // Function to sort hacks by date
+  const sortHacksByDate = (hacks) => {
+    return hacks.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+  };
+
   // Gets all available coins
   useEffect(() => {
     const getAllBots = async () => {
@@ -51,13 +68,14 @@ const Hacks = () => {
               "Content-Type": "application/json",
               "ngrok-skip-browser-warning": "true",
             },
-          },
+          }
         );
 
         const data = await response.json();
 
         if (data && data.status === 200) {
-          setHacks(data.message);
+          const sortedHacks = sortHacksByDate(data.message);
+          setHacks(sortedHacks);
         } else {
           console.error("Error fetching Hacks:", data.message);
           setHacks([]);
@@ -96,7 +114,7 @@ const Hacks = () => {
             "ngrok-skip-browser-warning": "true",
           },
           body: JSON.stringify(formData),
-        },
+        }
       );
 
       const data = await response.json();
@@ -126,13 +144,14 @@ const Hacks = () => {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
           },
-        },
+        }
       );
 
       const data = await response.json();
 
       if (data && data.status === 200) {
-        setHacks(data.message);
+        const sortedHacks = sortHacksByDate(data.message);
+        setHacks(sortedHacks);
       } else {
         console.error("Error fetching Hacks:", data.message);
         setHacks([]);
@@ -190,7 +209,7 @@ const Hacks = () => {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
           },
-        },
+        }
       );
 
       const data = await response.json();
