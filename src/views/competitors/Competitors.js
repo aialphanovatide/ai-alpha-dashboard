@@ -405,92 +405,94 @@ const Competitors = () => {
 
   useEffect(() => {
     const fetchTokenomicsData = async () => {
-      // Eliminamos tokens duplicados antes de hacer las solicitudes fetch
       const uniqueTokenSymbols = Array.from(
         new Set(competitorsCoinNames.map((token) => token.trim())),
       );
-
+    
       const tokenomicsData = await Promise.all(
         uniqueTokenSymbols.map(async (tokenSymbol) => {
-          const response = await fetch(
-            `https://fsxbdb84-5000.uks1.devtunnels.ms/get/token_data?token_symbol=${tokenSymbol}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                "ngrok-skip-browser-warning": "true",
+          try {
+            const response = await fetch(
+              `https://fsxbdb84-5000.uks1.devtunnels.ms/get/token_data?token_symbol=${tokenSymbol}`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  "ngrok-skip-browser-warning": "true",
+                },
               },
-            },
-          );
-          const data = await response.json();
-          // Mapear los datos relevantes y estructurar como objeto con pares clave-valor
-          const tokenData = {
-            token: tokenSymbol,
-            symbol: data.data.symbol,
-            tokenname: data.data.tokenname,
-            description: data.data.description,
-            current_price: data.data.current_price,
-            ath: data.data.ath,
-            ath_change_percentage: data.data.ath_change_percentage,
-            market_cap_usd: data.data.market_cap_usd,
-            circulating_supply: data.data.circulating_supply,
-            total_supply: data.data.total_supply,
-            percentage_circulating_supply:
-              data.data.percentage_circulating_supply,
-            tvl: data.data.tvl,
-            chains: data.data.chains,
-            categories: data.data.categories,
-            website: data.data.website,
-            whitepaper: data.data.whitepaper,
-          };
-          return tokenData;
+            );
+            
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            
+            const data = await response.json();
+    
+            if (!data || !data.data) {
+              throw new Error('Data not found in response');
+            }
+    
+            const tokenData = {
+              token: tokenSymbol,
+              symbol: data.data.symbol || "N/A",
+              tokenname: data.data.tokenname || "N/A",
+              description: data.data.description || "N/A",
+              current_price: data.data.current_price || 0,
+              ath: data.data.ath || 0,
+              ath_change_percentage: data.data.ath_change_percentage || 0,
+              market_cap_usd: data.data.market_cap_usd || 0,
+              circulating_supply: data.data.circulating_supply || 0,
+              total_supply: data.data.total_supply || 0,
+              percentage_circulating_supply: data.data.percentage_circulating_supply || 0,
+              tvl: data.data.tvl || 0,
+              chains: data.data.chains || [],
+              categories: data.data.categories || [],
+              website: data.data.website || "",
+              whitepaper: data.data.whitepaper || "",
+            };
+    
+            return tokenData;
+          } catch (error) {
+            console.error(`Error fetching tokenomics data for ${tokenSymbol}:`, error);
+            return null; // Return null for failed requests
+          }
         }),
       );
-
-      // Combinar datos de competidores y tokenómicos
+    
       const finalData = {};
       competitorsData.forEach((competitor) => {
         const token = competitor.competitor.token.trim();
         if (!finalData[token]) {
           finalData[token] = {
             competitors: [],
-            tokenomicData: null, // Aquí se almacenará el objeto tokenomicData una vez encontrado
+            tokenomicData: null,
           };
         }
         const competitorData = {};
         Object.entries(competitor.competitor).forEach(([key, value]) => {
-          if (
-            !["coin_bot_id", "created_at", "updated_at", "dynamic"].includes(
-              key,
-            )
-          ) {
-            const trimmedValue =
-              typeof value === "string" ? value.trim() : value;
+          if (!["coin_bot_id", "created_at", "updated_at", "dynamic"].includes(key)) {
+            const trimmedValue = typeof value === "string" ? value.trim() : value;
             competitorData[key.replace(/ /g, "_")] = trimmedValue;
           }
         });
         competitorData.id = competitor.competitor.id;
-
-        // Buscar los datos tokenómicos correspondientes
-        const tokenomicData = tokenomicsData.find(
-          (data) => data.token === token,
-        );
+    
+        const tokenomicData = tokenomicsData.find((data) => data && data.token === token);
         if (tokenomicData) {
-          // Almacenar tokenomicData en finalData[token]
           finalData[token].tokenomicData = { ...tokenomicData };
         }
-        // Agregar competitorData a finalData[token].competitors
         finalData[token].competitors.push(competitorData);
       });
-
+    
       console.log("FINAL DATA: ", finalData);
       setFinalCompetitorTokenomicData(finalData);
     };
-
-    // Verificar que haya nombres de tokens únicos antes de realizar la solicitud
+    
     if (competitorsCoinNames.length > 0 && competitorsData.length > 0) {
       fetchTokenomicsData();
     }
+    
   }, [competitorsCoinNames, competitorsData]);
 
   const handleCreateFormSubmit = async (formData) => {
@@ -586,7 +588,7 @@ const Competitors = () => {
             <option value="">Select...</option>
             {bots.map((bot) => (
               <option key={bot.id} value={bot.id}>
-                {bot.name.toUpperCase() || "No Name"}
+                {bot.name ? bot.name.toUpperCase() : "No Name"}
               </option>
             ))}
           </Form.Control>
@@ -605,59 +607,64 @@ const Competitors = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.competitors
-                  .filter(
-                    (competitor) =>
-                      ![
-                        "circulating supply",
-                        "tvl",
-                        "website",
-                        "token",
-                        "whitepaper",
-                      ].includes(competitor.key),
-                  )
-                  .map((competitor, index) => (
-                    <tr key={index}>
-                      <td>{competitor.key}</td>
-                      <td>
-                        {typeof competitor.value === "number"
-                          ? competitor.value.toFixed(2)
-                          : competitor.value}
-                      </td>
-                      <td>
-                        <Button
-                          variant="primary"
-                          onClick={() => handleShowEditModal(competitor)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          style={{ marginLeft: "10px" }}
-                          variant="danger"
-                          onClick={() => handleDeleteCompetitor(competitor.id)}
-                        >
-                          Delete
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                {data.tokenomicData &&
+                {/* Condición para mostrar datos de competitors */}
+                {data.competitors && data.competitors.length > 0 && (
+                  data.competitors
+                    .filter(
+                      (competitor) =>
+                        ![
+                          "circulating supply",
+                          "tvl",
+                          "website",
+                          "token",
+                          "whitepaper",
+                        ].includes(competitor.key),
+                    )
+                    .map((competitor, index) => (
+                      <tr key={index}>
+                        <td>{competitor.key}</td>
+                        <td>
+                          {typeof competitor.value === "number"
+                            ? competitor.value.toFixed(2)
+                            : competitor.value}
+                        </td>
+                        <td>
+                          <Button
+                            variant="primary"
+                            onClick={() => handleShowEditModal(competitor)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            style={{ marginLeft: "10px" }}
+                            variant="danger"
+                            onClick={() => handleDeleteCompetitor(competitor.id)}
+                          >
+                            Delete
+                          </Button>
+                        </td>
+                      </tr>
+                    ))
+                )}
+                {/* Condición para mostrar tokenomicData */}
+                {data.tokenomicData && (
                   Object.entries(data.tokenomicData)
                     .filter(
                       ([key, value]) =>
-                        key !== "chains" &&
-                        key !== "categories" &&
-                        key !== "website" &&
-                        key !== "token" &&
-                        key !== "symbol" &&
-                        key !== "tokenname" &&
-                        key !== "description" &&
-                        key !== "current_price" &&
-                        key !== "symbol" &&
-                        key !== "ath" &&
-                        key !== "ath_change_percentage" &&
-                        key !== "market_cap_usd" &&
-                        key !== "whitepaper",
+                        ![
+                          "chains",
+                          "categories",
+                          "website",
+                          "token",
+                          "symbol",
+                          "tokenname",
+                          "description",
+                          "current_price",
+                          "ath",
+                          "ath_change_percentage",
+                          "market_cap_usd",
+                          "whitepaper",
+                        ].includes(key),
                     )
                     .map(([key, value]) => (
                       <tr key={key}>
@@ -668,24 +675,25 @@ const Competitors = () => {
                         <td>{"No Actions - Novatide Dashboard Data"}</td>
                         {/* Si es necesario, puedes añadir acciones aquí */}
                       </tr>
-                    ))}
+                    ))
+                )}
               </tbody>
             </Table>
           </div>
         ))}
       </div>
-
+  
       <Button disabled={!selectedCoinBot} onClick={handleShowModal}>
         Add Competitor
       </Button>
-
+  
       <CompetitorForm
         showModal={showModal && !selectedCompetitor}
         handleClose={handleCloseModal}
         selectedCoinBot={selectedCoinBot}
         handleSave={(formData) => handleCreateFormSubmit(formData)}
       />
-
+  
       {selectedCompetitor && (
         <CompetitorsEditModal
           competitor={selectedCompetitor}
@@ -696,6 +704,7 @@ const Competitors = () => {
       )}
     </div>
   );
+  
 };
 
 export default Competitors;
