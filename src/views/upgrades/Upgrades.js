@@ -13,6 +13,26 @@ const Upgrades = () => {
   const [selectedUpgrade, setSelectedUpgrade] = useState(null); // Definir el estado del upgrade seleccionado para editar
   const [showCreateForm, setShowCreateForm] = useState(false);
 
+  // Function to parse dates
+  const parseDate = (dateStr) => {
+    if (dateStr.toLowerCase() === "ongoing") {
+      return new Date(9999, 0, 1); // Fecha lejana en el futuro para "Ongoing"
+    }
+    const dateParts = dateStr.split(' ');
+    if (dateParts.length === 2) {
+      return new Date(Date.parse(dateStr));
+    } else if (dateParts.length === 3) {
+      return new Date(Date.parse(dateStr));
+    } else {
+      return new Date(dateStr);
+    }
+  };
+
+  // Function to sort upgrades by date
+  const sortUpgradesByDate = (upgrades) => {
+    return upgrades.sort((a, b) => parseDate(b.upgrade.date) - parseDate(a.upgrade.date));
+  };
+
   // Gets all the available coins
   useEffect(() => {
     const getAllBots = async () => {
@@ -55,7 +75,8 @@ const Upgrades = () => {
       const data = await response.json();
 
       if (data.status === 200) {
-        setUpgrades(data.message);
+        const sortedUpgrades = sortUpgradesByDate(data.message);
+        setUpgrades(sortedUpgrades);
       } else {
         setUpgrades([]);
       }
@@ -83,7 +104,8 @@ const Upgrades = () => {
         const data = await response.json();
 
         if (data.status === 200) {
-          setUpgrades(data.message);
+          const sortedUpgrades = sortUpgradesByDate(data.message);
+          setUpgrades(sortedUpgrades);
         } else {
           setUpgrades([]);
         }
@@ -127,7 +149,7 @@ const Upgrades = () => {
             "ngrok-skip-browser-warning": "true",
           },
           body: JSON.stringify({
-            upgrate_data: formData,
+            upgrade_data: formData,
           }),
         },
       );
@@ -193,8 +215,6 @@ const Upgrades = () => {
       console.error("Error:", error);
     }
   };
-
-  
 
   const selectedBot =
     bots && selectedCoinBot
