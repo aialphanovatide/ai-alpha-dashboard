@@ -86,8 +86,8 @@ const Dashboard = () => {
         if (response.ok) {
           const data = await response.json();
           console.log(data)
-          const bots = data.bots;
-          
+          const bots = data.data;
+          console.log("bots, ", bots)
           const allBotsActive = bots.every(bot => bot.isActive);
           const allBotsInactive = bots.every(bot => !bot.isActive);
 

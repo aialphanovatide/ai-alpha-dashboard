@@ -40,8 +40,8 @@ const BotsSettings = () => {
       try {
         const data = JSON.parse(responseText);
         console.log("data : ", data);
-        if (data && data.bots) {
-          setBots(data.bots);
+        if (data && data.data) {
+          setBots(data.data);
         } else {
           console.error("Error in response:", data.message);
         }

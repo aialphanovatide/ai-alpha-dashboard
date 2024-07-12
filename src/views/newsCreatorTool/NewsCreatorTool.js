@@ -3,6 +3,7 @@ import { Form, Button, Spinner, Alert } from "react-bootstrap";
 import config from "../../config";
 import TextExtractor from "../textExtractor/TextExtractor";
 import "./NewsCreatorTool.css";
+import LastFiveArticles from "../lastFiveArticles/LastFiveArticles";
 
 const NewsCreatorTool = () => {
   const [categories, setCategories] = useState([]);
@@ -47,6 +48,19 @@ const NewsCreatorTool = () => {
     fetchCategoriesAndBots();
   }, []);
 
+  const refreshArticles = async () => {
+    try {
+      // Perform actions to refresh articles, e.g., fetching latest data
+      // Example:
+      const response = await fetch(`${config.BOTS_V2_API}/last_five_articles`);
+      const data = await response.json();
+      // Update state or perform any necessary actions
+    } catch (error) {
+      console.error('Error refreshing articles:', error.message);
+    }
+  };
+  
+
   const checkIfAllFieldsFilled = () => {
     if (
       selectedCategory &&
@@ -72,6 +86,7 @@ const NewsCreatorTool = () => {
     isArticleEfficient,
     charLimitError,
   ]);
+
 
   const handleGenerate = async () => {
     setIsLoadingRegenerateArticle(true);
@@ -172,6 +187,7 @@ const NewsCreatorTool = () => {
           setShowSuccessMessage(false); // Hide after 5 seconds
           startOver(); // Reset form after hiding success message
         }, 5000);
+        refreshArticles();
       } else {
         console.error("Error saving article:", data.message);
       }
@@ -459,6 +475,8 @@ const NewsCreatorTool = () => {
       )}
       <br />
       <br />
+      <hr></hr>
+      <LastFiveArticles refreshArticles={refreshArticles} />
     </div>
   );
 };
