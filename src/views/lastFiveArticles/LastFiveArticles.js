@@ -123,6 +123,7 @@ const LastFiveArticles = ({ refreshArticles }) => {
   const isSelected = (id) => selectedArticles.indexOf(id) !== -1;
 
   return (
+    <>
     <Paper>
       <Typography variant="h6" component="div" style={{ padding: "16px" }}>
         Last 5 Articles
@@ -201,6 +202,8 @@ const LastFiveArticles = ({ refreshArticles }) => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </Paper>
+   <div style={{marginBottom: "20px"}}></div>
+    </>
   );
 };
 

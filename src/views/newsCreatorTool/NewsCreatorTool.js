@@ -25,6 +25,7 @@ const NewsCreatorTool = () => {
   const [imageToBeSaved, setImageToBeSaved] = useState(null);
   const [charLimitError, setCharLimitError] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isTopStory, setIsTopStory] = useState(false); // Nuevo estado para el checkbox
 
   useEffect(() => {
     const fetchCategoriesAndBots = async () => {
@@ -50,8 +51,6 @@ const NewsCreatorTool = () => {
 
   const refreshArticles = async () => {
     try {
-      // Perform actions to refresh articles, e.g., fetching latest data
-      // Example:
       const response = await fetch(`${config.BOTS_V2_API}/last_five_articles`);
       const data = await response.json();
       // Update state or perform any necessary actions
@@ -176,6 +175,7 @@ const NewsCreatorTool = () => {
           category_id: articleToBeSaved.category_id,
           bot_id: articleToBeSaved.bot_id,
           image_url: imageToBeSaved,
+          is_top_story: isTopStory, // Enviar el valor del checkbox
         }),
       });
 
@@ -285,6 +285,7 @@ const NewsCreatorTool = () => {
     setShowPreview(false);
     setArticleToBeSaved(null);
     setImageToBeSaved(null);
+    setIsTopStory(false); // Resetear el valor del checkbox
   };
 
   const handleAnalysisChange = (e) => {
@@ -439,6 +440,13 @@ const NewsCreatorTool = () => {
             </Button>
             <br />
             <br />
+            <Form.Check 
+              type="checkbox" 
+              label="Add to Top Story" 
+              checked={isTopStory}
+              onChange={(e) => setIsTopStory(e.target.checked)}
+            />
+            <br />
             <Button
               variant="success"
               onClick={handleSave}
@@ -477,6 +485,7 @@ const NewsCreatorTool = () => {
       <br />
       <hr></hr>
       <LastFiveArticles refreshArticles={refreshArticles} />
+      <br />
     </div>
   );
 };
