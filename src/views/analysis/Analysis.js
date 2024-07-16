@@ -90,7 +90,7 @@ const Analysis = () => {
   const fetchAnalysis = useCallback(async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL}/get_analysis/${selectedCoin}`,
+        `http://127.0.0.1:9000/get_analysis/${selectedCoin}`,
         {
           method: "GET",
           headers: {
@@ -101,9 +101,8 @@ const Analysis = () => {
       );
 
       const data = await response.json();
-
       if (response.ok) {
-        setItems(data.message);
+        setItems(data.data);
         setSelectedImage("");
       } else {
         console.error("Error fetching coin bots:", response.statusText);

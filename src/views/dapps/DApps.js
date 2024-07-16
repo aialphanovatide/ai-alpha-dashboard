@@ -44,7 +44,7 @@ const DApps = () => {
   useEffect(() => {
     const getAllBots = async () => {
       try {
-        const response = await fetch(`${config.BASE_URL}/get_all_coin_bots`, {
+        const response = await fetch(`${config.BOTS_V2_API}/get_all_coin_bots`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

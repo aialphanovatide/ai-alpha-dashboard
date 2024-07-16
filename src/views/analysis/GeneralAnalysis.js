@@ -32,7 +32,7 @@ const GeneralAnalysis = ({ success, onSuccess, fetchAnalysis }) => {
       const data = await response.json();
 
       if (response.ok) {
-        setGeneralAnalysis(data.message);
+        setGeneralAnalysis(data.data);
       } else {
         console.error("Error fetching coin bots:", data.message);
       }

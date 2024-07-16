@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import SearchToolItem from "../searchToolItem/SearchToolItem";
 import Pagination from "../pagination/Pagination";
 import "./SearchTool.css";
-import baseURL from "../../config";
+import config from "../../config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
@@ -27,7 +27,7 @@ const SearchTool = () => {
 
     try {
       const response1 = await fetch(
-        `${baseURL.BOTS_V2_API}/get_last_articles?limit=100`
+        `${config.BOTS_V2_API}/get_all_articles?limit=100`
       );
       const data1 = await response1.json();
       
@@ -41,7 +41,7 @@ const SearchTool = () => {
       }
 
       const response2 = await fetch(
-        `${baseURL.BOTS_V2_API}/get_unwanted_articles`
+        `${config.BOTS_V2_API}/get_unwanted_articles`
       );
       const data2 = await response2.json();
       if (response2.ok) {
