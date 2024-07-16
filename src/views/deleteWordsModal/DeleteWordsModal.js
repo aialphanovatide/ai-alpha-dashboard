@@ -25,7 +25,7 @@ const DeleteWordsModal = () => {
         });
         if (response.ok) {
           const data = await response.json();
-          setCoinBots(data.coin_bots);
+          setCoinBots(data.data.coin_bots);
         } else {
           console.error("Error fetching coin bots:", response.statusText);
         }

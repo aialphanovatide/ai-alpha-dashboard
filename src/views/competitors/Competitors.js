@@ -27,8 +27,8 @@
 //         });
 
 //         const data = await response.json();
-//         if (data && data.coin_bots) {
-//           setBots(data.coin_bots);
+//         if (data && data.data.coin_bots) {
+//           setBots(data.data.coin_bots);
 //         } else {
 //           console.error("Error fetching bots:", data.message);
 //           setBots([]);
@@ -351,8 +351,8 @@ const Competitors = () => {
         });
 
         const data = await response.json();
-        if (data && data.coin_bots) {
-          setBots(data.coin_bots);
+        if (data && data.data.coin_bots) {
+          setBots(data.data.coin_bots);
         } else {
           console.error("Error fetching bots:", data.message);
           setBots([]);

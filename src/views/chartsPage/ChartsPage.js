@@ -49,7 +49,7 @@ const ChartsPage = () => {
 
         if (response.ok) {
           const data = await response.json()
-          setCoinBots(data.coin_bots)
+          setCoinBots(data.data.coin_bots)
         } else {
           console.error('Error fetching coin bots:', response.statusText)
         }
@@ -70,7 +70,6 @@ const ChartsPage = () => {
           'ngrok-skip-browser-warning': 'true',
         },
       })
-
       const data = await response.json()
       if (response.ok) {
         setCoinData(data)
