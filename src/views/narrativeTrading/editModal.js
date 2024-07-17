@@ -9,7 +9,7 @@ const EditModal = ({ item, onSave, onClose, fetchAnalysis }) => {
 
   useEffect(() => {
     // Cuando cambia el contenido del ítem, actualiza el estado del contenido editado
-    setEditedContent(item.analysis);
+    setEditedContent(item.narrative_trading);
   }, [item]);
 
   const handleSave = async () => {

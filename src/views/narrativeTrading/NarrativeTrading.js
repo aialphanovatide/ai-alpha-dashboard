@@ -103,7 +103,7 @@ const NarrativeTrading = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setItems(data.message);
+        setItems(data.data);
         setSelectedImage("");
       } else {
         console.error("Error fetching coin bots:", response.statusText);
@@ -280,9 +280,9 @@ const NarrativeTrading = () => {
       });
 
       const data = await response.json();
-
+      console.log("data jobs", data.data.jobs)
       if (response.ok) {
-        setScheduledJobs(data.jobs); // Actualiza el estado con los trabajos programados
+        setScheduledJobs(data.data.jobs); // Actualiza el estado con los trabajos programados
       } else {
         console.error("Error fetching jobs:", response.statusText);
       }
@@ -364,7 +364,7 @@ const NarrativeTrading = () => {
       />
       <div className="allAnalysismain">
         <h3>Scheduled Narrative Trading Posts</h3>
-        {scheduledJobs.length > 0 ? (
+        {scheduledJobs ? (
           scheduledJobs.map((job) => (
             <ScheduledJob
               key={job.id}

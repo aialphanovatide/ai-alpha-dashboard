@@ -19,6 +19,7 @@ const GeneralNarrativeTrading = ({ success, onSuccess, fetchNarrativeTrading }) 
     setIsEditModalOpen(false);
   };
 
+
   const fetchGeneralNarrativeTrading = async () => {
     try {
       const response = await fetch(`${config.BASE_URL}/get_narrative_trading`, {
@@ -32,9 +33,9 @@ const GeneralNarrativeTrading = ({ success, onSuccess, fetchNarrativeTrading }) 
       const data = await response.json();
       
       if (response.ok) {
-        setGeneralNarrativeTrading(data.message);
+        setGeneralNarrativeTrading(data.data);
       } else {
-        console.error("Error fetching coin bots:", data.message);
+        console.error("Error fetching coin bots:", data.error);
       }
     } catch (error) {
       console.error("Error fetching coin bots:", error);
