@@ -13,8 +13,6 @@ const DeleteCategoryModal = () => {
   const [alertVariant, setAlertVariant] = useState("success");
   const [visible, setVisible] = useState(false);
 
-  console.log("id: " + selectedCategoryId);
-  console.log("name: " + selectedCategoryName);
 
   useEffect(() => {
     const fetchData = async () => {

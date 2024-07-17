@@ -36,25 +36,26 @@ const Login = () => {
   }
 
   const handleSubmit = async () => {
-    try {
-      const response = await fetch(`${config.BASE_URL}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
-        },
-        body: JSON.stringify({ username, password }),
-      })
-      const user = await response.json()
-      if (user.success) {
-        navigate('/dashboard', { state: { username: user.user.username } })
-      } else {
-        setError('Incorrect credentials. Please try again.')
-      }
-    } catch (error) {
-      setError('Error making request. Please try again.')
+  try {
+    const response = await fetch(`${config.BASE_URL}/admin/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await response.json();
+    if (response.ok) {
+      navigate('/dashboard', { state: { username: data.username } });
+    } else {
+      setError(data.error || 'Incorrect credentials. Please try again.');
     }
+  } catch (error) {
+    setError('Error making request. Please try again.');
   }
+};
+
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <CContainer>

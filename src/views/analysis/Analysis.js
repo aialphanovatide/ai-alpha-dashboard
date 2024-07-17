@@ -90,7 +90,7 @@ const Analysis = () => {
   const fetchAnalysis = useCallback(async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:9000/get_analysis/${selectedCoin}`,
+        `${config.BASE_URL}/get_analysis/${selectedCoin}`,
         {
           method: "GET",
           headers: {
@@ -229,9 +229,8 @@ const Analysis = () => {
         method: "POST",
         body: formData,
       });
-      console.log(formData);
       let responseData = await response.json();
-
+      console.log("response", responseData)
       if (response.ok) {
         Swal.fire({
           icon: "success",

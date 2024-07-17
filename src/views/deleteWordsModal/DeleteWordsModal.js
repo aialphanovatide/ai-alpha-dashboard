@@ -51,7 +51,8 @@ const DeleteWordsModal = () => {
       );
       if (response.ok) {
         const data = await response.json();
-        setKeywords(data.keywords || []);
+        console.log("data", data.data)
+        setKeywords(data.data || []);
       } else {
         console.error("Error fetching keywords:", response.statusText);
       }

@@ -56,11 +56,12 @@ const UsedKeywordsModal = () => {
         );
 
         if (response.ok) {
-          const { keywords } = await response.json();
+          const  keywords = await response.json();
           // Filtrar elementos vacíos de la matriz de palabras clave
-          const filteredKeywords = keywords.filter(
+          const filteredKeywords = keywords.data.keywords.filter(
             (keyword) => keyword.trim() !== ""
           );
+
           setKeywords(filteredKeywords);
 
           // Mostrar el mensaje de alerta si no hay palabras clave
