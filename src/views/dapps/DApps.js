@@ -27,7 +27,7 @@ const DApps = () => {
       );
 
       const data = await response.json();
-
+      
       if (data && data.status === 200) {
         setDApps(data.message);
       } else {
