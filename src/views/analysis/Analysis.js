@@ -82,7 +82,6 @@ const Analysis = () => {
   };
 
   const handleDateChange = (date) => {
-    console.log("date selected: ", date);
     setSelectedDate(date);
   };
 
@@ -101,8 +100,9 @@ const Analysis = () => {
       );
 
       const data = await response.json();
+      console.log("data,", data)
       if (response.ok) {
-        setItems(data.data);
+        setItems(data.message);
         setSelectedImage("");
       } else {
         console.error("Error fetching coin bots:", response.statusText);
