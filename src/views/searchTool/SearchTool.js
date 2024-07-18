@@ -44,6 +44,7 @@ const SearchTool = () => {
         `${config.BOTS_V2_API}/get_unwanted_articles`
       );
       const data2 = await response2.json();
+      console.log("data2", data2.data)
       if (response2.ok) {
         unwantedArticlesData = data2.data.map((article) => ({
           ...article,
