@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from "react";
 import {
   CButton,
   CCard,
@@ -8,78 +8,83 @@ import {
   CInputGroup,
   CInputGroupText,
   CFormInput,
-} from '@coreui/react'
-import '../chartsPage/ChartsPage.css'
-import config from '../../config'
-import Swal from 'sweetalert2'
+} from "@coreui/react";
+import "../chartsPage/ChartsPage.css";
+import config from "../../config";
+import Swal from "sweetalert2";
 
 const ChartsPage = () => {
-
-  const [selectedCoin, setSelectedCoin] = useState(null)
-  const [selectedCoinName, setSelectedCoinName] = useState(null)
+  const [selectedCoin, setSelectedCoin] = useState(null);
+  const [selectedCoinName, setSelectedCoinName] = useState(null);
   const [formData, setFormData] = useState({
-    support1: '',
-    support2: '',
-    support3: '',
-    support4: '',
-    resistance1: '',
-    resistance2: '',
-    resistance3: '',
-    resistance4: '',
-  })
-  const [coinBots, setCoinBots] = useState([])
-  const [coinData, setCoinData] = useState([])
-  const [temp, setTemp] = useState('')
-  const [pairValue, setPairValue] = useState('')
+    support1: "",
+    support2: "",
+    support3: "",
+    support4: "",
+    resistance1: "",
+    resistance2: "",
+    resistance3: "",
+    resistance4: "",
+  });
+  const [coinBots, setCoinBots] = useState([]);
+  const [coinData, setCoinData] = useState([]);
+  const [temp, setTemp] = useState("");
+  const [pairValue, setPairValue] = useState("");
 
-  const temporalities = ['1h', '4h', '1d', '1w']
-  const pairs = ['usdt', 'btc', 'eth']
+  const temporalities = ["1h", "4h", "1d", "1w"];
+  const pairs = ["usdt", "btc", "eth"];
 
   // Gets all the coins
   useEffect(() => {
     const fetchCoinBots = async () => {
       try {
-        const response = await fetch(`${config.BOTS_V2_API}/get_all_coin_bots`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
+        const response = await fetch(
+          `${config.BOTS_V2_API}/get_all_coin_bots`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "true",
+            },
           },
-        })
+        );
 
         if (response.ok) {
-          const data = await response.json()
-          setCoinBots(data.data.coin_bots)
+          const data = await response.json();
+          setCoinBots(data.data.coin_bots);
         } else {
-          console.error('Error fetching coin bots:', response.statusText)
+          console.error("Error fetching coin bots:", response.statusText);
         }
       } catch (error) {
-        console.error('Error fetching coin bots:', error)
+        console.error("Error fetching coin bots:", error);
       }
-    }
+    };
 
-    fetchCoinBots()
-  }, [])
+    fetchCoinBots();
+  }, []);
 
   const fetchCoinData = useCallback(async () => {
     try {
-      const response = await fetch(`${config.BASE_URL}/api/coin-support-resistance?coin_id=${selectedCoin}&temporality=${temp}&pair=${pairValue}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
+      const response = await fetch(
+        `${config.BASE_URL}/api/coin-support-resistance?coin_id=${selectedCoin}&temporality=${temp}&pair=${pairValue}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
         },
-      })
-      const data = await response.json()
+      );
+      const data = await response.json();
       if (response.ok) {
-        setCoinData(data)
+        setCoinData(data.message);
       } else {
-        setCoinData([])
-        console.error('Error fetching coin data:', response.statusText)
+        setCoinData([]);
+        console.error("Error fetching coin data:", response.statusText);
       }
     } catch (error) {
-      setCoinData([])
-      console.error('Error fetching coin data:', error)
+      setCoinData([]);
+      console.error("Error fetching coin data:", error);
     }
   }, [selectedCoin, temp, pairValue]);
 
@@ -90,48 +95,47 @@ const ChartsPage = () => {
     }
   }, [selectedCoin, temp, pairValue, fetchCoinData]);
 
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleSelectedCoin = (event) => {
-    
     setSelectedCoin(event.target.value);
 
-    const selectedCoinName = event.target.options[event.target.selectedIndex].id;
+    const selectedCoinName =
+      event.target.options[event.target.selectedIndex].id;
     setSelectedCoinName(selectedCoinName);
 
     setFormData({
-      support1: '',
-      support2: '',
-      support3: '',
-      support4: '',
-      resistance1: '',
-      resistance2: '',
-      resistance3: '',
-      resistance4: '',
-    })
+      support1: "",
+      support2: "",
+      support3: "",
+      support4: "",
+      resistance1: "",
+      resistance2: "",
+      resistance3: "",
+      resistance4: "",
+    });
   };
 
   const handleTemporality = (event) => {
-    setTemp(event.target.value)
-  }
+    setTemp(event.target.value);
+  };
 
   const handlePair = (event) => {
-    setPairValue(event.target.value)
-  }
+    setPairValue(event.target.value);
+  };
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
     try {
-      const response = await fetch(`${config.BASE_URL}/save_chart`, {
-        method: 'POST',
+      const response = await fetch(`${config.BASE_URL}/api/save_chart`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
         },
         body: JSON.stringify({
           support_1: formData.support1,
@@ -145,34 +149,32 @@ const ChartsPage = () => {
           coin_bot_id: selectedCoin,
           token: selectedCoinName,
           pair: pairValue,
-          temporality: temp
+          temporality: temp,
         }),
-      })
-      
+      });
+
       const responseData = await response.json();
       if (response.ok) {
-      
         setFormData({
-          support1: '',
-          support2: '',
-          support3: '',
-          support4: '',
-          resistance1: '',
-          resistance2: '',
-          resistance3: '',
-          resistance4: '',
-        })
-        fetchCoinData()
+          support1: "",
+          support2: "",
+          support3: "",
+          support4: "",
+          resistance1: "",
+          resistance2: "",
+          resistance3: "",
+          resistance4: "",
+        });
+        fetchCoinData();
 
         Swal.fire({
           icon: "success",
           title: responseData.message,
           showConfirmButton: false,
-          timer: 1000
+          timer: 1000,
         });
-
       } else {
-        console.error('Error saving chart:', response.statusText)
+        console.error("Error saving chart:", response.statusText);
         Swal.fire({
           icon: "error",
           title: responseData.message,
@@ -180,40 +182,46 @@ const ChartsPage = () => {
         });
       }
     } catch (error) {
-      console.error('Error saving chart:', error)
+      console.error("Error saving chart:", error);
       Swal.fire({
         icon: "error",
         title: error,
         showConfirmButton: false,
       });
     }
-  }
- 
-  const values = coinData?.success === true ? Object.values(coinData.chart_values) : null;
-  const supports = values && values.length >= 4 ? values.slice(5,9) : null;
-  const resistances = values && values.length >= 4 ? values.slice(1, 5) : null;
+  };
 
   function formatNumberToCurrency(number) {
-    const decimalPlaces = (number.toString().split('.')[1] || '').length;
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: decimalPlaces,
-        maximumFractionDigits: decimalPlaces
+    const decimalPlaces = (number.toString().split(".")[1] || "").length;
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: decimalPlaces,
+      maximumFractionDigits: decimalPlaces,
     }).format(number);
-}
+  }
+
+  const supports = [
+    coinData.support_1,
+    coinData.support_2,
+    coinData.support_3,
+    coinData.support_4,
+  ];
+
+  const resistances = [
+    coinData.resistance_1,
+    coinData.resistance_2,
+    coinData.resistance_3,
+    coinData.resistance_4,
+  ];
 
   return (
     <CRow>
-      <CCol className='mainContainer' xs="13">
-      <h4 className='chartTitle'>Support & Resistance</h4>
-        <CCard className='card'>
-         
-          <CCardBody className='cardBody'>
-            <form className='form' onSubmit={handleSubmit}>
-
-           
-             
+      <CCol className="mainContainer" xs="13">
+        <h4 className="chartTitle">Support & Resistance</h4>
+        <CCard className="card">
+          <CCardBody className="cardBody">
+            <form className="form" onSubmit={handleSubmit}>
               {/* Select coin */}
               <div className="mb-3">
                 <CInputGroup>
@@ -227,7 +235,12 @@ const ChartsPage = () => {
                   >
                     <option>Select...</option>
                     {coinBots.map((coinBot) => (
-                      <option className='coinName' key={coinBot.id} id={coinBot.name} value={coinBot.id}>
+                      <option
+                        className="coinName"
+                        key={coinBot.id}
+                        id={coinBot.name}
+                        value={coinBot.id}
+                      >
                         {coinBot.name.toUpperCase()}
                       </option>
                     ))}
@@ -235,9 +248,9 @@ const ChartsPage = () => {
                 </CInputGroup>
               </div>
 
-                 {/* Select temporality and pair */}
-                 <div className='chartOptions'>
-              <CInputGroup>
+              {/* Select temporality and pair */}
+              <div className="chartOptions">
+                <CInputGroup>
                   <CInputGroupText>Temporality</CInputGroupText>
                   <select
                     className="form-control"
@@ -248,13 +261,13 @@ const ChartsPage = () => {
                   >
                     <option>Select...</option>
                     {temporalities.map((value) => (
-                      <option className='tempOption' key={value} value={value}>
+                      <option className="tempOption" key={value} value={value}>
                         {value.toUpperCase()}
                       </option>
                     ))}
                   </select>
-                </CInputGroup>      
-              <CInputGroup>
+                </CInputGroup>
+                <CInputGroup>
                   <CInputGroupText>Pair</CInputGroupText>
                   <select
                     className="form-control"
@@ -265,17 +278,16 @@ const ChartsPage = () => {
                   >
                     <option>Select...</option>
                     {pairs.map((value) => (
-                      <option className='tempOption' key={value} value={value}>
+                      <option className="tempOption" key={value} value={value}>
                         {value.toUpperCase()}
                       </option>
                     ))}
                   </select>
-                </CInputGroup>      
-
+                </CInputGroup>
               </div>
 
               <CRow>
-                <CCol className='column' md="6">
+                <CCol className="column" md="6">
                   {[1, 2, 3, 4].map((index) => (
                     <div key={`support${index}`} className="mb-3">
                       <CInputGroup>
@@ -286,8 +298,12 @@ const ChartsPage = () => {
                           value={formData[`support${index}`]}
                           onChange={handleChange}
                           required
-                          className='input'
-                          placeholder={supports && formatNumberToCurrency(supports[index -1])}
+                          className="input"
+                          placeholder={
+                            supports[index - 1]
+                              ? formatNumberToCurrency(supports[index - 1])
+                              : ""
+                          }
                         />
                       </CInputGroup>
                     </div>
@@ -295,11 +311,8 @@ const ChartsPage = () => {
                 </CCol>
               </CRow>
 
-              
-
-              {/* Input fields for resistance */}
               <CRow>
-                <CCol className='column' md="6">
+                <CCol className="column" md="6">
                   {[1, 2, 3, 4].map((index) => (
                     <div key={`resistance${index}`} className="mb-3">
                       <CInputGroup>
@@ -310,8 +323,12 @@ const ChartsPage = () => {
                           value={formData[`resistance${index}`]}
                           onChange={handleChange}
                           required
-                          className='input'
-                          placeholder={resistances && formatNumberToCurrency(resistances[index -1])}
+                          className="input"
+                          placeholder={
+                            resistances[index - 1]
+                              ? formatNumberToCurrency(resistances[index - 1])
+                              : ""
+                          }
                         />
                       </CInputGroup>
                     </div>
@@ -319,20 +336,18 @@ const ChartsPage = () => {
                 </CCol>
               </CRow>
 
-              <div className='lastContainer'>
-                
+              <div className="lastContainer">
                 {/* Submit button */}
-                <CButton className="save-btn"  type="submit">
+                <CButton className="save-btn" type="submit">
                   Save Chart
                 </CButton>
-
               </div>
             </form>
           </CCardBody>
         </CCard>
       </CCol>
     </CRow>
-  )
-}
+  );
+};
 
-export default ChartsPage
+export default ChartsPage;
