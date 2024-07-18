@@ -66,7 +66,7 @@ const ChartsPage = () => {
       const response = await fetch(`${config.BASE_URL}/api/coin-support-resistance/coin_id=${selectedCoin}&temporality=${temp}&pair=${pairValue}`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
+          'Content- Type': 'application/json',
           'ngrok-skip-browser-warning': 'true',
         },
       })
