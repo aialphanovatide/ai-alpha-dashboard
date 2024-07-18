@@ -63,7 +63,7 @@ const ChartsPage = () => {
 
   const fetchCoinData = useCallback(async () => {
     try {
-      const response = await fetch(`${config.BASE_URL}/api/coin-support-resistance/dashboard?coin_id=${selectedCoin}&temporality=${temp}&pair=${pairValue}`, {
+      const response = await fetch(`${config.BASE_URL}/api/coin-support-resistance/coin_id=${selectedCoin}&temporality=${temp}&pair=${pairValue}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
