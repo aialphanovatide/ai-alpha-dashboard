@@ -131,7 +131,7 @@ const ChartsPage = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${config.BASE_URL}/api/save_chart`, {
+      const response = await fetch(`${config.BASE_URL}/api/chart/save_chart`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
