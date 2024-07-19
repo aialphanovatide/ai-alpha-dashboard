@@ -102,7 +102,7 @@ const Analysis = () => {
       const data = await response.json();
       console.log("data,", data)
       if (response.ok) {
-        setItems(data.message);
+        setItems(data.data);
         setSelectedImage("");
       } else {
         console.error("Error fetching coin bots:", response.statusText);
