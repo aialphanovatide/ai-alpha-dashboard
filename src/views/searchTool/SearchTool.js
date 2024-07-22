@@ -118,7 +118,7 @@ const SearchTool = () => {
 
   // Filter articles based on search term
   const filteredArticles = articles.filter((article) =>
-    article.title.toLowerCase().includes(searchTerm.toLowerCase())
+    article.title.toLowerCase().includes(searchTerm.toLowerCase() || 'No Name')
   );
 
   // Calculate the articles to display based on the current page

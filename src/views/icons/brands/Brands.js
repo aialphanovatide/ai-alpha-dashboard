@@ -5,7 +5,7 @@ import { brandSet } from '@coreui/icons'
 import { DocsCallout } from 'src/components'
 
 const toKebabCase = (str) => {
-  return str.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()
+  return str.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase() || 'No Name'
 }
 
 export const getIconsView = (iconset) => {

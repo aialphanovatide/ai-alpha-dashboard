@@ -47,7 +47,7 @@ const Tokenomics = () => {
     if (tokenomicsData && tokenomicsData.tokenomics_data.length > 1) {
       const competitorsNames = tokenomicsData.tokenomics_data
         .slice(1)
-        .map((tokenomic) => tokenomic.tokenomics.token.trim().toLowerCase());
+        .map((tokenomic) => tokenomic.tokenomics.token.trim().toLowerCase() || 'No Name');
       setCompetitorsCoinNames(competitorsNames);
     }
   }, [tokenomicsData]);
