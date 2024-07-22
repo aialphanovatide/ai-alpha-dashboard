@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Form, Button, Spinner } from "react-bootstrap";
 import pdfToText from "react-pdftotext";
+import config from "../../config";
 
 const TextExtractor = ({ setAnalysis }) => {
   const [selectedExtractType, setSelectedExtractType] = useState("");
@@ -25,7 +26,7 @@ const TextExtractor = ({ setAnalysis }) => {
               : undefined,
         };
 
-        const response = await fetch(`https://newsbotv2.ngrok.io/extract_content`, {
+        const response = await fetch(`${config.BOTS_V2_API}/extract_content`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
