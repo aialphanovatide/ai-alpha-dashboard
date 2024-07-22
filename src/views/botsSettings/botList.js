@@ -65,7 +65,7 @@ const BotList = ({ bots }) => {
       console.error("Bot or botList is undefined.");
     }
   };
-  console.log("icon: " + botList.bot);
+
 
   return (
     <div className="bot-list-container">

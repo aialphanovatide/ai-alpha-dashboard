@@ -117,9 +117,12 @@ const SearchTool = () => {
   };
 
   // Filter articles based on search term
-  const filteredArticles = articles.filter((article) =>
-    article.title.toLowerCase().includes(searchTerm.toLowerCase() || 'No Name')
-  );
+  const filteredArticles = articles.filter((article) => {
+    const title = article.title || '';  // Asigna una cadena vacía si title es null o undefined
+    const search = searchTerm || '';  // Asigna una cadena vacía si searchTerm es null o undefined
+    return title.toLowerCase().includes(search.toLowerCase());
+  });
+  
 
   // Calculate the articles to display based on the current page
   const indexOfLastArticle = currentPage * articlesPerPage;
