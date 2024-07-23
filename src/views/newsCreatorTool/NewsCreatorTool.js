@@ -87,11 +87,18 @@ const NewsCreatorTool = () => {
   ]);
 
 
+  const parseSummary = (summary) => {
+    const lines = summary.split('\n').filter(line => line.trim() !== '');
+    const title = lines[0].replace(/^\*\*(.*)\*\*$/, '$1'); // Elimina los asteriscos si están presentes
+    const content = lines.slice(1).join('\n');
+    return { title, content };
+  };
+  
   const handleGenerate = async () => {
     setIsLoadingRegenerateArticle(true);
     try {
       const articleResponse = await fetch(
-        `${config.BOTS_V2_API}/generate_article`,
+        `http://127.0.0.1:5001/generate_article`,
         {
           method: "POST",
           headers: {
@@ -104,13 +111,16 @@ const NewsCreatorTool = () => {
           }),
         },
       );
-
+  
       const articleData = await articleResponse.json();
+      console.log(articleData.data.summary.response);
+      const { title, content } = parseSummary(articleData.data.summary.response);
+      console.log(title, content);
       if (!articleResponse.ok) {
         console.error("Error generating article:", articleData.error);
         return;
       }
-
+  
       const imageResponse = await fetch(
         `${config.BOTS_V2_API}/generate_image`,
         {
@@ -120,34 +130,37 @@ const NewsCreatorTool = () => {
             "ngrok-skip-browser-warning": "true",
           },
           body: JSON.stringify({
-            content: articleData.data.content,
+            content: articleData.data.summary.response,
             bot_id: selectedBot,
           }),
         },
       );
-
+  
       const imageData = await imageResponse.json();
+      console.log(imageData);
       if (!imageResponse.ok) {
         console.error("Error generating image:", imageData.error);
         return;
       }
-
+  
+      const imageUrl = imageData.data.image_url;
+  
       setPreviewData({
-        title: articleData.data.title,
-        content: articleData.data.content,
-        image: imageData.data.image_url,
+        title: title,
+        content: content,
+        image: imageUrl,
       });
       setArticleToBeSaved({
-        title: articleData.data.title,
-        content: articleData.data.content,
+        title: title,
+        content: content,
         analysis: analysis,
         used_keywords: usedKeywords,
         is_article_efficient: isArticleEfficient,
         category_id: selectedCategory,
         bot_id: selectedBot,
       });
-      setImageToBeSaved(imageData.data.image_url);
-
+      setImageToBeSaved(imageUrl);
+  
       setShowPreview(true);
     } catch (error) {
       console.error("Error generating article or image:", error.message);
@@ -156,6 +169,7 @@ const NewsCreatorTool = () => {
       setIsLoadingRegenerateImage(false);
     }
   };
+  
 
   const handleSave = async () => {
     setIsLoadingSave(true);
