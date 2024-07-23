@@ -98,7 +98,7 @@ const NewsCreatorTool = () => {
     setIsLoadingRegenerateArticle(true);
     try {
       const articleResponse = await fetch(
-        `http://127.0.0.1:5001/generate_article`,
+        `${config.BOTS_V2_API}/generate_article`,
         {
           method: "POST",
           headers: {
