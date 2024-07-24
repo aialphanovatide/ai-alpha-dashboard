@@ -53,8 +53,8 @@ const SearchToolItem = ({ article }) => {
   // Verifica que los campos no sean null o undefined
   const title = article.title || 'No Title';
   const content = article.content || 'No Content';
+  const filContent = content.replace('Here is the rewritten headline and summary of the article:','')
   const imageSrc = article.image ? `https://sitesnewsposters.s3.us-east-2.amazonaws.com/${article.image}` : '';
-
   return (
     <div className="search-tool-item" style={{ width: "100%" }} onClick={openModal}>
       <img
@@ -65,7 +65,7 @@ const SearchToolItem = ({ article }) => {
       />
       <h3>{title.slice(0, 100)}</h3>
       <p>{article.date}</p>
-      <p>{content.slice(0, 250)}...</p>
+      <p>{filContent.slice(0, 250)}...</p>
       <br />
       <br />
       <br />
@@ -92,7 +92,7 @@ const SearchToolItem = ({ article }) => {
             />
             <h2>{title}</h2>
             <p>{article.date}</p>
-            <p>{content}</p>
+            <p>{filContent}</p>
             <p>{article.is_article_efficent}</p>
           </div>
         </div>
