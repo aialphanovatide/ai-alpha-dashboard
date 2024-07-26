@@ -54,7 +54,8 @@ const SearchToolItem = ({ article }) => {
   const title = article.title || 'No Title';
   const content = article.content || 'No Content';
   const filContent = content.replace('Here is the rewritten headline and summary of the article:','')
-  const imageSrc = article.image ? `https://sitesnewsposters.s3.us-east-2.amazonaws.com/${article.image}` : '';
+  const imageSrc = article.image ? `${article.image}` : '';
+  console.log(imageSrc)
   return (
     <div className="search-tool-item" style={{ width: "100%" }} onClick={openModal}>
       <img
