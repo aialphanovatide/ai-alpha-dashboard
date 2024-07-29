@@ -36,6 +36,7 @@ const TextExtractor = ({ setAnalysis }) => {
         });
 
         const data = await response.json();
+        console.log(data)
         if (response.ok) {
           setAnalysis(data.response);
           setSelectedExtractType("")
