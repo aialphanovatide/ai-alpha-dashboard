@@ -58,7 +58,7 @@ const SearchToolItem = ({ article }) => {
     <div className="search-tool-item" style={{ width: "100%" }} onClick={openModal}>
       <img
         className={`img-modal-news-card`}
-        src={`https://sitesnewsposters.s3.us-east-2.amazonaws.com/${article.image}`}
+        src={`https://appnewsposters.s3.us-east-2.amazonaws.com/${article.image}`}
         onLoad={handleImageLoaded}
         alt={title}
       />
