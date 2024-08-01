@@ -8,29 +8,25 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 const SearchTool = () => {
   const [validArticles, setValidArticles] = useState(true);
-  const [unwantedArticles, setUnwantedArticles] = useState(true);
+  const [unwantedArticles, setUnwantedArticles] = useState(false);
   const [articles, setArticles] = useState([]);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1); // State for current page
-  const articlesPerPage = 15; // Number of articles per page
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const articlesPerPage = 15;
+  
   const articlesRef = useRef([]);
-  const errorRef = useRef(null);
+  const errorRef = useRef(null); // Asegúrate de definir errorRef aquí
 
   const fetchArticles = async () => {
     setLoading(true);
-
     let validArticlesData = [];
     let unwantedArticlesData = [];
 
     try {
-      const response1 = await fetch(
-        `${config.BOTS_V2_API}/get_all_articles?limit=100`
-      );
+      const response1 = await fetch(`${config.BOTS_V2_API}/get_all_articles?limit=100`);
       const data1 = await response1.json();
-      
       if (response1.ok) {
         validArticlesData = data1.data.map((article) => ({
           ...article,
@@ -40,11 +36,8 @@ const SearchTool = () => {
         setError(data1.error);
       }
 
-      const response2 = await fetch(
-        `${config.BOTS_V2_API}/get_unwanted_articles`
-      );
+      const response2 = await fetch(`${config.BOTS_V2_API}/get_unwanted_articles`);
       const data2 = await response2.json();
-      console.log("data2", data2.data)
       if (response2.ok) {
         unwantedArticlesData = data2.data.map((article) => ({
           ...article,
@@ -56,75 +49,70 @@ const SearchTool = () => {
 
       articlesRef.current = [
         ...validArticlesData,
-        ...unwantedArticlesData
+        ...unwantedArticlesData,
       ].sort((a, b) => new Date(b.date) - new Date(a.date));
-      errorRef.current = null;
+      errorRef.current = null; // Aquí se establece errorRef.current
     } catch (error) {
       setError("Error fetching articles");
       articlesRef.current = [];
-      errorRef.current = error.message;
+      errorRef.current = error.message; // Aquí se establece errorRef.current
     }
 
     setArticles(articlesRef.current);
-    setError(errorRef.current);
+    setError(errorRef.current); // Aquí se establece el error
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchArticles(); // Performs the initial fetch when the component mounts
-
-    const intervalId = setInterval(fetchArticles, 600000); // Fetches every 10 minutes
-
+    fetchArticles();
+    const intervalId = setInterval(fetchArticles, 600000);
     return () => {
-      clearInterval(intervalId); // Cleans up the interval when the component unmounts
+      clearInterval(intervalId);
     };
-  }, []); // Only runs on component mount
+  }, []);
 
-  useEffect(() => {
-    // Filters articles locally based on selected checkboxes
-    setArticles(articlesRef.current.filter(article => {
+  const getFilteredArticles = () => {
+    return articlesRef.current.filter(article => {
       if (validArticles && unwantedArticles) {
-        return true; // Show both types of articles
+        return true; // Mostrar ambos tipos de artículos
       } else if (validArticles) {
-        return !article.unwanted; // Show only valid articles
+        return !article.unwanted; // Mostrar solo artículos válidos
       } else if (unwantedArticles) {
-        return article.unwanted; // Show only unwanted articles
+        return article.unwanted; // Mostrar solo artículos no deseados
       } else {
-        return false; // Should not happen since one checkbox will always be selected
+        return false; // Este caso no debería ocurrir
       }
-    }));
-    setCurrentPage(1); // Reset to first page when filters change
-  }, [validArticles, unwantedArticles]);
+    });
+  };
 
   const handleSearch = (event) => {
     if (event.key === "Enter") {
-      setCurrentPage(1); // Reset to first page when search is performed
+      setCurrentPage(1);
     }
   };
 
   const handleValidArticlesChange = (event) => {
     setValidArticles(event.target.checked);
-    if (!event.target.checked) {
-      setUnwantedArticles(true); // Forces selection of the other checkbox
-    }
   };
 
   const handleUnwantedArticlesChange = (event) => {
     setUnwantedArticles(event.target.checked);
-    if (!event.target.checked) {
-      setValidArticles(true); // Forces selection of the other checkbox
-    }
   };
 
-  // Filter articles based on search term
-  const filteredArticles = articles.filter((article) => {
-    const title = article.title || '';  // Asigna una cadena vacía si title es null o undefined
-    const search = searchTerm || '';  // Asigna una cadena vacía si searchTerm es null o undefined
+  // Asegurarse de que al menos un checkbox esté marcado
+  useEffect(() => {
+    if (!validArticles && !unwantedArticles) {
+      setValidArticles(true); // Por defecto a artículos válidos si ambos están desmarcados
+    }
+  }, [validArticles, unwantedArticles]);
+
+  // Filtrar artículos según el término de búsqueda
+  const filteredArticles = getFilteredArticles().filter((article) => {
+    const title = article.title || '';
+    const search = searchTerm || '';
     return title.toLowerCase().includes(search.toLowerCase());
   });
-  
 
-  // Calculate the articles to display based on the current page
   const indexOfLastArticle = currentPage * articlesPerPage;
   const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
   const currentArticles = filteredArticles.slice(indexOfFirstArticle, indexOfLastArticle);
@@ -132,7 +120,7 @@ const SearchTool = () => {
   return (
     <div className="search-tool">
       <h2>Article Search Tool</h2>
-      <br></br>
+      <br />
 
       <div className="search-header">
         <input

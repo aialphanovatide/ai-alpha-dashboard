@@ -49,17 +49,16 @@ const SearchToolItem = ({ article }) => {
   const handleImageLoaded = () => {
     setImageLoaded(true);
   };
-
+  console.log(article)
   // Verifica que los campos no sean null o undefined
   const title = article.title || 'No Title';
   const content = article.content || 'No Content';
   const filContent = content.replace('Here is the rewritten headline and summary of the article:','')
-  const imageSrc = article.image ? `${article.image}` : '';
   return (
     <div className="search-tool-item" style={{ width: "100%" }} onClick={openModal}>
       <img
         className={`img-modal-news-card`}
-        src={imageSrc}
+        src={`https://sitesnewsposters.s3.us-east-2.amazonaws.com/${article.image}`}
         onLoad={handleImageLoaded}
         alt={title}
       />
@@ -77,6 +76,16 @@ const SearchToolItem = ({ article }) => {
           {`${botName.toUpperCase()}`}
         </span>
       )}
+      {botName && (
+        <span className="tag bot" style={{ marginRight: "4.5em" }}>
+          {`${botName.toUpperCase()}`}
+        </span>
+      )}
+      {article.is_top_story && (
+        <span className="tag top-story" style={{ marginRight: "70%" }}>
+          TOP STORY
+        </span>
+      )}
       {modalOpen && (
         <div className={`modal ${imageLoaded ? "" : "loading"}`}>
           <div className="modal-content">
@@ -86,7 +95,7 @@ const SearchToolItem = ({ article }) => {
             {!imageLoaded && <div className="loader"></div>}
             <img
               className={`img-modal-news ${imageLoaded ? "img-modal-news-show" : "img-modal-news-hide"}`}
-              src={imageSrc}
+              src={`https://sitesnewsposters.s3.us-east-2.amazonaws.com/${article.image}`}
               onLoad={handleImageLoaded}
               alt={title}
             />

@@ -94,6 +94,10 @@
   .search-tool-item .tag.bot {
     background-color: orange;
   }
+
+  .search-tool-item .tag.top-story{
+    background-color: blue;
+  }
   
 
   .img-modal-news-card{
