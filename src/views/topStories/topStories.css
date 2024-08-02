@@ -1,107 +1,106 @@
-
 /* ------------------ ITEM ----------------------------------- */
 
-
 .alltopStoriesmain {
-    width: 100%;
-    margin: 1rem;
-    border-radius: 5px;
-  }
-  
-.alltopStoriesUL {
-    margin: 1rem 0 1rem 0;
-    border-radius: 5px;
-    list-style: none;
-    width: 100%;
-    padding: 0;
-    max-height: 800px;
-    overflow-y: scroll;
-  }
-  
-  .allTopStoriesLI {
-    margin: 1rem 0;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-    background-color: #fff;
-    border-radius: 5px;
-    display: flex;
-    height: 200px;
-    align-items: center;
-    /* overflow: hidden; */
-    position: relative;
-    cursor: pointer;
-  }
-  
-  .itemImage {
-    margin: 5px 10px;
-    border-radius: 5px;
-    width: 25%;
-    height: 90%;
-    object-fit: contain;
-  }
-  
-  .itemContent {
-    width: 68%;
-    height: 170px;
-    text-overflow: ellipsis;
-    overflow:hidden;
-  }
-  
-  .deleteBtn:hover{
-    color: red;
-  }
-  
-  .deleteBtn{
-    color: #282828;
-    cursor: pointer;
-    margin: 0.5rem;
-  }
-  
-  /* -------------------- MODAL -------------------------------- */
-  
-  .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow-y: scroll;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    
-  }
-  
-  .modalContent {
-    background: #fff;
-    border-radius: 5px;
-    padding: 20px;
-    max-width: 700px;
-    width: 100%; 
-    display: flex;
-    flex-direction: column;
-    height: 75%;
-    position: relative;
-    overflow-y: scroll;
-  }
-  
-  .modalText { 
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
-  
-  .modalImage {
-    height: auto;
-    width: 40%;
-    align-self: center;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    object-fit: contain
+  width: 100%;
+  margin: 1rem;
+  border-radius: 5px;
 }
 
+.card-deck {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem; /* Espacio entre tarjetas */
+  justify-content: flex-start; /* Alinear tarjetas al inicio */
+}
+
+.card {
+  flex: 0 0 30%;
+  margin: 0; /* Eliminar márgenes */
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.card-img-top {
+  border-radius: 5px 5px 0 0;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+.card-title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.card-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  height: 100px;
+}
+
+.card-date {
+  font-size: 0.9em;
+  color: #777;
+}
+
+.deleteBtn:hover {
+  color: red;
+}
+
+.deleteBtn {
+  color: #282828;
+  cursor: pointer;
+  margin: 0.5rem;
+  float: right;
+}
+
+/* -------------------- MODAL -------------------------------- */
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  max-width: 700px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 75%;
+  position: relative;
+  overflow-y: scroll;
+}
+
+.modalText {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.modalImage {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+  }
 .closeButton {
   cursor: pointer;
   background: #007bff;
@@ -111,5 +110,4 @@
   border-radius: 5px;
   font-size: 16px;
   margin-top: 15px;
-  
 }
