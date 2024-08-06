@@ -64,6 +64,7 @@ const SearchToolItem = ({ article }) => {
       />
       <h3>{title.slice(0, 100)}</h3>
       <p>{article.date}</p>
+      <p>Reason: {article.reason}</p>
       <p>{filContent.slice(0, 250)}...</p>
       <br />
       <br />
