@@ -15,9 +15,38 @@ const SearchTool = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 15;
+  const [selectedCoinBot, setSelectedCoinBot] = useState("");
+  const [bots, setBots] = useState([]);
   
   const articlesRef = useRef([]);
-  const errorRef = useRef(null); // Asegúrate de definir errorRef aquí
+  const errorRef = useRef(null);
+
+  useEffect(() => {
+    const getAllBots = async () => {
+      try {
+        const response = await fetch(`${config.BOTS_V2_API}/get_all_coin_bots`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        });
+
+        const data = await response.json();
+        if (data && data.data.coin_bots) {
+          setBots(data.data.coin_bots);
+        } else {
+          console.error("Error fetching bots:", data.message);
+          setBots([]);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setBots([]);
+      }
+    };
+
+    getAllBots();
+  }, []);
 
   const fetchArticles = async () => {
     setLoading(true);
@@ -25,8 +54,9 @@ const SearchTool = () => {
     let unwantedArticlesData = [];
 
     try {
-      const response1 = await fetch(`${config.BOTS_V2_API}/get_all_articles?limit=100`);
+      const response1 = await fetch(`${config.BOTS_V2_API}/get_all_articles?limit=200`);
       const data1 = await response1.json();
+      
       if (response1.ok) {
         validArticlesData = data1.data.map((article) => ({
           ...article,
@@ -51,15 +81,15 @@ const SearchTool = () => {
         ...validArticlesData,
         ...unwantedArticlesData,
       ].sort((a, b) => new Date(b.date) - new Date(a.date));
-      errorRef.current = null; // Aquí se establece errorRef.current
+      errorRef.current = null;
     } catch (error) {
       setError("Error fetching articles");
       articlesRef.current = [];
-      errorRef.current = error.message; // Aquí se establece errorRef.current
+      errorRef.current = error.message;
     }
 
     setArticles(articlesRef.current);
-    setError(errorRef.current); // Aquí se establece el error
+    setError(errorRef.current);
     setLoading(false);
   };
 
@@ -73,15 +103,9 @@ const SearchTool = () => {
 
   const getFilteredArticles = () => {
     return articlesRef.current.filter(article => {
-      if (validArticles && unwantedArticles) {
-        return true; // Mostrar ambos tipos de artículos
-      } else if (validArticles) {
-        return !article.unwanted; // Mostrar solo artículos válidos
-      } else if (unwantedArticles) {
-        return article.unwanted; // Mostrar solo artículos no deseados
-      } else {
-        return false; // Este caso no debería ocurrir
-      }
+      const matchesCoin = selectedCoinBot ? article.bot_id === parseInt(selectedCoinBot) : true;
+      const matchesType = (validArticles && !article.unwanted) || (unwantedArticles && article.unwanted);
+      return matchesCoin && matchesType;
     });
   };
 
@@ -99,14 +123,16 @@ const SearchTool = () => {
     setUnwantedArticles(event.target.checked);
   };
 
-  // Asegurarse de que al menos un checkbox esté marcado
+  const handleCoinBotChange = (value) => {
+    setSelectedCoinBot(value);
+  };
+
   useEffect(() => {
     if (!validArticles && !unwantedArticles) {
-      setValidArticles(true); // Por defecto a artículos válidos si ambos están desmarcados
+      setValidArticles(true);
     }
   }, [validArticles, unwantedArticles]);
 
-  // Filtrar artículos según el término de búsqueda
   const filteredArticles = getFilteredArticles().filter((article) => {
     const title = article.title || '';
     const search = searchTerm || '';
@@ -121,7 +147,6 @@ const SearchTool = () => {
     <div className="search-tool">
       <h2>Article Search Tool</h2>
       <br />
-
       <div className="search-header">
         <input
           type="text"
@@ -131,6 +156,19 @@ const SearchTool = () => {
           onKeyPress={handleSearch}
         />
         <label>
+          <label htmlFor="coin-select">Select Coin</label>
+          <select
+            id="coin-select"
+            value={selectedCoinBot}
+            onChange={(e) => handleCoinBotChange(e.target.value)}
+          >
+            <option value="">Select...</option>
+            {bots.map((bot) => (
+              <option key={bot.id} value={bot.id}>
+                {bot.name ? bot.name.toUpperCase() : "No Name"}
+              </option>
+            ))}
+          </select>
           <input
             type="checkbox"
             checked={validArticles}

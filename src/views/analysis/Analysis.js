@@ -100,7 +100,6 @@ const Analysis = () => {
       );
 
       const data = await response.json();
-      console.log("data,", data)
       if (response.ok) {
         setItems(data.data);
         setSelectedImage("");
@@ -156,7 +155,6 @@ const Analysis = () => {
     );
 
     const combinedContent = `Title: ${title}\n${content}`;
-    console.log("combinedContent", combinedContent);
     const formDataToSchedule = new FormData();
     formDataToSchedule.append("coinBot", selectedCoin);
     formDataToSchedule.append("content", combinedContent);
@@ -230,7 +228,6 @@ const Analysis = () => {
         body: formData,
       });
       let responseData = await response.json();
-      console.log("response", responseData)
       if (response.ok) {
         Swal.fire({
           icon: "success",

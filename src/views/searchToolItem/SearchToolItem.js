@@ -49,11 +49,11 @@ const SearchToolItem = ({ article }) => {
   const handleImageLoaded = () => {
     setImageLoaded(true);
   };
-  console.log(article)
   // Verifica que los campos no sean null o undefined
   const title = article.title || 'No Title';
   const content = article.content || 'No Content';
   const filContent = content.replace('Here is the rewritten headline and summary of the article:','')
+  const reason = article.reason?.trim(); 
   return (
     <div className="search-tool-item" style={{ width: "100%" }} onClick={openModal}>
       <img
@@ -64,7 +64,7 @@ const SearchToolItem = ({ article }) => {
       />
       <h3>{title.slice(0, 100)}</h3>
       <p>{article.date}</p>
-      <p>Reason: {article.reason}</p>
+      {reason && <p>Reason: {reason}</p>}
       <p>{filContent.slice(0, 250)}...</p>
       <br />
       <br />
