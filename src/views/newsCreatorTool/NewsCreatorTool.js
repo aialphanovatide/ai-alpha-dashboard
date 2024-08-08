@@ -86,6 +86,12 @@ const NewsCreatorTool = () => {
     charLimitError,
   ]);
 
+ 
+const getSelectedBotName = () => {
+  const bot = bots.find((b) => b.id.toString() === selectedBot.toString());
+  return bot ? bot.name : "";
+};
+
 
   const parseSummary = (summary) => {
     const lines = summary.split('\n').filter(line => line.trim() !== '');
@@ -312,8 +318,7 @@ const NewsCreatorTool = () => {
     <div className="news-creator-tool">
       <h1>News Creator Tool</h1>
       <Form>
-        <TextExtractor setAnalysis={setAnalysis} />
-        <br />
+        
         <Form.Group controlId="category">
           <Form.Label>Category</Form.Label>
           <Form.Control
@@ -344,6 +349,12 @@ const NewsCreatorTool = () => {
               </option>
             ))}
           </Form.Control>
+          <br />
+          <TextExtractor
+            setAnalysis={setAnalysis}
+            coin_bot={getSelectedBotName()} // Pasar el nombre en lugar del ID
+          />
+          <br />
         </Form.Group>
         <br />
         <Form.Group controlId="analysis">

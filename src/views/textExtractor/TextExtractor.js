@@ -1,10 +1,9 @@
-// TextExtractor.js
 import React, { useState } from "react";
 import { Form, Button, Spinner } from "react-bootstrap";
 import pdfToText from "react-pdftotext";
 import config from "../../config";
 
-const TextExtractor = ({ setAnalysis }) => {
+const TextExtractor = ({ setAnalysis, coin_bot }) => {
   const [selectedExtractType, setSelectedExtractType] = useState("");
   const [link, setLink] = useState("");
   const [pdfFile, setPdfFile] = useState(null);
@@ -14,18 +13,31 @@ const TextExtractor = ({ setAnalysis }) => {
     setIsExtracting(true);
     try {
       if (selectedExtractType === "pdf" && pdfFile) {
-        const text = await pdfToText(pdfFile);
-        setAnalysis(text);
+        const formData = new FormData();
+        formData.append("file", pdfFile);
+        formData.append("folderName", coin_bot); 
+        formData.append("fileName", pdfFile.name);
+  
+        const response = await fetch(`http://127.0.0.1:5001/upload`, {
+          method: "POST",
+          body: formData,
+        });
+  
+        const data = await response.json();
+        console.log("respuesta ", data )
+        if (response.ok) {
+          console.log("File uploaded successfully:", data);
+          const text = await pdfToText(pdfFile);
+          setAnalysis(text);
+        } else {
+          console.error("Error uploading file", data.response);
+        }
       } else {
         let requestData = {
           extract_type: selectedExtractType,
-          link:
-            selectedExtractType === "link" ||
-            selectedExtractType === "google_docs"
-              ? link
-              : undefined,
+          link: selectedExtractType === "link" || selectedExtractType === "google_docs" ? link : undefined,
         };
-
+  
         const response = await fetch(`${config.BOTS_V2_API}/extract_content`, {
           method: "POST",
           headers: {
@@ -34,26 +46,24 @@ const TextExtractor = ({ setAnalysis }) => {
           },
           body: JSON.stringify(requestData),
         });
-
+  
         const data = await response.json();
         if (response.ok) {
           setAnalysis(data.response);
-          setSelectedExtractType("")
-        setLink("")
-        setPdfFile(null)
+          setSelectedExtractType("");
+          setLink("");
+          setPdfFile(null);
         } else {
           console.error("Error extracting content:", data.response);
         }
       }
     } catch (error) {
-      console.error("Error extracting content:", error.message);
+      console.error("Error extracting content:", error);  // Captura más detalles del error
     } finally {
       setIsExtracting(false);
-    
-
     }
   };
-
+  
   return (
     <div className="text-extractor">
       <Form>
