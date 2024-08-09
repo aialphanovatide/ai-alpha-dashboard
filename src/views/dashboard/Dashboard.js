@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import config from '../../config';
 import './dashboardStyles.css';
 import { Link } from 'react-router-dom';
+import ApiUsage from './ApiUsage';
 
 const CenteredBox = ({ title, coin, date, to }) => {
   return (
@@ -124,6 +125,12 @@ const Dashboard = () => {
         <CenteredBox title="News Bot" date={botsStatusMessage} to={"/botsSettings"} />
         <CenteredBox title="Chart" coin={coin} date={date} to={"/chartsPage"} />
         <CenteredBox title="Analysis" coin={analysisCoin} date={analysisDate} to={"/analysis"} />
+      </div>
+      <div>
+      <br></br>
+    <h3 className="mb-2">API Monitor</h3>
+    <br></br>
+        <ApiUsage />
       </div>
     </div>
   );

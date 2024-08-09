@@ -50,6 +50,7 @@
     "react": "^18.2.0",
     "react-app-polyfill": "^3.0.0",
     "react-bootstrap": "^2.10.2",
+    "react-circular-gauge": "^1.1.1",
     "react-datepicker": "^6.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.1",

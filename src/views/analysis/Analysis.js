@@ -84,7 +84,27 @@ const Analysis = () => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
-
+  
+  const fetchCoinsByCategory = async (category) => {
+    try {
+      const response = await fetch(`${config.BASE_URL}/get_bot_ids_by_category/${category}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      console.log("fetch: ",data)
+      if (response.ok) {
+        return data.data.bot_ids; // Assuming the API returns a list of coins
+      } else {
+        console.error("Error fetching coins by category:", response.statusText);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching coins by category:", error);
+      return [];
+    }
+  };
+  
   // Define fetchAnalysis as a useCallback to prevent unnecessary re-renders
   const fetchAnalysis = useCallback(async () => {
     try {
@@ -123,13 +143,7 @@ const Analysis = () => {
   }, [selectedCoin, fetchAnalysis]); // Include fetchAnalysis as a dependency
 
   const handleScheduleSubmit = async () => {
-    if (
-      selectedCoin === null ||
-      selectedImage === null ||
-      content === null ||
-      selectedDate === null ||
-      title === null 
-    ) {
+    if (selectedImage === null || content === null || selectedDate === null || title === null) {
       return Swal.fire({
         icon: "error",
         title: "One or more required fields are missing",
@@ -137,76 +151,56 @@ const Analysis = () => {
         timer: 1000,
       });
     }
+  
     setIsSubmitting(true);
-
-    const selectedDateStr = selectedDate.toLocaleString("en-US", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-
-    const cleanedSelectedDate = selectedDateStr.replace(
-      " GMT-0300 (Argentina Standard Time)",
-      "",
-    );
-
-    const combinedContent = `Title: ${title}\n${content}`;
-    const formDataToSchedule = new FormData();
-    formDataToSchedule.append("coinBot", selectedCoin);
-    formDataToSchedule.append("content", combinedContent);
-    formDataToSchedule.append("scheduledDate", cleanedSelectedDate);
-    formDataToSchedule.append("category_name", selectedCategory);
-
-    try {
-      const response = await fetch(`${config.BASE_URL}/schedule_post`, {
-        method: "POST",
-        body: formDataToSchedule,
-      });
-
-      let responseData = await response.json();
-
-      if (response.ok) {
-        Swal.fire({
-          icon: "success",
-          title: responseData.message,
-          showConfirmButton: false,
-          timer: 1000,
+  
+    // Determine which coins to use
+    const coins = selectedCoin ? [selectedCoin] : await fetchCoinsByCategory(selectedCategory);
+    
+    for (const coin of coins) {
+      const formDataToSchedule = new FormData();
+      formDataToSchedule.append("coinBot", coin);
+      formDataToSchedule.append("content", `Title: ${title}\n${content}`);
+      formDataToSchedule.append("scheduledDate", selectedDate.toISOString());
+      formDataToSchedule.append("category_name", selectedCategory);
+  
+      try {
+        const response = await fetch(`${config.BASE_URL}/schedule_post`, {
+          method: "POST",
+          body: formDataToSchedule,
         });
-        setSelectedCoin(null);
-        setIsAnalysisCreated(true);
-        setContent(null);
-        setSelectedDate(null);
-        setSelectedImage([]);
-        await fetchAnalysis();
-        handleGetJobs();
-      } else {
+        let responseData = await response.json();
+        if (response.ok) {
+          Swal.fire({
+            icon: "success",
+            title: responseData.message,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error scheduling post",
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }
+      } catch (error) {
         Swal.fire({
           icon: "error",
-          title: "Error scheduling post",
+          title: "An error occurred",
+          text: error.message,
           showConfirmButton: false,
           timer: 1000,
         });
       }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "An error occurred",
-        text: error.message,
-        showConfirmButton: false,
-        timer: 1000,
-      });
-    } finally {
-      setIsSubmitting(false);
     }
+  
+    setIsSubmitting(false);
   };
-
-  // handles the submit of the three values needed - coin Id, content, and image
+  
   const handleSubmit = async () => {
-    if (selectedCoin === null || selectedImage === null || content === null ) {
+    if (selectedImage === null || content === null) {
       return Swal.fire({
         icon: "error",
         title: "One or more required fields are missing",
@@ -214,54 +208,52 @@ const Analysis = () => {
         timer: 1000,
       });
     }
+  
     setIsSubmitting(true);
-
-    const formData = new FormData();
-    formData.append("coinBot", selectedCoin);
-    formData.append("content", content);
-    formData.append("images", selectedImage);
-    formData.append("category_name", selectedCategory);
-
-    try {
-      const response = await fetch(`${config.BASE_URL}/post_analysis`, {
-        method: "POST",
-        body: formData,
-      });
-      let responseData = await response.json();
-      if (response.ok) {
-        Swal.fire({
-          icon: "success",
-          title: responseData.message,
-          showConfirmButton: false,
-          timer: 1000,
+  
+    // Determine which coins to use
+    const coins = selectedCoin ? [selectedCoin] : await fetchCoinsByCategory(selectedCategory);
+    console.log('coins:',coins)
+    for (const coin of coins) {
+      const formData = new FormData();
+      formData.append("coinBot", coin);
+      formData.append("content", content);
+      formData.append("images", selectedImage);
+      formData.append("category_name", selectedCategory);
+  
+      try {
+        const response = await fetch(`${config.BASE_URL}/post_analysis`, {
+          method: "POST",
+          body: formData,
         });
-        setIsAnalysisCreated(true);
-        setContent(null);
-
-        await fetchAnalysis();
-      } else {
+        let responseData = await response.json();
+        if (response.ok) {
+          Swal.fire({
+            icon: "success",
+            title: responseData.message,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error creating analysis",
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }
+      } catch (error) {
         Swal.fire({
           icon: "error",
-          title: "Error creating analysis",
+          title: error,
           showConfirmButton: false,
           timer: 1000,
         });
       }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: error,
-        showConfirmButton: false,
-        timer: 1000,
-      });
-    } finally {
-      setIsSubmitting(false);
     }
+  
+    setIsSubmitting(false);
   };
-
-  useEffect(() => {
-    handleGetJobs();
-  }, []);
 
   const handleGetJobs = async () => {
     try {
