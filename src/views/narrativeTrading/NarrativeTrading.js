@@ -113,6 +113,26 @@ const NarrativeTrading = () => {
     }
   }, [selectedCoin]); // selectedCoin is added as a dependency
 
+  const fetchCoinsByCategory = async (category) => {
+    try {
+      const response = await fetch(`${config.BASE_URL}/get_bot_ids_by_category/${category}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      console.log("fetch: ",data)
+      if (response.ok) {
+        return data.data.bot_ids; // Assuming the API returns a list of coins
+      } else {
+        console.error("Error fetching coins by category:", response.statusText);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching coins by category:", error);
+      return [];
+    }
+  };
+
   // Calls right away all the analysis when the component mounts
   useEffect(() => {
     const fetchData = async () => {
@@ -156,9 +176,11 @@ const NarrativeTrading = () => {
       " GMT-0300 (Argentina Standard Time)",
       "",
     );
-
+  
+    const coins = selectedCoin ? [selectedCoin] : await fetchCoinsByCategory(selectedCategory);
+    
+    for (const coin of coins) {
     const combinedContent = `Title: ${title}\n${content}`;
-    console.log("combinedContent", combinedContent);
     const formDataToSchedule = new FormData();
     formDataToSchedule.append("coinBot", selectedCoin);
     formDataToSchedule.append("content", combinedContent);
@@ -207,7 +229,7 @@ const NarrativeTrading = () => {
       setIsSubmitting(false);
     }
   };
-
+}
   // handles the submit of the three values needed - coin Id, content, and image
   const handleSubmit = async () => {
     if (selectedCoin === null || selectedImage === null || content === null ) {
@@ -219,7 +241,9 @@ const NarrativeTrading = () => {
       });
     }
     setIsSubmitting(true);
-
+    const coins = selectedCoin ? [selectedCoin] : await fetchCoinsByCategory(selectedCategory);
+    
+    for (const coin of coins) {
     const formData = new FormData();
     formData.append("coinBot", selectedCoin);
     formData.append("content", content);
@@ -263,7 +287,7 @@ const NarrativeTrading = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }};
 
   useEffect(() => {
     handleGetJobs();
