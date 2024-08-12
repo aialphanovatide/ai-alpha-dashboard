@@ -18,7 +18,7 @@ const TextExtractor = ({ setAnalysis, coin_bot }) => {
         formData.append("folderName", coin_bot); 
         formData.append("fileName", pdfFile.name);
   
-        const response = await fetch(`http://127.0.0.1:5001/upload`, {
+        const response = await fetch(`${config.BOTS_V2_API}/upload`, {
           method: "POST",
           body: formData,
         });
