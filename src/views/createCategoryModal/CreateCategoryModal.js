@@ -25,6 +25,7 @@ const CreateCategoryModal = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [showInApp, setShowInApp] = useState(false);
   const [imageFile, setImageFile] = useState(null);
+  const [isCreating, setIsCreating] = useState(false); // Nuevo estado para manejar el cierre del modal
 
   const clearFields = () => {
     setName("");
@@ -47,6 +48,8 @@ const CreateCategoryModal = () => {
       setShowAlert(true);
       return;
     }
+
+    setIsCreating(true); // Empieza el proceso de creación
 
     try {
       const formData = new FormData();
@@ -74,17 +77,22 @@ const CreateCategoryModal = () => {
         setAlertMessage("Category created successfully.");
         setAlertVariant("success");
         setShowAlert(true);
-        clearFields();
-        setTimeout(() => setVisible(false), 2000);
+        setTimeout(() => {
+          setIsCreating(false); // Termina el proceso de creación
+          clearFields();
+          setVisible(false); // Cierra el modal después de que se muestra el mensaje
+        }, 2000); // Muestra el mensaje por 2 segundos
       } else {
         setAlertMessage(result.error || "Error creating category.");
         setAlertVariant("danger");
         setShowAlert(true);
+        setIsCreating(false); // Termina el proceso de creación
       }
     } catch (error) {
       setAlertMessage("Error creating category: " + error.message);
       setAlertVariant("danger");
       setShowAlert(true);
+      setIsCreating(false); // Termina el proceso de creación
     }
   };
 
@@ -108,17 +116,22 @@ const CreateCategoryModal = () => {
         setAlertMessage("Category created successfully in Server 2.");
         setAlertVariant("success");
         setShowAlert(true);
-        clearFields();
-        setTimeout(() => setVisible(false), 2000);
+        setTimeout(() => {
+          setIsCreating(false); // Termina el proceso de creación
+          clearFields();
+          setVisible(false); // Cierra el modal después de que se muestra el mensaje
+        }, 2000); // Muestra el mensaje por 2 segundos
       } else {
         setAlertMessage(result.error || "Error creating category.");
         setAlertVariant("danger");
         setShowAlert(true);
+        setIsCreating(false); // Termina el proceso de creación
       }
     } catch (error) {
       setAlertMessage("Error creating category: " + error.message);
       setAlertVariant("danger");
       setShowAlert(true);
+      setIsCreating(false); // Termina el proceso de creación
     }
   };
 
@@ -136,12 +149,12 @@ const CreateCategoryModal = () => {
       </CButton>
       <Modal
         show={visible}
-        onHide={() => setVisible(false)}
+        onHide={() => !isCreating && setVisible(false)} // No permitir cerrar mientras se crea
         className="custom-modal"
       >
         <span
           className="closeModalBtn"
-          onClick={() => setVisible((prevVisible) => !prevVisible)}
+          onClick={() => !isCreating && setVisible((prevVisible) => !prevVisible)} // No permitir cerrar mientras se crea
         >
           X
         </span>
@@ -213,16 +226,18 @@ const CreateCategoryModal = () => {
               />
             </Form.Group>
             <Form.Group className="formSubmain">
-              <Form.Label>Upload Icon (use only PNG)</Form.Label>
+              <Form.Label>Upload Icon</Form.Label>
               <FormControl
                 type="file"
+                accept="image/png" // Acepta solo archivos PNG
                 onChange={(e) => setImageFile(e.target.files[0])}
-                placeholder="Upload only png icons"
+                placeholder="Upload only PNG icons"
               />
             </Form.Group>
             <Form.Group className="formSubmain">
               <FormCheck
                 type="checkbox"
+                id="showInAppCheckbox" // ID asociado al checkbox
                 label="Show in App"
                 checked={showInApp}
                 onChange={(e) => setShowInApp(e.target.checked)}
@@ -245,7 +260,7 @@ const CreateCategoryModal = () => {
             className="espacio close"
             variant="primary"
             onClick={handleCreateBothCategories}
-            disabled={!name || !alias || !slackChannel}
+            disabled={!name || !alias || !slackChannel || isCreating} // Desactivar botón mientras se crea
           >
             Create Category
           </Button>
