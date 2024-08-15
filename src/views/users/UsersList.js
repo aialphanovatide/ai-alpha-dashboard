@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import config from "../../config";
-import "./UsersList.css"
+import "./UsersList.css";
 import { formatDateTime } from "src/utils";
 import { DataGrid } from "@mui/x-data-grid";
 // import userImg from "src/assets/images/defaultUserImg.jpg";
@@ -60,7 +60,7 @@ const UsersList = () => {
   }, []);
 
   return (
-    <div>
+    <div style={{ height: "80dvh" }}>
       <DataGrid
         rows={users}
         columns={columns}
@@ -72,6 +72,7 @@ const UsersList = () => {
         // pageSizeOptions={[5, 10]}
         getRowId={(row) => row.auth0id}
         disableRowSelectionOnClick
+        className="table"
       />
     </div>
   );

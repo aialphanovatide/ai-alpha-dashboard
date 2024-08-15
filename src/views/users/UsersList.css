@@ -2,11 +2,38 @@
   cursor: pointer;
 }
 
+.MuiDataGrid-topContainer.MuiDataGrid-container--top {
+  padding: 0;
+}
+
+.table> :not(caption)>*>*,
+.MuiDataGrid-overlay {
+  background-color: transparent !important;
+}
+
 .MuiDataGrid-columnHeader {
   background-color: #586a7a;
 }
 
 .MuiDataGrid-columnHeaderTitle {
   font-weight: bolder !important;
-  color: white
+  color: white;
+}
+
+/* Disable scrolling on pagination tools container */
+.MuiTablePagination-root.css-16mfp94-MuiTablePagination-root {
+  overflow: hidden;
+}
+
+/* Change arrow buttons color */
+.table svg {
+  color: rgb(114, 114, 114);
+}
+
+@if $enable-dark-mode {
+  @include color-mode(dark) {
+    .table {
+      color: white;
+    }
+  }
 }
