@@ -1,0 +1,17 @@
+.MuiDataGrid-row {
+  cursor: pointer;
+}
+
+.MuiDataGrid-columnHeader {
+  background-color: #586a7a;
+}
+
+.MuiDataGrid-columnHeaderTitle {
+  font-weight: bolder !important;
+  color: white
+}
+
+.table-container { 
+  height: 100%; 
+  width: 100% 
+}
