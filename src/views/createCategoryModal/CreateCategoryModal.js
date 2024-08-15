@@ -25,7 +25,7 @@ const CreateCategoryModal = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [showInApp, setShowInApp] = useState(false);
   const [imageFile, setImageFile] = useState(null);
-  const [isCreating, setIsCreating] = useState(false); // Nuevo estado para manejar el cierre del modal
+  const [isCreating, setIsCreating] = useState(false); 
 
   const clearFields = () => {
     setName("");
@@ -49,7 +49,7 @@ const CreateCategoryModal = () => {
       return;
     }
 
-    setIsCreating(true); // Empieza el proceso de creación
+    setIsCreating(true);
 
     try {
       const formData = new FormData();
