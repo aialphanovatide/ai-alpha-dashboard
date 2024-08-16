@@ -1,0 +1,28 @@
+.user-img {
+  height: 100px;
+  width: auto;
+  border-radius: 100%;
+}
+
+.name-img-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.name-email-subcontainer p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.name-email-subcontainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-inline: 20px;
+  justify-content: center;
+}
+
+.user-detail-container {
+  padding: 30px;
+  height: 100%;
+}
