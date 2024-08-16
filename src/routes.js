@@ -12,6 +12,7 @@ const Typography = React.lazy(() => import('./views/theme/typography/Typography'
 const SearchTool = React.lazy(() => import('./views/searchTool/SearchTool'))
 const NewsCreatorTool = React.lazy(() => import('./views/newsCreatorTool/NewsCreatorTool'))
 const UsersList = React.lazy(() => import('./views/users/UsersList'))
+const UserDetail = React.lazy(() => import('./views/user/UserDetail'))
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
 const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
@@ -112,6 +113,7 @@ const routes = [
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
   { path: '/users', name: 'Users List', element: UsersList },
+  { path: '/userdetail/:user_id', name: 'User Detail', element: UserDetail },
 ]
 
 export default routes
