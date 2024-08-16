@@ -4,9 +4,14 @@
 
 /* Remove rows container padding */
 .MuiDataGrid-virtualScrollerContent.css-1kwdphh-MuiDataGrid-virtualScrollerContent {
-  padding: 0px;
+  padding-inline: 0px;
 }
 
+/* Remove header container padding */
+.MuiDataGrid-topContainer.MuiDataGrid-container--top {
+  padding: 0;
+}
+ 
 /* Remove cell blue border */
 .MuiDataGrid-cell:focus {
   outline: none !important;
@@ -21,11 +26,6 @@
 /* Center column title */
 .MuiDataGrid-columnHeaderTitleContainer {
   justify-content: center;
-}
-
-/* Remove header container padding */
-.MuiDataGrid-topContainer.MuiDataGrid-container--top {
-  padding: 0;
 }
 
 /* Set table and "no rows" container's backrground transparent */
@@ -50,9 +50,10 @@
   overflow: hidden;
 }
 
-/* Change arrow buttons color */
-.table svg {
-  color: rgb(172, 172, 172);
+/* Change arrow buttons && bottom te color */
+.table svg,  .css-de9k3v-MuiDataGrid-selectedRowCount {
+  color: rgb(153, 153, 153);
+  font-weight: bolder;
 }
 
 /* Remove page count margin-bottom */
@@ -64,7 +65,7 @@
   @include color-mode(dark) {
     /* Set table font white when dark mode is on */
     .table {
-      color: white;
+      color: white !important;
     }
   }
 }

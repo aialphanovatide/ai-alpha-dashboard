@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import config from "../../config";
-import "./UsersList.css";
 import { formatDateTime } from "src/utils";
-import { DataGrid } from "@mui/x-data-grid";
+import DataTable from "src/components/DataTable";
 // import userImg from "src/assets/images/defaultUserImg.jpg";
 
 // Columns config
 const columns = [
-  { field: "rowNumber", headerName: "#", width: 20, sortable: false },
+  { field: "rowNumber", headerName: "#", width: 20 },
   // { renderCell: renderImg, headerName: "Image", width: 70, sortable: false },
   { field: "auth0id", headerName: "ID", width: 280 },
   { field: "full_name", headerName: "Full Name", width: 150 },
@@ -60,21 +59,13 @@ const UsersList = () => {
   }, []);
 
   return (
-    <div className="table-container">
-      <DataGrid
-        rows={users}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 10 },
-          },
-        }}
-        // pageSizeOptions={[5, 10]}
-        getRowId={(row) => row.auth0id}
-        disableRowSelectionOnClick
-        className="table"
-      />
-    </div>
+    <DataTable
+      data={users}
+      columns={columns}
+      pageSizeOptions={false}
+      customRowId={(row) => row.auth0id}
+      disableRowSelectionOnClick
+    />
   );
 };
 
