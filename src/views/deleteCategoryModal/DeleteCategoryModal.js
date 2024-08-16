@@ -62,7 +62,7 @@ const DeleteCategoryModal = () => {
 
       // Delete by Name
       const deleteByNameResponse = await fetch(
-        `${config.BASE_URL}/categories/delete`,
+        `${config.BASE_URL}/delete_category/${selectedCategoryName}`,
         {
           method: "DELETE",
           headers: {

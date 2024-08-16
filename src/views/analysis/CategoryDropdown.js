@@ -1,7 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../helpers/selectCoin/selectCoinStyles.css';
+import config from "../../config";
 
 const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const getAllBots = useCallback(async () => {
+    try {
+      const response = await fetch(`${config.BOTS_V2_API}/get_all_bots`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+
+      const responseText = await response.text();
+      console.log("responseText : ", responseText);
+
+      try {
+        const data = JSON.parse(responseText);
+        console.log("data : ", data);
+        if (data && data.data) {
+          // Asumiendo que `data.data` es un array de categorías
+          setCategories(data.data);
+        } else {
+          console.error("Error in response:", data.message);
+        }
+      } catch (parseError) {
+        console.error("Error parsing JSON:", parseError);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    getAllBots();
+  }, [getAllBots]);
 
   const handleDropdownChange = (event) => {
     const selectedCategory = event.target.value;
@@ -16,22 +55,14 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
         onChange={handleDropdownChange}
         value={selectedCategory || ''}
         className="select-dropdown"
+        disabled={loading || categories.length === 0}
       >
         <option value="" disabled>Select Category...</option>
-        <option value="TOTAL 3">TOTAL 3</option>
-        <option value="Bitcoin">Bitcoin</option>
-        <option value="Ethereum">Ethereum</option>
-        <option value="RootLink">Layer 0</option>
-        <option value="BaseBlock">Layer 1 - Large Market Cap</option>
-        <option value="CoreChain">Layer 1 - Mid Market Cap</option>
-        <option value="X Payments">Cross Border Payments</option>
-        <option value="Lsd">LSDs</option>
-        <option value="BoostLayer">Layer 2</option>
-        <option value="TruthNodes">Oracles</option>
-        <option value="CycleSwap">Defi - DEX Perpetuals</option>
-        <option value="NexTrade">Defi - DEX</option>
-        <option value="DiverseFi">Defi - Other</option>
-        <option value="IntelliChain">AI</option>
+        {categories.map((category) => (
+          <option key={category.id} value={category.alias}>
+            {category.alias}
+          </option>
+        ))}
       </select>
     </div>
   );

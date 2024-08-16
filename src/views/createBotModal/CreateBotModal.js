@@ -111,7 +111,13 @@ const CreateBotModal = () => {
       setAlertVariant('success');
       setShowAlert(true);
       clearFields();
-      setTimeout(() => setVisible(false), 2000); // Hide modal after 2 seconds
+
+      // Cerrar el mensaje de éxito automáticamente después de 3 segundos
+      setTimeout(() => setShowAlert(false), 3000);
+
+      // Cerrar el modal después de 2 segundos
+      setTimeout(() => setVisible(false), 2000);
+
     } catch (error) {
       setAlertMessage('Error creating bot: ' + error.message);
       setAlertVariant('danger');
