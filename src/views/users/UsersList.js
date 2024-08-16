@@ -60,7 +60,7 @@ const UsersList = () => {
   }, []);
 
   return (
-    <div style={{ height: "80dvh" }}>
+    <div className="table-container">
       <DataGrid
         rows={users}
         columns={columns}
