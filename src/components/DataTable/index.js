@@ -11,6 +11,7 @@ const DataTable = (params) => {
     pageSizeOptions = [5, 10],
     customRowId,
     disableRowSelectionOnClick,
+    onRowClick,
   } = params;
 
   return (
@@ -27,6 +28,7 @@ const DataTable = (params) => {
         getRowId={customRowId}
         disableRowSelectionOnClick={disableRowSelectionOnClick}
         className="table"
+        onRowClick={onRowClick}
       />
     </div>
   );

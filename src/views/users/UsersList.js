@@ -3,6 +3,7 @@ import config from "../../config";
 import { formatDateTime } from "src/utils";
 import DataTable from "src/components/DataTable";
 // import userImg from "src/assets/images/defaultUserImg.jpg";
+import { useNavigate } from 'react-router-dom'
 
 // Columns config
 const columns = [
@@ -17,6 +18,11 @@ const columns = [
 
 const UsersList = () => {
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate()
+
+  const handleOnRowClick = (params) => {
+    navigate(`/userdetail/${params.row.user_id}`)
+  }
 
   // const renderImg = (params) => {
   //   return (
@@ -65,6 +71,7 @@ const UsersList = () => {
       pageSizeOptions={false}
       customRowId={(row) => row.auth0id}
       disableRowSelectionOnClick
+      onRowClick={handleOnRowClick}
     />
   );
 };
