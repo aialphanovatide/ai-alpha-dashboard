@@ -4,17 +4,21 @@
   border-radius: 100%;
 }
 
-.name-img-container {
-  display: flex;
-  flex-direction: row;
-}
-
-.name-email-subcontainer p {
+.name, .email {
   margin: 0;
   font-weight: bold;
+  /* text-align: center; */
 }
 
-.name-email-subcontainer {
+.name {
+  font-size: 20px;
+}
+
+.user-info-container p {
+  margin: 0px;
+}
+
+.user-info-subcontainer {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -22,7 +26,24 @@
   justify-content: center;
 }
 
-.user-detail-container {
+.user-info-container, .user-plans-container {
   padding: 30px;
-  height: 100%;
+  height: 200%;
+  width: 70%;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+}
+
+.text-info {
+  position: relative;
+  top: 0px;
+}
+
+.user-plans-container {
+  flex-direction: column;
+}
+
+.plans-title {
+  font-weight: bolder;
 }
