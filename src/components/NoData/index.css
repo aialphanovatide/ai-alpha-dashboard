@@ -1,0 +1,18 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  gap: 25px;
+}
+
+.container h2 { 
+  font-weight: 600;
+  font-size: 22px;
+  text-align: center;
+}
+
+.container img {
+  width: 70px;
+}
