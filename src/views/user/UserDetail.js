@@ -5,10 +5,12 @@ import userImg from "src/assets/images/defaultUserImg.jpg";
 import "./UserDetail.css";
 import CIcon from "@coreui/icons-react";
 import { cilCheckCircle, cilClock } from "@coreui/icons";
+import SpinnerComponent from "src/components/Spinner";
 
 const UserDetail = () => {
   const { user_id } = useParams();
   const [user, setUser] = useState([]);
+  const [isLoading, setLoading] = useState(true);
 
   const getUser = async () => {
     try {
@@ -26,6 +28,7 @@ const UserDetail = () => {
       const data = await response.json();
       if (data && data.data) {
         setUser(data.data);
+        setLoading(false);
       } else {
         console.error("Error fetching users:", data.message);
       }
@@ -38,9 +41,11 @@ const UserDetail = () => {
     getUser();
   }, []);
 
-  return (
+  return isLoading ? (
+    <SpinnerComponent />
+  ) : (
     <>
-      <div className="rounded overflow-hidden shadow-lg bg-white dark:bg-gray-800 user-info-container">
+      <div className="rounded overflow-hidden shadow-lg user-info-container">
         <img className="user-img" src={user.picture || userImg} />
         <CIcon
           icon={cilCheckCircle}
@@ -56,7 +61,7 @@ const UserDetail = () => {
           </p>
         </div>
       </div>
-      <div className="mt-4 rounded overflow-hidden shadow-lg bg-white dark:bg-gray-800 user-plans-container">
+      <div className="mt-4 rounded overflow-hidden shadow-lg user-plans-container">
         <h3 className="text-lg font-bold text-gray-900 dark:text-white plans-title">
           Purchased Plans
         </h3>
@@ -64,21 +69,20 @@ const UserDetail = () => {
           user.purchased_plans.map((plan, index) => (
             <div
               key={index}
-              className="mt-2 rounded border border-gray-600 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg"
+              className="my-2 rounded border border-gray-600 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg"
             >
-              <p className="text-gray-800 dark:text-gray-200">
-                <strong>Plans:</strong> {plan.reference_name}
-              </p>
-              <p className="text-gray-800 dark:text-gray-200">
-                <strong>Subscribed:</strong> {plan.is_subscribed ? "Yes" : "No"}
-              </p>
-              <p className="text-gray-800 dark:text-gray-200">
-                <strong>Price:</strong> ${plan.price}
-              </p>
-              <p className="text-gray-800 dark:text-gray-200">
-                <CIcon icon={cilClock} />{" "}
-                {new Date(plan.created_at).toLocaleDateString()}
-              </p>
+              <div className="plan-info">
+                <p className="plan-name">{plan.reference_name}</p>
+                <p className="">
+                  <strong>Subscribed:</strong>{" "}
+                  {plan.is_subscribed ? "Yes" : "No"}
+                </p>
+                <p className="">
+                  <CIcon icon={cilClock} />{" "}
+                  {new Date(plan.created_at).toLocaleDateString()}
+                </p>
+              </div>
+              <p className="price">${plan.price}</p>
             </div>
           ))
         ) : (
