@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Gauge } from 'react-circular-gauge';
-import './spinner.css'
 import config from "../../config";
+import SpinnerComponent from 'src/components/Spinner';
 
-const SpinnerComponent = () => {
-    return (
-      <div className="spinner-container">
-        <div className="spinner-border"></div>
-      </div>
-    );
-  };
 
 const ApiUsage = () => {
   const [coingeckoData, setCoingeckoData] = useState(null);

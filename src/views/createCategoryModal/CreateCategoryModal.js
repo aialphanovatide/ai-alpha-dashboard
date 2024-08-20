@@ -226,13 +226,13 @@ const CreateCategoryModal = () => {
               />
             </Form.Group>
             <Form.Group className="formSubmain">
-              <Form.Label>Upload Icon</Form.Label>
-              <FormControl
-                type="file"
-                accept="image/png" // Acepta solo archivos PNG
-                onChange={(e) => setImageFile(e.target.files[0])}
-                placeholder="Upload only PNG icons"
-              />
+            <Form.Label>Upload Icon</Form.Label>
+            <FormControl
+              type="file"
+              accept=".svg" // Acepta solo SVG
+              onChange={(e) => setImageFile(e.target.files[0])}
+              placeholder="Upload only SVG icons"
+            />
             </Form.Group>
             <Form.Group className="formSubmain">
               <FormCheck
