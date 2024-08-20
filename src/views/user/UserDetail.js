@@ -56,8 +56,8 @@ const UserDetail = () => {
         <div className="user-info-subcontainer bg-red-100">
           <p className="name">{user.nickname}</p>
           <p className="email">{user.email}</p>
-          <p className="text-gray-600 dark:text-gray-300">
-            <strong>ID:</strong> {user.auth0id}
+          <p className="id text-gray-600 dark:text-gray-300">
+            {user.auth0id}
           </p>
         </div>
       </div>
@@ -69,7 +69,7 @@ const UserDetail = () => {
           user.purchased_plans.map((plan, index) => (
             <div
               key={index}
-              className="my-2 rounded border border-gray-600 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg"
+              className="my-2 rounded border border-gray-600 p-3 rounded-lg"
             >
               <div className="plan-info">
                 <p className="plan-name">{plan.reference_name}</p>
@@ -86,7 +86,7 @@ const UserDetail = () => {
             </div>
           ))
         ) : (
-          <p className="text-gray-600 dark:text-gray-300  font-bold">
+          <p className="font-bold">
             No plans purchased
           </p>
         )}

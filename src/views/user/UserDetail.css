@@ -73,3 +73,49 @@
   display: flex;
   flex-direction: row;
 }
+
+@media (max-width: 776px) { 
+  .user-info-container {
+    flex-direction: column;
+    align-items: center;
+    padding-inline: 0;
+  }
+
+  .user-info-container p {
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+
+  .text-info {
+    margin-block: 5px;
+  }
+
+  .user-info-container, .user-plans-container {
+    width: 100%;
+  }
+
+  .user-img {
+    width: 100px;
+  }
+
+  .plan-name {
+    overflow-wrap: anywhere;
+    margin-right: 5px;
+  }
+
+  /* .name, .email, .id {
+    text-align: center;
+  } */
+}
+
+@media (max-width: 420px) { 
+  .user-plans-container > div {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .price, .plan-info {
+    width: 100%;
+  }
+}
