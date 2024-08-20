@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import config from "../../config";
 import { formatDateTime } from "src/utils";
 import DataTable from "src/components/DataTable";
+import SpinnerComponent from "src/components/Spinner";
 // import userImg from "src/assets/images/defaultUserImg.jpg";
 import { useNavigate } from 'react-router-dom'
 
@@ -18,6 +19,7 @@ const columns = [
 
 const UsersList = () => {
   const [users, setUsers] = useState([]);
+  const [isLoading, setLoading] = useState(true);
   const navigate = useNavigate()
 
   const handleOnRowClick = (params) => {
@@ -51,6 +53,10 @@ const UsersList = () => {
           rowNumber: index + 1,
         }));
 
+        localStorage.setItem("usersData", JSON.stringify(prepareUserData));
+        localStorage.setItem("usersDataTimestamp", Date.now().toString());
+
+        setLoading(false);
         setUsers(prepareUserData);
       } else {
         console.error("Error fetching users:", data.message);
@@ -61,10 +67,33 @@ const UsersList = () => {
   };
 
   useEffect(() => {
-    getUsers();
+    const storedUsers = localStorage.getItem("usersData");
+    const timestamp = localStorage.getItem("usersDataTimestamp");
+    const TEN_MINUTES = 10 * 60 * 1000;
+
+    if (
+      storedUsers &&
+      timestamp &&
+      Date.now() - parseInt(timestamp) < TEN_MINUTES
+    ) {
+      setUsers(JSON.parse(storedUsers));
+      setLoading(false);
+    } else {
+      getUsers();
+    }
+
+    // Set interval to fetch data every 10'
+    const interval = setInterval(() => {
+      getUsers();
+    }, TEN_MINUTES);
+
+    // Clean interval when component is dismounted
+    return () => clearInterval(interval);
   }, []);
 
-  return (
+  return isLoading ? (
+    <SpinnerComponent />
+  ) : (
     <DataTable
       data={users}
       columns={columns}
