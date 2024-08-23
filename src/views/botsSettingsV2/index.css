@@ -1,0 +1,230 @@
+.bot-settings-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bot-settings-container>h2 {
+  margin: 0;
+  height: 13%;
+  font-size: 2.5rem;
+  font-family: sans-serif;
+  display: flex;
+  align-items: center;
+}
+
+.settings-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 15%;
+  padding-block: 2%;
+}
+
+.settings-container>div {
+  border-radius: 7px;
+  border: 1px solid black;
+  margin-inline: 10px;
+  color: black
+}
+
+.settings-container>div span {
+  position: relative;
+  top: -13px;
+  left: 16px;
+  background: #f3f4f7;
+  font-weight: 500;
+}
+
+
+.bot-btn {
+  padding: 1rem;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.botIcon {
+  width: 20px;
+  height: 10px;
+}
+
+.botname {
+  font-size: 1.3rem;
+  text-transform: capitalize;
+  width: 80%;
+}
+
+.modal-btn {
+  height: 90px;
+  width: 250px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: orange;
+  margin-right: 20px;
+  margin-left: 10px;
+  text-transform: capitalize;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.modal-btn:hover {
+  color: #fff;
+  background-color: rgb(255, 188, 62);
+}
+
+.d-flex {
+  margin: 0 10px 0 0;
+}
+
+.actionsTitle {
+  margin: 1rem 0 1rem 0;
+}
+
+.actionsMain {
+  display: flex;
+}
+
+.actionsSubMain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.spinnergnral {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+}
+
+.bot-list-container {
+  /* display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+  padding: 10px;
+  flex-wrap: wrap;
+  min-height: 300px; */
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+}
+
+.bot-item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-block: 1rem;
+  padding: 10px;
+  width: 100%;
+  height: 100px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.bot-icon {
+  margin-right: 15px;
+  width: 20%;
+}
+
+.bot-details {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+}
+
+.bot-category {
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.bot-alias {
+  font-size: 14px;
+  color: #333;
+}
+
+.activeBot {
+  background-color: transparent;
+}
+
+.inactiveBot {
+  background-color: #ff758f;
+}
+
+@media screen and (max-width: 1200px) {
+  .bot-item {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .bot-item {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  .bot-item {
+    width: 100%;
+  }
+}
+
+/* ------------ DAPPS STYLES ------------- */
+
+.dappsTable {
+  margin: 1.8rem 0;
+}
+
+.dappsInput {
+  margin: 0.8rem 0;
+  width: 90%;
+}
+
+.formDescription {
+  height: 80px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.formGeneral {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.createBtn {
+  width: 90%;
+  margin: 0.8rem 0;
+}
+
+.bot-item {
+  position: relative;
+}
+
+.actdeactBtn {
+  position: relative;
+  float: right;
+  border: none;
+  margin-right: 20px;
+  margin-top: 20px;
+  scale: 2;
+}
+
+.btn-options {
+  position: relative;
+}
+
+.iconBotList {
+  font-size: 20px;
+}
+
+.alertSucess {
+  margin: 1rem 0;
+}
