@@ -13,7 +13,14 @@ import AddBlacklistWordsModal from "../addBlacklistWordsModal/AddBlacklistWordsM
 import DeleteCategoryModal from "../deleteCategoryModal/DeleteCategoryModal";
 import DrawerComponent from "./components/Drawer";
 import CIcon from "@coreui/icons-react";
-import { cilPencil } from "@coreui/icons";
+import {
+  cilLockLocked,
+  cilLockUnlocked,
+  cilMinus,
+  cilPencil,
+  cilPlus,
+  cilTrash,
+} from "@coreui/icons";
 
 const SpinnerComponent = () => {
   return (
@@ -123,45 +130,113 @@ const BotsSettings = () => {
           onClick={toggleDrawer(true)}
         >
           <span>Treshold</span>
-          <div style={{ display: "flex" }}>
-            <CIcon icon={cilPencil} /> <p>Edit</p>
+          <div>
+            <button>
+              <CIcon icon={cilPencil} size="sm" /> Edit
+            </button>
           </div>
         </div>
         <div className="create" style={{ width: "40%" }}>
           <span>Create</span>
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "space-evenly",
+              gap: 3,
+              alignItems: "center",
+            }}
+          >
+            <button>
+              <CIcon icon={cilPlus} /> New Category
+            </button>
+            <button>
+              <CIcon icon={cilPlus} /> New Bot
+            </button>
+            <button>
+              <CIcon icon={cilPlus} /> New Coin
+            </button>
+          </div>
         </div>
         <div className="keywords" style={{ width: "40%" }}>
           <span>Keywords</span>
+          <div>
+            <div>
+              <span>
+                <CIcon icon={cilLockUnlocked} />{" "}
+                Whitelist
+              </span>
+              <div>
+                <button>
+                  <CIcon icon={cilPlus} /> Add
+                </button>
+                <button>
+                  <CIcon icon={cilMinus} /> Remove
+                </button>
+              </div>
+            </div>
+            <div>
+              <span>
+                <CIcon icon={cilLockLocked} />{" "}
+                Blacklist
+              </span>
+              <div>
+                <button>
+                  <CIcon icon={cilPlus} /> Add
+                </button>
+                <button>
+                  <CIcon icon={cilMinus} /> Remove
+                </button>
+              </div>
+            </div>
+          </div>
+          <div></div>
         </div>
       </div>
-      <div style={{ height: "72%"}}>
-        <BotList bots={bots} />
-      </div>
+      <div style={{ height: "70%" }}>{/* <BotList bots={bots} /> */}</div>
       <DrawerComponent toggleDrawer={toggleDrawer} open={open}>
         <span>hola</span>
       </DrawerComponent>
-      {/* <CButtonGroup className="mb-2 btn-group-main">
-          <div className="d-flex align-items-center main-button">
-            <CButton
-              className={`btn ${
-                bots.every((bot) => bot.isActive) ? "btn-danger" : "btn-success"
-              } bot-btn`}
-              onClick={
-                loading
-                  ? null
-                  : bots.every((bot) => bot.isActive)
-                    ? turnOffAllBots
-                    : turnOnAllBots
-              }
-            >
-              {bots.every((bot) => bot.isActive)
-                ? "Turn off all bots"
-                : "Turn on all bots"}
-            </CButton>
-          </div>
-          {loading && <SpinnerComponent />}
-        </CButtonGroup> 
-        <div className="actionmain">
+    </div>
+
+    // <div>
+    //   <CIcon icon={cilTrash}/>
+    //   <h3>Are you sure you want to delete these elements?</h3>
+    //   <div></div>
+    //   <span>This action cannot be undone.</span>
+    //   <div>
+    //     <button>Cancel</button>
+    //     <button>Delete</button>
+    //   </div>
+    // </div>
+  );
+};
+
+export default BotsSettings;
+
+{
+  /* <CButtonGroup className="mb-2 btn-group-main">
+        <div className="d-flex align-items-center main-button">
+          <CButton
+            className={`btn ${
+              bots.every((bot) => bot.isActive) ? "btn-danger" : "btn-success"
+            } bot-btn`}
+            onClick={
+              loading
+                ? null
+                : bots.every((bot) => bot.isActive)
+                  ? turnOffAllBots
+                  : turnOnAllBots
+            }
+          >
+            {bots.every((bot) => bot.isActive)
+              ? "Turn off all bots"
+              : "Turn on all bots"}
+          </CButton>
+        </div>
+        {loading && <SpinnerComponent />}
+      </CButtonGroup>
+      <div className="actionmain">
         <h4 className="actionsTitle">Actions</h4>
         <div className="actionsSubMain">
           <CreateCategoryModal />
@@ -173,9 +248,5 @@ const BotsSettings = () => {
           <DeleteBlacklistWordsModal />
           <UsedKeywordsModal />
         </div>
-      </div> */}
-    </div>
-  );
-};
-
-export default BotsSettings;
+      </div> */
+}
