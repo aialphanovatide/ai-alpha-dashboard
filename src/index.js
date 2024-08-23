@@ -1,4 +1,5 @@
 import 'react-app-polyfill/stable'
+import './index.css'
 import 'core-js'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
