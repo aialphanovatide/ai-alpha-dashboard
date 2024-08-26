@@ -19,8 +19,8 @@ import {
   cilMinus,
   cilPencil,
   cilPlus,
-  cilTrash,
 } from "@coreui/icons";
+import TresholdEdit from "./components/TresholdEdit";
 
 const SpinnerComponent = () => {
   return (
@@ -278,9 +278,9 @@ const BotsSettings = () => {
         <BotList bots={bots} getAllBots={getAllBots} />
       </div>
       <DrawerComponent toggleDrawer={toggleDrawer} open={open}>
-        <span>hola</span>
+        <TresholdEdit/>
       </DrawerComponent>
-      
+
       {/* <div className="actionmain">
         <h4 className="actionsTitle">Actions</h4>
         <div className="actionsSubMain">
@@ -294,7 +294,6 @@ const BotsSettings = () => {
           <UsedKeywordsModal />
         </div>
       </div>  */}
-
     </div>
 
     // <div>

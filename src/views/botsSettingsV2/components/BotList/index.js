@@ -193,13 +193,13 @@ const BotList = ({ bots, getAllBots }) => {
         </button>
         <button
           className="pause-btn"
-          onClick={
-            loading
-              ? null
-              : botList.every((bot) => bot.isActive)
-                ? turnOffAllBots
-                : turnOnAllBots
-          }
+          // onClick={
+          //   loading
+          //     ? null
+          //     : botList.every((bot) => bot.isActive)
+          //       ? turnOffAllBots
+          //       : turnOnAllBots
+          // }
         >
           <span>
             {botList.every((bot) => bot.isActive)
