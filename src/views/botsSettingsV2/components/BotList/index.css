@@ -1,0 +1,203 @@
+.top-container {
+  height: 15%;
+  display: flex;
+  padding-top: 1%;
+  padding-inline: 10px;
+}
+
+.top-container button,
+.bot-list-container button {
+  background: transparent;
+  border: none;
+  padding: 0px;
+}
+
+.pause-btn {
+  color: #525252;
+  text-decoration: underline;
+  width: 80%;
+  text-align: right;
+}
+
+.trash-btn {
+  color: #C8C8C8;
+  position: relative;
+  width: 10%;
+}
+
+.bot-list-container {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center;
+  justify-content: center;
+  margin: 20px;
+  padding: 10px;
+  flex-wrap: wrap;
+  min-height: 300px; */
+  overflow: auto;
+  height: 85%;
+  width: 100%;
+  gap: 1rem;
+  padding-right: 5px;
+}
+
+.bot-item {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* margin-block: 1rem; */
+  padding: 10px;
+  width: 100%;
+  height: 100px;
+  border-radius: 5px;
+  background-color: #FFFFFF9c;
+}
+
+.bot-item-input {
+  width: 10%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bot-item-input input {
+  min-width: 30px;
+  height: 30px;
+  background-color: transparent;
+  border-radius: 2px;
+  border: 1.5px solid #ccc;
+  appearance: none;
+}
+
+.bot-item-input input:checked {
+  background-color: #FF6C0D;
+  border-color: #FF6C0D;
+  background-image: url('data:image/svg+xml,%3Csvg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M2 14.5L10 22.5L24 2" stroke="%23FFECD3" stroke-width="4"/%3E%3C/svg%3E');
+  background-size: 14px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bot-item.checked {
+  background-color: #FFECD3; /* Cambia el color del contenedor cuando está checked */
+}
+
+.bot-img-container {
+  width: 15%;
+  height: 100%;
+  display: flex;
+}
+
+.bot-img-container img {
+  width: 60px;
+  height: 60px;
+  margin: auto;
+}
+
+.middle-container {
+  display: flex;
+  height: 100%;
+  width: 65%;
+  justify-content: space-between;
+}
+
+.bot-details {
+  display: flex;
+  flex-direction: column;
+  width: 55%;
+  font-size: 14px;
+  height: 100%;
+}
+
+.bot-category {
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.bot-last-run {
+  color: #A3A3A3;
+}
+
+.switch-btn,
+.chevron-button {
+  width: 10%;
+}
+
+.switch-btn,
+.chevron-button,
+.edit-btn,
+.prompt-btn {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #737373;
+  gap: 3px;
+}
+
+.edit-btn {
+  width: 15%;
+}
+
+.prompt-btn {
+  width: 20%;
+}
+
+.switch-btn {
+  color: #b2b2b2;
+}
+
+.chevron-button {
+  font-size: 50px;
+  color: #E5E5E5
+}
+
+/* .activeBot {
+  background-color: transparent;
+}
+
+.inactiveBot {
+  background-color: #ff758f;
+} */
+
+@media screen and (max-width: 1200px) {
+  .bot-item {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .bot-item {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  .bot-item {
+    width: 100%;
+  }
+}
+
+/* scrollbar styling */
+
+/* total width */
+.bot-list-container::-webkit-scrollbar {
+  background-color: #F5F5F5;
+  width: 14px;
+}
+
+/* scrollbar itself */
+.bot-list-container::-webkit-scrollbar-thumb {
+  background-color: #E5E5E5;
+  border-radius: 16px;
+  border: 4px solid #F5F5F5;
+}
+
+/* set button(top and bottom of the scrollbar) */
+.bot-list-container::-webkit-scrollbar-button {
+  display: none;
+}
