@@ -6,7 +6,9 @@ import CIcon from '@coreui/icons-react';
 import { cilTrash } from '@coreui/icons';
 import './topStories.css';
 import { format } from 'date-fns';
-import Pagination from '../pagination/Pagination'; // Importa el componente Pagination
+import Pagination from '../pagination/Pagination';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 const Modal = ({ item, base64Image, onClose }) => {
     const formattedSummary = item.analysis ? item.analysis.replace(/\n/g, '<br>') : item.content.replace(/\n/g, '<br>')
@@ -77,8 +79,8 @@ const Item = ({ item, base64Image, onDelete }) => {
 const TopStories = () => {
     const [topStories, setTopStories] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1); // Nuevo estado para la página actual
-    const [articlesPerPage] = useState(10); // Número de artículos por página
+    const [currentPage, setCurrentPage] = useState(1);
+    const [articlesPerPage] = useState(10);
 
     const getTopStories = async () => {
         try {
@@ -141,7 +143,6 @@ const TopStories = () => {
         getTopStories();
     }, []);
 
-    // Obtener los artículos actuales para la página actual
     const indexOfLastArticle = currentPage * articlesPerPage;
     const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
     const currentArticles = topStories.slice(indexOfFirstArticle, indexOfLastArticle);
@@ -151,7 +152,9 @@ const TopStories = () => {
             <h3 className='alltopStoriesTitle'>Top Stories</h3>
             <br />
             {loading ? (
-                <div className="loader">Loading...</div>
+                <div className="loading-spinner">
+                    <FontAwesomeIcon icon={faSpinner} spin size="3x" />
+                </div>
             ) : (
                 <>
                     {currentArticles && currentArticles.length > 0 ? (

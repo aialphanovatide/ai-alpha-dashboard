@@ -111,3 +111,10 @@
   font-size: 16px;
   margin-top: 15px;
 }
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Ajusta esto según tus necesidades */
+}
