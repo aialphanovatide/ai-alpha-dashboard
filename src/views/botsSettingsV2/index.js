@@ -21,6 +21,7 @@ import {
   cilPlus,
 } from "@coreui/icons";
 import TresholdEdit from "./components/TresholdEdit";
+import NewCategoryForm from "./components/NewCategoryForm";
 
 const SpinnerComponent = () => {
   return (
@@ -36,6 +37,8 @@ const SpinnerComponent = () => {
 const BotsSettings = () => {
   const [bots, setBots] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [drawerChildren, setDrawerChildren] = useState(<></>);
 
   const getAllBots = useCallback(async () => {
     try {
@@ -200,9 +203,8 @@ const BotsSettings = () => {
     getAllBots();
   }, [getAllBots]);
 
-  const [open, setOpen] = React.useState(false);
-
-  const toggleDrawer = (newOpen) => () => {
+  const toggleDrawer = (newOpen, view) => () => {
+    view && setDrawerChildren(view);
     setOpen(newOpen);
   };
 
@@ -213,11 +215,10 @@ const BotsSettings = () => {
         <div
           className="treshold"
           style={{ width: "15%" }}
-          onClick={toggleDrawer(true)}
         >
           <span>Treshold</span>
           <div>
-            <button>
+            <button onClick={toggleDrawer(true, <TresholdEdit/>)}>
               <CIcon icon={cilPencil} size="sm" /> Edit
             </button>
           </div>
@@ -233,7 +234,7 @@ const BotsSettings = () => {
               alignItems: "center",
             }}
           >
-            <button>
+            <button onClick={toggleDrawer(true, <NewCategoryForm/> )}>
               <CIcon icon={cilPlus} /> New Category
             </button>
             <button>
@@ -278,7 +279,7 @@ const BotsSettings = () => {
         <BotList bots={bots} getAllBots={getAllBots} />
       </div>
       <DrawerComponent toggleDrawer={toggleDrawer} open={open}>
-        <TresholdEdit/>
+        {drawerChildren}
       </DrawerComponent>
 
       {/* <div className="actionmain">
