@@ -1,15 +1,16 @@
 import * as React from "react";
 import Drawer from "@mui/material/Drawer";
 import CIcon from "@coreui/icons-react";
+import styles from "./index.module.css";
 import { cilX } from "@coreui/icons";
 
 export default function DrawerComponent({ children, open, toggleDrawer }) {
   return (
     <div>
       <Drawer open={open} onClose={toggleDrawer(false)} anchor="right">
-        <div style={styles.mainContainer}>
-          <div style={styles.buttonContainer}>
-            <button onClick={toggleDrawer(false)} style={styles.button}>
+        <div className={styles.mainContainer}>
+          <div className={styles.buttonContainer}>
+            <button onClick={toggleDrawer(false)} className={styles.button}>
               <CIcon icon={cilX} size="xl" />
             </button>
           </div>
@@ -19,9 +20,3 @@ export default function DrawerComponent({ children, open, toggleDrawer }) {
     </div>
   );
 }
-
-const styles = {
-  button: { border: "none", background: "transparent", color: "gray" },
-  buttonContainer: { width: "100%", display: "flex", justifyContent: "right" },
-  mainContainer: { width: "35vw", padding: "7%" },
-};
