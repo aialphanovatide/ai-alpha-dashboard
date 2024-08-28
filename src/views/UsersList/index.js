@@ -45,6 +45,7 @@ const UsersList = () => {
           ...user,
           created_at: formatDateTime(user.created_at),
           rowNumber: index + 1,
+          full_name: user.full_name ? user.full_name : "Not specified",
         }));
 
         localStorage.setItem("usersData", JSON.stringify(prepareUserData));
