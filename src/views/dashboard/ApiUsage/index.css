@@ -70,10 +70,10 @@
     flex-direction: column;
   }
 
-  .cards-container {
+  /* .cards-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-  }
+  } */
 
   .api-card {
     height: fit-content;
@@ -83,8 +83,13 @@
     height: 100%;
   }
   
-  .coin-gecko-ul, .gauge-container {
+  .gauge-container {
     width: 100%;
+  }
+
+  .coin-gecko-ul {
+    margin: auto;
+    width: 50%;
   }
 
   .gauge-container {
@@ -109,5 +114,9 @@
 
   .error-container {
     height: 200px;
+  }
+
+  .coin-gecko-ul {
+    width: 100%;
   }
 }
