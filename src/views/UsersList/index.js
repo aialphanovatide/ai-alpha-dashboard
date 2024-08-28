@@ -8,13 +8,13 @@ import { useNavigate } from 'react-router-dom'
 
 // Columns config
 const columns = [
-  { field: "rowNumber", headerName: "#", width: 20 },
+  { field: "rowNumber", headerName: "#", width: 20, sortable: false },
   // { renderCell: renderImg, headerName: "Image", width: 70, sortable: false },
-  { field: "auth0id", headerName: "ID", width: 280 },
-  { field: "full_name", headerName: "Full Name", width: 150 },
-  { field: "nickname", headerName: "Nickname", width: 150 },
-  { field: "email", headerName: "Email", width: 230 },
-  { field: "created_at", headerName: "Created at", width: 180 },
+  { field: "auth0id", headerName: "ID", width: 280, sortable: false },
+  { field: "full_name", headerName: "Full Name", width: 150, sortable: false },
+  { field: "nickname", headerName: "Nickname", width: 150, sortable: false },
+  { field: "email", headerName: "Email", width: 230, sortable: false },
+  { field: "created_at", headerName: "Created at", width: 180, sortable: false },
 ];
 
 const UsersList = () => {
@@ -51,6 +51,7 @@ const UsersList = () => {
           ...user,
           created_at: formatDateTime(user.created_at),
           rowNumber: index + 1,
+          full_name: user.full_name ? user.full_name : "Not specified",
         }));
 
         localStorage.setItem("usersData", JSON.stringify(prepareUserData));

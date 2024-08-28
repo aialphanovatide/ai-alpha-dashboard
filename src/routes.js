@@ -11,7 +11,7 @@ const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 const SearchTool = React.lazy(() => import('./views/searchTool/SearchTool'))
 const NewsCreatorTool = React.lazy(() => import('./views/newsCreatorTool/NewsCreatorTool'))
-const UsersList = React.lazy(() => import('./views/users/UsersList'))
+const UsersList = React.lazy(() => import('./views/UsersList'))
 const UserDetail = React.lazy(() => import('./views/user/UserDetail'))
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
