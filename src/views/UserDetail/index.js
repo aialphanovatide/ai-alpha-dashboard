@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import config from "src/config";
 import userImg from "src/assets/images/defaultUserImg.jpg";
-import "./UserDetail.css";
+import "./index.css";
 import CIcon from "@coreui/icons-react";
 import { cilCheckCircle, cilClock } from "@coreui/icons";
 import SpinnerComponent from "src/components/Spinner";
@@ -78,7 +78,7 @@ const UserDetail = () => {
                   {plan.is_subscribed ? "Yes" : "No"}
                 </p>
                 <p className="">
-                  <CIcon icon={cilClock} />{" "}
+                  <CIcon icon={cilClock} className="clock-icon"/>{" "}
                   {new Date(plan.created_at).toLocaleDateString()}
                 </p>
               </div>
