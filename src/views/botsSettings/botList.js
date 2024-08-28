@@ -16,7 +16,6 @@ const SpinnerComponent = () => {
   );
 };
 
-// Función para formatear la fecha
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   const options = {
@@ -27,7 +26,6 @@ const formatDate = (dateString) => {
     minute: "2-digit",
     hour12: false,
   };
-  // Formatear la fecha y hora según las opciones
   return date.toLocaleString("en-GB", options).replace(/,/, "");
 };
 
@@ -35,12 +33,10 @@ const BotList = ({ bots }) => {
   const [botList, setBotList] = useState([]);
 
   useEffect(() => {
-    setBotList(bots); // Actualiza el estado 'botList' con el valor de 'bots'
-  }, [bots]); // Establece 'bots' como la dependencia del efecto
+    setBotList(bots);
+  }, [bots]);
 
-  // Función para activar o desactivar un bot
   const toggleBotState = async (index) => {
-    // Asegurarse de que botList no sea undefined
     if (botList && botList[index]) {
       const bot = botList[index];
       const url = bot.isActive
@@ -66,7 +62,6 @@ const BotList = ({ bots }) => {
     }
   };
 
-
   return (
     <div className="bot-list-container">
       {botList && botList.length > 0 ? (
@@ -75,7 +70,7 @@ const BotList = ({ bots }) => {
             key={index}
             className={`bot-item ${bot.isActive ? "activeBot" : "inactiveBot"}`}
           >
-            <div className="bot-icon">
+            <div className="bot-icon svg-container">
               <img
                 src={`https://aialphaicons.s3.us-east-2.amazonaws.com/${bot.alias.toLowerCase()}.png`}
                 alt={bot.alias}
@@ -104,7 +99,6 @@ const BotList = ({ bots }) => {
           </div>
         ))
       ) : (
-        // <Loader />
         <SpinnerComponent />
       )}
     </div>
