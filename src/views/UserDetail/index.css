@@ -10,6 +10,10 @@
   /* text-align: center; */
 }
 
+.clock-icon {
+  margin-bottom: 0px;
+}
+
 .name {
   font-size: 25px;
 }
@@ -47,6 +51,10 @@
 
 .plans-title {
   font-weight: bolder;
+}
+
+.id {
+  overflow-wrap: anywhere;
 }
 
 .price {
