@@ -23,12 +23,15 @@
 }
 
 .api-card {
-  flex: 1;
+  /* flex: 1; */
+  width: 40%;
+  margin: auto;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   min-height: 220px;
+  height: 220px;
 }
 
 .coin-gecko-ul {
@@ -65,7 +68,8 @@
   align-content: center;
 }
 
-@media (max-width: 620px) {
+/* @media (max-width: 620px) { */
+@media (max-width: 800px) {
   .coin-gecko-info-container {
     flex-direction: column;
   }
@@ -89,7 +93,7 @@
 
   .coin-gecko-ul {
     margin: auto;
-    width: 50%;
+    width: 100%;
   }
 
   .gauge-container {
