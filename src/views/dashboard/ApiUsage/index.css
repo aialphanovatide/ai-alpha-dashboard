@@ -24,8 +24,7 @@
 
 .api-card {
   /* flex: 1; */
-  width: 40%;
-  margin: auto;
+  width: 30%;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
