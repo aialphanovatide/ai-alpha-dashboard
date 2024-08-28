@@ -60,5 +60,10 @@ body {
     .footer {
       --cui-footer-bg: var(--cui-body-bg);
     }
+
+    .waring-sign-png {
+      // Change png to white color
+      filter: invert(1) brightness(2) !important;
+    }
   }
 }

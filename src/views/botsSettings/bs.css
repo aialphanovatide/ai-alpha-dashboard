@@ -199,3 +199,12 @@
 .alertSucess {
   margin: 1rem 0;
 }
+
+.svg-container img {
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  background-image: linear-gradient(to bottom left, #e5e5e5, #fff);
+  background-image: linear-gradient(to bottom left, #171717, #525252);
+  border: #f98404 3px solid;
+}
