@@ -3,8 +3,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   gap: 25px;
+  padding: 5%;
 }
 
 .container h2 { 
@@ -14,5 +15,6 @@
 }
 
 .container img {
-  width: 70px;
+  width: 12%;
+  height: auto;
 }
