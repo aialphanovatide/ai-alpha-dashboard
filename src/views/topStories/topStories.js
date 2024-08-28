@@ -6,6 +6,9 @@ import CIcon from '@coreui/icons-react';
 import { cilTrash } from '@coreui/icons';
 import './topStories.css';
 import { format } from 'date-fns';
+import Pagination from '../pagination/Pagination';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 const Modal = ({ item, base64Image, onClose }) => {
     const formattedSummary = item.analysis ? item.analysis.replace(/\n/g, '<br>') : item.content.replace(/\n/g, '<br>')
@@ -50,7 +53,6 @@ const Item = ({ item, base64Image, onDelete }) => {
 
     const formattedSummary = item.analysis ? item.analysis.replace(/\n/g, '<br>') : item.content.replace(/\n/g, '<br>')
     const formattedDate = format(new Date(item.date), 'MMMM dd, yyyy');
-    console.log(item)
     return (
         <>
             <div className="card" onClick={handleItemClick}>
@@ -76,21 +78,26 @@ const Item = ({ item, base64Image, onDelete }) => {
 
 const TopStories = () => {
     const [topStories, setTopStories] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [articlesPerPage] = useState(10);
 
     const getTopStories = async () => {
         try {
-            const response1 = await fetch(`${config.BOTS_V2_API}/get_all_articles?limit=200`);
+            const response1 = await fetch(`${config.BOTS_V2_API}/top-stories?limit=150`);
             const data1 = await response1.json();
 
             if (response1.ok) {
                 const topStories = data1.data.filter(article => article.is_top_story);
-                console.log(topStories)
+                console.log("llegan estas: ", topStories)
                 setTopStories(topStories);
             } else {
                 console.error('Error fetching:', data1);
             }
         } catch (error) {
             console.error('Error fetching:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -136,17 +143,37 @@ const TopStories = () => {
         getTopStories();
     }, []);
 
+    const indexOfLastArticle = currentPage * articlesPerPage;
+    const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
+    const currentArticles = topStories.slice(indexOfFirstArticle, indexOfLastArticle);
+
     return (
         <div className='alltopStoriesmain'>
             <h3 className='alltopStoriesTitle'>Top Stories</h3>
             <br />
-            {topStories && topStories.length > 0 ?
-                <div className='card-deck'>
-                    {topStories.map(item => (
-                        <Item key={item.article_id} item={item} base64Image={item.image} onDelete={handleDelete} />
-                    ))}
-                </div> : <span>No Top Stories yet</span>
-            }
+            {loading ? (
+                <div className="loading-spinner">
+                    <FontAwesomeIcon icon={faSpinner} spin size="3x" />
+                </div>
+            ) : (
+                <>
+                    {currentArticles && currentArticles.length > 0 ? (
+                        <div className='card-deck'>
+                            {currentArticles.map(item => (
+                                <Item key={item.article_id} item={item} base64Image={item.image} onDelete={handleDelete} />
+                            ))}
+                        </div>
+                    ) : (
+                        <span>No Top Stories yet</span>
+                    )}
+                    <Pagination
+                        totalArticles={topStories.length}
+                        articlesPerPage={articlesPerPage}
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                    />
+                </>
+            )}
         </div>
     );
 };
