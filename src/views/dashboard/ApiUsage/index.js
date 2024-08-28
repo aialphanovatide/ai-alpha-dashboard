@@ -15,15 +15,17 @@ const SpinnerComponent = (height) => {
 const ApiUsage = () => {
   const [coingeckoData, setCoingeckoData] = useState(null);
   const [coingeckoUsage, setCoingeckoUsage] = useState(null);
-  const [openaiData, setOpenaiData] = useState(null);
   const [isCoingeckoLoading, setIsCoingeckoLoading] = useState(true);
-  const [isOpenaiLoading, setIsOpenaiLoading] = useState(true);
+  // const [openaiData, setOpenaiData] = useState(null);
+  // const [isOpenaiLoading, setIsOpenaiLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch CoinGecko data
-        const cgResponse = await fetch(`${config.BOTS_V2_API}/api/cg-usage`);
+        // const cgResponse = await fetch(`${config.BOTS_V2_API}/api/cg-usage`);
+        const cgResponse = await fetch(`${config.BOTS_V2_API}/api/cg-usage`)
+        console.log(`${config.BOTS_V2_API}/api/cg-usage`)
         if (!cgResponse.ok) {
           throw new Error("Network response was not ok for CoinGecko");
         }
@@ -39,18 +41,18 @@ const ApiUsage = () => {
         setIsCoingeckoLoading(false);
 
         // Fetch OpenAI data
-        const openaiResponse = await fetch(`${config.BOTS_V2_API}/api/openai-usage`);
-        if (!openaiResponse.ok) {
-          throw new Error('Network response was not ok for OpenAI');
-        }
-        const openaiData = await openaiResponse.json();
+        // const openaiResponse = await fetch(`${config.BOTS_V2_API}/api/openai-usage`);
+        // if (!openaiResponse.ok) {
+        //   throw new Error('Network response was not ok for OpenAI');
+        // }
+        // const openaiData = await openaiResponse.json();
 
-        setOpenaiData(openaiData.data);
-        setIsOpenaiLoading(false);
+        // setOpenaiData(openaiData.data);
+        // setIsOpenaiLoading(false);
       } catch (error) {
         console.error("Error fetching usage data:", error);
         setIsCoingeckoLoading(false);
-        setIsOpenaiLoading(false);
+        // setIsOpenaiLoading(false);
       }
     };
 
@@ -99,7 +101,7 @@ const ApiUsage = () => {
         )}
       </div>
       {/* OpenAI Card */}
-      <div className="api-card">
+      {/* <div className="api-card">
         {isOpenaiLoading ? (
           <SpinnerComponent height="100%" />
         ) : (
@@ -130,7 +132,7 @@ const ApiUsage = () => {
             )}
           </>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
