@@ -52,7 +52,7 @@
 
 /* Change arrow buttons && bottom te color */
 .table svg,  .css-de9k3v-MuiDataGrid-selectedRowCount {
-  color: rgb(153, 153, 153);
+  color: white;
   font-weight: bolder;
 }
 
