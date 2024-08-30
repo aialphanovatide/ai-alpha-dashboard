@@ -1,39 +1,38 @@
 import React, { useEffect, useState } from "react";
 import config from "../../config";
 import { formatDateTime } from "src/utils";
-import DataTable from "src/components/DataTable";
+import styles from "./index.module.css";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import SpinnerComponent from "src/components/Spinner";
-// import userImg from "src/assets/images/defaultUserImg.jpg";
+import TablePagination from "@mui/material/TablePagination";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import { useNavigate } from 'react-router-dom'
-
-// Columns config
-const columns = [
-  { field: "rowNumber", headerName: "#", width: 20, sortable: false },
-  // { renderCell: renderImg, headerName: "Image", width: 70, sortable: false },
-  { field: "auth0id", headerName: "ID", width: 280, sortable: false },
-  { field: "full_name", headerName: "Full Name", width: 150, sortable: false },
-  { field: "nickname", headerName: "Nickname", width: 150, sortable: false },
-  { field: "email", headerName: "Email", width: 230, sortable: false },
-  { field: "created_at", headerName: "Created at", width: 180, sortable: false },
-];
 
 const UsersList = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("nickname");
+
   const navigate = useNavigate()
 
   const handleOnRowClick = (params) => {
     navigate(`/userdetail/${params.row.user_id}`)
   }
 
-  // const renderImg = (params) => {
-  //   return (
-  //     <img
-  //       src={params.row.picture || userImg}
-  //       style={{ height: 50, width: 50 }}
-  //     />
-  //   );
+  // const tableCellStyle = {
+  //   whiteSpace: "nowrap", // Evita que el texto se divida en varias líneas
+  //   minWidth: "150px",    // Establece un ancho mínimo para la columna
   // };
+  
 
   const getUsers = async () => {
     try {
@@ -83,26 +82,108 @@ const UsersList = () => {
       getUsers();
     }
 
-    // Set interval to fetch data every 10'
     const interval = setInterval(() => {
       getUsers();
     }, TEN_MINUTES);
 
-    // Clean interval when component is dismounted
     return () => clearInterval(interval);
   }, []);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
+
+  const sortedUsers = [...users].sort((a, b) => {
+    if (orderBy === "nickname") {
+      return order === "asc"
+        ? a.nickname.localeCompare(b.nickname)
+        : b.nickname.localeCompare(a.nickname);
+    } else if (orderBy === "rowNumber") {
+      return order === "asc"
+        ? a.rowNumber - b.rowNumber
+        : b.rowNumber - a.rowNumber;
+    }
+    return 0;
+  });
 
   return isLoading ? (
     <SpinnerComponent />
   ) : (
-    <DataTable
-      data={users}
-      columns={columns}
-      pageSizeOptions={false}
-      customRowId={(row) => row.auth0id}
-      disableRowSelectionOnClick
-      onRowClick={handleOnRowClick}
-    />
+    <>
+      <TableContainer className={styles.tableContainer}>
+        <Table
+          // sx={{ minWidth: 650 }}
+          aria-label="users table"
+          className={styles.table}
+          id="table"
+        >
+          <TableHead>
+            <TableRow className={styles.tableRow}>
+              <TableCell
+                sortDirection={orderBy === "rowNumber" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "rowNumber"}
+                  direction={orderBy === "rowNumber" ? order : "asc"}
+                  onClick={() => handleRequestSort("rowNumber")}
+                >
+                  #
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>ID</TableCell>
+              <TableCell>Full Name</TableCell>
+              <TableCell sortDirection={orderBy === "nickname" ? order : false}>
+                <TableSortLabel
+                  active={orderBy === "nickname"}
+                  direction={orderBy === "nickname" ? order : "asc"}
+                  onClick={() => handleRequestSort("nickname")}
+                >
+                  Nickname
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Created at</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {sortedUsers
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((user) => (
+                <TableRow className={styles.tableRow} key={user.auth0id}>
+                  <TableCell>{user.rowNumber}</TableCell>
+                  <TableCell>{user.auth0id}</TableCell>
+                  <TableCell>{user.full_name}</TableCell>
+                  <TableCell>{user.nickname}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.created_at}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={users.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        className={styles.tablePagination}
+        id="table-pagination"
+      />
+    </>
   );
 };
 
