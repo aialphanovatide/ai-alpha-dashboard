@@ -8,7 +8,6 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import SpinnerComponent from "src/components/Spinner";
 import TablePagination from "@mui/material/TablePagination";
 import TableSortLabel from "@mui/material/TableSortLabel";
@@ -20,13 +19,7 @@ const UsersList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("nickname");
-
-  // const tableCellStyle = {
-  //   whiteSpace: "nowrap", // Evita que el texto se divida en varias líneas
-  //   minWidth: "150px",    // Establece un ancho mínimo para la columna
-  // };
   
-
   const getUsers = async () => {
     try {
       const response = await fetch(`${config.BASE_URL}/users`, {
@@ -116,7 +109,6 @@ const UsersList = () => {
     <>
       <TableContainer className={styles.tableContainer}>
         <Table
-          // sx={{ minWidth: 650 }}
           aria-label="users table"
           className={styles.table}
           id="table"
