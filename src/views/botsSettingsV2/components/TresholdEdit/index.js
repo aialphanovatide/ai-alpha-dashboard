@@ -1,7 +1,7 @@
 import { cilPencil } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import React from "react";
-import "./index.css";
+import styles from "./index.module.css";
 import Slider from '@mui/material/Slider';
 import { styled } from '@mui/material/styles';
 const MAX = 100;
@@ -28,7 +28,7 @@ const TresholdEdit = () => {
   };
 
   return (
-    <div className="treshold-container">
+    <form className={styles.tresholdContainer}>
       <h4>
         <CIcon icon={cilPencil} size="xl" /> Edit Treshold
       </h4>
@@ -81,8 +81,9 @@ const TresholdEdit = () => {
           </span>
         </div>
         </div>
+        <button className={styles.submitButton}>Create</button>
       </div>
-    </div>
+    </form>
   );
 };
 
