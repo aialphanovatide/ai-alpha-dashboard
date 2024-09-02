@@ -22,6 +22,7 @@ import {
 } from "@coreui/icons";
 import TresholdEdit from "./components/TresholdEdit";
 import NewCategoryForm from "./components/NewCategoryForm";
+import NewBotForm from "./components/NewBotForm";
 
 const SpinnerComponent = () => {
   return (
@@ -237,7 +238,7 @@ const BotsSettings = () => {
             <button onClick={toggleDrawer(true, <NewCategoryForm/> )}>
               <CIcon icon={cilPlus} /> New Category
             </button>
-            <button>
+            <button onClick={toggleDrawer(true, <NewBotForm/> )}>
               <CIcon icon={cilPlus} /> New Bot
             </button>
           </div>
