@@ -8,7 +8,6 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import SpinnerComponent from "src/components/Spinner";
 import TablePagination from "@mui/material/TablePagination";
 import TableSortLabel from "@mui/material/TableSortLabel";
@@ -27,12 +26,6 @@ const UsersList = () => {
   const handleOnRowClick = (params) => {
     navigate(`/userdetail/${params.row.user_id}`)
   }
-
-  // const tableCellStyle = {
-  //   whiteSpace: "nowrap", // Evita que el texto se divida en varias líneas
-  //   minWidth: "150px",    // Establece un ancho mínimo para la columna
-  // };
-  
 
   const getUsers = async () => {
     try {
@@ -123,7 +116,6 @@ const UsersList = () => {
     <>
       <TableContainer className={styles.tableContainer}>
         <Table
-          // sx={{ minWidth: 650 }}
           aria-label="users table"
           className={styles.table}
           id="table"
@@ -173,7 +165,7 @@ const UsersList = () => {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
         component="div"
         count={users.length}
         rowsPerPage={rowsPerPage}
