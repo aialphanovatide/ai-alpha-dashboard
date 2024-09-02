@@ -5,7 +5,7 @@ import BotList from "./components/BotList";
 import AddWordsModal from "../addWordsModal/AddWordsModal";
 import DeleteWordsModal from "../deleteWordsModal/DeleteWordsModal";
 import DeleteBlacklistWordsModal from "../deleteBlacklistWordsModal/DeleteBlacklistWordsModal";
-
+import { ReactComponent as TitleIcon } from "../../assets/icons/Vector.svg";
 import UsedKeywordsModal from "../usedKeywordsModal/UsedKeywordsModal";
 import CreateBotModal from "../createBotModal/CreateBotModal";
 import CreateCategoryModal from "../createCategoryModal/CreateCategoryModal";
@@ -211,15 +211,15 @@ const BotsSettings = () => {
 
   return (
     <div className="bot-settings-container">
-      <h2>Bot settings</h2>
+      <h2>
+        <TitleIcon className="titleIcon"/>
+        News Bot settings
+      </h2>
       <div className="settings-container">
-        <div
-          className="treshold"
-          style={{ width: "15%" }}
-        >
+        <div className="treshold" style={{ width: "15%" }}>
           <span>Treshold</span>
           <div>
-            <button onClick={toggleDrawer(true, <TresholdEdit/>)}>
+            <button onClick={toggleDrawer(true, <TresholdEdit />)}>
               <CIcon icon={cilPencil} size="sm" /> Edit
             </button>
           </div>
@@ -235,11 +235,11 @@ const BotsSettings = () => {
               alignItems: "center",
             }}
           >
-            <button onClick={toggleDrawer(true, <NewCategoryForm/> )}>
+            <button onClick={toggleDrawer(true, <NewCategoryForm />)}>
               <CIcon icon={cilPlus} /> New Category
             </button>
-            <button onClick={toggleDrawer(true, <NewBotForm/> )}>
-              <CIcon icon={cilPlus} /> New Bot
+            <button onClick={toggleDrawer(true, <NewBotForm />)}>
+              <CIcon icon={cilPlus} /> New Bot/Coin
             </button>
           </div>
         </div>
