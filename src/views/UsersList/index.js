@@ -23,8 +23,8 @@ const UsersList = () => {
 
   const navigate = useNavigate()
 
-  const handleOnRowClick = (params) => {
-    navigate(`/userdetail/${params.row.user_id}`)
+  const handleOnRowClick = (user_id) => {
+    navigate(`/userdetail/${user_id}`)
   }
 
   const getUsers = async () => {
@@ -162,7 +162,7 @@ const UsersList = () => {
             {sortedUsers
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((user) => (
-                <TableRow className={styles.tableRow} key={user.auth0id}>
+                <TableRow className={styles.tableRow} key={user.auth0id} onClick={() => handleOnRowClick(user.user_id)}>
                   <TableCell>{user.rowNumber}</TableCell>
                   <TableCell>{user.auth0id}</TableCell>
                   <TableCell>{user.full_name}</TableCell>
