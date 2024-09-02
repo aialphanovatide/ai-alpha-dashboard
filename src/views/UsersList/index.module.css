@@ -8,8 +8,16 @@
   min-width: fit-content !important;
 }
 
+.table thead {
+  background-color: #8d8d8d;
+}
+
+.table thead tr th {
+  font-weight: bold;
+}
+
 .tablePagination svg {
-  color: aliceblue !important;
+  color: #848484 !important;
 }
 
 .tableContainer {
