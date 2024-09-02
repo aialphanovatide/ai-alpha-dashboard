@@ -1,6 +1,6 @@
 import React from 'react'
 
-const BotsSettings = React.lazy(() => import('./views/botsSettings/BotsSettings'))
+const BotsSettings = React.lazy(() => import('./views/botsSettings'))
 const ChartsPage = React.lazy(() => import('./views/chartsPage/ChartsPage'))
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Analysis = React.lazy(() => import('./views/analysis/Analysis'))
