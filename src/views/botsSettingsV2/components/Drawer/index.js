@@ -6,8 +6,7 @@ import { cilX } from "@coreui/icons";
 
 export default function DrawerComponent({ children, open, toggleDrawer }) {
   return (
-    <div>
-      <Drawer open={open} onClose={toggleDrawer(false)} anchor="right">
+      <Drawer open={open} onClose={toggleDrawer(false)} anchor="right" className="drawer" >
         <div className={styles.mainContainer}>
           <div className={styles.buttonContainer}>
             <button onClick={toggleDrawer(false)} className={styles.button}>
@@ -17,6 +16,5 @@ export default function DrawerComponent({ children, open, toggleDrawer }) {
           {children}
         </div>
       </Drawer>
-    </div>
   );
 }
