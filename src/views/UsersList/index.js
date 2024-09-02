@@ -18,9 +18,9 @@ const UsersList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("nickname");
-  
-  const getUsers = async () => {
+  const [orderBy, setOrderBy] = useState("rowNumber");
+
+  const fetchUsers = async () => {
     try {
       const response = await fetch(`${config.BASE_URL}/users`, {
         method: "GET",
@@ -32,18 +32,8 @@ const UsersList = () => {
 
       const data = await response.json();
       if (data && data.data) {
-        const prepareUserData = data.data.map((user, index) => ({
-          ...user,
-          created_at: formatDateTime(user.created_at),
-          rowNumber: index + 1,
-          full_name: user.full_name ? user.full_name : "Not specified",
-        }));
-
-        localStorage.setItem("usersData", JSON.stringify(prepareUserData));
-        localStorage.setItem("usersDataTimestamp", Date.now().toString());
-
-        setLoading(false);
-        setUsers(prepareUserData);
+        const preparedUsers = prepareUserData(data.data);
+        updateUsersState(preparedUsers);
       } else {
         console.error("Error fetching users:", data.message);
       }
@@ -52,7 +42,33 @@ const UsersList = () => {
     }
   };
 
-  useEffect(() => {
+  const prepareUserData = (data) => {
+    return data.map((user, index) => {
+      return {
+        ...user,
+        created_at: formatDateTime(user.created_at),
+        rowNumber: index + 1,
+        full_name: user.full_name ? user.full_name : "Not specified",
+      };
+    });
+  };
+
+  const removeDuplicateUsers = (users) => {
+    return users.filter(
+      (user, index, self) =>
+        index === self.findIndex((u) => u.auth0id === user.auth0id),
+    );
+  };
+
+  const updateUsersState = (userData) => {
+    const uniqueUsers = removeDuplicateUsers(userData);
+    setUsers(uniqueUsers);
+    localStorage.setItem("usersData", JSON.stringify(uniqueUsers));
+    localStorage.setItem("usersDataTimestamp", Date.now().toString());
+    setLoading(false);
+  };
+
+  const checkCacheAndFetchUsers = () => {
     const storedUsers = localStorage.getItem("usersData");
     const timestamp = localStorage.getItem("usersDataTimestamp");
     const TEN_MINUTES = 10 * 60 * 1000;
@@ -62,15 +78,23 @@ const UsersList = () => {
       timestamp &&
       Date.now() - parseInt(timestamp) < TEN_MINUTES
     ) {
-      setUsers(JSON.parse(storedUsers));
+      const cachedUsers = JSON.parse(storedUsers);
+      setUsers(cachedUsers);
       setLoading(false);
     } else {
-      getUsers();
+      fetchUsers();
     }
+  };
 
-    const interval = setInterval(() => {
-      getUsers();
-    }, TEN_MINUTES);
+  useEffect(() => {
+    checkCacheAndFetchUsers();
+
+    const interval = setInterval(
+      () => {
+        fetchUsers();
+      },
+      10 * 60 * 1000,
+    );
 
     return () => clearInterval(interval);
   }, []);
@@ -90,22 +114,26 @@ const UsersList = () => {
     setOrderBy(property);
   };
 
-  const sortedUsers = [...users].sort((a, b) => {
-    if (orderBy === "nickname") {
-      return order === "asc"
-        ? a.nickname.localeCompare(b.nickname)
-        : b.nickname.localeCompare(a.nickname);
-    } else if (orderBy === "rowNumber") {
-      return order === "asc"
-        ? a.rowNumber - b.rowNumber
-        : b.rowNumber - a.rowNumber;
-    } else if (orderBy === "created_at") {
-      return order === "asc"
-        ? new Date(a.created_at) - new Date(b.created_at)
-        : new Date(b.created_at) - new Date(a.created_at);
-    }
-    return 0;
-  });
+  const sortUsers = (usersArray) => {
+    return usersArray.slice().sort((a, b) => {
+      if (orderBy === "nickname") {
+        return order === "asc"
+          ? a.nickname.localeCompare(b.nickname)
+          : b.nickname.localeCompare(a.nickname);
+      } else if (orderBy === "rowNumber") {
+        return order === "asc"
+          ? a.rowNumber - b.rowNumber
+          : b.rowNumber - a.rowNumber;
+      } else if (orderBy === "created_at") {
+        return order === "asc"
+          ? new Date(a.created_at) - new Date(b.created_at)
+          : new Date(b.created_at) - new Date(a.created_at);
+      }
+      return 0;
+    });
+  };
+
+  const sortedUsers = sortUsers(users);
 
   return isLoading ? (
     <SpinnerComponent />
@@ -137,7 +165,6 @@ const UsersList = () => {
                   Nickname
                 </TableSortLabel>
               </TableCell>
-              <TableCell>Email</TableCell>
               <TableCell
                 sortDirection={orderBy === "created_at" ? order : false}
               >
@@ -149,21 +176,27 @@ const UsersList = () => {
                   Created at
                 </TableSortLabel>
               </TableCell>
+              <TableCell>Email</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {sortedUsers
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((user) => (
-                <TableRow className={styles.tableRow} key={user.auth0id}>
-                  <TableCell>{user.rowNumber}</TableCell>
-                  <TableCell>{user.auth0id}</TableCell>
-                  <TableCell>{user.full_name}</TableCell>
-                  <TableCell>{user.nickname}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.created_at}</TableCell>
-                </TableRow>
-              ))}
+              .map((user) => {
+                return (
+                  <TableRow
+                    className={styles.tableRow}
+                    key={`row-${user.auth0id}`}
+                  >
+                    <TableCell>{user.rowNumber}</TableCell>
+                    <TableCell>{user.auth0id}</TableCell>
+                    <TableCell>{user.full_name}</TableCell>
+                    <TableCell>{user.nickname}</TableCell>
+                    <TableCell>{user.created_at}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
