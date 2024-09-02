@@ -17,7 +17,7 @@ const UsersList = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("nickname");
 
@@ -106,6 +106,10 @@ const UsersList = () => {
       return order === "asc"
         ? a.rowNumber - b.rowNumber
         : b.rowNumber - a.rowNumber;
+    } else if (orderBy === "created_at") {
+      return order === "asc"
+        ? new Date(a.created_at) - new Date(b.created_at)
+        : new Date(b.created_at) - new Date(a.created_at);
     }
     return 0;
   });
@@ -115,11 +119,7 @@ const UsersList = () => {
   ) : (
     <>
       <TableContainer className={styles.tableContainer}>
-        <Table
-          aria-label="users table"
-          className={styles.table}
-          id="table"
-        >
+        <Table aria-label="users table" className={styles.table} id="table">
           <TableHead>
             <TableRow className={styles.tableRow}>
               <TableCell
@@ -145,7 +145,17 @@ const UsersList = () => {
                 </TableSortLabel>
               </TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Created at</TableCell>
+              <TableCell
+                sortDirection={orderBy === "created_at" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "created_at"}
+                  direction={orderBy === "created_at" ? order : "asc"}
+                  onClick={() => handleRequestSort("created_at")}
+                >
+                  Created at
+                </TableSortLabel>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
