@@ -65,5 +65,13 @@ body {
       // Change png to white color
       filter: invert(1) brightness(2) !important;
     }
+
+    #table svg,
+    #table span,
+    #table td,
+    #table th,
+    #table-pagination {
+      color: white !important;
+    }
   }
 }
