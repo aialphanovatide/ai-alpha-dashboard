@@ -5,7 +5,6 @@ import BotList from "./components/BotList";
 import AddWordsModal from "../addWordsModal/AddWordsModal";
 import DeleteWordsModal from "../deleteWordsModal/DeleteWordsModal";
 import DeleteBlacklistWordsModal from "../deleteBlacklistWordsModal/DeleteBlacklistWordsModal";
-import { ReactComponent as TitleIcon } from "../../assets/icons/Vector.svg";
 import UsedKeywordsModal from "../usedKeywordsModal/UsedKeywordsModal";
 import CreateBotModal from "../createBotModal/CreateBotModal";
 import CreateCategoryModal from "../createCategoryModal/CreateCategoryModal";
@@ -19,6 +18,7 @@ import {
   cilMinus,
   cilPencil,
   cilPlus,
+  cilSitemap,
 } from "@coreui/icons";
 import TresholdEdit from "./components/TresholdEdit";
 import NewCategoryForm from "./components/NewCategoryForm";
@@ -212,7 +212,7 @@ const BotsSettings = () => {
   return (
     <div className="bot-settings-container">
       <h2>
-        <TitleIcon className="titleIcon"/>
+        <CIcon icon={cilSitemap}  size="3xl"/>
         News Bot settings
       </h2>
       <div className="settings-container">
