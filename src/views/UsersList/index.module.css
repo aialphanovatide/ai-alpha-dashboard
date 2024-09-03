@@ -8,6 +8,11 @@
   min-width: fit-content !important;
 }
 
+.tableRow:hover {
+  cursor: pointer;
+  background-color: #cacaca;
+}
+
 .table thead {
   background-color: #8d8d8d;
 }
