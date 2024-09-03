@@ -11,6 +11,7 @@ import TableRow from "@mui/material/TableRow";
 import SpinnerComponent from "src/components/Spinner";
 import TablePagination from "@mui/material/TablePagination";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import { useNavigate } from 'react-router-dom'
 
 const UsersList = () => {
   const [users, setUsers] = useState([]);
@@ -19,6 +20,11 @@ const UsersList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("rowNumber");
+  const navigate = useNavigate()
+
+  const handleOnRowClick = (user_id) => {
+    navigate(`/userdetail/${user_id}`)
+  }
 
   const fetchUsers = async () => {
     try {
@@ -187,6 +193,7 @@ const UsersList = () => {
                   <TableRow
                     className={styles.tableRow}
                     key={`row-${user.auth0id}`}
+                    onClick={() => handleOnRowClick(user.user_id)}
                   >
                     <TableCell>{user.rowNumber}</TableCell>
                     <TableCell>{user.auth0id}</TableCell>
