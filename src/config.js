@@ -6,6 +6,8 @@ const ACCESS_KEY_AWS = process.env.REACT_APP_AWS_ACCESS_KEY_ID
 const SECRET_ACCESS_KEY_AWS = process.env.REACT_APP_AWS_SECRET_ACCESS_KEY
 const AWS_REGION = process.env.REACT_APP_AWS_REGION
 const AWS_ICONS = process.env.REACT_APP_AWS_ICONS_BUCKET
+
+console.log("BOTS_V2", BOTS_V2)
 //config server
 const config = {
    BASE_URL:  BASE_URL_API,

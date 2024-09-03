@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Gauge } from "react-circular-gauge";
-import "./../spinner.css";
+// import "./../spinner.css";
 import config from "../../../config";
 import "./index.css";
 
@@ -11,6 +11,8 @@ const SpinnerComponent = (height) => {
     </div>
   );
 };
+
+console.log("config.BOTS_V2_API", config.BOTS_V2_API)
 
 const ApiUsage = () => {
   const [coingeckoData, setCoingeckoData] = useState(null);
@@ -28,6 +30,7 @@ const ApiUsage = () => {
           throw new Error("Network response was not ok for CoinGecko");
         }
         const cgData = await cgResponse.json();
+       
         setCoingeckoData(cgData.data);
         setCoingeckoUsage(
           cgData.data.monthly_call_credit > 0
@@ -56,6 +59,9 @@ const ApiUsage = () => {
 
     fetchData();
   }, []);
+
+
+  console.log('cgData', coingeckoData)
 
   return (
     <div className="cards-container">
