@@ -47,25 +47,7 @@
   background-color: transparent;
 }
 
-.bot-btn {
-  padding: 1rem;
-  color: white;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.botIcon {
-  width: 20px;
-  height: 10px;
-}
-
-.botname {
-  font-size: 1.3rem;
-  text-transform: capitalize;
-  width: 80%;
-}
-
-.modal-btn {
+/* .modal-btn {
   height: 90px;
   width: 250px;
   color: white;
@@ -76,38 +58,20 @@
   margin-left: 10px;
   text-transform: capitalize;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-}
+} */
 
-.modal-btn:hover {
+/* .modal-btn:hover {
   color: #fff;
   background-color: rgb(255, 188, 62);
-}
+} */
 
-.d-flex {
-  margin: 0 10px 0 0;
-}
-
-.actionsTitle {
-  margin: 1rem 0 1rem 0;
-}
-
-.actionsMain {
-  display: flex;
-}
-
-.actionsSubMain {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.spinnergnral {
+/* .spinnergnral {
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: transparent;
   border: none;
-}
+} */
 
 /* ------------ DAPPS STYLES ------------- */
 
