@@ -6,7 +6,8 @@ import {
   cilPencil,
   cilSitemap,
   cilSpeedometer,
-  cilLibrary
+  cilLibrary,
+  cilUser
 } from '@coreui/icons'
 import { CNavItem } from '@coreui/react'
 
@@ -64,6 +65,12 @@ const _nav = [
     name: 'Top Stories',
     to: '/topStories',
     icon: <CIcon icon={cilLibrary} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Users List',
+    to: '/users',
+    icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
   },
 ].sort((a, b) => a.name.localeCompare(b.name));
 
