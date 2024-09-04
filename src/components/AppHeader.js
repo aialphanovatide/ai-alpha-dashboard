@@ -40,7 +40,7 @@ const AppHeader = () => {
 
   return (
     <CHeader position="sticky" className="p-0" ref={headerRef} style={{height: "9%"}}>
-      <CContainer className="border-bottom px-4" fluid>
+      <CContainer className="border-bottom px-4" style={{height: "100%"}} fluid>
         <CHeaderToggler
           onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
           style={{ marginInlineStart: '-14px' }}
