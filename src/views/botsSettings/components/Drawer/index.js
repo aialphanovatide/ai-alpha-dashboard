@@ -4,17 +4,27 @@ import CIcon from "@coreui/icons-react";
 import styles from "./index.module.css";
 import { cilX } from "@coreui/icons";
 
-export default function DrawerComponent({ children, open, toggleDrawer }) {
+export default function DrawerComponent({
+  children,
+  open,
+  toggleDrawer,
+  anchor,
+}) {
   return (
-      <Drawer open={open} onClose={toggleDrawer(false)} anchor="right" className="drawer" >
-        <div className={styles.mainContainer}>
-          <div className={styles.buttonContainer}>
-            <button onClick={toggleDrawer(false)} className={styles.button}>
-              <CIcon icon={cilX} size="xl" />
-            </button>
-          </div>
-          {children}
+    <Drawer
+      open={open}
+      onClose={toggleDrawer(false)}
+      anchor={anchor}
+      className={styles.drawer}
+    >
+      <div className={anchor == "right" ? styles.rightContainer : styles.bottomContainer}>
+        <div className={anchor == "right" ? styles.buttonContainer : styles.buttonContainerBottom}>
+          <button onClick={toggleDrawer(false)} className={styles.button}>
+            <CIcon icon={cilX} size="xl" />
+          </button>
         </div>
-      </Drawer>
+        {children}
+      </div>
+    </Drawer>
   );
 }
