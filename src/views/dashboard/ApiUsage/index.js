@@ -53,7 +53,7 @@ const ApiUsage = () => {
     <div className="cards-container">
       {/* CoinGecko Card */}
       <div className="api-card">
-        {!isCoingeckoLoading ? (
+        {isCoingeckoLoading ? (
           <SpinnerComponent style={{height: "100%"}} />
         ) : (
           <>
