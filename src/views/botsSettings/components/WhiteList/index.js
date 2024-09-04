@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import styles from "./index.module.css";
 import CIcon from "@coreui/icons-react";
 import { ReactComponent as OpenLock } from "../../../../assets/icons/openLock.svg";
-import { cilPlus, cilSave, cilX } from "@coreui/icons";
+import { cilMinus, cilPlus, cilSave, cilSearch, cilX } from "@coreui/icons";
 import NotInterestedIcon from "@mui/icons-material/NotInterested";
 
-const WhiteList = ({isRemove}) => {
+const WhiteList = ({ isRemove }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [keywords, setKeywords] = useState([
     "Apple",
@@ -30,9 +30,15 @@ const WhiteList = ({isRemove}) => {
         <h4 className={styles.title}>
           <OpenLock /> Whitelist
         </h4>
-        <span className={styles.organgeText}>
-          <CIcon icon={cilPlus} /> Add
-        </span>
+        {isRemove ? (
+          <span className={styles.organgeText}>
+            <CIcon icon={cilMinus} /> Remove
+          </span>
+        ) : (
+          <span className={styles.organgeText}>
+            <CIcon icon={cilPlus} /> Add
+          </span>
+        )}
       </div>
       <div style={{ display: "flex", flexDirection: "column", width: "70%" }}>
         <span className={styles.errorMessage}>
@@ -42,23 +48,36 @@ const WhiteList = ({isRemove}) => {
         <form className={styles.formContainer}>
           <div className={styles.keyWordSearch}>
             <div className={styles.keywordInput}>
-              <input placeholder="Apple, Communication, Notebook..."/>
-              <button>
-                <CIcon icon={cilPlus} /> Add
-              </button>
+              <input placeholder={isRemove? "" : "Apple, Communication, Notebook..."} />
+              {isRemove ? (
+                <button style={{ textAlign: "right" }}>
+                  <CIcon icon={cilSearch} />
+                </button>
+              ) : (
+                <button>
+                  <CIcon icon={cilPlus} /> Add
+                </button>
+              )}
             </div>
             <span className={styles.disclaimer}>
               All Keywords will be added to the selected coins
             </span>
             <div className={styles.keyWordsContainer}>
-              {keywords.map((keyword, index) => (
-                <div className={styles.keyword} key={index}>
-                  <span>{keyword}</span>
-                  <button onClick={(e) => handleRemoveKeyword(e, index)}>
-                    <CIcon icon={cilX} />
-                  </button>
-                </div>
-              ))}
+              {isRemove
+                ? keywords.map((keyword, index) => (
+                    <div className={styles.keyword} key={index}>
+                      <input type="checkbox" />
+                      <span>{keyword}</span>
+                    </div>
+                  ))
+                : keywords.map((keyword, index) => (
+                    <div className={styles.keyword} key={index}>
+                      <span>{keyword}</span>
+                      <button onClick={(e) => handleRemoveKeyword(e, index)}>
+                        <CIcon icon={cilX} />
+                      </button>
+                    </div>
+                  ))}
             </div>
           </div>
           <button>
