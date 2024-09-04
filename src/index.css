@@ -5,6 +5,19 @@ body,
   height: 100%;
 }
 
+.css-9emuhu-MuiPaper-root-MuiDrawer-paper {
+  width: 800px;
+  margin: auto;
+  height: fit-content;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 10px;
+  padding-bottom: 0px;
+}
+
+.css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop {
+  background-color: transparent !important;
+}
 
 /* Drawer scrollbar styles */
 .css-1160xiw-MuiPaper-root-MuiDrawer-paper {
