@@ -23,6 +23,8 @@ import {
 import TresholdEdit from "./components/TresholdEdit";
 import NewCategoryForm from "./components/NewCategoryForm";
 import NewBotForm from "./components/NewBotForm";
+import WhiteList from "./components/WhiteList";
+import BlackList from "./components/BlackList";
 
 const SpinnerComponent = () => {
   return (
@@ -40,6 +42,7 @@ const BotsSettings = () => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [drawerChildren, setDrawerChildren] = useState(<></>);
+  const [drawerAnchor, setDrawerAnchor] = useState("right");
 
   const getAllBots = useCallback(async () => {
     try {
@@ -204,22 +207,23 @@ const BotsSettings = () => {
     getAllBots();
   }, [getAllBots]);
 
-  const toggleDrawer = (newOpen, view) => () => {
+  const toggleDrawer = (newOpen, view, anchor) => () => {
     view && setDrawerChildren(view);
+    anchor && setDrawerAnchor(anchor);
     setOpen(newOpen);
   };
 
   return (
     <div className="bot-settings-container">
       <h2>
-        <CIcon icon={cilSitemap}  size="3xl"/>
+        <CIcon icon={cilSitemap} size="3xl" />
         News Bot settings
       </h2>
       <div className="settings-container">
         <div className="treshold" style={{ width: "15%" }}>
           <span>Treshold</span>
           <div>
-            <button onClick={toggleDrawer(true, <TresholdEdit />)}>
+            <button onClick={toggleDrawer(true, <TresholdEdit />, "right")}>
               <CIcon icon={cilPencil} size="sm" /> Edit
             </button>
           </div>
@@ -235,10 +239,10 @@ const BotsSettings = () => {
               alignItems: "center",
             }}
           >
-            <button onClick={toggleDrawer(true, <NewCategoryForm />)}>
+            <button onClick={toggleDrawer(true, <NewCategoryForm />, "right")}>
               <CIcon icon={cilPlus} /> New Category
             </button>
-            <button onClick={toggleDrawer(true, <NewBotForm />)}>
+            <button onClick={toggleDrawer(true, <NewBotForm />, "right")}>
               <CIcon icon={cilPlus} /> New Coin/Bot
             </button>
           </div>
@@ -251,10 +255,12 @@ const BotsSettings = () => {
                 <CIcon icon={cilLockUnlocked} /> Whitelist
               </span>
               <div>
-                <button>
+                <button onClick={toggleDrawer(true, <WhiteList />, "bottom")}>
                   <CIcon icon={cilPlus} /> Add
                 </button>
-                <button>
+                <button
+                  onClick={toggleDrawer(true, <WhiteList isRemove />, "bottom")}
+                >
                   <CIcon icon={cilMinus} /> Remove
                 </button>
               </div>
@@ -264,10 +270,12 @@ const BotsSettings = () => {
                 <CIcon icon={cilLockLocked} /> Blacklist
               </span>
               <div>
-                <button>
+                <button onClick={toggleDrawer(true, <BlackList />, "bottom")}>
                   <CIcon icon={cilPlus} /> Add
                 </button>
-                <button>
+                <button
+                  onClick={toggleDrawer(true, <BlackList isRemove />, "bottom")}
+                >
                   <CIcon icon={cilMinus} /> Remove
                 </button>
               </div>
@@ -279,7 +287,12 @@ const BotsSettings = () => {
       <div style={{ height: "70%" }}>
         <BotList bots={bots} getAllBots={getAllBots} />
       </div>
-      <DrawerComponent toggleDrawer={toggleDrawer} open={open}>
+      <DrawerComponent
+        toggleDrawer={toggleDrawer}
+        open={open}
+        anchor={drawerAnchor}
+        className="draweer"
+      >
         {drawerChildren}
       </DrawerComponent>
 

@@ -28,7 +28,7 @@
 
 .settings-container>div {
   border-radius: 7px;
-  border: 1px solid black;
+  border: 1.5px solid black;
   color: black
 }
 
@@ -125,9 +125,9 @@
   position: relative;
 }
 
-.keywords>div {
+/* .keywords>div {
   bottom: 10%;
-}
+} */
 
 .treshold>div,
 .create>div {
