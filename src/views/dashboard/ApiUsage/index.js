@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Gauge } from "react-circular-gauge";
-import "./../spinner.css";
 import config from "../../../config";
 import "./index.css";
-
-const SpinnerComponent = (height) => {
-  return (
-    <div className="spinner-container" style={height}>
-      <div className="spinner-border"></div>
-    </div>
-  );
-};
+import SpinnerComponent from "src/components/Spinner";
 
 const ApiUsage = () => {
   const [coingeckoData, setCoingeckoData] = useState(null);
@@ -62,7 +54,7 @@ const ApiUsage = () => {
       {/* CoinGecko Card */}
       <div className="api-card">
         {isCoingeckoLoading ? (
-          <SpinnerComponent height="100%" />
+          <SpinnerComponent style={{height: "100%"}} />
         ) : (
           <>
             <h4 style={{ height: "20%" }}>CoinGecko API</h4>
