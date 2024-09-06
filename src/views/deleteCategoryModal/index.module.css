@@ -1,0 +1,135 @@
+.buttonContainer {
+  position: relative;
+  width: 10%;
+  display: flex;
+}
+
+.subcontainer h5 {
+  width: 350px;
+  font-weight: 700;
+}
+
+.trashBtn {
+  width: 100%;
+}
+
+.trashBtn:disabled {
+  cursor: url('../../assets/icons/disabledIcon.svg') 10 10, auto;
+}
+
+.trashBtn>svg {
+  height: 34px;
+}
+
+.trashBtn>svg>path {
+  fill: #c8c8c8;
+  stroke: #c8c8c8;
+}
+
+.subcontainer>svg {
+  margin-block: 20px
+}
+
+.modal>div {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-block: 0;
+}
+
+/* content container */
+.modal>div>div {
+  padding: 5%;
+  min-height: 350px;
+  height: fit-content;
+  /* width: fit-content; */
+}
+
+.subcontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: fit-content;
+  margin: auto;
+}
+
+.closeButton {
+  position: absolute;
+  color: #FF6C0D;
+  background-color: transparent;
+  border: none;
+  right: 10px;
+  top: 10px;
+}
+
+.disclaimer {
+  color: #737373;
+  margin-bottom: 5%;
+}
+
+.buttonsContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.buttonsContainer button {
+  width: 48%;
+  border: none;
+  border-radius: 5px;
+  padding: 7px;
+  color: white;
+  background-color: #a3a3a3;
+  /* font-weight: bolder; */
+  font-size: 20px;
+}
+
+.cancelButton {
+  background-color: #FF6C0D !important;
+}
+
+.elementsContainer {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+  font-weight: 500;
+  gap: 5%;
+  padding-block: 3%;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-height: 200px;
+  margin-block: 4%
+}
+
+.element {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-block: 8px;
+}
+
+.element img {
+  height: 40px;
+  width: 40px;
+}
+
+/* total width */
+.elementsContainer::-webkit-scrollbar {
+  width: 14px;
+}
+
+/* scrollbar itself */
+.elementsContainer::-webkit-scrollbar-thumb {
+  background-color: #E5E5E5;
+  border-radius: 16px;
+  border: 4px solid #ffffff;
+}
+
+/* set button(top and bottom of the scrollbar) */
+.elementsContainer::-webkit-scrollbar-button {
+  display: none;
+}
