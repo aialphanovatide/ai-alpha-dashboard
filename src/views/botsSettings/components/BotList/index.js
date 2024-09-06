@@ -5,25 +5,37 @@ import CIcon from "@coreui/icons-react";
 import {
   cilToggleOn,
   cilToggleOff,
-  cilTrash,
   cilPen,
   // cilTerminal,
 } from "@coreui/icons";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import DeleteCategoryModal from "src/views/DeleteCategoryModal";
 
-const ListItem = ({ bot }) => {
+const ListItem = ({ bot, setCategories, categories }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
   const toggleOpen = () => setIsOpen(!isOpen);
-  const toggleChecked = () => setIsChecked(!isChecked);
+  
+  const toggleChecked = (e) => {
+    const botCategory = JSON.parse(e.target.value);
+  
+    if (isChecked) {
+      setCategories(categories.filter(category => category.alias !== botCategory.alias));
+    } else {
+      setCategories([...categories, botCategory]);
+    }
+  
+    setIsChecked(!isChecked);
+  };
+  
 
   return (
     <>
       <div className={`bot-item ${isChecked ? "checked" : ""}`}>
         <div className="bot-item-input">
-          <input type="checkbox" checked={isChecked} onChange={toggleChecked} />
+          <input type="checkbox" checked={isChecked} onChange={toggleChecked} value={JSON.stringify(bot)}/>
         </div>
         <div className="bot-img-container">
           <img
@@ -109,6 +121,7 @@ const formatDate = (dateString) => {
 
 const BotList = ({ bots, getAllBots }) => {
   const [botList, setBotList] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const updateBotState = useCallback(
@@ -188,9 +201,7 @@ const BotList = ({ bots, getAllBots }) => {
   return (
     <>
       <div className="top-container">
-        <button className="trash-btn">
-          <CIcon icon={cilTrash} size="xl" />
-        </button>
+        <DeleteCategoryModal categories={categories} />
         <button
           className="pause-btn"
           // onClick={
@@ -222,7 +233,7 @@ const BotList = ({ bots, getAllBots }) => {
             <SpinnerComponent />
           </div>
         ) : (
-          botList.map((bot, index) => <ListItem key={index} bot={bot} />)
+          botList.map((bot, index) => <ListItem key={index} bot={bot} setCategories={setCategories} categories={categories} />)
         )}
       </div>
     </>
