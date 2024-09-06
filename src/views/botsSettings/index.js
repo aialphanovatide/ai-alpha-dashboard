@@ -9,7 +9,7 @@ import UsedKeywordsModal from "../usedKeywordsModal/UsedKeywordsModal";
 import CreateBotModal from "../createBotModal/CreateBotModal";
 import CreateCategoryModal from "../createCategoryModal/CreateCategoryModal";
 import AddBlacklistWordsModal from "../addBlacklistWordsModal/AddBlacklistWordsModal";
-import DeleteCategoryModal from "../deleteCategoryModal/DeleteCategoryModal";
+import DeleteCategoryModal from "../DeleteCategoryModal";
 import DrawerComponent from "./components/Drawer";
 import CIcon from "@coreui/icons-react";
 import {
@@ -281,7 +281,6 @@ const BotsSettings = () => {
               </div>
             </div>
           </div>
-          <div></div>
         </div>
       </div>
       <div style={{ height: "70%" }}>
@@ -310,17 +309,6 @@ const BotsSettings = () => {
         </div>
       </div>  */}
     </div>
-
-    // <div>
-    //   <CIcon icon={cilTrash}/>
-    //   <h3>Are you sure you want to delete these elements?</h3>
-    //   <div></div>
-    //   <span>This action cannot be undone.</span>
-    //   <div>
-    //     <button>Cancel</button>
-    //     <button>Delete</button>
-    //   </div>
-    // </div>
   );
 };
 
