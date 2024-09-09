@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import "./index.css";
-import { CButton, CButtonGroup } from "@coreui/react";
-import BotList from "./components/BotList";
 import AddWordsModal from "../addWordsModal/AddWordsModal";
 import DeleteWordsModal from "../deleteWordsModal/DeleteWordsModal";
 import DeleteBlacklistWordsModal from "../deleteBlacklistWordsModal/DeleteBlacklistWordsModal";
@@ -10,32 +8,17 @@ import CreateBotModal from "../createBotModal/CreateBotModal";
 import CreateCategoryModal from "../createCategoryModal/CreateCategoryModal";
 import AddBlacklistWordsModal from "../addBlacklistWordsModal/AddBlacklistWordsModal";
 import DeleteCategoryModal from "../DeleteCategoryModal";
-import DrawerComponent from "./components/Drawer";
 import CIcon from "@coreui/icons-react";
-import {
-  cilLockLocked,
-  cilLockUnlocked,
-  cilMinus,
-  cilPencil,
-  cilPlus,
-  cilSitemap,
-} from "@coreui/icons";
+import { ReactComponent as OpenLock } from "../../assets/icons/openLock.svg";
+import { ReactComponent as ClosedLock } from "../../assets/icons/closedLock.svg";
+import { cilMinus, cilPencil, cilPlus, cilSitemap } from "@coreui/icons";
+import DrawerComponent from "./components/Drawer";
+import BotList from "./components/BotList";
 import TresholdEdit from "./components/TresholdEdit";
 import NewCategoryForm from "./components/NewCategoryForm";
 import NewBotForm from "./components/NewBotForm";
 import WhiteList from "./components/WhiteList";
 import BlackList from "./components/BlackList";
-
-const SpinnerComponent = () => {
-  return (
-    <div className="spinnergnral">
-      <span
-        className="spinner-border spinner-border-sm"
-        aria-hidden="true"
-      ></span>
-    </div>
-  );
-};
 
 const BotsSettings = () => {
   const [bots, setBots] = useState([]);
@@ -43,6 +26,7 @@ const BotsSettings = () => {
   const [open, setOpen] = React.useState(false);
   const [drawerChildren, setDrawerChildren] = useState(<></>);
   const [drawerAnchor, setDrawerAnchor] = useState("right");
+  const [selectedBots, setSelectedBots] = useState([]);
 
   const getAllBots = useCallback(async () => {
     try {
@@ -247,19 +231,36 @@ const BotsSettings = () => {
             </button>
           </div>
         </div>
-        <div className="keywords" style={{ width: "40%" }}>
+        <div
+          className="keywords"
+          style={{
+            width: "40%",
+            color: selectedBots[0] ? "black" : "#a3a3a3",
+            borderColor: selectedBots[0] ? "black" : "#a3a3a3",
+          }}
+        >
           <span>Keywords</span>
           <div>
             <div>
               <span>
-                <CIcon icon={cilLockUnlocked} /> Whitelist
+                <OpenLock /> Whitelist
               </span>
               <div>
-                <button onClick={toggleDrawer(true, <WhiteList />, "bottom")}>
+                <button
+                  onClick={toggleDrawer(true, <WhiteList />, "bottom")}
+                  style={{
+                    color: selectedBots[0] ? "black" : "#a3a3a3",
+                    cursor: selectedBots[0] ? "pointer" : "initial",
+                  }}
+                >
                   <CIcon icon={cilPlus} /> Add
                 </button>
                 <button
                   onClick={toggleDrawer(true, <WhiteList isRemove />, "bottom")}
+                  style={{
+                    color: selectedBots[0] ? "black" : "#a3a3a3",
+                    cursor: selectedBots[0] ? "pointer" : "initial",
+                  }}
                 >
                   <CIcon icon={cilMinus} /> Remove
                 </button>
@@ -267,14 +268,24 @@ const BotsSettings = () => {
             </div>
             <div>
               <span>
-                <CIcon icon={cilLockLocked} /> Blacklist
+                <ClosedLock /> Blacklist
               </span>
               <div>
-                <button onClick={toggleDrawer(true, <BlackList />, "bottom")}>
+                <button
+                  onClick={toggleDrawer(true, <BlackList />, "bottom")}
+                  style={{
+                    color: selectedBots[0] ? "black" : "#a3a3a3",
+                    cursor: selectedBots[0] ? "pointer" : "initial",
+                  }}
+                >
                   <CIcon icon={cilPlus} /> Add
                 </button>
                 <button
                   onClick={toggleDrawer(true, <BlackList isRemove />, "bottom")}
+                  style={{
+                    color: selectedBots[0] ? "black" : "#a3a3a3",
+                    cursor: selectedBots[0] ? "pointer" : "initial",
+                  }}
                 >
                   <CIcon icon={cilMinus} /> Remove
                 </button>
