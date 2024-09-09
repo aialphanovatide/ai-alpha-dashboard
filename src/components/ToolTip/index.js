@@ -1,15 +1,15 @@
 import React from "react";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
-import { HelpOutline, Padding } from "@mui/icons-material";
 
-const HtmlTooltip = styled(({ className, ...props }) => (
+const HtmlTooltip = styled(({ className, isError, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
+))(({ isError }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "red",
-    color: "white",
-    border: "1px solid red",
+    backgroundColor: isError ? "red" : "#ffffff",
+    color: isError ? "white" : "#525252",
+    border: "1px solid",
+    borderColor: isError ? "red" : "#525252",
     fontSize: 14,
     borderRadius: 50,
     display: "flex",
@@ -19,14 +19,15 @@ const HtmlTooltip = styled(({ className, ...props }) => (
     textAlign: "center",
   },
   [`& .${tooltipClasses.arrow}`]: {
-    color: "red",
+    color: isError ? "red" : "#ffffff",
     "&::before": {
-      border: "1px solid red",
+      border: "1px solid",
+      borderColor: isError ? "red" : "#525252",
     },
   },
 }));
 
-const CustomTooltip = ({ title, content, children }) => {
+const CustomTooltip = ({ title, content, children, isError }) => {
   return (
     <HtmlTooltip
       title={
@@ -39,7 +40,8 @@ const CustomTooltip = ({ title, content, children }) => {
           <p style={{ margin: 0 }}>{content}</p>
         </React.Fragment>
       }
-      arrow // Add this prop to show the arrow
+      arrow
+      isError={isError}
     >
       {children}
     </HtmlTooltip>
