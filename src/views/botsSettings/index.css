@@ -4,6 +4,12 @@
   flex-direction: column;
 }
 
+.keywords svg {
+  height: 15px;
+  width: 15px;
+  fill: #a3a3a3;
+}
+
 .titleIcon {
   height: 40px;
 }
@@ -141,12 +147,13 @@
   flex-direction: column;
   align-items: center;
   width: 43%;
+  color: #a3a3a3;
 }
 
 .keywords>div>div>div {
   display: flex;
   flex-direction: row;
-  border-top: 0.5px solid black;
+  border-top: 0.5px solid #A3A3A3;
   margin-top: 3px;
   padding-top: 3px;
   width: 100%;
