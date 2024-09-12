@@ -56,8 +56,8 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Search Tool',
-    to: '/searchTool',
+    name: 'News Search Tool',
+    to: '/newsSearchTool',
     icon: <CIcon icon={cilSitemap} customClassName="nav-icon" />,
   },
   {
