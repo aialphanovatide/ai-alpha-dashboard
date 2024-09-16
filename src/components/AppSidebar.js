@@ -36,9 +36,9 @@ const AppSidebar = () => {
       }}
     >
       <CSidebarHeader className="border-bottom">
-        <CSidebarBrand to="/">
+        <CSidebarBrand to="/" style={{margin: "auto"}}>
           <img
-            src={require('../assets/brand/logo.jpg')} // Add '.default' here
+            src={require('../assets/brand/logo.png')}
             alt="logo"
             className="dashlogo"
           />
