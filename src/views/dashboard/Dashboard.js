@@ -120,12 +120,12 @@ const Dashboard = () => {
 
   return (
     <div className='dashboardMain'>
-      <h3 className="mb-2">General status</h3>
+      {/* <h3 className="mb-2">General status</h3>
       <div className='dasboardSubMain'>
         <CenteredBox title="News Bot" date={botsStatusMessage} to={"/botsSettings"} />
         <CenteredBox title="Chart" coin={coin} date={date} to={"/chartsPage"} />
         <CenteredBox title="Analysis" coin={analysisCoin} date={analysisDate} to={"/analysis"} />
-      </div>
+      </div> */}
       <div>
       <br></br>
     <h3 className="mb-2">API Monitor</h3>
