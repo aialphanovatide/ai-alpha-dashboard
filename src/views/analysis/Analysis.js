@@ -304,7 +304,7 @@ const Analysis = () => {
           onClick={handleSubmit}
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isSubmitting ? "Posting..." : "Post"}
         </button>
         <button
           className="postLaterButton"
