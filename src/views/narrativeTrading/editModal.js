@@ -49,7 +49,7 @@ const EditModal = ({ item, onSave, onClose, fetchAnalysis }) => {
       <br />
       <br />
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
+        <Button variant="danger" onClick={onClose}>
           Cancel
         </Button>
         <Button variant="primary" onClick={handleSave}>
