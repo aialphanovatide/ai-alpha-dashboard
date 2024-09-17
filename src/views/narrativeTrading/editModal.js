@@ -36,7 +36,7 @@ const EditModal = ({ item, onSave, onClose, fetchAnalysis }) => {
   return (
     <Modal size={'xl'} show={true} onHide={onClose} className="editModal">
       <Modal.Header closeButton>
-        <Modal.Title>Edit Analysis</Modal.Title>
+        <Modal.Title>Edit Narrative Trading</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <RichTextEditor
