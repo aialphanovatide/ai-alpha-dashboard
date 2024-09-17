@@ -70,7 +70,9 @@ body {
     #table span,
     #table td,
     #table th,
-    #table-pagination {
+    #table-pagination,
+    .ql-editor span,
+    .ql-editor strong {
       color: white !important;
     }
   }
