@@ -145,6 +145,7 @@ const UsersList = () => {
     <SpinnerComponent />
   ) : (
     <>
+      <h3 style={{marginBottom: 20}}>User List</h3>
       <TableContainer className={styles.tableContainer}>
         <Table aria-label="users table" className={styles.table} id="table">
           <TableHead>
