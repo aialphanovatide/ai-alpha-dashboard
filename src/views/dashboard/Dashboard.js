@@ -128,7 +128,7 @@ const Dashboard = () => {
       </div> */}
       <div>
       <br></br>
-    <h3 className="mb-2">API Monitor</h3>
+    <h3 className="mb-2">Home</h3>
     <br></br>
         <ApiUsage />
       </div>
