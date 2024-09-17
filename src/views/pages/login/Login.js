@@ -66,7 +66,7 @@ const Login = () => {
                 <CCardBody>
                   <CForm onSubmit={(e) => e.preventDefault()}>
                     <img
-                      src={require('../../../assets/brand/logo.jpg')}
+                      src={require('../../../assets/brand/logo.png')}
                       alt="logo"
                       className="loginlogo"
                     />
