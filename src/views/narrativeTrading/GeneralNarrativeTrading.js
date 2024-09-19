@@ -3,11 +3,17 @@ import { Item } from "./AllNarrativeTrading";
 import config from "src/config";
 import "./analysis.css";
 import EditModal from "./editModal";
+import NoData from "src/components/NoData";
 
-const GeneralNarrativeTrading = ({ success, onSuccess, fetchNarrativeTrading }) => {
+const GeneralNarrativeTrading = ({
+  success,
+  onSuccess,
+  fetchNarrativeTrading,
+}) => {
   const [generalNarrativeTrading, setGeneralNarrativeTrading] = useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedNarrativeTrading, setSelectedNarrativeTrading] = useState(null);
+  const [selectedNarrativeTrading, setSelectedNarrativeTrading] =
+    useState(null);
 
   const openEditModal = (NarrativeTrading) => {
     setSelectedNarrativeTrading(NarrativeTrading);
@@ -18,7 +24,6 @@ const GeneralNarrativeTrading = ({ success, onSuccess, fetchNarrativeTrading }) 
     setSelectedNarrativeTrading(null);
     setIsEditModalOpen(false);
   };
-
 
   const fetchGeneralNarrativeTrading = async () => {
     try {
@@ -31,7 +36,7 @@ const GeneralNarrativeTrading = ({ success, onSuccess, fetchNarrativeTrading }) 
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         setGeneralNarrativeTrading(data.data);
       } else {
@@ -91,18 +96,17 @@ const GeneralNarrativeTrading = ({ success, onSuccess, fetchNarrativeTrading }) 
               item={item}
               openEditModal={openEditModal}
             />
-            
           ))}
         </ul>
       ) : (
-        <span>No Analysis yet</span>
+        <NoData message={"No Analysis yet"} />
       )}
       {isEditModalOpen && selectedNarrativeTrading && (
         <EditModal
           item={selectedNarrativeTrading}
           onSave={handleSave}
           onClose={closeEditModal}
-          fetchNarrativeTrading={fetchNarrativeTrading} 
+          fetchNarrativeTrading={fetchNarrativeTrading}
         />
       )}
     </div>
