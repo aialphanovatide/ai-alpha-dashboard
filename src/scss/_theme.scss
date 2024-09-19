@@ -75,5 +75,17 @@ body {
     .ql-editor strong {
       color: white !important;
     }
+    
+    .page-button {
+      background-color: #363636;
+    }
+    
+    .page-button:hover {
+     background-color: transparent;
+    }
+    
+    .page-button:disabled {
+      background-color: #4e4e4e;
+    }
   }
 }
