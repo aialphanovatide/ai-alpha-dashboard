@@ -1,0 +1,32 @@
+.loginLogo {
+  width: 170px;
+  height: auto;
+  border-radius: 50%;
+}
+
+.loginButton {
+  background-color: #ffa600b3;
+  outline: none;
+  border: none;
+  padding-inline: 1rem;
+}
+
+.loginButton:hover {
+  background-color: #d68b00b3;
+}
+
+.errorMessage {
+  color: red;
+  padding: 5px;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: transparent;
+}
+
+.showPasswordButton {
+  border: 1px solid #dbdfe6;
+}
