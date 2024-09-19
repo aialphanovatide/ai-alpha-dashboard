@@ -9,7 +9,7 @@ const NarrativeTrading = React.lazy(() => import('./views/narrativeTrading/Narra
 const topSories = React.lazy(() => import('./views/TopStories'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
-const SearchTool = React.lazy(() => import('./views/searchTool/SearchTool'))
+const NewsSearchTool = React.lazy(() => import('./views/NewsSearchTool'))
 const NewsCreatorTool = React.lazy(() => import('./views/newsCreatorTool/NewsCreatorTool'))
 const UsersList = React.lazy(() => import('./views/UsersList'))
 const UserDetail = React.lazy(() => import('./views/UserDetail'))
@@ -61,7 +61,7 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/searchTool', name: 'Search Tool', element: SearchTool },
+  { path: '/newsSearchTool', name: 'Search Tool', element: NewsSearchTool },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/newsCreatorTool', name: 'News Creator Tool', element: NewsCreatorTool },
   { path: '/fundamentals', name: 'Fundamentals', element: Fundamentals },
