@@ -80,7 +80,7 @@ const ArticleCard = ({ article }) => {
         onLoad={handleImageLoaded}
         alt={title}
       />
-      <h6 style={{ margin: 10 }}>{title.slice(0, 100)}</h6>
+      <h6 style={{ margin: 10 }}><strong>{title.slice(0, 100)}</strong></h6>
       {reason && <p>Reason: {reason}</p>}
       <p>{filContent.slice(0, 250)}...</p>
       {article.is_article_efficent && (

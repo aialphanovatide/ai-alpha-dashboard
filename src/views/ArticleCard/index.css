@@ -1,9 +1,8 @@
 .search-tool-item {
-  border: 1px solid black;
   border-radius: 15px;
   cursor: pointer;
   padding: 0;
-  /* background-color: #fff; */
+  background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   position: relative;

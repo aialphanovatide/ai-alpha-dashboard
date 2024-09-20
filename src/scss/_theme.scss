@@ -81,7 +81,10 @@ body {
     .css-1ps6pg7-MuiPaper-root th,
     .css-1ps6pg7-MuiPaper-root div,
     .css-1ps6pg7-MuiPaper-root td,
-    .analysisSubmain p {
+    .analysisSubmain p,
+    .search-tool-item p,
+    .card p,
+    .deleteBtn {
       color: white !important;
     }
 
@@ -111,7 +114,8 @@ body {
     .allAnalysisLI,
     .formContainer,
     .css-1ps6pg7-MuiPaper-root,
-    .card {
+    .card,
+    .search-tool-item {
       background-color: #2a303d !important;
       border: gray !important
     }

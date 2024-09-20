@@ -10,6 +10,7 @@ import Pagination from "../pagination/Pagination";
 import SpinnerComponent from "src/components/Spinner";
 import NoData from "src/components/NoData";
 import Title from "src/components/commons/Title";
+import { AccessTime } from "@mui/icons-material";
 
 const Modal = ({ item, base64Image, onClose }) => {
   const formattedSummary = item.analysis
@@ -75,22 +76,22 @@ const Item = ({ item, base64Image, onDelete }) => {
           />
         )}
         <div className="card-body">
-          <h5 className="card-title">{item.title}</h5>
+          <h6 className="card-title"><strong>{item.title}</strong></h6><br></br>
           <p
             className="card-text"
             dangerouslySetInnerHTML={{ __html: formattedSummary }}
           />
-          <p className="card-date">
-            {formattedDate}
+          <div className="card-date">
+            <p><AccessTime/>{" "}{formattedDate}</p>
             {onDelete && (
               <CIcon
-                size="xxl"
+                size="lg"
                 icon={cilTrash}
                 className="deleteBtn"
                 onClick={handleClick}
               />
             )}
-          </p>
+          </div>
         </div>
       </div>
       {isModalOpen && (
