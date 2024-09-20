@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import config from '../../config';
-import './dashboardStyles.css';
-import { Link } from 'react-router-dom';
-import ApiUsage from './ApiUsage';
+import React, { useEffect, useState } from "react";
+import config from "../../config";
+import "./dashboardStyles.css";
+import { Link } from "react-router-dom";
+import ApiUsage from "./ApiUsage";
+import Title from "src/components/commons/Title";
 
 const CenteredBox = ({ title, coin, date, to }) => {
   return (
@@ -23,23 +24,29 @@ const Dashboard = () => {
   useEffect(() => {
     const getLastChartUpdate = async () => {
       try {
-        const response = await fetch(`${config.BASE_URL}/get_last_chart_update`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
+        const response = await fetch(
+          `${config.BASE_URL}/get_last_chart_update`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "true",
+            },
           },
-        });
+        );
 
         if (response.ok) {
           const data = await response.json();
           const { coin_bot_name, formatted_date } = data.last_update;
-          setLastChartUpdate({ coin_bot_name: coin_bot_name.toUpperCase(), formatted_date });
+          setLastChartUpdate({
+            coin_bot_name: coin_bot_name.toUpperCase(),
+            formatted_date,
+          });
         } else {
-          console.error('Error:', response.statusText);
+          console.error("Error:", response.statusText);
         }
       } catch (error) {
-        console.error('Error making request:', error);
+        console.error("Error making request:", error);
       }
     };
 
@@ -51,10 +58,10 @@ const Dashboard = () => {
     const getLastAnalysis = async () => {
       try {
         const response = await fetch(`${config.BASE_URL}/get_last_analysis`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
           },
         });
 
@@ -62,35 +69,34 @@ const Dashboard = () => {
         if (response.ok) {
           setLastAnalysis(data.last_analysis);
         } else {
-          console.error('Error:', data.error);
+          console.error("Error:", data.error);
         }
       } catch (error) {
-        console.error('Error making request:', error);
+        console.error("Error making request:", error);
       }
     };
 
     getLastAnalysis();
   }, []);
 
-
   useEffect(() => {
     const getBotsStatus = async () => {
       try {
         const response = await fetch(`${config.BOTS_V2_API}/get_all_bots`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
           },
         });
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data)
+          console.log(data);
           const bots = data.data;
-          console.log("bots, ", bots)
-          const allBotsActive = bots.every(bot => bot.isActive);
-          const allBotsInactive = bots.every(bot => !bot.isActive);
+          console.log("bots, ", bots);
+          const allBotsActive = bots.every((bot) => bot.isActive);
+          const allBotsInactive = bots.every((bot) => !bot.isActive);
 
           if (allBotsActive) {
             setBotsStatusMessage("All bots are activated and working.");
@@ -100,11 +106,11 @@ const Dashboard = () => {
             setBotsStatusMessage("Some bots are activated and working.");
           }
         } else {
-          console.error('Error:', response.statusText);
+          console.error("Error:", response.statusText);
           setBotsStatusMessage("Error fetching bots status.");
         }
       } catch (error) {
-        console.error('Error making request:', error);
+        console.error("Error making request:", error);
         setBotsStatusMessage("Error fetching bots status.");
       }
     };
@@ -112,14 +118,25 @@ const Dashboard = () => {
     getBotsStatus();
   }, []);
 
-  const coin = lastChartUpdate && lastChartUpdate.coin_bot_name ? lastChartUpdate.coin_bot_name : '';
-  const date = lastChartUpdate && lastChartUpdate.formatted_date ? lastChartUpdate.formatted_date : 'No chart yet';
+  const coin =
+    lastChartUpdate && lastChartUpdate.coin_bot_name
+      ? lastChartUpdate.coin_bot_name
+      : "";
+  const date =
+    lastChartUpdate && lastChartUpdate.formatted_date
+      ? lastChartUpdate.formatted_date
+      : "No chart yet";
 
-  const analysisDate = lastAnalysis && lastAnalysis.created_at ? lastAnalysis.created_at : 'No Analysis yet';
-  const analysisCoin = lastAnalysis && lastAnalysis.coin_name ? lastAnalysis.coin_name : '';
+  const analysisDate =
+    lastAnalysis && lastAnalysis.created_at
+      ? lastAnalysis.created_at
+      : "No Analysis yet";
+  const analysisCoin =
+    lastAnalysis && lastAnalysis.coin_name ? lastAnalysis.coin_name : "";
 
   return (
-    <div className='dashboardMain'>
+    <div className="dashboardMain">
+      <Title>Home</Title>
       {/* <h3 className="mb-2">General status</h3>
       <div className='dasboardSubMain'>
         <CenteredBox title="News Bot" date={botsStatusMessage} to={"/botsSettings"} />
@@ -127,9 +144,7 @@ const Dashboard = () => {
         <CenteredBox title="Analysis" coin={analysisCoin} date={analysisDate} to={"/analysis"} />
       </div> */}
       <div>
-      <br></br>
-    <h3 className="mb-2">Home</h3>
-    <br></br>
+        <br></br>
         <ApiUsage />
       </div>
     </div>

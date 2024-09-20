@@ -12,6 +12,7 @@ import GeneralNarrativeTrading from "./GeneralNarrativeTrading";
 import ScheduledJob from "./ScheduledJob";
 import CategoryDropdown from "./CategoryDropdown";
 import NoData from "src/components/NoData";
+import Title from "src/components/commons/Title";
 
 const NarrativeTrading = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -335,9 +336,10 @@ const NarrativeTrading = () => {
 
   return (
     <div className="analysisMain">
-      <h3 className="analysisTitle">Narrative Trading</h3>
+      <Title>Narrative Trading</Title>
       <div className="analysisSubmain">
-        <div className="selectors-container">
+        <div className="selectors-container"
+        >
           <DropdownMenu
             selectedCoin={selectedCoin}
             onSelectCoin={handleSelectCoin}

@@ -11,7 +11,8 @@ import TableRow from "@mui/material/TableRow";
 import SpinnerComponent from "src/components/Spinner";
 import TablePagination from "@mui/material/TablePagination";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
+import Title from "src/components/commons/Title";
 
 const UsersList = () => {
   const [users, setUsers] = useState([]);
@@ -20,11 +21,11 @@ const UsersList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("rowNumber");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleOnRowClick = (user_id) => {
-    navigate(`/userdetail/${user_id}`)
-  }
+    navigate(`/userdetail/${user_id}`);
+  };
 
   const fetchUsers = async () => {
     try {
@@ -145,7 +146,7 @@ const UsersList = () => {
     <SpinnerComponent />
   ) : (
     <>
-      <h3 style={{marginBottom: 20}}>User List</h3>
+      <Title>Users List</Title>
       <TableContainer className={styles.tableContainer}>
         <Table aria-label="users table" className={styles.table} id="table">
           <TableHead>

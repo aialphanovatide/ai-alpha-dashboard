@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import Pagination from "../pagination/Pagination";
 import SpinnerComponent from "src/components/Spinner";
 import NoData from "src/components/NoData";
+import Title from "src/components/commons/Title";
 
 const Modal = ({ item, base64Image, onClose }) => {
   const formattedSummary = item.analysis
@@ -184,7 +185,7 @@ const TopStories = () => {
 
   return (
     <div className="alltopStoriesmain">
-      <h3 className="alltopStoriesTitle">Top Stories</h3>
+      <Title className="alltopStoriesTitle">Top Stories</Title>
       {loading ? (
         <SpinnerComponent />
       ) : (

@@ -11,6 +11,7 @@ import { AllAnalysis } from "./AllAnalysis";
 import GeneralAnalysis from "./GeneralAnalysis";
 import ScheduledJob from "./ScheduledJob";
 import CategoryDropdown from "./CategoryDropdown";
+import Title from "src/components/commons/Title";
 
 const Analysis = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -279,7 +280,7 @@ const Analysis = () => {
 
   return (
     <div className="analysisMain">
-      <h3 className="analysisTitle">Analysis</h3>
+      <Title>Analysis</Title>
       <div className="analysisSubmain">
         <div className="selectors-container">
           <DropdownMenu
