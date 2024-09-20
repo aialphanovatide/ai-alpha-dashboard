@@ -48,7 +48,7 @@ const Login = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        navigate("/dashboard", { state: { username: data.username } });
+        navigate("/home", { state: { username: data.username } });
       } else {
         setError(data.error || "Incorrect credentials. Please try again.");
       }

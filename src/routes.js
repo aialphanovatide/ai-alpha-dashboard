@@ -2,7 +2,7 @@ import React from 'react'
 
 const BotsSettings = React.lazy(() => import('./views/botsSettings/BotsSettings'))
 const ChartsPage = React.lazy(() => import('./views/chartsPage/ChartsPage'))
-const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const Home = React.lazy(() => import('./views/Home'))
 const Analysis = React.lazy(() => import('./views/analysis/Analysis'))
 const Fundamentals = React.lazy(() => import('./views/Fundamentals'))
 const NarrativeTrading = React.lazy(() => import('./views/narrativeTrading/NarrativeTrading'))
@@ -62,7 +62,7 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/newsSearchTool', name: 'Search Tool', element: NewsSearchTool },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/home', name: 'Home', element: Home },
   { path: '/newsCreatorTool', name: 'News Creator Tool', element: NewsCreatorTool },
   { path: '/fundamentals', name: 'Fundamentals', element: Fundamentals },
   { path: '/narrativeTrading', name: 'NarrativeTrading', element: NarrativeTrading },

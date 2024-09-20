@@ -49,7 +49,7 @@ const AppHeader = () => {
         <CHeaderNav className="d-none d-md-flex">
           <CNavItem>
             <CNavLink
-              to="/dashboard"
+              to="/home"
               component={NavLink}
               style={{ cursor: 'pointer', fontWeight: "bold", fontSize: 22 }} // Establece el estilo del cursor a "pointer"
             >

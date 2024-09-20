@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import config from "../../config";
-import "./dashboardStyles.css";
+import "./index.css";
 import { Link } from "react-router-dom";
 import ApiUsage from "./ApiUsage";
 import Title from "src/components/commons/Title";
@@ -15,7 +15,7 @@ const CenteredBox = ({ title, coin, date, to }) => {
   );
 };
 
-const Dashboard = () => {
+const Home = () => {
   const [lastAnalysis, setLastAnalysis] = useState(null);
   const [lastChartUpdate, setLastChartUpdate] = useState(null);
   const [botsStatusMessage, setBotsStatusMessage] = useState("Loading...");
@@ -135,7 +135,7 @@ const Dashboard = () => {
     lastAnalysis && lastAnalysis.coin_name ? lastAnalysis.coin_name : "";
 
   return (
-    <div className="dashboardMain">
+    <div className="homeContainer">
       <Title>Home</Title>
       {/* <h3 className="mb-2">General status</h3>
       <div className='dasboardSubMain'>
@@ -144,11 +144,10 @@ const Dashboard = () => {
         <CenteredBox title="Analysis" coin={analysisCoin} date={analysisDate} to={"/analysis"} />
       </div> */}
       <div>
-        <br></br>
         <ApiUsage />
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default Home;
