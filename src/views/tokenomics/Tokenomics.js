@@ -268,7 +268,7 @@ const Tokenomics = () => {
 
   return (
     <div className="formGeneralMain" style={{ margin: "20px" }}>
-      <h2>Tokenomics</h2>
+      <h3>Tokenomics</h3>
 
       <Form.Group controlId="coinBotSelect" style={{ marginBottom: "15px" }}>
         <Form.Label>Select Coin</Form.Label>

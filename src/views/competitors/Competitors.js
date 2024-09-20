@@ -252,7 +252,7 @@ const Competitors = () => {
   return (
     <div>
       <div style={{ margin: "20px", overflowX: "auto" }}>
-        <h2>Competitors</h2>
+        <h3>Competitors</h3>
         <br />
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: "15px" }}>
           <Form.Label>Select Coin</Form.Label>
