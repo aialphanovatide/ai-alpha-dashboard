@@ -4,6 +4,7 @@ import config from "../../config";
 import TextExtractor from "../textExtractor/TextExtractor";
 import "./NewsCreatorTool.css";
 import LastFiveArticles from "../lastFiveArticles/LastFiveArticles";
+import Title from "src/components/commons/Title";
 
 const NewsCreatorTool = () => {
   const [categories, setCategories] = useState([]);
@@ -315,10 +316,9 @@ const getSelectedBotName = () => {
   };
 
   return (
-    <div className="news-creator-tool">
-      <h1>News Creator Tool</h1>
-      <Form>
-        
+    <div>
+      <Title>News Creator Tool</Title>
+      <Form className="formContainer">
         <Form.Group controlId="category">
           <Form.Label>Category</Form.Label>
           <Form.Control
