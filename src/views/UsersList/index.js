@@ -142,84 +142,90 @@ const UsersList = () => {
 
   const sortedUsers = sortUsers(users);
 
-  return isLoading ? (
-    <SpinnerComponent />
-  ) : (
+  return (
     <>
       <Title>Users List</Title>
-      <TableContainer className={styles.tableContainer}>
-        <Table aria-label="users table" className={styles.table} id="table">
-          <TableHead>
-            <TableRow className={styles.tableRow}>
-              <TableCell
-                sortDirection={orderBy === "rowNumber" ? order : false}
-              >
-                <TableSortLabel
-                  active={orderBy === "rowNumber"}
-                  direction={orderBy === "rowNumber" ? order : "asc"}
-                  onClick={() => handleRequestSort("rowNumber")}
-                >
-                  #
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>ID</TableCell>
-              <TableCell>Full Name</TableCell>
-              <TableCell sortDirection={orderBy === "nickname" ? order : false}>
-                <TableSortLabel
-                  active={orderBy === "nickname"}
-                  direction={orderBy === "nickname" ? order : "asc"}
-                  onClick={() => handleRequestSort("nickname")}
-                >
-                  Nickname
-                </TableSortLabel>
-              </TableCell>
-              <TableCell
-                sortDirection={orderBy === "created_at" ? order : false}
-              >
-                <TableSortLabel
-                  active={orderBy === "created_at"}
-                  direction={orderBy === "created_at" ? order : "asc"}
-                  onClick={() => handleRequestSort("created_at")}
-                >
-                  Created at
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>Email</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortedUsers
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((user) => {
-                return (
-                  <TableRow
-                    className={styles.tableRow}
-                    key={`row-${user.auth0id}`}
-                    onClick={() => handleOnRowClick(user.user_id)}
+      {isLoading ? (
+        <SpinnerComponent />
+      ) : (
+        <>
+          <TableContainer className={styles.tableContainer}>
+            <Table aria-label="users table" className={styles.table} id="table">
+              <TableHead>
+                <TableRow className={styles.tableRow}>
+                  <TableCell
+                    sortDirection={orderBy === "rowNumber" ? order : false}
                   >
-                    <TableCell>{user.rowNumber}</TableCell>
-                    <TableCell>{user.auth0id}</TableCell>
-                    <TableCell>{user.full_name}</TableCell>
-                    <TableCell>{user.nickname}</TableCell>
-                    <TableCell>{user.created_at}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 50]}
-        component="div"
-        count={users.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        className={styles.tablePagination}
-        id="table-pagination"
-      />
+                    <TableSortLabel
+                      active={orderBy === "rowNumber"}
+                      direction={orderBy === "rowNumber" ? order : "asc"}
+                      onClick={() => handleRequestSort("rowNumber")}
+                    >
+                      #
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Full Name</TableCell>
+                  <TableCell
+                    sortDirection={orderBy === "nickname" ? order : false}
+                  >
+                    <TableSortLabel
+                      active={orderBy === "nickname"}
+                      direction={orderBy === "nickname" ? order : "asc"}
+                      onClick={() => handleRequestSort("nickname")}
+                    >
+                      Nickname
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell
+                    sortDirection={orderBy === "created_at" ? order : false}
+                  >
+                    <TableSortLabel
+                      active={orderBy === "created_at"}
+                      direction={orderBy === "created_at" ? order : "asc"}
+                      onClick={() => handleRequestSort("created_at")}
+                    >
+                      Created at
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>Email</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {sortedUsers
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((user) => {
+                    return (
+                      <TableRow
+                        className={styles.tableRow}
+                        key={`row-${user.auth0id}`}
+                        onClick={() => handleOnRowClick(user.user_id)}
+                      >
+                        <TableCell>{user.rowNumber}</TableCell>
+                        <TableCell>{user.auth0id}</TableCell>
+                        <TableCell>{user.full_name}</TableCell>
+                        <TableCell>{user.nickname}</TableCell>
+                        <TableCell>{user.created_at}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50]}
+            component="div"
+            count={users.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            className={styles.tablePagination}
+            id="table-pagination"
+          />
+        </>
+      )}
     </>
   );
 };
