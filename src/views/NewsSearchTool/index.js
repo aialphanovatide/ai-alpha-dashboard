@@ -182,7 +182,7 @@ const NewsSearchTool = () => {
     <div className={styles.searchTool}>
       <Title>News Search Tool</Title>
       <br />
-      <div className={styles.searchHeader}>
+      <div className={styles.searchHeader} id="searchHeader">
         <div
           style={{
             display: "flex",
