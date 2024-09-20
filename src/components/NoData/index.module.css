@@ -3,18 +3,17 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* border-radius: 10px; */
   gap: 25px;
   padding: 5%;
 }
 
-.container h2 { 
+.container h2 {
   font-weight: 600;
-  font-size: 22px;
+  font-size: 16px;
   text-align: center;
 }
 
 .container img {
-  width: 8%;
+  width: 50px;
   height: auto;
 }
