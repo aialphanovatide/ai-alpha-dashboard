@@ -86,7 +86,7 @@ const GeneralNarrativeTrading = ({
   }, [success]);
 
   return (
-    <div className="allAnalysismain">
+    <div className="analysisSubmain">
       <h3 className="allAnalysisTitle">General Narrative Trading</h3>
       {generalNarrativeTrading && generalNarrativeTrading.length > 0 ? (
         <ul className="allAnalysisUL">

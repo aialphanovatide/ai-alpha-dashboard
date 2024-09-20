@@ -130,7 +130,7 @@ const AllNarrativeTrading = ({ items, fetchNarrativeTrading }) => {
   };
 
   return (
-    <div className="allAnalysismain">
+    <div className="analysisSubmain" >
       <h3 className="allAnalysisTitle">Selected Coin Narrative Trading</h3>
       {items && items.length > 0 ? (
         <ul className="allAnalysisUL">

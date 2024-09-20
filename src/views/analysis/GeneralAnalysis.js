@@ -81,7 +81,7 @@ const GeneralAnalysis = ({ success, onSuccess, fetchAnalysis }) => {
   }, [success]);
 
   return (
-    <div className="allAnalysismain">
+    <div className="analysisSubmain">
       <h3 className="allAnalysisTitle">General Analysis</h3>
       {generalAnalysis && generalAnalysis.length > 0 ? (
         <ul className="allAnalysisUL">

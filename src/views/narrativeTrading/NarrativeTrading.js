@@ -407,7 +407,7 @@ const NarrativeTrading = () => {
         onSuccess={setIsNarrativeTradingCreated}
         fetchNarrativeTrading={fetchNarrativeTrading}
       />
-      <div className="allAnalysismain">
+      <div className="analysisSubmain">
         <h3>Scheduled Narrative Trading Posts</h3>
         {scheduledJobs.length > 0 ? (
           scheduledJobs.map((job) => (
