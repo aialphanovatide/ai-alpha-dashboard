@@ -4,7 +4,7 @@ const BotsSettings = React.lazy(() => import('./views/botsSettings/BotsSettings'
 const ChartsPage = React.lazy(() => import('./views/chartsPage/ChartsPage'))
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Analysis = React.lazy(() => import('./views/analysis/Analysis'))
-const Fundamentals = React.lazy(() => import('./views/fundamental/Fundamentals'))
+const Fundamentals = React.lazy(() => import('./views/Fundamentals'))
 const NarrativeTrading = React.lazy(() => import('./views/narrativeTrading/NarrativeTrading'))
 const topSories = React.lazy(() => import('./views/TopStories'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))

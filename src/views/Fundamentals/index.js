@@ -7,18 +7,19 @@ import RevenueModels from "../revenueModel/RevenueModels";
 import Hacks from "../hacks/Hacks";
 import DApps from "../dapps/DApps";
 import Upgrades from "../upgrades/Upgrades";
-import "./fundamentals.css";
+import "./index.css";
+import Title from "src/components/commons/Title";
 
 const Fundamentals = () => {
   const [activeTab, setActiveTab] = useState('introduction')
-
 
   const toggleTab = (tab) => {
     setActiveTab(tab);
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container">
+      <Title>Fundamentals</Title>
       <div className="card">
         <div className="card-header">
           <ul className="nav nav-pills">
