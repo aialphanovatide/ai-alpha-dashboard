@@ -286,28 +286,26 @@ const NewsSearchTool = () => {
         </div>
       </div>
       {error && <p>{error}</p>}
-      <>
-        <div
-          className={styles.searchResults}
-          style={{
-            display: loading || currentArticles.length < 1 ? "flex" : "grid",
-          }}
-        >
-          {loading ? (
-            <SpinnerComponent style={{ margin: "auto" }} />
-          ) : (
-            <>
-              {currentArticles.length < 1 ? (
-                <NoData />
-              ) : (
-                currentArticles.map((article, index) => (
-                  <ArticleCard key={index} article={article} />
-                ))
-              )}
-            </>
-          )}
-        </div>
-      </>
+      <div
+        className={styles.searchResults}
+        style={{
+          display: loading || currentArticles.length < 1 ? "flex" : "grid",
+        }}
+      >
+        {loading ? (
+          <SpinnerComponent style={{ margin: "auto" }} />
+        ) : (
+          <>
+            {currentArticles.length < 1 ? (
+              <NoData />
+            ) : (
+              currentArticles.map((article, index) => (
+                <ArticleCard key={index} article={article} />
+              ))
+            )}
+          </>
+        )}
+      </div>
       {!loading && (
         <Pagination
           totalArticles={filteredArticles.length}
