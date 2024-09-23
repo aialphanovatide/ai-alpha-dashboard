@@ -3,6 +3,8 @@ import "./index.css";
 import baseURL from "../../config";
 import { formatDateTime } from "src/utils";
 import Card from "src/components/commons/Card";
+import SpinnerComponent from "src/components/Spinner";
+import { AccessTime } from "@mui/icons-material";
 
 const ArticleCard = ({ article }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -80,18 +82,23 @@ const ArticleCard = ({ article }) => {
             <button className="close" onClick={closeModal}>
               &times;
             </button>
-            {!imageLoaded && <div className="loader"></div>}
-            <img
-              className={`img-modal-news ${
-                imageLoaded ? "img-modal-news-show" : "img-modal-news-hide"
-              }`}
-              src={article.image}
-              onLoad={handleImageLoaded}
-            />
-            <h2>{article.title}</h2>
-            <p>{article.date}</p>
-            <p>{article.content}</p>
-            <p>{article.is_article_efficent}</p>
+            {!imageLoaded ? (
+              <SpinnerComponent />
+            ) : (
+              <>
+                <img
+                  className={`img-modal-news ${
+                    imageLoaded ? "img-modal-news-show" : "img-modal-news-hide"
+                  }`}
+                  src={article.image}
+                  onLoad={handleImageLoaded}
+                />
+                <h2>{article.title}</h2>
+                <p><AccessTime />{" "}{article.date}</p>
+                <p>{article.content}</p>
+                <p>{article.is_article_efficent}</p>
+              </>
+            )}
           </div>
         </div>
       )}

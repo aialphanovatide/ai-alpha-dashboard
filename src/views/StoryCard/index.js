@@ -3,32 +3,12 @@ import config from "src/config";
 import Swal from "sweetalert2";
 import { formatDateTime } from "src/utils";
 import Card from "src/components/commons/Card";
-
-const Modal = ({ item, onClose }) => {
-  return (
-    <div className="modalOverlay" onClick={onClose}>
-      <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-        {item.image && (
-          <img
-            className="modalImage"
-            src={item.image}
-            alt="top story"
-          />
-        )}
-        <span
-          className="modalText"
-          dangerouslySetInnerHTML={{ __html: item.content }}
-        />
-        <button className="closeButton" onClick={onClose}>
-          Close
-        </button>
-      </div>
-    </div>
-  );
-};
+import SpinnerComponent from "src/components/Spinner";
+import { AccessTime } from "@mui/icons-material";
 
 const StoryCard = ({ article, getTopStories }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleDelete = async (e) => {
     e.stopPropagation();
@@ -86,6 +66,10 @@ const StoryCard = ({ article, getTopStories }) => {
     setIsModalOpen(false);
   };
 
+  const handleImageLoaded = () => {
+    setImageLoaded(true);
+  };
+
   article = {
     ...article,
     image: `https://appnewsposters.s3.us-east-2.amazonaws.com/${article.image}`,
@@ -97,12 +81,37 @@ const StoryCard = ({ article, getTopStories }) => {
 
   return (
     <>
-      <Card data={article} onDelete={handleDelete} onClick={onClick} />
+      <Card
+        data={article}
+        onDelete={handleDelete}
+        onClick={onClick}
+        onImgLoad={handleImageLoaded}
+      />
       {isModalOpen && (
-        <Modal
-          item={article}
-          onClose={handleCloseModal}
-        />
+        <div className={`modal ${imageLoaded ? "" : "loading"}`}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close" onClick={handleCloseModal}>
+              &times;
+            </button>
+            {!imageLoaded ? (
+              <SpinnerComponent />
+            ) : (
+              <>
+                <img
+                  className={`img-modal-news ${
+                    imageLoaded ? "img-modal-news-show" : "img-modal-news-hide"
+                  }`}
+                  src={article.image}
+                  onLoad={handleImageLoaded}
+                />
+                <h2>{article.title}</h2>
+                <p><AccessTime />{" "}{article.date}</p>
+                <p>{article.content}</p>
+                <p>{article.is_article_efficent}</p>
+              </>
+            )}
+          </div>
+        </div>
       )}
     </>
   );
