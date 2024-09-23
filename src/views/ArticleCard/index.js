@@ -96,41 +96,6 @@ const ArticleCard = ({ article }) => {
         </div>
       )}
     </>
-
-    //   {article.reason && <p>{article.reason}</p>}
-    //   <p>{filContent}</p>
-    //   {article.comment && (
-    //     <span style={{ paddingInline: 10 }}>{article.comment}</span>
-    //   )}
-    //   <div className="details-container">
-    //     <span
-    //       style={{
-    //         display: "flex",
-    //         alignItems: "center",
-    //         gap: 5,
-    //         fontSize: 14,
-    //       }}
-    //     >
-    //       <AccessTime />
-    //       <strong>{formatDateTime(article.date)}</strong>
-    //     </span>
-    //     <div className="tags-container">
-    //       {article.is_top_story && (
-    //         <span className="tag top-story">TOP STORY</span>
-    //       )}
-    //       {article.tagColor && (
-    //         <div
-    //           style={{
-    //             height: 20,
-    //             width: 20,
-    //             borderRadius: "50%",
-    //             background: article.tagColor,
-    //           }}
-    //         ></div>
-    //       )}
-    //     </div>
-    //   </div>
-    // </div>
   );
 };
 
