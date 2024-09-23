@@ -13,9 +13,10 @@ const ArticleCard = ({ article }) => {
     ...article,
     image: `https://appnewsposters.s3.us-east-2.amazonaws.com/${article.image}`,
     title: article.title.slice(0, 100),
-    content: article.content
-      .replace("Here is the rewritten headline and summary of the article:", "")
-      .slice(0, 250),
+    content: article.content.replace(
+      "Here is the rewritten headline and summary of the article:",
+      "",
+    ),
     date: formatDateTime(article.date),
   };
 
@@ -72,11 +73,7 @@ const ArticleCard = ({ article }) => {
 
   return (
     <>
-      <Card
-        data={article}
-        onClick={openModal}
-        onImgLoad={handleImageLoaded}
-      />
+      <Card data={article} onClick={openModal} onImgLoad={handleImageLoaded} />
       {modalOpen && (
         <div className={`modal ${imageLoaded ? "" : "loading"}`}>
           <div className="modal-content">
@@ -99,8 +96,7 @@ const ArticleCard = ({ article }) => {
         </div>
       )}
     </>
-  
- 
+
     //   {article.reason && <p>{article.reason}</p>}
     //   <p>{filContent}</p>
     //   {article.comment && (
