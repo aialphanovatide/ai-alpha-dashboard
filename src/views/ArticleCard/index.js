@@ -2,26 +2,28 @@ import React, { useState, useEffect } from "react";
 import "./index.css";
 import baseURL from "../../config";
 import { formatDateTime } from "src/utils";
-import { AccessTime } from "@mui/icons-material";
+import Card from "src/components/commons/Card";
 
 const ArticleCard = ({ article }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [botName, setBotName] = useState("");
-   const title = article.title || "No Title";
-  const content = article.content || "No Content";
-  const filContent = content.replace(
-    "Here is the rewritten headline and summary of the article:",
-    "",
-  );
-  const reason = article.reason?.trim();
 
-  const cropString = (str, returnComment) => {
-    let firstWord = str.split(" ")[0];
-    let restOfString = str.split(" ").slice(1).join(" ");
-
-    return returnComment ? restOfString : firstWord;
+  article = {
+    ...article,
+    image: `https://appnewsposters.s3.us-east-2.amazonaws.com/${article.image}`,
+    title: article.title.slice(0, 100),
+    content: article.content
+      .replace("Here is the rewritten headline and summary of the article:", "")
+      .slice(0, 250),
+    date: formatDateTime(article.date),
   };
+
+  if (article.reason) article.reason = `Reason: ${article.reason.trim()}`;
+  if (article.is_article_efficent) {
+    article.tagColor = article.is_article_efficent.split(" ")[0].toLowerCase();
+    article.comment = article.is_article_efficent.split(" ").slice(1).join(" ");
+  }
 
   useEffect(() => {
     const fetchBotName = async () => {
@@ -69,45 +71,12 @@ const ArticleCard = ({ article }) => {
   };
 
   return (
-    <div
-      className="search-tool-item"
-      style={{ width: "100%" }}
-      onClick={openModal}
-    >
-      <img
-        className={`img-modal-news-card`}
-        src={`https://appnewsposters.s3.us-east-2.amazonaws.com/${article.image}`}
-        onLoad={handleImageLoaded}
-        alt={title}
+    <>
+      <Card
+        data={article}
+        onClick={openModal}
+        onImgLoad={handleImageLoaded}
       />
-      <h6 style={{ margin: 10 }}><strong>{title.slice(0, 100)}</strong></h6>
-      {reason && <p>Reason: {reason}</p>}
-      <p>{filContent.slice(0, 250)}...</p>
-      {article.is_article_efficent && (
-        <span style={{ paddingInline: 10 }}>
-          {cropString(article.is_article_efficent, true)}
-        </span>
-      )}
-      <div className="details-container">
-        <span style={{display: "flex", alignItems: "center", gap: 5, fontSize: 14}}><AccessTime/><strong>{formatDateTime(article.date)}</strong></span>
-        <div className="tags-container">
-          {article.is_top_story && (
-            <span className="tag top-story">TOP STORY</span>
-          )}
-          {article.is_article_efficent && (
-            <div
-              style={{
-                height: 20,
-                width: 20,
-                borderRadius: "50%",
-                background: cropString(
-                  article.is_article_efficent,
-                ).toLowerCase(),
-              }}
-            ></div>
-          )}
-        </div>
-      </div>
       {modalOpen && (
         <div className={`modal ${imageLoaded ? "" : "loading"}`}>
           <div className="modal-content">
@@ -119,18 +88,53 @@ const ArticleCard = ({ article }) => {
               className={`img-modal-news ${
                 imageLoaded ? "img-modal-news-show" : "img-modal-news-hide"
               }`}
-              src={`https://sitesnewsposters.s3.us-east-2.amazonaws.com/${article.image}`}
+              src={article.image}
               onLoad={handleImageLoaded}
-              alt={title}
             />
-            <h2>{title}</h2>
+            <h2>{article.title}</h2>
             <p>{article.date}</p>
-            <p>{filContent}</p>
+            <p>{article.content}</p>
             <p>{article.is_article_efficent}</p>
           </div>
         </div>
       )}
-    </div>
+    </>
+  
+ 
+    //   {article.reason && <p>{article.reason}</p>}
+    //   <p>{filContent}</p>
+    //   {article.comment && (
+    //     <span style={{ paddingInline: 10 }}>{article.comment}</span>
+    //   )}
+    //   <div className="details-container">
+    //     <span
+    //       style={{
+    //         display: "flex",
+    //         alignItems: "center",
+    //         gap: 5,
+    //         fontSize: 14,
+    //       }}
+    //     >
+    //       <AccessTime />
+    //       <strong>{formatDateTime(article.date)}</strong>
+    //     </span>
+    //     <div className="tags-container">
+    //       {article.is_top_story && (
+    //         <span className="tag top-story">TOP STORY</span>
+    //       )}
+    //       {article.tagColor && (
+    //         <div
+    //           style={{
+    //             height: 20,
+    //             width: 20,
+    //             borderRadius: "50%",
+    //             background: article.tagColor,
+    //           }}
+    //         ></div>
+    //       )}
+    //     </div>
+    //   </div>
+    // </div>
   );
 };
 
