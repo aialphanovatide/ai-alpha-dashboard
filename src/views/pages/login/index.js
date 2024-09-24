@@ -105,6 +105,7 @@ const Login = () => {
                         type="button"
                         onClick={toggleShowPassword}
                         className={styles.showPasswordButton}
+                        id="showPasswordButton"
                       >
                         {showPassword ? (
                           <VisibilityOffIcon />
