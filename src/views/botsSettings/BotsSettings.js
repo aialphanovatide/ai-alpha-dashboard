@@ -11,11 +11,15 @@ import CreateBotModal from "../createBotModal/CreateBotModal";
 import CreateCategoryModal from "../createCategoryModal/CreateCategoryModal";
 import AddBlacklistWordsModal from "../addBlacklistWordsModal/AddBlacklistWordsModal";
 import DeleteCategoryModal from "../deleteCategoryModal/DeleteCategoryModal";
+import Title from "src/components/commons/Title";
 
 const SpinnerComponent = () => {
   return (
     <div className="spinnergnral">
-      <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      <span
+        className="spinner-border spinner-border-sm"
+        aria-hidden="true"
+      ></span>
     </div>
   );
 };
@@ -75,7 +79,7 @@ const BotsSettings = () => {
             `Error At ${
               url === "activate_bot" ? "TurnON" : "TurnOFF"
             } the bot ${botCategory}:`,
-            data.message
+            data.message,
           );
         }
       } catch (error) {
@@ -84,7 +88,7 @@ const BotsSettings = () => {
         setLoading(false);
       }
     },
-    [getAllBots]
+    [getAllBots],
   );
 
   const turnOnAllBots = useCallback(() => {
@@ -103,7 +107,7 @@ const BotsSettings = () => {
 
   return (
     <div className="botsettingsMain">
-      <h3 className="botsTitle">Bot settings</h3>
+      <Title>Bot settings</Title>
       <BotList bots={bots} />
       <CButtonGroup className="mb-2 btn-group-main">
         <div className="d-flex align-items-center main-button">
@@ -115,8 +119,8 @@ const BotsSettings = () => {
               loading
                 ? null
                 : bots.every((bot) => bot.isActive)
-                ? turnOffAllBots
-                : turnOnAllBots
+                  ? turnOffAllBots
+                  : turnOnAllBots
             }
           >
             {bots.every((bot) => bot.isActive)

@@ -217,7 +217,7 @@ const Introduction = () => {
 
   return (
     <div style={{ margin: "20px" }}>
-      <h2>Introduction</h2>
+      <h3>Introduction</h3>
 
       {/* Select coin */}
       <Form.Group controlId="coinBotSelect" style={{ marginBottom: "15px" }}>

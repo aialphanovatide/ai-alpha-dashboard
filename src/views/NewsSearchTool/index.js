@@ -5,6 +5,7 @@ import styles from "./index.module.css";
 import config from "../../config";
 import NoData from "src/components/NoData";
 import SpinnerComponent from "src/components/Spinner";
+import Title from "src/components/commons/Title";
 
 // Select Checkbox: Improve the design of the select checkbox for better user experience.
 // Input Box Outline: Enhance the outline of the input box for consistency and visual appeal.
@@ -179,9 +180,9 @@ const NewsSearchTool = () => {
 
   return (
     <div className={styles.searchTool}>
-      <h2>News Search Tool</h2>
+      <Title>News Search Tool</Title>
       <br />
-      <div className={styles.searchHeader}>
+      <div className={styles.searchHeader} id="searchHeader">
         <div
           style={{
             display: "flex",
@@ -285,28 +286,26 @@ const NewsSearchTool = () => {
         </div>
       </div>
       {error && <p>{error}</p>}
-      <>
-        <div
-          className={styles.searchResults}
-          style={{
-            display: loading || currentArticles.length < 1 ? "flex" : "grid",
-          }}
-        >
-          {loading ? (
-            <SpinnerComponent style={{ margin: "auto" }} />
-          ) : (
-            <>
-              {currentArticles.length < 1 ? (
-                <NoData />
-              ) : (
-                currentArticles.map((article, index) => (
-                  <ArticleCard key={index} article={article} />
-                ))
-              )}
-            </>
-          )}
-        </div>
-      </>
+      <div
+        className={styles.searchResults}
+        style={{
+          display: loading || currentArticles.length < 1 ? "flex" : "grid",
+        }}
+      >
+        {loading ? (
+          <SpinnerComponent style={{ margin: "auto" }} />
+        ) : (
+          <>
+            {currentArticles.length < 1 ? (
+              <NoData />
+            ) : (
+              currentArticles.map((article, index) => (
+                <ArticleCard key={index} article={article} />
+              ))
+            )}
+          </>
+        )}
+      </div>
       {!loading && (
         <Pagination
           totalArticles={filteredArticles.length}

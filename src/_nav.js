@@ -14,6 +14,12 @@ import { CNavItem } from '@coreui/react'
 const _nav = [
   {
     component: CNavItem,
+    name: 'Home',
+    to: '/home',
+    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: 'Analysis',
     to: '/analysis',
     icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
@@ -23,12 +29,6 @@ const _nav = [
     name: 'Charts',
     to: '/chartsPage',
     icon: <CIcon icon={cilChart} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Dashboard',
-    to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
@@ -72,6 +72,6 @@ const _nav = [
     to: '/users',
     icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
   },
-].sort((a, b) => a.name.localeCompare(b.name));
+]
 
 export default _nav;

@@ -12,6 +12,7 @@ import {
 import "../chartsPage/ChartsPage.css";
 import config from "../../config";
 import Swal from "sweetalert2";
+import Title from "src/components/commons/Title";
 
 const ChartsPage = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -218,7 +219,7 @@ const ChartsPage = () => {
   return (
     <CRow>
       <CCol className="mainContainer" xs="13">
-        <h4 className="chartTitle">Support & Resistance</h4>
+        <Title>Support & Resistance</Title>
         <CCard className="card">
           <CCardBody className="cardBody">
             <form className="form" onSubmit={handleSubmit}>

@@ -11,6 +11,8 @@ import { AllAnalysis } from "./AllAnalysis";
 import GeneralAnalysis from "./GeneralAnalysis";
 import ScheduledJob from "./ScheduledJob";
 import CategoryDropdown from "./CategoryDropdown";
+import Title from "src/components/commons/Title";
+import NoData from "src/components/NoData";
 
 const Analysis = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -279,7 +281,7 @@ const Analysis = () => {
 
   return (
     <div className="analysisMain">
-      <h3 className="analysisTitle">Analysis</h3>
+      <Title>Analysis</Title>
       <div className="analysisSubmain">
         <div className="selectors-container">
           <DropdownMenu
@@ -304,7 +306,7 @@ const Analysis = () => {
           onClick={handleSubmit}
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isSubmitting ? "Posting..." : "Post"}
         </button>
         <button
           className="postLaterButton"
@@ -348,7 +350,7 @@ const Analysis = () => {
         onSuccess={setIsAnalysisCreated}
         fetchAnalysis={fetchAnalysis}
       />
-      <div className="allAnalysismain">
+      <div className="analysisSubmain">
         <h3>Scheduled Analysis Posts</h3>
         {scheduledJobs.length > 0 ? (
           scheduledJobs.map((job) => (
@@ -360,7 +362,7 @@ const Analysis = () => {
             />
           ))
         ) : (
-          <p>No scheduled posts</p>
+          <NoData message={"No scheduled posts"}/>
         )}
       </div>
     </div>

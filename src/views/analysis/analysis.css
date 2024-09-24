@@ -99,6 +99,7 @@
   width: 100%;
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  margin-bottom: 30px;
 }
 
 
@@ -149,7 +150,7 @@ width: 20%;
 }
 
 .allAnalysisLI {
-  margin: 1rem 0;
+  margin: 1rem 1%;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   background-color: #fff;
   border-radius: 5px;
@@ -195,7 +196,6 @@ width: 20%;
   left: 0;
   width: 100%;
   height: 100%;
-  overflow-y: scroll;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;

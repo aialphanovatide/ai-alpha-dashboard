@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import CIcon from "@coreui/icons-react";
 import { cilTrash } from "@coreui/icons";
 import EditModal from "./editModal";
+import NoData from "src/components/NoData";
 
 const Item = ({ item, onDelete, base64Image, openEditModal }) => {
   const handleDeleteClick = (event) => {
@@ -130,7 +131,7 @@ const AllAnalysis = ({ items, fetchAnalysis}) => {
   };
 
   return (
-    <div className="allAnalysismain">
+    <div className="analysisSubmain">
       <h3 className="allAnalysisTitle">Selected Coin Analysis</h3>
       {items && items.length > 0 ? (
         <ul className="allAnalysisUL">
@@ -144,7 +145,7 @@ const AllAnalysis = ({ items, fetchAnalysis}) => {
           ))}
         </ul>
       ) : (
-        <span>No Analysis found for this coin</span>
+        <NoData message={"No Analysis found for this coin"} />
       )}
       {isModalOpen && (
         <EditModal
@@ -154,7 +155,6 @@ const AllAnalysis = ({ items, fetchAnalysis}) => {
           fetchAnalysis={fetchAnalysis} 
         />
       )}
-      {/* Renderiza el modal si isModalOpen es true */}
     </div>
   );
 };

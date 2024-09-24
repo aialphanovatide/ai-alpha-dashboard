@@ -1,32 +1,30 @@
-.dashlogo{
-    width: 100px; /* Ajusta el tamaño del logo según tus necesidades */
-    height: auto;
-    margin-left:50%;
-    border-radius: 50%;
-    margin-bottom: 20px;
-    animation: rotate 10s linear infinite;
-    box-shadow: 0 0 20px rgba(255, 165, 0, 0.7);
+.dashlogo {
+  width: 100px;
+  height: auto;
 }
 
-
-.downn{
-    margin-top: 3px;
-    outline: none;
-    border: none;
+.downn {
+  margin-top: 3px;
+  outline: none;
+  border: none;
 }
-
 
 .logout-button {
-    cursor: pointer;
-    outline: none;
-    border: none;
-  }
-  
+  cursor: pointer;
+  outline: none;
+  border: none;
+}
 
-
-/* Add this style to your CSS */
 .downn:focus {
-    outline: none;
-    border: none;
-  }
-  
+  outline: none;
+  border: none;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 7px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgb(104, 104, 104);
+  border-radius: 10px;
+}

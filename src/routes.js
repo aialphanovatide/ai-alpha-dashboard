@@ -1,12 +1,11 @@
 import React from 'react'
-
-const BotsSettings = React.lazy(() => import('./views/botsSettings/BotsSettings'))
 const ChartsPage = React.lazy(() => import('./views/chartsPage/ChartsPage'))
-const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const Home = React.lazy(() => import('./views/Home'))
 const Analysis = React.lazy(() => import('./views/analysis/Analysis'))
-const Fundamentals = React.lazy(() => import('./views/fundamental/Fundamentals'))
+const Fundamentals = React.lazy(() => import('./views/Fundamentals'))
+const BotsSettings = React.lazy(() => import('./views/botsSettings/BotsSettings'))
 const NarrativeTrading = React.lazy(() => import('./views/narrativeTrading/NarrativeTrading'))
-const topSoties = React.lazy(() => import('./views/topStories/topStories'))
+const topSories = React.lazy(() => import('./views/topStories'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 const NewsSearchTool = React.lazy(() => import('./views/NewsSearchTool'))
@@ -62,14 +61,14 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/newsSearchTool', name: 'Search Tool', element: NewsSearchTool },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/home', name: 'Home', element: Home },
   { path: '/newsCreatorTool', name: 'News Creator Tool', element: NewsCreatorTool },
   { path: '/fundamentals', name: 'Fundamentals', element: Fundamentals },
   { path: '/narrativeTrading', name: 'NarrativeTrading', element: NarrativeTrading },
   { path: '/botsSettings', name: 'BotsSettings', element: BotsSettings },
   { path: '/chartsPage', name: 'ChartsPage', element: ChartsPage },
   { path: '/analysis', name: 'Analysis', element: Analysis },
-  { path: '/topStories', name: 'Top Stories', element: topSoties },
+  { path: '/topStories', name: 'Top Stories', element: topSories },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
