@@ -70,8 +70,63 @@ body {
     #table span,
     #table td,
     #table th,
-    #table-pagination {
+    #table-pagination,
+    .ql-editor span,
+    .ql-editor strong,
+    .allAnalysisLI strong,
+    .allAnalysisLI p,
+    .allAnalysisLI span,
+    .form-control.input,
+    .css-1ps6pg7-MuiPaper-root span,
+    .css-1ps6pg7-MuiPaper-root th,
+    .css-1ps6pg7-MuiPaper-root div,
+    .css-1ps6pg7-MuiPaper-root td,
+    .analysisSubmain p,
+    .search-tool-item p,
+    .card p,
+    .deleteBtn,
+    .modal-content p {
       color: white !important;
+    }
+
+    .allAnalysisLI {
+      box-shadow: rgb(16 16 16) 0px 1px 4px !important;
+    }
+    
+    .page-button {
+      background-color: #2a303d;
+      border: gray
+    }
+    
+    .page-button:hover,
+    .submitAnalisys,
+    .postLaterButton,
+    .schButton {
+     background-color: transparent !important;
+    }
+    
+    .page-button:disabled {
+      background-color: #4e4e4e;
+    }
+
+    .api-card,
+    .analysisSubmain,
+    #searchHeader,
+    .allAnalysisLI,
+    .formContainer,
+    .css-1ps6pg7-MuiPaper-root,
+    .card,
+    .search-tool-item {
+      background-color: #2a303d !important;
+      border: gray !important
+    }
+    
+    .ql-toolbar.ql-snow {
+      background: #818181 !important;
+    }
+
+    #showPasswordButton {
+      border-color: #333a49;
     }
   }
 }

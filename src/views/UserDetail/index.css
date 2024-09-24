@@ -32,7 +32,8 @@
 
 .user-info-container, .user-plans-container {
   padding: 30px;
-  width: 70%;
+  height: 200%;
+  /* width: 70%; */
   margin: auto;
   display: flex;
   flex-direction: row;

@@ -11,6 +11,8 @@ import { AllNarrativeTrading } from "./AllNarrativeTrading";
 import GeneralNarrativeTrading from "./GeneralNarrativeTrading";
 import ScheduledJob from "./ScheduledJob";
 import CategoryDropdown from "./CategoryDropdown";
+import NoData from "src/components/NoData";
+import Title from "src/components/commons/Title";
 
 const NarrativeTrading = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -18,7 +20,8 @@ const NarrativeTrading = () => {
   const [content, setContent] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [items, setItems] = useState([]);
-  const [isNarrativeTradingCreated, setIsNarrativeTradingCreated] = useState(false);
+  const [isNarrativeTradingCreated, setIsNarrativeTradingCreated] =
+    useState(false);
   const [showPostLaterSection, setShowPostLaterSection] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [scheduledJobs, setScheduledJobs] = useState([]);
@@ -115,12 +118,15 @@ const NarrativeTrading = () => {
 
   const fetchCoinsByCategory = async (category) => {
     try {
-      const response = await fetch(`${config.BASE_URL}/get_bot_ids_by_category/${category}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await fetch(
+        `${config.BASE_URL}/get_bot_ids_by_category/${category}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        },
+      );
       const data = await response.json();
-      console.log("fetch: ",data)
+      console.log("fetch: ", data);
       if (response.ok) {
         return data.data.bot_ids; // Assuming the API returns a list of coins
       } else {
@@ -150,7 +156,7 @@ const NarrativeTrading = () => {
       selectedImage === null ||
       content === null ||
       selectedDate === null ||
-      title === null 
+      title === null
     ) {
       return Swal.fire({
         icon: "error",
@@ -170,69 +176,73 @@ const NarrativeTrading = () => {
       minute: "2-digit",
       second: "2-digit",
     });
-    
 
     const cleanedSelectedDate = selectedDateStr.replace(
       " GMT-0300 (Argentina Standard Time)",
       "",
     );
-  
-    const coins = selectedCoin ? [selectedCoin] : await fetchCoinsByCategory(selectedCategory);
-    
+
+    const coins = selectedCoin
+      ? [selectedCoin]
+      : await fetchCoinsByCategory(selectedCategory);
+
     for (const coin of coins) {
-    const combinedContent = `Title: ${title}\n${content}`;
-    const formDataToSchedule = new FormData();
-    formDataToSchedule.append("coinBot", selectedCoin);
-    formDataToSchedule.append("content", combinedContent);
-    formDataToSchedule.append("scheduledDate", cleanedSelectedDate);
-    formDataToSchedule.append("category_name", selectedCategory);
+      const combinedContent = `Title: ${title}\n${content}`;
+      const formDataToSchedule = new FormData();
+      formDataToSchedule.append("coinBot", selectedCoin);
+      formDataToSchedule.append("content", combinedContent);
+      formDataToSchedule.append("scheduledDate", cleanedSelectedDate);
+      formDataToSchedule.append("category_name", selectedCategory);
 
-    try {
-      const response = await fetch(`${config.BASE_URL}/schedule_narrative_post`, {
-        method: "POST",
-        body: formDataToSchedule,
-      });
+      try {
+        const response = await fetch(
+          `${config.BASE_URL}/schedule_narrative_post`,
+          {
+            method: "POST",
+            body: formDataToSchedule,
+          },
+        );
 
-      let responseData = await response.json();
+        let responseData = await response.json();
 
-      if (response.ok) {
-        Swal.fire({
-          icon: "success",
-          title: responseData.message,
-          showConfirmButton: false,
-          timer: 1000,
-        });
-        setSelectedCoin(null);
-        setIsNarrativeTradingCreated(true);
-        setContent(null);
-        setSelectedDate(null);
-        setSelectedImage([]);
-        await fetchNarrativeTrading();
-        handleGetJobs();
-      } else {
+        if (response.ok) {
+          Swal.fire({
+            icon: "success",
+            title: responseData.message,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+          setSelectedCoin(null);
+          setIsNarrativeTradingCreated(true);
+          setContent(null);
+          setSelectedDate(null);
+          setSelectedImage([]);
+          await fetchNarrativeTrading();
+          handleGetJobs();
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error scheduling post",
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }
+      } catch (error) {
         Swal.fire({
           icon: "error",
-          title: "Error scheduling post",
+          title: "An error occurred",
+          text: error.message,
           showConfirmButton: false,
           timer: 1000,
         });
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "An error occurred",
-        text: error.message,
-        showConfirmButton: false,
-        timer: 1000,
-      });
-    } finally {
-      setIsSubmitting(false);
     }
   };
-}
   // handles the submit of the three values needed - coin Id, content, and image
   const handleSubmit = async () => {
-    if (selectedCoin === null || selectedImage === null || content === null ) {
+    if (selectedCoin === null || selectedImage === null || content === null) {
       return Swal.fire({
         icon: "error",
         title: "One or more required fields are missing",
@@ -241,53 +251,59 @@ const NarrativeTrading = () => {
       });
     }
     setIsSubmitting(true);
-    const coins = selectedCoin ? [selectedCoin] : await fetchCoinsByCategory(selectedCategory);
-    
+    const coins = selectedCoin
+      ? [selectedCoin]
+      : await fetchCoinsByCategory(selectedCategory);
+
     for (const coin of coins) {
-    const formData = new FormData();
-    formData.append("coinBot", selectedCoin);
-    formData.append("content", content);
-    formData.append("images", selectedImage);
-    formData.append("category_name", selectedCategory);
+      const formData = new FormData();
+      formData.append("coinBot", selectedCoin);
+      formData.append("content", content);
+      formData.append("images", selectedImage);
+      formData.append("category_name", selectedCategory);
 
-    try {
-      const response = await fetch(`${config.BASE_URL}/post_narrative_trading`, {
-        method: "POST",
-        body: formData,
-      });
-      console.log(formData);
-      let responseData = await response.json();
+      try {
+        const response = await fetch(
+          `${config.BASE_URL}/post_narrative_trading`,
+          {
+            method: "POST",
+            body: formData,
+          },
+        );
+        console.log(formData);
+        let responseData = await response.json();
 
-      if (response.ok) {
-        Swal.fire({
-          icon: "success",
-          title: responseData.message,
-          showConfirmButton: false,
-          timer: 1000,
-        });
-        setIsNarrativeTradingCreated(true);
-        setContent(null);
+        if (response.ok) {
+          Swal.fire({
+            icon: "success",
+            title: responseData.message,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+          setIsNarrativeTradingCreated(true);
+          setContent(null);
 
-        await fetchNarrativeTrading();
-      } else {
+          await fetchNarrativeTrading();
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error creating narrative trading",
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }
+      } catch (error) {
         Swal.fire({
           icon: "error",
-          title: "Error creating narrative trading",
+          title: error,
           showConfirmButton: false,
           timer: 1000,
         });
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: error,
-        showConfirmButton: false,
-        timer: 1000,
-      });
-    } finally {
-      setIsSubmitting(false);
     }
-  }};
+  };
 
   useEffect(() => {
     handleGetJobs();
@@ -295,16 +311,19 @@ const NarrativeTrading = () => {
 
   const handleGetJobs = async () => {
     try {
-      const response = await fetch(`${config.BASE_URL}/get_narrative_trading_jobs`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
+      const response = await fetch(
+        `${config.BASE_URL}/get_narrative_trading_jobs`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
         },
-      });
+      );
 
       const data = await response.json();
-      console.log("data jobs", data.data.jobs)
+      console.log("data jobs", data.data.jobs);
       if (response.ok) {
         setScheduledJobs(data.data.jobs); // Actualiza el estado con los trabajos programados
       } else {
@@ -317,9 +336,10 @@ const NarrativeTrading = () => {
 
   return (
     <div className="analysisMain">
-      <h3 className="analysisTitle">Narrative Trading</h3>
+      <Title>Narrative Trading</Title>
       <div className="analysisSubmain">
-        <div className="selectors-container">
+        <div className="selectors-container"
+        >
           <DropdownMenu
             selectedCoin={selectedCoin}
             onSelectCoin={handleSelectCoin}
@@ -342,7 +362,7 @@ const NarrativeTrading = () => {
           onClick={handleSubmit}
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isSubmitting ? "Posting..." : "Post"}
         </button>
         <button
           className="postLaterButton"
@@ -380,15 +400,18 @@ const NarrativeTrading = () => {
           </div>
         )}
       </div>
-      <AllNarrativeTrading items={items} fetchNarrativeTrading={fetchNarrativeTrading} />
+      <AllNarrativeTrading
+        items={items}
+        fetchNarrativeTrading={fetchNarrativeTrading}
+      />
       <GeneralNarrativeTrading
         success={isNarrativeTradingCreated}
         onSuccess={setIsNarrativeTradingCreated}
         fetchNarrativeTrading={fetchNarrativeTrading}
       />
-      <div className="allAnalysismain">
+      <div className="analysisSubmain">
         <h3>Scheduled Narrative Trading Posts</h3>
-        {scheduledJobs ? (
+        {scheduledJobs.length > 0 ? (
           scheduledJobs.map((job) => (
             <ScheduledJob
               key={job.id}
@@ -398,7 +421,7 @@ const NarrativeTrading = () => {
             />
           ))
         ) : (
-          <p>No scheduled posts</p>
+          <NoData message={"No scheduled posts"} />
         )}
       </div>
     </div>

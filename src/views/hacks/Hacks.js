@@ -228,7 +228,7 @@ const Hacks = () => {
   return (
     <div>
       <div style={{ margin: "20px", overflowX: "auto" }}>
-        <h2>Hacks</h2>
+        <h3>Hacks</h3>
 
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: "20px" }}>
           <Form.Label>Select Coin</Form.Label>

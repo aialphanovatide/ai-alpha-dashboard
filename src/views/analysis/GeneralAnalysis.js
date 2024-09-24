@@ -3,6 +3,7 @@ import { Item } from "./AllAnalysis";
 import config from "src/config";
 import "./analysis.css";
 import EditModal from "./editModal";
+import NoData from "src/components/NoData";
 
 const GeneralAnalysis = ({ success, onSuccess, fetchAnalysis }) => {
   const [generalAnalysis, setGeneralAnalysis] = useState([]);
@@ -80,7 +81,7 @@ const GeneralAnalysis = ({ success, onSuccess, fetchAnalysis }) => {
   }, [success]);
 
   return (
-    <div className="allAnalysismain">
+    <div className="analysisSubmain">
       <h3 className="allAnalysisTitle">General Analysis</h3>
       {generalAnalysis && generalAnalysis.length > 0 ? (
         <ul className="allAnalysisUL">
@@ -90,11 +91,10 @@ const GeneralAnalysis = ({ success, onSuccess, fetchAnalysis }) => {
               item={item}
               openEditModal={openEditModal}
             />
-            
           ))}
         </ul>
       ) : (
-        <span>No Analysis yet</span>
+        <NoData message={"No Analysis yet"} />
       )}
       {isEditModalOpen && selectedAnalysis && (
         <EditModal
