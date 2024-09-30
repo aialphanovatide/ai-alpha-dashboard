@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useColorModes } from "@coreui/react";
 import "./scss/style.scss";
 import SpinnerComponent from "./components/Spinner";
-import PrivateRoute from "./components/PrivateRoute";
+import SessionValidator from "./components/SessionValidator";
 
 // Containers
 const DefaultLayout = React.lazy(() => import("./layout/DefaultLayout"));
@@ -59,9 +59,9 @@ const App = () => {
             path="*"
             name="Home"
             element={
-              <PrivateRoute>
+              <SessionValidator>
                 <DefaultLayout />
-              </PrivateRoute>
+              </SessionValidator>
             }
           />
         </Routes>

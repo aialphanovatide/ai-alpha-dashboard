@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-const PrivateRoute = ({ children }) => {
+const SessionValidator = ({ children }) => {
   const token = localStorage.getItem("token");
 
   const isTokenExpired = () => {
@@ -22,4 +22,4 @@ const PrivateRoute = ({ children }) => {
   return children;
 };
 
-export default PrivateRoute;
+export default SessionValidator;
