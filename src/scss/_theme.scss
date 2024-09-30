@@ -85,7 +85,8 @@ body {
     .search-tool-item p,
     .card p,
     .deleteBtn,
-    .modal-content p {
+    .modal-content p,
+    .swal {
       color: white !important;
     }
 
@@ -116,7 +117,8 @@ body {
     .formContainer,
     .css-1ps6pg7-MuiPaper-root,
     .card,
-    .search-tool-item {
+    .search-tool-item,
+    .swal {
       background-color: #2a303d !important;
       border: gray !important
     }
