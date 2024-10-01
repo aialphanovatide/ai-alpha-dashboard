@@ -1,8 +1,9 @@
 .top-container {
   height: 15%;
-  display: flex;
+  display: grid;
   padding-top: 1%;
   padding-inline: 10px;
+  grid-template-columns: 10% 58% 10% 10%;
 }
 
 .top-container button,
@@ -14,8 +15,19 @@
 
 .pause-btn {
   color: #525252;
-  text-decoration: underline;
   width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: underline;
+  grid-column: 3;
+  justify-self: center;
+}
+
+.hide-btn {
+  color: #FF6C0D;
+  text-decoration: underline;
   text-align: right;
 }
 
@@ -38,19 +50,19 @@
 .bot-item {
   position: relative;
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* margin-block: 1rem; */
   padding: 10px;
   width: 100%;
   height: 100px;
   border-radius: 5px;
   background-color: #FFFFFF9c;
+  display: grid;
+  grid-template-columns: 10% 10% 34% 16% 10% 10% 10%;
+  align-items: center;
 }
 
 .bot-item-input {
-  width: 10%;
+  /* width: 10%; */
+  grid-column: 1;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -76,11 +88,12 @@
 }
 
 .bot-item.checked {
-  background-color: #FFECD3; /* Cambia el color del contenedor cuando está checked */
+  background-color: #FFECD3;
 }
 
 .bot-img-container {
-  width: 15%;
+  /* width: 15%; */
+  grid-column: 2;
   height: 100%;
   display: flex;
 }
@@ -88,7 +101,7 @@
 .bot-img-container img {
   width: 60px;
   height: 60px;
-  margin: auto;
+  margin-block: auto;
 }
 
 .middle-container {
@@ -101,7 +114,8 @@
 .bot-details {
   display: flex;
   flex-direction: column;
-  width: 55%;
+  /* width: 55%; */
+  grid-column: 3;
   font-size: 14px;
   height: 100%;
 }
@@ -117,11 +131,6 @@
 }
 
 .switch-btn,
-.chevron-button {
-  width: 10%;
-}
-
-.switch-btn,
 .chevron-button,
 .edit-btn,
 .prompt-btn {
@@ -134,20 +143,23 @@
 }
 
 .edit-btn {
-  width: 15%;
+  /* width: 15%; */
+  grid-column: 4;
 }
 
 .prompt-btn {
   width: 20%;
 }
 
-.switch-btn {
-  color: #b2b2b2;
+.switch-btn svg {
+  /* color: #b2b2b2; */
+  width: 50px;
 }
 
 .chevron-button {
   font-size: 50px;
-  color: #E5E5E5
+  color: #E5E5E5;
+  grid-column: 7;
 }
 
 /* .activeBot {
