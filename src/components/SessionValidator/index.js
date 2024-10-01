@@ -13,7 +13,7 @@ const SessionValidator = ({ children }) => {
     return now >= expirationDate;
   };
 
-  if (!token || isTokenExpired()) {
+  if ((window.location.hash !== "") && (!token || isTokenExpired())) {
     localStorage.removeItem("token");
     localStorage.removeItem("expires_at");
     return <Navigate to="/login" replace state={{ isSessionExpired: true }} />;
