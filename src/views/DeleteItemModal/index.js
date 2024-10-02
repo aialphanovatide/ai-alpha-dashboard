@@ -8,8 +8,9 @@ import {
   deleteCategoryById,
   deleteCategoryByName,
 } from "../../services/categoryService";
+import CustomTooltip from "src/components/ToolTip";
 
-const DeleteCategoryModal = ({ categories }) => {
+const DeleteItemModal = ({ categories }) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [selectedCategoryName, setSelectedCategoryName] = useState("");
   const [visible, setVisible] = useState(false);
@@ -40,13 +41,19 @@ const DeleteCategoryModal = ({ categories }) => {
   return (
     <>
       <div className={styles.buttonContainer}>
-        <button
-          className={styles.trashBtn}
-          onClick={() => setVisible(true)}
-          disabled={categories.length === 0}
-        >
-          <TrashIcon />
-        </button>
+        {/* <CustomTooltip
+          content={
+            "The are no items to delete"
+          }
+        > */}
+          <button
+            className={styles.trashBtn}
+            onClick={() => setVisible(true)}
+            disabled={categories.length === 0}
+          >
+            <TrashIcon style={{height: 25}} />
+          </button>
+        {/* </CustomTooltip> */}
         <Modal
           show={visible}
           onHide={() => setVisible(false)}
@@ -94,4 +101,4 @@ const DeleteCategoryModal = ({ categories }) => {
   );
 };
 
-export default DeleteCategoryModal;
+export default DeleteItemModal;

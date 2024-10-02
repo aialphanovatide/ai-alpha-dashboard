@@ -1,7 +1,7 @@
 .buttonContainer {
   position: relative;
-  width: 10%;
   display: flex;
+  grid-column: 1;
 }
 
 .subcontainer h5 {
