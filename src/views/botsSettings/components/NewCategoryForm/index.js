@@ -1,286 +1,35 @@
-import { cilImagePlus, cilPlus } from "@coreui/icons";
+import { cilPen, cilPlus } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import styles from "./index.module.css";
+import { HelpOutline } from "@mui/icons-material";
+import CustomTooltip from "src/components/ToolTip";
+import config from "src/config";
 
-import { CButton } from "@coreui/react";
-import { FaInfoCircle } from "react-icons/fa";
-import {
-  Form,
-  FormControl,
-  Alert,
-  Modal,
-  Button,
-  FormCheck,
-} from "react-bootstrap";
-import config from "../../../../config";
+const NewCategoryForm = (params) => {
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const { category } = params;
 
-const CreateCategoryModal = () => {
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertVariant, setAlertVariant] = useState("success");
-  const [name, setName] = useState("");
-  const [alias, setAlias] = useState("");
-  const [prompt, setPrompt] = useState("");
-  const [timeInterval, setTimeInterval] = useState(50);
-  const [slackChannel, setSlackChannel] = useState("");
-  const [borderColor, setBorderColor] = useState("");
-  const [visible, setVisible] = useState(true);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [showInApp, setShowInApp] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
-  const [isCreating, setIsCreating] = useState(false); 
+  const [formData, setFormData] = useState({
+    name: category ? category.category : "",
+    alias: category ? category.alias : "",
+    prompt: "",
+    slack_channel: "",
+    border_color: category ? category.color.slice(1) : "",
+    icon: category ? `https://aialphaicons.s3.us-east-2.amazonaws.com/${category.alias.toLowerCase()}.png` : "",
+  });
 
-  const clearFields = () => {
-    setName("");
-    setAlias("");
-    setPrompt("");
-    setTimeInterval(3);
-    setSlackChannel("");
-    setBorderColor("");
-    setShowAlert(false);
-    setAlertMessage("");
-    setAlertVariant("success");
-    setShowInApp(false);
-    setImageFile(null);
-  };
-
-  const handleCreateCategory = async () => {
-    if (!name || !alias || !slackChannel) {
-      setAlertMessage("Name, Alias, and Slack Channel are required.");
-      setAlertVariant("danger");
-      setShowAlert(true);
-      return;
-    }
-
-    setIsCreating(true);
-
-    try {
-      const formData = new FormData();
-      formData.append("image", imageFile);
-
-      // Other data in JSON format
-      const otherData = {
-        name,
-        alias,
-        prompt,
-        time_interval: timeInterval,
-        slack_channel: slackChannel,
-        border_color: borderColor,
-      };
-
-      formData.append("data", JSON.stringify(otherData));
-
-      const response = await fetch(`${config.BOTS_V2_API}/add_new_category`, {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await response.json();
-      if (result.success) {
-        setAlertMessage("Category created successfully.");
-        setAlertVariant("success");
-        setShowAlert(true);
-        setTimeout(() => {
-          setIsCreating(false); // Termina el proceso de creación
-          clearFields();
-          setVisible(false); // Cierra el modal después de que se muestra el mensaje
-        }, 2000); // Muestra el mensaje por 2 segundos
-      } else {
-        setAlertMessage(result.error || "Error creating category.");
-        setAlertVariant("danger");
-        setShowAlert(true);
-        setIsCreating(false); // Termina el proceso de creación
-      }
-    } catch (error) {
-      setAlertMessage("Error creating category: " + error.message);
-      setAlertVariant("danger");
-      setShowAlert(true);
-      setIsCreating(false); // Termina el proceso de creación
-    }
-  };
-
-  const handleCreateCategoryServer2 = async () => {
-    try {
-      const response = await fetch(`${config.BASE_URL}/create_category`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          category: name,
-          category_name: alias,
-          time_interval: timeInterval,
-          is_active: true,
-          border_color: borderColor,
-        }),
-      });
-      const result = await response.json();
-      if (result.success) {
-        setAlertMessage("Category created successfully in Server 2.");
-        setAlertVariant("success");
-        setShowAlert(true);
-        setTimeout(() => {
-          setIsCreating(false); // Termina el proceso de creación
-          clearFields();
-          setVisible(false); // Cierra el modal después de que se muestra el mensaje
-        }, 2000); // Muestra el mensaje por 2 segundos
-      } else {
-        setAlertMessage(result.error || "Error creating category.");
-        setAlertVariant("danger");
-        setShowAlert(true);
-        setIsCreating(false); // Termina el proceso de creación
-      }
-    } catch (error) {
-      setAlertMessage("Error creating category: " + error.message);
-      setAlertVariant("danger");
-      setShowAlert(true);
-      setIsCreating(false); // Termina el proceso de creación
-    }
-  };
-
-  const handleCreateBothCategories = async () => {
-    await handleCreateCategory();
-    if (showInApp) {
-      await handleCreateCategoryServer2();
-    }
-  };
-
-  return (
-    <>
-      <CButton className="btn modal-btn" onClick={() => setVisible(!visible)}>
-        Create a new Category
-      </CButton>
-      <Modal
-        show={visible}
-        onHide={() => !isCreating && setVisible(false)} // No permitir cerrar mientras se crea
-        className="custom-modal"
-      >
-        <span
-          className="closeModalBtn"
-          onClick={() => !isCreating && setVisible((prevVisible) => !prevVisible)} // No permitir cerrar mientras se crea
-        >
-          X
-        </span>
-        <Modal.Body className="formBody">
-          <Form className="formMain">
-            <h3>Create New Category</h3>
-            <Form.Group className="formSubmain">
-              <Form.Label>Name</Form.Label>
-              <FormControl
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter category name"
-              />
-            </Form.Group>
-            <Form.Group className="formSubmain">
-              <Form.Label>Alias</Form.Label>
-              <FormControl
-                type="text"
-                value={alias}
-                onChange={(e) => setAlias(e.target.value)}
-                placeholder="Enter category alias"
-              />
-            </Form.Group>
-            <Form.Group className="formSubmain">
-              <Form.Label>Prompt</Form.Label>
-              <div className="info-icon">
-                <FaInfoCircle className="info-icon" />
-                <div className="info-tooltip">
-                  An example of use could be: &quot;Imagine that you are one of the
-                  world&apos;s foremost experts on Bitcoin and also a globally
-                  renowned journalist skilled at summarizing articles about
-                  Bitcoin...&quot;
-                </div>
-              </div>
-
-              <FormControl
-                type="text"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Enter Article Generator prompt"
-              />
-            </Form.Group>
-            <Form.Group className="formSubmain">
-              <Form.Label>Time Interval</Form.Label>
-              <FormControl
-                type="number"
-                value={timeInterval}
-                onChange={(e) => setTimeInterval(e.target.value)}
-                placeholder="Enter time interval (default 50)"
-              />
-            </Form.Group>
-            <Form.Group className="formSubmain">
-              <Form.Label>Slack Channel</Form.Label>
-              <FormControl
-                type="text"
-                value={slackChannel}
-                onChange={(e) => setSlackChannel(e.target.value)}
-                placeholder="Enter Slack channel"
-              />
-            </Form.Group>
-            <Form.Group className="formSubmain">
-              <Form.Label>Border Color</Form.Label>
-              <FormControl
-                type="text"
-                value={borderColor}
-                onChange={(e) => setBorderColor(e.target.value)}
-                placeholder="Enter border color"
-              />
-            </Form.Group>
-            <Form.Group className="formSubmain">
-            <Form.Label>Upload Icon</Form.Label>
-            <FormControl
-              type="file"
-              accept=".svg" // Acepta solo SVG
-              onChange={(e) => setImageFile(e.target.files[0])}
-              placeholder="Upload only SVG icons"
-            />
-            </Form.Group>
-            <Form.Group className="formSubmain">
-              <FormCheck
-                type="checkbox"
-                id="showInAppCheckbox" // ID asociado al checkbox
-                label="Show in App"
-                checked={showInApp}
-                onChange={(e) => setShowInApp(e.target.checked)}
-              />
-            </Form.Group>
-
-            {showAlert && (
-              <Alert
-                variant={alertVariant}
-                onClose={() => setShowAlert(false)}
-                dismissible
-              >
-                {alertMessage}
-              </Alert>
-            )}
-          </Form>
-        </Modal.Body>
-        <Modal.Footer className="button-row">
-          <Button
-            className="espacio close"
-            variant="primary"
-            onClick={handleCreateBothCategories}
-            disabled={!name || !alias || !slackChannel || isCreating} // Desactivar botón mientras se crea
-          >
-            Create Category
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+  let isFormValid = useMemo(
+    () => formData.name && formData.alias,
+    [formData.name, formData.alias],
   );
-};
 
-
-
-
-
-
-const NewCategoryForm = () => {
-
-  const [selectedImg, setSelectedImg] = useState("");
+  const handleInputChange = (e) => {
+    let newData = { ...formData };
+    newData[e.target.name] = e.target.value;
+    setFormData(newData);
+  };
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -298,64 +47,263 @@ const NewCategoryForm = () => {
       });
 
       Promise.resolve(imagePromise).then((img) => {
-        setSelectedImg(img.previewUrl);
+        setFormData({ ...formData, icon: img.previewUrl });
       });
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setError("");
+      setSuccess("");
+
+      console.log(formData);
+
+      const response = await fetch(`${config.BASE_URL}/category`, {
+        method: "POST",
+        body: {
+          name: formData.name,
+          alias: formData.alias,
+          border_color: formData.border_color,
+        },
+        headers: {
+          "X-API-Key": "alpha_U-06Jgo3vbkcUmD2pVGONhYeb9iNFN-C_7086",
+        },
+      });
+
+      if (response.ok) {
+        alert("Category created successfully!");
+        //   // Reset form
+        setFormData({
+          name: "",
+          alias: "",
+          prompt: "",
+          slack_channel: "",
+          border_color: "",
+          icon: "",
+        });
+      } else {
+        const errorData = await response.json();
+        // setError(errorData.message || "Error creating category");
+        console.log(errorData);
+      }
+    } catch (err) {
+      setError("An error occurred while creating the category");
     }
   };
 
   return (
     <>
-    <form>
-      <h4>
-        <CIcon icon={cilPlus} size="xl" /> Create New Category
-      </h4>
-      <div className={styles.section}>
-        <label>
-          <strong>Name</strong>
-        </label>
-        <input className={styles.input} placeholder="Enter category name" />
-      </div>
-      <div className={styles.section}>
-        <label>
-          <strong>Alias</strong>
-        </label>
-        <input className={styles.input} placeholder="Enter category alias" />
-      </div>
-      <div className={styles.section}>
-        <label>
-          <strong>Prompt</strong>
-        </label>
-        <textarea
-          className={styles.textarea}
-          placeholder="Enter article generator prompt. 
-            An example of use could be: 
-            “Imagine that you are one of the world’s foremost experts on Bitcoin and also a globally renowned journalist skilled at summarizing articles about Bitcoin...”"
-        />
-      </div>
-      <div className={styles.section}>
-        <label>
-          <strong>Slack Channel</strong>
-        </label>
-        <input className={styles.input} placeholder="Enter Slack channel ID" />
-      </div>
-      <div className={styles.section}>
-        <label>
-          <strong>Upload Icon</strong>
-        </label>
-        <div style={{display: "flex", flexDirection: "row", gap: 10}}>
-        <div className={styles.imgContainer}></div>
-        <div className={styles.divInput}>
+      <form onSubmit={handleSubmit}>
+        {category ? (
+          <h4>
+            <CIcon icon={cilPen} size="xl" /> Edit Category
+          </h4>
+        ) : (
+          <h4>
+            <CIcon icon={cilPlus} size="xl" /> Create New Category
+          </h4>
+        )}
+        {error && <div className={styles.error}>{error}</div>}
+        {success && <div className={styles.success}>{success}</div>}
+        <div className={styles.section}>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Name</strong>
+              <span> *</span>
+            </label>
+            <CustomTooltip
+              title={"Create a coin category"}
+              content={
+                "Enter a name and alias to enable the category in Analysis, Fundamentals, Charts and Narrative Trading."
+              }
+            >
+              <HelpOutline fontSize="small" />
+            </CustomTooltip>
+          </div>
           <input
-            type="file"
-            accept=".png, .jpg, .jpeg"
-            onChange={handleImageChange}
-            className={styles.imgPicker}
+            className={styles.input}
+            placeholder="Enter category name"
+            value={formData.name}
+            name="name"
+            onChange={handleInputChange}
+            required
           />
         </div>
+        <div className={styles.section}>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Alias</strong>
+              <span> *</span>
+            </label>
+            <HelpOutline fontSize="small" />
+          </div>
+          <input
+            className={styles.input}
+            placeholder="Enter category alias"
+            value={formData.alias}
+            onChange={handleInputChange}
+            name="alias"
+            required
+          />
         </div>
-      </div>
-      <button className={styles.submitButton}>Create</button>
-    </form>
+        <div className={styles.section}>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>News Prompt</strong>
+            </label>
+            <CustomTooltip
+              title={"Create a bot category"}
+              content={
+                "Add at least one additional detail (excluding icon or background color) to enable the category for news bot creation."
+              }
+            >
+              <HelpOutline fontSize="small" />
+            </CustomTooltip>
+          </div>
+          <textarea
+            className={styles.textarea}
+            placeholder={
+              "Enter article generator prompt.\nAn example of use could be:\n“Imagine that you are one of the world’s foremost experts on Bitcoin and also a globally renowned journalist skilled at summarizing articles about Bitcoin...”"
+            }
+            value={formData.prompt}
+            onChange={handleInputChange}
+            name="prompt"
+          />
+        </div>
+        <div className={styles.section}>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Slack Channel</strong>
+            </label>
+            <HelpOutline fontSize="small" />
+          </div>
+          <input
+            className={styles.input}
+            placeholder="Enter Slack channel ID"
+            value={formData.slack_channel}
+            onChange={handleInputChange}
+            name="slack_channel"
+          />
+        </div>
+        <div className={styles.section}>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Upload Icon</strong>
+            </label>
+            <CustomTooltip
+              title={"Enable a category"}
+              content={
+                "Fill in all fields to enable the option to display the category in the app."
+              }
+            >
+              <HelpOutline fontSize="small" />
+            </CustomTooltip>
+          </div>
+          <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+            <div className={styles.divInput}>
+              <input
+                type="file"
+                accept=".svg"
+                onChange={handleImageChange}
+                className={styles.imgPicker}
+              />
+            </div>
+          </div>
+        </div>
+        <div className={styles.section}>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Border Color</strong>
+            </label>
+            <HelpOutline fontSize="small" />
+          </div>
+          <div
+            className={styles.input}
+            style={{
+              paddingBlock: 0,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <span style={{ fontSize: 20, fontWeight: 600 }}>#</span>
+            <input
+              style={{
+                background: "transparent",
+                border: "none",
+                width: "80%",
+              }}
+              placeholder="Enter HEX code"
+              value={formData.border_color}
+              onChange={handleInputChange}
+              name="border_color"
+            />
+            <div
+              style={{
+                height: 19,
+                width: 19,
+                borderRadius: "50%",
+                background: formData.border_color
+                  ? `#${formData.border_color}`
+                  : "transparent",
+              }}
+            ></div>
+          </div>
+        </div>
+        <div
+          style={{
+            width: "100%",
+            padding: 20,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <label style={{ margin: "auto", marginBottom: 15 }}>
+            <strong>Preview</strong>
+          </label>
+          <div
+            className={styles.imgContainer}
+            style={{
+              borderColor: formData.border_color
+                ? formData.border_color.includes("#")
+                  ? formData.border_color
+                  : `#${formData.border_color}`
+                : "transparent",
+            }}
+          >
+            <img
+              src={formData.icon}
+              className={styles.img}
+              style={{
+                visibility: formData.icon ? "visible" : "hidden",
+              }}
+            />
+          </div>
+          <div
+            style={{
+              margin: "auto",
+              marginTop: 15,
+              background: formData.alias !== "" ? "transparent" : "#f5f5f5",
+              width: 150,
+              height: 23,
+              textAlign: "center",
+              fontWeight: 500,
+            }}
+          >
+            {formData.alias}
+          </div>
+        </div>
+        <button
+          className={styles.submitButton}
+          type="submit"
+          disabled={!isFormValid}
+        >
+          Create
+        </button>
+      </form>
     </>
   );
 };
