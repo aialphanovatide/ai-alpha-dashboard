@@ -7,173 +7,46 @@ import UsedKeywordsModal from "../usedKeywordsModal/UsedKeywordsModal";
 import CreateBotModal from "../createBotModal/CreateBotModal";
 import CreateCategoryModal from "../createCategoryModal/CreateCategoryModal";
 import AddBlacklistWordsModal from "../addBlacklistWordsModal/AddBlacklistWordsModal";
-import DeleteCategoryModal from "../DeleteCategoryModal";
 import CIcon from "@coreui/icons-react";
 import { ReactComponent as OpenLock } from "../../assets/icons/openLock.svg";
 import { ReactComponent as ClosedLock } from "../../assets/icons/closedLock.svg";
 import { cilMinus, cilPencil, cilPlus, cilSitemap } from "@coreui/icons";
 import DrawerComponent from "./components/Drawer";
-import BotList from "./components/BotList";
+import CategoryList from "./components/CategoryList";
 import TresholdEdit from "./components/TresholdEdit";
 import NewCategoryForm from "./components/NewCategoryForm";
 import NewBotForm from "./components/NewBotForm";
 import WhiteList from "./components/WhiteList";
 import BlackList from "./components/BlackList";
+import config from "src/config";
+import SpinnerComponent from "src/components/Spinner";
 
 const BotsSettings = () => {
   const [bots, setBots] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
   const [drawerChildren, setDrawerChildren] = useState(<></>);
   const [drawerAnchor, setDrawerAnchor] = useState("right");
   const [selectedBots, setSelectedBots] = useState([]);
 
-  const getAllBots = useCallback(async () => {
+  const getAllCategories = useCallback(async () => {
     try {
-      // const response = await fetch(`${config.BOTS_V2_API}/get_all_bots`, {
-      //   method: "GET",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     "ngrok-skip-browser-warning": "true",
-      //   },
-      // });
+      let headersList = {
+        "X-API-Key": config.X_API_KEY,
+        Accept: "application/json",
+      };
 
-      // const responseText = await response.text();
-      // console.log("responseText : ", responseText);
+      let response = await fetch(`${config.BASE_URL}/categories`, {
+        method: "GET",
+        headers: headersList,
+      });
+
+      let responseText = await response.text();
 
       try {
-        let bots2 = {
-          data: [
-            {
-              alias: "Bitcoin",
-              category: "bitcoin",
-              color: "#FC5404",
-              icon: "/static/topmenu_icons_resize/bitcoin.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:05:53 GMT",
-            },
-            {
-              alias: "Ethereum",
-              category: "ethereum",
-              color: "#325C86",
-              icon: "/static/topmenu_icons_resize/ethereum.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:55:53 GMT",
-            },
-            {
-              alias: "Hacks",
-              category: "hacks",
-              color: "#325C86",
-              icon: "/static/topmenu_icons_resize/baseblock.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:09:54 GMT",
-            },
-            {
-              alias: "Lsd",
-              category: "lsd",
-              color: "#FFC53C",
-              icon: "/static/topmenu_icons_resize/lsds.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:56:53 GMT",
-            },
-            {
-              alias: "RootLink",
-              category: "layer 0",
-              color: "#802291",
-              icon: "/static/topmenu_icons_resize/rootlink.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:35:32 GMT",
-            },
-            {
-              alias: "BaseBlock",
-              category: "layer 1 lmc",
-              color: "#0B84CE",
-              icon: "/static/topmenu_icons_resize/baseblock.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:57:53 GMT",
-            },
-            {
-              alias: "CoreChain",
-              category: "layer 1 mmc",
-              color: "#FDE74B",
-              icon: "/static/topmenu_icons_resize/corechain.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:16:53 GMT",
-            },
-            {
-              alias: "BoostLayer",
-              category: "layer 2",
-              color: "#5BD83D",
-              icon: "/static/topmenu_icons_resize/boostlayer.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:58:53 GMT",
-            },
-            {
-              alias: "TruthNodes",
-              category: "oracle",
-              color: "#389AEA",
-              icon: "/static/topmenu_icons_resize/truthnodes.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:29:54 GMT",
-            },
-            {
-              alias: "X Payments",
-              category: "cross border payments",
-              color: "#51DD8C",
-              icon: "/static/topmenu_icons_resize/x_payments.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:49:53 GMT",
-            },
-            {
-              alias: "CycleSwap",
-              category: "defip",
-              color: "#20CBDD",
-              icon: "/static/topmenu_icons_resize/cycle_swap.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:43:53 GMT",
-            },
-            {
-              alias: "NexTrade",
-              category: "defi",
-              color: "#FF39C2",
-              icon: "/static/topmenu_icons_resize/nextrade.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:36:32 GMT",
-            },
-            {
-              alias: "DiverseFi",
-              category: "defio",
-              color: "#C438B3",
-              icon: "/static/topmenu_icons_resize/diverse_fi.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:35:54 GMT",
-            },
-            {
-              alias: "IntelliChain",
-              category: "ai",
-              color: "#895DF6",
-              icon: "/static/topmenu_icons_resize/intellichain.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:25:53 GMT",
-            },
-            {
-              alias: "Metals",
-              category: "metals",
-              color: "#895DF6",
-              icon: "/static/topmenu_icons_resize/metals.png",
-              isActive: true,
-              updated_at: "Mon, 26 Aug 2024 11:36:53 GMT",
-            },
-          ],
-          error: null,
-          success: true,
-        };
-
-        const data = bots2;
-        // const data = JSON.parse(responseText);
-        console.log("data : ", data);
-        if (data && data.data) {
-          setBots(data.data);
+        const data = JSON.parse(responseText);
+        if (data && data.categories) {
+          setBots(data.categories);
         } else {
           console.error("Error in response:", data.message);
         }
@@ -188,8 +61,8 @@ const BotsSettings = () => {
   }, []);
 
   useEffect(() => {
-    getAllBots();
-  }, [getAllBots]);
+    getAllCategories();
+  }, [getAllCategories]);
 
   const toggleDrawer = (newOpen, view, anchor) => () => {
     view && setDrawerChildren(view);
@@ -248,19 +121,13 @@ const BotsSettings = () => {
               <div>
                 <button
                   onClick={toggleDrawer(true, <WhiteList />, "bottom")}
-                  style={{
-                    color: selectedBots[0] ? "black" : "#a3a3a3",
-                    cursor: selectedBots[0] ? "pointer" : "initial",
-                  }}
+                  disabled={!selectedBots[0]}
                 >
                   <CIcon icon={cilPlus} /> Add
                 </button>
                 <button
                   onClick={toggleDrawer(true, <WhiteList isRemove />, "bottom")}
-                  style={{
-                    color: selectedBots[0] ? "black" : "#a3a3a3",
-                    cursor: selectedBots[0] ? "pointer" : "initial",
-                  }}
+                  disabled={!selectedBots[0]}
                 >
                   <CIcon icon={cilMinus} /> Remove
                 </button>
@@ -273,19 +140,13 @@ const BotsSettings = () => {
               <div>
                 <button
                   onClick={toggleDrawer(true, <BlackList />, "bottom")}
-                  style={{
-                    color: selectedBots[0] ? "black" : "#a3a3a3",
-                    cursor: selectedBots[0] ? "pointer" : "initial",
-                  }}
+                  disabled={!selectedBots[0]}
                 >
                   <CIcon icon={cilPlus} /> Add
                 </button>
                 <button
                   onClick={toggleDrawer(true, <BlackList isRemove />, "bottom")}
-                  style={{
-                    color: selectedBots[0] ? "black" : "#a3a3a3",
-                    cursor: selectedBots[0] ? "pointer" : "initial",
-                  }}
+                  disabled={!selectedBots[0]}
                 >
                   <CIcon icon={cilMinus} /> Remove
                 </button>
@@ -295,7 +156,17 @@ const BotsSettings = () => {
         </div>
       </div>
       <div style={{ height: "70%" }}>
-        <BotList bots={bots} getAllBots={getAllBots} />
+        {loading ? (
+          <SpinnerComponent />
+        ) : (
+          <CategoryList
+            categories={bots}
+            getAllCategories={getAllCategories}
+            toggleDrawer={toggleDrawer}
+            selectedBots={selectedBots}
+            setSelectedBots={setSelectedBots}
+          />
+        )}
       </div>
       <DrawerComponent
         toggleDrawer={toggleDrawer}
@@ -310,7 +181,7 @@ const BotsSettings = () => {
         <h4 className="actionsTitle">Actions</h4>
         <div className="actionsSubMain">
           <CreateCategoryModal />
-          <DeleteCategoryModal />
+          <DeleteItemModal />
           <CreateBotModal />
           <AddWordsModal />
           <DeleteWordsModal />
@@ -351,7 +222,7 @@ export default BotsSettings;
         <h4 className="actionsTitle">Actions</h4>
         <div className="actionsSubMain">
           <CreateCategoryModal />
-          <DeleteCategoryModal />
+          <DeleteItemModal />
           <CreateBotModal />
           <AddWordsModal />
           <DeleteWordsModal />
