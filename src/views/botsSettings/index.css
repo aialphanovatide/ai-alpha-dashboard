@@ -163,4 +163,10 @@
 .keywords>div span {
   width: 100%;
   text-align: center;
+  cursor: default;
+}
+
+.keywords button:disabled {
+  cursor: url('../../assets/icons/disabledIcon.svg') 10 10, auto;
+  color: #a3a3a3;
 }
