@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CButton,
   CCard,
@@ -19,14 +19,22 @@ import styles from "./index.module.css";
 import config from "../../../config";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useLocation } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
+  const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.isSessionExpired) {
+      Swal.fire({ text: "You must log in first.", icon: "error", customClass: "swal" });
+    }
+  }, [location]);
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -48,7 +56,9 @@ const Login = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        navigate("/home", { state: { username: data.username } });
+        localStorage.setItem("token", data.token.token);
+        localStorage.setItem("expires_at", data.token.expires_at);
+        navigate("/home", { state: { username: data.admin_id.username } });
       } else {
         setError(data.error || "Incorrect credentials. Please try again.");
       }
