@@ -27,6 +27,7 @@
   background-color: transparent;
 }
 
-.showPasswordButton {
+.showPasswordButton, .showPasswordButton:hover {
   border: 1px solid #dbdfe6;
+  background-color: #f3f4f7;
 }
