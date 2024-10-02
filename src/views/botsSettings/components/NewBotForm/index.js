@@ -10,8 +10,11 @@ import {
 import CIcon from "@coreui/icons-react";
 import React, { useState } from "react";
 import styles from "./index.module.css";
+import { HelpOutline } from "@mui/icons-material";
+import { ReactComponent as OpenLock } from "../../../../assets/icons/openLock.svg";
+import { ReactComponent as ClosedLock } from "../../../../assets/icons/closedLock.svg";
 
-const NewBotForm = () => {
+const NewBotForm = ({isEdit, bot}) => {
   const [selectedImg, setSelectedImg] = useState("");
   const [frequency, setFrequency] = useState(50);
 
@@ -44,18 +47,36 @@ const NewBotForm = () => {
     <>
       <form>
         <h4>
-          <CIcon icon={cilPlus} size="xl" /> Create New Bot
+          <CIcon icon={cilPlus} size="xl" /> Create New Coin/Bot
         </h4>
         <div className={styles.section}>
-          <label>
-            <strong>Name</strong>
-          </label>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Name</strong>
+              <span> *</span>
+            </label>
+            <HelpOutline fontSize="small" />
+          </div>
           <input className={styles.input} placeholder="Enter bot name" />
         </div>
         <div className={styles.section}>
-          <label>
-            <strong>Category</strong>
-          </label>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Alias</strong>
+              <span> *</span>
+            </label>
+            <HelpOutline fontSize="small" />
+          </div>
+          <input className={styles.input} placeholder="Enter category alias" />
+        </div>
+        <div className={styles.section}>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Category</strong>
+              <span> *</span>
+            </label>
+            <HelpOutline fontSize="small" />
+          </div>
           <select className={styles.select}>
             <option defaultValue={"category1"} selected>
               Select category
@@ -66,9 +87,12 @@ const NewBotForm = () => {
           </select>
         </div>
         <div className={styles.section}>
-          <label>
-            <strong>URL</strong>
-          </label>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>URL</strong>
+            </label>
+            <HelpOutline fontSize="small" />
+          </div>
           <input className={styles.input} placeholder="Enter url" />
         </div>
         <div className={styles.section}>
@@ -81,7 +105,7 @@ const NewBotForm = () => {
           >
             <label>
               <strong>
-                <CIcon icon={cilLockUnlocked} />
+                <OpenLock style={{ height: 20, width: 20 }} />
                 Whitelist
               </strong>
             </label>
@@ -94,6 +118,7 @@ const NewBotForm = () => {
                 <CIcon icon={cilDataTransferDown} />
                 Download
               </button>
+              <HelpOutline sx={{ fontSize: 20, color: "#525252" }} />
             </div>
           </div>
           <div className={styles.keywordInput}>
@@ -103,7 +128,7 @@ const NewBotForm = () => {
             </button>
           </div>
           <div className={styles.keywordsContainer}>
-            <div className={styles.keyword}>
+            {/* <div className={styles.keyword}>
               <span>Apple</span>
               <button>
                 <CIcon icon={cilX} />
@@ -120,7 +145,7 @@ const NewBotForm = () => {
               <button>
                 <CIcon icon={cilX} />
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className={styles.section}>
@@ -133,7 +158,7 @@ const NewBotForm = () => {
           >
             <label>
               <strong>
-                <CIcon icon={cilLockLocked} />
+                <ClosedLock style={{ height: 20, width: 20 }} />
                 Blacklist
               </strong>
             </label>
@@ -146,6 +171,7 @@ const NewBotForm = () => {
                 <CIcon icon={cilDataTransferDown} />
                 Download
               </button>
+              <HelpOutline sx={{ fontSize: 20, color: "#525252" }} />
             </div>
           </div>
           <div className={styles.keywordInput}>
@@ -155,7 +181,7 @@ const NewBotForm = () => {
             </button>
           </div>
           <div className={styles.keywordsContainer}>
-            <div className={styles.keyword}>
+            {/* <div className={styles.keyword}>
               <span>Apple</span>
               <button>
                 <CIcon icon={cilX} />
@@ -172,13 +198,16 @@ const NewBotForm = () => {
               <button>
                 <CIcon icon={cilX} />
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className={styles.section}>
-          <label>
-            <strong>DALL-E Prompt</strong>
-          </label>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>DALL-E Prompt</strong>
+            </label>
+            <HelpOutline fontSize="small" />
+          </div>
           <textarea
             className={styles.textarea}
             placeholder="Enter article generator prompt. 
@@ -186,10 +215,13 @@ const NewBotForm = () => {
             “Imagine that you are one of the world’s foremost experts on Bitcoin and also a globally renowned journalist skilled at summarizing articles about Bitcoin...”"
           />
         </div>
-        <div className={styles.section}>
-          <label>
-            <strong>Run frequency</strong>
-          </label>
+        <div className={styles.section} style={{ width: 200 }}>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Run frequency</strong>
+            </label>
+            <HelpOutline fontSize="small" />
+          </div>
           <input
             type="number"
             defaultValue={frequency}
@@ -199,11 +231,14 @@ const NewBotForm = () => {
           />
         </div>
         <div className={styles.section}>
-          <label>
-            <strong>Upload Icon</strong>
-          </label>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Upload Icon</strong>
+            </label>
+            <HelpOutline />
+          </div>
           <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
-            <div className={styles.imgContainer}></div>
+            {/* <div className={styles.imgContainer}></div> */}
             <div className={styles.divInput}>
               <input
                 type="file"
@@ -214,9 +249,33 @@ const NewBotForm = () => {
             </div>
           </div>
         </div>
-        {/* <div style={{width: "100%", padding: 20, display: "flex"}}>
-      <img src={selectedImg} style={{height: 100, width: "auto", margin: "auto", display: selectedImg === "" ? "none" : "block"}} />
-      </div> */}
+        <div className={styles.section}>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Background Color</strong>
+            </label>
+            <HelpOutline fontSize="small" />
+          </div>
+          <input className={styles.input} placeholder="Enter HEX code" />
+        </div>
+        <div style={{ width: "100%", padding: 20, display: "flex", flexDirection: "column" }}>
+          <label style={{margin: "auto", marginBottom: 15}}>
+            <strong>Preview</strong>
+          </label>
+          <img
+            // src={selectedImg}
+            style={{
+              height: 50,
+              width: 250,
+              margin: "auto",
+              matginTop: 10,
+              borderRadius: 50,
+              background: "#f5f5f5",
+              border: "none"
+              // display: selectedImg === "" ? "none" : "block",
+            }}
+          />
+        </div>
         <button className={styles.submitButton}>Create</button>
       </form>
     </>
