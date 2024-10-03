@@ -20,7 +20,6 @@ const ListItem = (params) => {
     isBot = false,
     selectedBots = [],
     setSelectedBots,
-    index,
   } = params;
   const [isOpen, setIsOpen] = useState(false);
   const [isCategoryChecked, setCategoryChecked] = useState(false);
@@ -55,11 +54,7 @@ const ListItem = (params) => {
 
     setBotChecked(!isBotChecked);
   };
-
-  const ddd = () => {
-    console.log(selectedCategories);
-  };
-
+  
   return (
     <>
       <div
@@ -110,22 +105,20 @@ const ListItem = (params) => {
           {"  "}
           Edit
         </button>
-        <CustomTooltip
+        {/* <CustomTooltip
           content={
             "Information is missing. Please check Fundamentals, Charts, and News."
           }
           isError={true}
-        >
-          <div
-            style={{ gridColumn: 5, height: "fit-content" }}
-            // onClick={() => toggleBotState(index)}
-          >
-            <SwitchButton isActive={item.isActive} isDisabled={true} />
+        > */}
+          <div style={{ gridColumn: 5, height: "fit-content" }}>
+            {/* <SwitchButton isActive={item.isActive} handleClick={() => toggleCategoryState(index)}/> */}
+            <SwitchButton isActive={item.isActive}/>
           </div>
-        </CustomTooltip>
+        {/* </CustomTooltip> */}
         <div
           style={{ gridColumn: 6, height: "fit-content" }}
-          // onClick={() => toggleBotState(index)}
+          // onClick={() => toggleState(index)}
         >
           <SwitchButton isActive={item.isActive} isAppsSwitch={true} />
         </div>
@@ -155,7 +148,6 @@ const ListItem = (params) => {
               isBot={true}
               selectedBots={selectedBots}
               setSelectedBots={setSelectedBots}
-              index={index}
               selectedCategories={selectedCategories}
             />
           ))}

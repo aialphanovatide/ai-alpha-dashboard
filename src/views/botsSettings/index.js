@@ -157,7 +157,7 @@ const BotsSettings = () => {
       </div>
       <div style={{ height: "70%" }}>
         {loading ? (
-          <SpinnerComponent />
+          <SpinnerComponent style={{height: "100%"}} />
         ) : (
           <CategoryList
             categories={bots}
