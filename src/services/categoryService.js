@@ -66,8 +66,97 @@ const deleteCategoryByName = async (categoryName) => {
   }
 };
 
+// Function to update category state
+const updateCategoryState = async (url, botCategory) => {
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ category: botCategory }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      return data;
+    } else {
+      console.error(`Error at ${url.includes("activate") ? "Turn ON" : "Turn OFF"}:`, data.message);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error during updateCategoryState:", error);
+    return null;
+  }
+};
+
+// Function to turn on all categories
+const turnOnAllCategories = async () => {
+  try {
+    const response = await fetch(`${config.BOTS_V2_API}/activate_all_categories`, {
+      method: "POST",
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      return data;
+    } else {
+      console.error("Error activating all categories:", data.message);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error during turnOnAllCategories:", error);
+    return null;
+  }
+};
+
+// Function to turn off all categories
+const turnOffAllCategories = async () => {
+  try {
+    const response = await fetch(`${config.BOTS_V2_API}/deactivate_all_categories`, {
+      method: "POST",
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      return data;
+    } else {
+      console.error("Error deactivating all categories:", data.message);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error during turnOffAllCategories:", error);
+    return null;
+  }
+};
+
+// Function to toggle a single category's state
+const toggleCategoryState = async (category, isActive) => {
+  const url = isActive
+    ? `${config.BOTS_V2_API}/deactivate_bot_by_id/${category}`
+    : `${config.BOTS_V2_API}/activate_bot_by_id/${category}`;
+
+  try {
+    const response = await fetch(url, { method: "POST" });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error("Error:", response.statusText);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error during toggleCategoryState:", error);
+    return null;
+  }
+};
+
+
 export {
   // fetchCategories,
   deleteCategoryByName,
   deleteCategoryById,
+  toggleCategoryState,
+  turnOffAllCategories,
+  turnOnAllCategories,
 };
