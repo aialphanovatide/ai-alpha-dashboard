@@ -68,13 +68,21 @@ const ListItem = (params) => {
         } ${isBot ? "bot" : ""}`}
       >
         <div className="item-input">
-          <input
-            type="checkbox"
-            checked={isBot ? isBotChecked : isCategoryChecked}
-            onChange={isBot ? onBotCheck : onCategoryCheck}
-            value={JSON.stringify(item)}
-            disabled={isBot ? selectedCategories.length > 0 : selectedBots.length > 0}
-          />
+          <CustomTooltip
+            content={"Elements of different types cannot be selected."}
+            isError={true}
+            hide={!(isBot ? selectedCategories.length > 0 : selectedBots.length > 0)}
+          >
+            <input
+              type="checkbox"
+              checked={isBot ? isBotChecked : isCategoryChecked}
+              onChange={isBot ? onBotCheck : onCategoryCheck}
+              value={JSON.stringify(item)}
+              disabled={
+                isBot ? selectedCategories.length > 0 : selectedBots.length > 0
+              }
+            />
+          </CustomTooltip>
         </div>
         <div className="img-container">
           <img
