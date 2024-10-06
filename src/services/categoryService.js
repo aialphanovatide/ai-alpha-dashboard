@@ -2,24 +2,25 @@ import config from "../config";
 const API_ID_URL = `${config.BOTS_V2_API}/categories`;
 const API_NAME_URL = `${config.BASE_URL}/delete_category`;
 
-// const fetchCategories = async () => {
-//   try {
-//     const response = await fetch(`${config.BOTS_V2_API}/categories`, {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         "ngrok-skip-browser-warning": "true",
-//       },
-//     });
-//     if (response.ok) {
-//       const data = await response.json();
-//     } else {
-//       console.error("Error fetching categories:", response.statusText);
-//     }
-//   } catch (error) {
-//     console.error("Error fetching categories:", error);
-//   }
-// };
+const fetchCategories = async () => {
+  try {
+    const response = await fetch(`${config.BOTS_V2_API}/categories`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error("Error fetching categories:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+  }
+};
 
 const deleteCategoryById = async (categoryId) => {
   try {
@@ -153,7 +154,7 @@ const toggleCategoryState = async (category, isActive) => {
 
 
 export {
-  // fetchCategories,
+  fetchCategories,
   deleteCategoryByName,
   deleteCategoryById,
   toggleCategoryState,
