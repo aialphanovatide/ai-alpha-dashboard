@@ -1,30 +1,91 @@
 import config from "../config";
-const API_ID_URL = `${config.BOTS_V2_API}/categories`;
-const API_NAME_URL = `${config.BASE_URL}/delete_category`;
 
-const fetchCategories = async () => {
+const getCategories = async () => {
   try {
-    const response = await fetch(`${config.BOTS_V2_API}/categories`, {
+    const response = await fetch(`${config.BASE_URL}/categories`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        "ngrok-skip-browser-warning": "true",
+        "X-API-Key": config.X_API_KEY,
+        Accept: "application/json",
       },
     });
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    } else {
-      console.error("Error fetching categories:", response.statusText);
+
+    let responseText = await response.text();
+
+    try {
+      const data = JSON.parse(responseText);
+      if (data && data.categories) {
+        return data.categories;
+      } else {
+        console.error("Error in response:", data.error);
+      }
+    } catch (parseError) {
+      console.error("Error parsing JSON:", parseError);
     }
   } catch (error) {
     console.error("Error fetching categories:", error);
   }
 };
 
-const deleteCategoryById = async (categoryId) => {
+const createCategory = async (payload) => {
   try {
-    const response = await fetch(`${API_ID_URL}/${categoryId}`, {
+    const response = await fetch(`${config.BASE_URL}/category`, {
+      method: "POST",
+      headers: {
+        "X-API-Key": config.X_API_KEY,
+        Accept: "application/json",
+      },
+      body: payload
+    });
+
+    let responseText = await response.text();
+
+    try {
+      const data = JSON.parse(responseText);
+      if (data) {
+        return data;
+      } else {
+        console.error("Error in response:", data.error);
+      }
+    } catch (parseError) {
+      console.error("Error parsing JSON:", parseError);
+    }
+  } catch (error) {
+    console.error("Error creating category:", error);
+  }
+}
+
+const editCategory = async (category_id, payload) => {
+  try {
+    const response = await fetch(`${config.BASE_URL}/category/${category_id}`, {
+      method: "PUT",
+      headers: {
+        "X-API-Key": config.X_API_KEY,
+        Accept: "application/json",
+      },
+      body: payload
+    });
+
+    let responseText = await response.text();
+
+    try {
+      const data = JSON.parse(responseText);
+      if (data) {
+        return data;
+      } else {
+        console.error("Error in response:", data.error);
+      }
+    } catch (parseError) {
+      console.error("Error parsing JSON:", parseError);
+    }
+  } catch (error) {
+    console.error("Error editing category:", error);
+  }
+}
+
+const deleteCategory = async (category_id) => {
+  try {
+    const response = await fetch(`${config.BASE_URL}/category/${category_id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -34,111 +95,52 @@ const deleteCategoryById = async (categoryId) => {
 
     if (!response.ok) {
       const errorResponse = await response.json();
-      throw new Error(errorResponse.error || "Error deleting category by ID.");
+      throw new Error(errorResponse.error || "Error deleting category.");
     }
 
-    return { success: true, message: "Category deleted by ID successfully." };
+    return { success: true, message: "Category deleted successfully." };
   } catch (error) {
     throw new Error(error.message);
   }
 };
 
-const deleteCategoryByName = async (categoryName) => {
+const toggleAllCategoriesState = async (isActive) => {
   try {
-    const response = await fetch(`${API_NAME_URL}/${categoryName}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "ngrok-skip-browser-warning": "true",
+    const response = await fetch(
+      `${config.BASE_URL}/categories/global-toggle`,
+      {
+        method: "POST",
+        body: {
+          action: isActive ? "deactivate" : "activate",
+        },
       },
-      body: JSON.stringify({ category_name: categoryName }),
-    });
+    );
 
-    if (!response.ok) {
-      const errorResponse = await response.json();
-      throw new Error(
-        errorResponse.error || "Error deleting category by Name.",
-      );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error("Error:", response.statusText);
+      return null;
     }
-
-    return { success: true, message: "Category deleted by Name successfully." };
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error during toggleAllCategoriesState:", error);
+    return null;
   }
 };
 
-// Function to update category state
-const updateCategoryState = async (url, botCategory) => {
+const toggleCategoryState = async (category_id, isActive) => {
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${config.BASE_URL}/categories/${category_id}/toggle-coins`,
+      {
+        method: "POST",
+        body: {
+          action: isActive ? "deactivate" : "activate",
+        },
       },
-      body: JSON.stringify({ category: botCategory }),
-    });
+    );
 
-    const data = await response.json();
-    if (response.ok) {
-      return data;
-    } else {
-      console.error(`Error at ${url.includes("activate") ? "Turn ON" : "Turn OFF"}:`, data.message);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error during updateCategoryState:", error);
-    return null;
-  }
-};
-
-// Function to turn on all categories
-const turnOnAllCategories = async () => {
-  try {
-    const response = await fetch(`${config.BOTS_V2_API}/activate_all_categories`, {
-      method: "POST",
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      return data;
-    } else {
-      console.error("Error activating all categories:", data.message);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error during turnOnAllCategories:", error);
-    return null;
-  }
-};
-
-// Function to turn off all categories
-const turnOffAllCategories = async () => {
-  try {
-    const response = await fetch(`${config.BOTS_V2_API}/deactivate_all_categories`, {
-      method: "POST",
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      return data;
-    } else {
-      console.error("Error deactivating all categories:", data.message);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error during turnOffAllCategories:", error);
-    return null;
-  }
-};
-
-// Function to toggle a single category's state
-const toggleCategoryState = async (category, isActive) => {
-  const url = isActive
-    ? `${config.BOTS_V2_API}/deactivate_bot_by_id/${category}`
-    : `${config.BOTS_V2_API}/activate_bot_by_id/${category}`;
-
-  try {
-    const response = await fetch(url, { method: "POST" });
     if (response.ok) {
       const data = await response.json();
       return data;
@@ -152,12 +154,11 @@ const toggleCategoryState = async (category, isActive) => {
   }
 };
 
-
 export {
-  fetchCategories,
-  deleteCategoryByName,
-  deleteCategoryById,
+  getCategories,
+  createCategory,
+  editCategory,
+  deleteCategory,
+  toggleAllCategoriesState,
   toggleCategoryState,
-  turnOffAllCategories,
-  turnOnAllCategories,
 };
