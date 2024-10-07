@@ -1,12 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import "./index.css";
-import AddWordsModal from "../addWordsModal/AddWordsModal";
-import DeleteWordsModal from "../deleteWordsModal/DeleteWordsModal";
-import DeleteBlacklistWordsModal from "../deleteBlacklistWordsModal/DeleteBlacklistWordsModal";
-import UsedKeywordsModal from "../usedKeywordsModal/UsedKeywordsModal";
-import CreateBotModal from "../createBotModal/CreateBotModal";
-import CreateCategoryModal from "../createCategoryModal/CreateCategoryModal";
-import AddBlacklistWordsModal from "../addBlacklistWordsModal/AddBlacklistWordsModal";
 import CIcon from "@coreui/icons-react";
 import { ReactComponent as OpenLock } from "../../assets/icons/openLock.svg";
 import { ReactComponent as ClosedLock } from "../../assets/icons/closedLock.svg";
@@ -18,51 +11,23 @@ import NewCategoryForm from "./components/NewCategoryForm";
 import NewBotForm from "./components/NewBotForm";
 import WhiteList from "./components/WhiteList";
 import BlackList from "./components/BlackList";
-import config from "src/config";
 import SpinnerComponent from "src/components/Spinner";
+import NoData from "src/components/NoData";
+import { getCategories } from "src/services/categoryService";
 
 const BotsSettings = () => {
-  const [bots, setBots] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [drawerChildren, setDrawerChildren] = useState(<></>);
   const [drawerAnchor, setDrawerAnchor] = useState("right");
   const [selectedBots, setSelectedBots] = useState([]);
 
-  const getAllCategories = useCallback(async () => {
-    try {
-      let headersList = {
-        "X-API-Key": config.X_API_KEY,
-        Accept: "application/json",
-      };
-
-      let response = await fetch(`${config.BASE_URL}/categories`, {
-        method: "GET",
-        headers: headersList,
-      });
-
-      let responseText = await response.text();
-
-      try {
-        const data = JSON.parse(responseText);
-        if (data && data.categories) {
-          setBots(data.categories);
-        } else {
-          console.error("Error in response:", data.message);
-        }
-      } catch (parseError) {
-        console.error("Error parsing JSON:", parseError);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    getAllCategories();
-  }, [getAllCategories]);
+  useEffect(async () => {
+    let categories = await getCategories();
+    setCategories(categories);
+    setLoading(false);
+  }, [getCategories]);
 
   const toggleDrawer = (newOpen, view, anchor) => () => {
     view && setDrawerChildren(view);
@@ -157,15 +122,16 @@ const BotsSettings = () => {
       </div>
       <div style={{ height: "70%" }}>
         {loading ? (
-          <SpinnerComponent style={{height: "100%"}} />
-        ) : (
+          <SpinnerComponent style={{ height: "100%" }} />
+        ) : categories ? (
           <CategoryList
-            categories={bots}
-            getAllCategories={getAllCategories}
+            categories={categories}
             toggleDrawer={toggleDrawer}
             selectedBots={selectedBots}
             setSelectedBots={setSelectedBots}
           />
+        ) : (
+          <NoData message={"Error fetching categories"} />
         )}
       </div>
       <DrawerComponent
@@ -176,59 +142,8 @@ const BotsSettings = () => {
       >
         {drawerChildren}
       </DrawerComponent>
-
-      {/* <div className="actionmain">
-        <h4 className="actionsTitle">Actions</h4>
-        <div className="actionsSubMain">
-          <CreateCategoryModal />
-          <DeleteItemModal />
-          <CreateBotModal />
-          <AddWordsModal />
-          <DeleteWordsModal />
-          <AddBlacklistWordsModal />
-          <DeleteBlacklistWordsModal />
-          <UsedKeywordsModal />
-        </div>
-      </div>  */}
     </div>
   );
 };
 
 export default BotsSettings;
-
-{
-  /* <CButtonGroup className="mb-2 btn-group-main">
-        <div className="d-flex align-items-center main-button">
-          <CButton
-            className={`btn ${
-              bots.every((bot) => bot.isActive) ? "btn-danger" : "btn-success"
-            } bot-btn`}
-            onClick={
-              loading
-                ? null
-                : bots.every((bot) => bot.isActive)
-                  ? turnOffAllBots
-                  : turnOnAllBots
-            }
-          >
-            {bots.every((bot) => bot.isActive)
-              ? "Turn off all bots"
-              : "Turn on all bots"}
-          </CButton>
-        </div>
-        {loading && <SpinnerComponent />}
-      </CButtonGroup>
-      <div className="actionmain">
-        <h4 className="actionsTitle">Actions</h4>
-        <div className="actionsSubMain">
-          <CreateCategoryModal />
-          <DeleteItemModal />
-          <CreateBotModal />
-          <AddWordsModal />
-          <DeleteWordsModal />
-          <AddBlacklistWordsModal />
-          <DeleteBlacklistWordsModal />
-          <UsedKeywordsModal />
-        </div>
-      </div> */
-}
