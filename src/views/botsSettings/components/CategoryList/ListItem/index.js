@@ -124,12 +124,12 @@ const ListItem = (params) => {
             <SwitchButton isActive={item.isActive}/>
           </div>
         {/* </CustomTooltip> */}
-        <div
+        {/* <div
           style={{ gridColumn: 6, height: "fit-content" }}
           // onClick={() => toggleState(index)}
         >
           <SwitchButton isActive={item.isActive} isAppsSwitch={true} />
-        </div>
+        </div> */}
         {!isBot && (
           <button
             onClick={toggleOpen}
