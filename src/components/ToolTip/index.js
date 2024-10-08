@@ -27,7 +27,11 @@ const HtmlTooltip = styled(({ className, isError, ...props }) => (
   },
 }));
 
-const CustomTooltip = ({ title, content, children, isError }) => {
+const CustomTooltip = ({ title, content, children, isError, hide = false }) => {
+  if (hide) {
+    return children;
+  }
+
   return (
     <HtmlTooltip
       title={
