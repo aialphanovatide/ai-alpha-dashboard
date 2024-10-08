@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.css";
 import CIcon from "@coreui/icons-react";
 import { ReactComponent as OpenLock } from "../../assets/icons/openLock.svg";
@@ -61,7 +61,7 @@ const BotsSettings = () => {
               alignItems: "center",
             }}
           >
-            <button onClick={toggleDrawer(true, <NewCategoryForm />, "right")}>
+            <button onClick={toggleDrawer(true, <NewCategoryForm setCategories={setCategories} />, "right")}>
               <CIcon icon={cilPlus} /> New Category
             </button>
             <button onClick={toggleDrawer(true, <NewBotForm />, "right")}>
@@ -129,6 +129,7 @@ const BotsSettings = () => {
             toggleDrawer={toggleDrawer}
             selectedBots={selectedBots}
             setSelectedBots={setSelectedBots}
+            setCategories={setCategories}
           />
         ) : (
           <NoData message={"Error fetching categories"} />
