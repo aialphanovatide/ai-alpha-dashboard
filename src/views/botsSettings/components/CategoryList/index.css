@@ -3,7 +3,8 @@
   display: grid;
   padding-top: 1%;
   padding-inline: 10px;
-  grid-template-columns: 10% 58% 10% 10%;
+  /* grid-template-columns: 10% 58% 10% 10%; */
+  grid-template-columns: 10% 59% 20% 10%;
 }
 
 .top-container button,
@@ -63,4 +64,21 @@
 /* set button(top and bottom of the scrollbar) */
 .bot-list-container::-webkit-scrollbar-button {
   display: none;
+}
+
+@media screen and (max-width: 450px) {
+  .top-container {
+    height: fit-content;
+    grid-template-columns: 10% 48% 30%;
+    padding-bottom: 10px;
+  }
+
+  .bot-list-container {
+    padding-bottom: 50px;
+    overflow-x: hidden;
+  }
+
+  .bot-list-container::-webkit-scrollbar {
+    display: none
+  }
 }

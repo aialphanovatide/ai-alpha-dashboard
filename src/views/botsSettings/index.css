@@ -170,3 +170,36 @@
   cursor: url('../../assets/icons/disabledIcon.svg') 10 10, auto;
   color: #a3a3a3;
 }
+
+@media screen and (max-width: 450px) {
+
+  .bot-settings-container>h2 {
+    font-size: 30px;
+    gap: 10px;
+    height: fit-content;
+    margin-block: 20px;
+  }
+
+  .settings-container {
+    flex-direction: column;
+  }
+
+  .settings-container>div {
+    width: 100% !important;
+    margin-bottom: 15px;
+  }
+
+  .settings-container {
+    height: fit-content;
+  }
+
+  .treshold>div,
+  .create>div {
+    bottom: 0px;
+    margin-bottom: 10px;
+  }
+  
+  .keywords>div {
+    margin-bottom: 10px;
+  }
+}
