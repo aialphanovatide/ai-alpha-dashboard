@@ -4,56 +4,86 @@ import styles from "./index.module.css";
 import CIcon from "@coreui/icons-react";
 import { cilX } from "@coreui/icons";
 import { ReactComponent as TrashIcon } from "../../assets/icons/trashIcon.svg";
-import {
-  deleteCategoryById,
-  deleteCategoryByName,
-} from "../../services/categoryService";
-import CustomTooltip from "src/components/ToolTip";
+import { deleteCategory } from "../../services/categoryService";
+import Swal from "sweetalert2";
+import defaultImg from "../../assets/brand/logo.png";
+import { capitalizeFirstLetter } from "src/utils";
 
-const DeleteItemModal = ({ categories }) => {
-  const [selectedCategoryId, setSelectedCategoryId] = useState("");
-  const [selectedCategoryName, setSelectedCategoryName] = useState("");
+const DeleteItemModal = (props) => {
+  const {
+    categories,
+    setCategories,
+    selectedCategories,
+    setSelectedCategories,
+  } = props;
   const [visible, setVisible] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
-  const handleDeleteCategory = async () => {
+  const handleDeleteCategory = async (e) => {
+    e.preventDefault();
     try {
-      if (selectedCategoryId) {
-        await deleteCategoryById(selectedCategoryId);
+      setLoading(true);
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const category of selectedCategories) {
+        const response = await deleteCategory(category.category_id);
+        if (response.success) {
+          successCount++;
+        } else {
+          errorCount++;
+        }
       }
 
-      if (selectedCategoryName) {
-        await deleteCategoryByName(selectedCategoryName);
+      if (successCount > 0) {
+        Swal.fire({
+          text:
+            successCount === 1
+              ? "Category deleted successfully."
+              : `${successCount} categories deleted successfully.`,
+          icon: "success",
+        });
+
+        const updatedCategories = categories.filter(
+          (category) =>
+            !selectedCategories.some(
+              (selectedCategory) =>
+                selectedCategory.category_id === category.category_id,
+            ),
+        );
+
+        setSelectedCategories([]);
+        setCategories(updatedCategories);
+
+        setLoading(false);
+        setVisible(false);
       }
 
-      // Sweet alert confirmation alert
-
-      // setCategories(categories.filter((category) => category.id !== selectedCategoryId));
-
-      setSelectedCategoryId("");
-      setSelectedCategoryName("");
-
-      setTimeout(() => setVisible(false), 2000);
+      if (errorCount > 0) {
+        Swal.fire({
+          text: `${errorCount} categories failed to delete.`,
+          icon: "error",
+        });
+        setLoading(false);
+        setVisible(false);
+      }
     } catch (error) {
-      // Sweet alert error alert
+      Swal.fire({ text: error.message, icon: "error" });
+      setLoading(false);
+      setVisible(false);
     }
   };
 
   return (
     <>
       <div className={styles.buttonContainer}>
-        {/* <CustomTooltip
-          content={
-            "The are no items to delete"
-          }
-        > */}
-          <button
-            className={styles.trashBtn}
-            onClick={() => setVisible(true)}
-            disabled={categories.length === 0}
-          >
-            <TrashIcon style={{height: 25}} />
-          </button>
-        {/* </CustomTooltip> */}
+        <button
+          className={styles.trashBtn}
+          onClick={() => setVisible(true)}
+          disabled={selectedCategories.length === 0}
+        >
+          <TrashIcon style={{ height: 25 }} />
+        </button>
         <Modal
           show={visible}
           onHide={() => setVisible(false)}
@@ -63,18 +93,30 @@ const DeleteItemModal = ({ categories }) => {
             className={styles.closeButton}
             onClick={() => setVisible(false)}
           >
-            <CIcon icon={cilX} size="xxl" />
+            <CIcon icon={cilX} size="xl" />
           </button>
           <div className={styles.subcontainer}>
             <TrashIcon className={styles.icon} />
             <h5>Are you sure you want to delete these elements?</h5>
             <div className={styles.elementsContainer}>
-              {categories.map((category, index) => (
+              {selectedCategories.map((category, index) => (
                 <div key={index} className={styles.element}>
-                  <img
-                    src={`https://aialphaicons.s3.us-east-2.amazonaws.com/${category.alias.toLowerCase()}.png`}
-                  />
-                  <span>{category.alias}</span>
+                  <div
+                    className={styles.iconContainer}
+                    style={{
+                      borderRadius: "50%",
+                      border: "2px solid",
+                      borderColor: category.border_color
+                        ? category.border_color
+                        : "gray",
+                    }}
+                  >
+                    <img
+                      src={`https://aialphaicons.s3.us-east-2.amazonaws.com/${category.alias?.toLowerCase()}.svg`}
+                      onError={(e) => (e.target.src = defaultImg)}
+                    />
+                  </div>
+                  <span>{capitalizeFirstLetter(category.alias || category.name)}</span>
                 </div>
               ))}
             </div>
@@ -88,10 +130,8 @@ const DeleteItemModal = ({ categories }) => {
               >
                 Cancel
               </button>
-              <button
-              // onClick={handleDeleteCategory}
-              >
-                Delete
+              <button onClick={handleDeleteCategory}>
+                {isLoading ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>
