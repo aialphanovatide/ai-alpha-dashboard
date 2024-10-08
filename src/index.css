@@ -47,3 +47,25 @@ select:focus-visible,
 textarea:focus-visible {
   outline: none;
 }
+
+.MuiDrawer-root {
+  z-index: 1 !important;
+}
+
+.fade.modal, .fade.modal-backdrop {
+  z-index: 2 !important;
+}
+
+.swal2-container {
+  z-index: 3;
+}
+
+@media screen and (max-width: 450px) {
+  .footer {
+    height: fit-content;
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    z-index: 1;
+  }
+}
