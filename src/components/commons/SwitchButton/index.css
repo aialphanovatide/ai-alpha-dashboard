@@ -110,3 +110,8 @@
 @keyframes l23 {
   100% {transform: rotate(1turn)}
 }
+
+
+/* @media screen and (max-width: 450px) {
+  {width: 30px;}
+} */
