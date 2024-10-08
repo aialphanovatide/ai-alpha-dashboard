@@ -1,15 +1,16 @@
+// index.js
 import { cilPen, cilPlus } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import React, { useMemo, useState } from "react";
 import styles from "./index.module.css";
 import { HelpOutline } from "@mui/icons-material";
 import CustomTooltip from "src/components/ToolTip";
-import config from "src/config";
+import { createCategory, getCategories } from "src/services/categoryService";
+import Swal from "sweetalert2";
 
-const NewCategoryForm = (params) => {
+const NewCategoryForm = ({ category, setCategories }) => {
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const { category } = params;
+  const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: category ? category.category : "",
@@ -17,7 +18,8 @@ const NewCategoryForm = (params) => {
     prompt: "",
     slack_channel: "",
     border_color: category ? category.color.slice(1) : "",
-    icon: category ? `https://aialphaicons.s3.us-east-2.amazonaws.com/${category.alias.toLowerCase()}.png` : "",
+    icon: "",
+    iconPreview: "",
   });
 
   let isFormValid = useMemo(
@@ -34,62 +36,61 @@ const NewCategoryForm = (params) => {
   const handleImageChange = (event) => {
     const file = event.target.files[0];
 
-    if (file && file.type.match("image.*")) {
-      const imagePromise = new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          resolve({
-            file,
-            previewUrl: e.target.result,
-          });
-        };
-        reader.readAsDataURL(file);
-      });
+    if (file && file.type === "image/svg+xml") {
+      const previewUrl = URL.createObjectURL(file);
 
-      Promise.resolve(imagePromise).then((img) => {
-        setFormData({ ...formData, icon: img.previewUrl });
-      });
+      setFormData({ ...formData, icon: file, iconPreview: previewUrl });
+    } else {
+      setError("Please select a valid SVG file");
     }
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
     try {
-      setError("");
-      setSuccess("");
+      e.preventDefault();
+      setIsLoading(true);
 
-      console.log(formData);
+      let formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("alias", formData.alias);
+      formDataToSend.append("border_color", `#${formData.border_color}`);
 
-      const response = await fetch(`${config.BASE_URL}/category`, {
-        method: "POST",
-        body: {
-          name: formData.name,
-          alias: formData.alias,
-          border_color: formData.border_color,
-        },
-        headers: {
-          "X-API-Key": "alpha_U-06Jgo3vbkcUmD2pVGONhYeb9iNFN-C_7086",
-        },
-      });
+      if (formData.icon) {
+        formDataToSend.append("icon", formData.icon, formData.icon.name);
+      }
 
-      if (response.ok) {
-        alert("Category created successfully!");
-        //   // Reset form
+      const response = await createCategory(formDataToSend);
+
+      if (response.success) {
+        Swal.fire({
+          text: "Category created successfully!",
+          icon: "success",
+        }).then(async () => {
+          const updatedCategories = await getCategories();
+          setCategories(updatedCategories);
+        });
+
         setFormData({
           name: "",
           alias: "",
-          prompt: "",
-          slack_channel: "",
           border_color: "",
-          icon: "",
+          icon: null,
+          iconPreview: null,
         });
+        document.querySelector('input[type="file"]').value = "";
+        setIsLoading(false);
       } else {
-        const errorData = await response.json();
-        // setError(errorData.message || "Error creating category");
-        console.log(errorData);
+        Swal.fire({
+          text: response.error || "Error creating category",
+          icon: "error",
+        });
+        setIsLoading(false);
       }
     } catch (err) {
-      setError("An error occurred while creating the category");
+      Swal.fire({
+        text: err.message || "An error occurred while creating the category",
+        icon: "error",
+      });
     }
   };
 
@@ -106,7 +107,6 @@ const NewCategoryForm = (params) => {
           </h4>
         )}
         {error && <div className={styles.error}>{error}</div>}
-        {success && <div className={styles.success}>{success}</div>}
         <div className={styles.section}>
           <div className={styles.labelContainer}>
             <label>
@@ -275,10 +275,10 @@ const NewCategoryForm = (params) => {
             }}
           >
             <img
-              src={formData.icon}
+              src={formData.iconPreview}
               className={styles.img}
               style={{
-                visibility: formData.icon ? "visible" : "hidden",
+                visibility: formData.iconPreview ? "visible" : "hidden",
               }}
             />
           </div>
@@ -301,7 +301,7 @@ const NewCategoryForm = (params) => {
           type="submit"
           disabled={!isFormValid}
         >
-          Create
+          {isLoading ? "Creating..." : "Create"}
         </button>
       </form>
     </>
