@@ -5,11 +5,12 @@ import CIcon from "@coreui/icons-react";
 import { cilPen } from "@coreui/icons";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { formatDateTime } from "src/utils";
+import { capitalizeFirstLetter, formatDateTime } from "src/utils";
 import NewCategoryForm from "../../NewCategoryForm";
 import NewBotForm from "../../NewBotForm";
 import SwitchButton from "src/components/commons/SwitchButton";
 import defaultImg from "../../../../../assets/brand/logo.png";
+import { toggleCategoryState } from "src/services/categoryService";
 
 const ListItem = (params) => {
   const {
@@ -24,8 +25,14 @@ const ListItem = (params) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCategoryChecked, setCategoryChecked] = useState(false);
   const [isBotChecked, setBotChecked] = useState(false);
+  const [isItemActive, setIsItemActive] = useState(item.isActive);
+  const [isToggleLoading, setIsToggleLoading] = useState(false);
 
   const toggleOpen = () => setIsOpen(!isOpen);
+
+  useEffect(() => { 
+    if (selectedCategories.length === 0) setCategoryChecked(false);
+  }, [selectedCategories]);
 
   const onCategoryCheck = (e) => {
     const checkedCategory = JSON.parse(e.target.value);
@@ -33,7 +40,7 @@ const ListItem = (params) => {
     if (isCategoryChecked) {
       setSelectedCategories(
         selectedCategories.filter(
-          (category) => category.alias !== checkedCategory.alias,
+          (category) => category.category_id !== checkedCategory.category_id,
         ),
       );
     } else {
@@ -54,7 +61,19 @@ const ListItem = (params) => {
 
     setBotChecked(!isBotChecked);
   };
-  
+
+  const handleStatusSwitchToggle = async (e) => {
+    setIsToggleLoading(true);
+
+    const response = await toggleCategoryState(item.category_id, isItemActive);
+
+    if (response.success) {
+      setIsItemActive(!isItemActive);
+    }
+
+    setIsToggleLoading(false);
+  };
+
   return (
     <>
       <div
@@ -66,7 +85,11 @@ const ListItem = (params) => {
           <CustomTooltip
             content={"Elements of different types cannot be selected."}
             isError={true}
-            hide={!(isBot ? selectedCategories.length > 0 : selectedBots.length > 0)}
+            hide={
+              isBot
+                ? !(selectedCategories.length > 0)
+                : !(selectedBots.length > 0)
+            }
           >
             <input
               type="checkbox"
@@ -79,23 +102,28 @@ const ListItem = (params) => {
             />
           </CustomTooltip>
         </div>
-        <div className="img-container">
+        <div
+          className="img-container"
+          style={{
+            borderRadius: "50%",
+            border: "2px solid",
+            borderColor: item.border_color ? item.border_color : "gray",
+          }}
+        >
           <img
             alt={`${isBot ? "bot" : "category"}-img`}
-            src={
-              isBot
-                ? `https://aialphaicons.s3.us-east-2.amazonaws.com${item.icon}`
-                : `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias.toLowerCase()}.png`
-            }
+            src={isBot? `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${item.name.toLowerCase()}.png` : `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias || item.name}.svg`}
             onError={(e) => (e.target.src = defaultImg)}
           />
         </div>
         <div className="item-details">
           <div className="item-name">{item.name}</div>
-          {item.alias && <div>{item.alias}</div>}
-          <div className="item-last-run">
-            Last Run: {formatDateTime(item.updated_at)}
-          </div>
+          {<div>{capitalizeFirstLetter(item.alias || item.name)}</div>}
+          {isBot && (
+            <div className="item-last-run">
+              Last Run: {formatDateTime(item.updated_at)}
+            </div>
+          )}
         </div>
         <button
           className="edit-btn"
@@ -113,17 +141,21 @@ const ListItem = (params) => {
           {"  "}
           Edit
         </button>
-        {/* <CustomTooltip
+        <CustomTooltip
           content={
             "Information is missing. Please check Fundamentals, Charts, and News."
           }
           isError={true}
-        > */}
+          hide={true}
+        >
           <div style={{ gridColumn: 5, height: "fit-content" }}>
-            {/* <SwitchButton isActive={item.isActive} handleClick={() => toggleCategoryState(index)}/> */}
-            <SwitchButton isActive={item.isActive}/>
+            <SwitchButton
+              isActive={isItemActive}
+              handleClick={handleStatusSwitchToggle}
+              isLoading={isToggleLoading}
+            />
           </div>
-        {/* </CustomTooltip> */}
+        </CustomTooltip>
         {/* <div
           style={{ gridColumn: 6, height: "fit-content" }}
           // onClick={() => toggleState(index)}
