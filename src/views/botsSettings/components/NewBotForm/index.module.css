@@ -40,6 +40,10 @@
   font-size: smaller;
 }
 
+.keywordInput button:disabled {
+  cursor: url('../../../../assets/icons/disabledIcon.svg') 10 10, auto;
+}
+
 .keywordInput {
   background: #f5f5f5;
   border-radius: 15px;
@@ -143,25 +147,48 @@
 }
 
 .imgContainer {
-  height: 50;
-  width: 250;
+  height: 50px;
+  max-width: 100%;
+  width: 250px;
   margin: auto;
-  margin-top: 10;
-  border-radius: 50;
+  border-radius: 50px;
   background: #f5f5f5;
   border: none;
+  gap: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.imgContainer img {
+  height: 70%;
+  width: auto;
+  object-fit: cover;
+}
+
+.imgContainer span {
+  color: #FFF;
+  text-align: center;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
 }
 
 .submitButton {
   width: 100%;
-  color: #FF6C0D !important;
-  background-color: #FFECD4;
+  background-color: #FF6C0D;
   border: none;
   padding: 7px;
   color: white;
   font-weight: 500;
   border-radius: 7px;
   margin-top: 30px;
+}
+
+.submitButton:disabled {
+  color: #FF6C0D;
+  background-color: #FFECD4;
 }
 
 /* scrollbar styling */
