@@ -19,7 +19,7 @@ import { getCategories } from "src/services/categoryService";
 import { createBot } from "src/services/botService";
 import { capitalizeFirstLetter } from "src/utils";
 
-const NewBotForm = ({ bot }) => {
+const BotForm = ({ bot }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -556,4 +556,4 @@ const NewBotForm = ({ bot }) => {
   );
 };
 
-export default NewBotForm;
+export default BotForm;
