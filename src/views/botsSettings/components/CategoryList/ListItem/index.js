@@ -7,7 +7,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { capitalizeFirstLetter, formatDateTime } from "src/utils";
 import NewCategoryForm from "../../NewCategoryForm";
-import NewBotForm from "../../NewBotForm";
+import BotForm from "../../BotForm";
 import SwitchButton from "src/components/commons/SwitchButton";
 import defaultImg from "../../../../../assets/brand/logo.png";
 import { toggleCategoryState } from "src/services/categoryService";
@@ -130,7 +130,7 @@ const ListItem = (params) => {
           onClick={toggleDrawer(
             true,
             isBot ? (
-              <NewBotForm isEdit={true} bot={item} />
+              <BotForm isEdit={true} bot={item} />
             ) : (
               <NewCategoryForm isEdit={true} category={item} />
             ),
