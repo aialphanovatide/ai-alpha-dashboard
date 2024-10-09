@@ -8,7 +8,7 @@ import DrawerComponent from "./components/Drawer";
 import CategoryList from "./components/CategoryList";
 import TresholdEdit from "./components/TresholdEdit";
 import NewCategoryForm from "./components/NewCategoryForm";
-import NewBotForm from "./components/NewBotForm";
+import BotForm from "./components/BotForm";
 import WhiteList from "./components/WhiteList";
 import BlackList from "./components/BlackList";
 import SpinnerComponent from "src/components/Spinner";
@@ -23,11 +23,20 @@ const BotsSettings = () => {
   const [drawerAnchor, setDrawerAnchor] = useState("right");
   const [selectedBots, setSelectedBots] = useState([]);
 
-  useEffect(async () => {
-    let categories = await getCategories();
-    setCategories(categories);
+  const fetchCategories = useCallback(async () => {
+    try {
+      setLoading(true);
+      const categories = await getCategories();
+      setCategories(categories);
+    } catch (err) {
+      setError(err.message || "Error fetching categories");
+    }
     setLoading(false);
-  }, [getCategories]);
+  }, [setCategories, getCategories]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const toggleDrawer = (newOpen, view, anchor) => () => {
     view && setDrawerChildren(view);
@@ -64,7 +73,7 @@ const BotsSettings = () => {
             <button onClick={toggleDrawer(true, <NewCategoryForm setCategories={setCategories} />, "right")}>
               <CIcon icon={cilPlus} /> New Category
             </button>
-            <button onClick={toggleDrawer(true, <NewBotForm />, "right")}>
+            <button onClick={toggleDrawer(true, <BotForm />, "right")}>
               <CIcon icon={cilPlus} /> New Coin/Bot
             </button>
           </div>
