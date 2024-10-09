@@ -22,6 +22,7 @@ const BotsSettings = () => {
   const [drawerChildren, setDrawerChildren] = useState(<></>);
   const [drawerAnchor, setDrawerAnchor] = useState("right");
   const [selectedBots, setSelectedBots] = useState([]);
+  const [error, setError] = useState("");
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -141,7 +142,7 @@ const BotsSettings = () => {
             setCategories={setCategories}
           />
         ) : (
-          <NoData message={"Error fetching categories"} />
+          <NoData message={error} />
         )}
       </div>
       <DrawerComponent
