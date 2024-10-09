@@ -28,6 +28,8 @@ const Login = () => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
+  const [isLoading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +48,7 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
+      setLoading(true)
       const response = await fetch(`${config.BASE_URL}/admin/login`, {
         method: "POST",
         headers: {
@@ -65,6 +68,7 @@ const Login = () => {
     } catch (error) {
       setError("Error making request. Please try again.");
     }
+    setLoading(false)
   };
 
   const toggleShowPassword = () => {
@@ -87,7 +91,7 @@ const Login = () => {
                     />
                     <h1>Login</h1>
                     <p className="text-body-secondary">
-                      Sign In to your account
+                      Log In to your account
                     </p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
@@ -131,7 +135,7 @@ const Login = () => {
                           className={styles.loginButton}
                           onClick={handleSubmit}
                         >
-                          Login
+                          {isLoading ? "Loging in..." : "Log in"}
                         </CButton>
                       </CCol>
                     </CRow>
