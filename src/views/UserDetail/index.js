@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import config from "src/config";
 import userImg from "src/assets/images/defaultUserImg.jpg";
@@ -13,7 +13,7 @@ const UserDetail = () => {
   const [user, setUser] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
-  const getUser = async () => {
+  const getUser = useCallback(async () => {
     try {
       const response = await fetch(
         `${config.BASE_URL}/user?user_id=${user_id}`,
@@ -36,11 +36,11 @@ const UserDetail = () => {
     } catch (error) {
       console.log("Error:", error);
     }
-  };
+  }, [user_id]);
 
   useEffect(() => {
     getUser();
-  }, []);
+  }, [getUser]);
 
   return (
     <>
@@ -50,7 +50,7 @@ const UserDetail = () => {
       ) : (
         <>
           <div className="rounded overflow-hidden shadow user-info-container">
-            <img className="user-img" src={user.picture || userImg} />
+            <img className="user-img" src={user.picture || userImg} alt="" />
             <CIcon
               icon={cilCheckCircle}
               className="text-info"
