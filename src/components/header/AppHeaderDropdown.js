@@ -20,7 +20,7 @@ const AppHeaderDropdown = () => {
   }
 
   return (
-    <CDropdown variant="nav-item py-1" style={{display: "flex"}}>
+    <CDropdown variant="nav-item" className="py-1" style={{display: "flex"}}>
       <CDropdownToggle
         placement="bottom-end"
         className="py-0 pe-0 d-flex align-items-center"
