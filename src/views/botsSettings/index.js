@@ -33,7 +33,7 @@ const BotsSettings = () => {
       setError(err.message || "Error fetching categories");
     }
     setLoading(false);
-  }, [setCategories, getCategories]);
+  }, [setCategories]);
 
   useEffect(() => {
     fetchCategories();
