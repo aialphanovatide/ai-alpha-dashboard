@@ -92,6 +92,7 @@ const ArticleCard = ({ article }) => {
                   }`}
                   src={article.image}
                   onLoad={handleImageLoaded}
+                  alt={article.title}
                 />
                 <h2>{article.title}</h2>
                 <p><AccessTime />{" "}{article.date}</p>

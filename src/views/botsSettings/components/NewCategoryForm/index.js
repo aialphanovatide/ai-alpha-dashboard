@@ -280,6 +280,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
               style={{
                 visibility: formData.iconPreview ? "visible" : "hidden",
               }}
+              alt="icon"
             />
           </div>
           <div

@@ -17,6 +17,7 @@ const Card = (props) => {
         className={`img-modal-news-card`}
         src={data.image}
         onLoad={onImgLoad}
+        alt="news"
       />
       <h6 style={{ margin: 10 }}>
         <strong>{data.title || "No Title"}</strong>

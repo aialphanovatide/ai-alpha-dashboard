@@ -103,6 +103,7 @@ const StoryCard = ({ article, getTopStories }) => {
                   }`}
                   src={article.image}
                   onLoad={handleImageLoaded}
+                  alt="News"
                 />
                 <h2>{article.title}</h2>
                 <p><AccessTime />{" "}{article.date}</p>

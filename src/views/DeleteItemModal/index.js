@@ -114,6 +114,7 @@ const DeleteItemModal = (props) => {
                     <img
                       src={`https://aialphaicons.s3.us-east-2.amazonaws.com/${category.alias?.toLowerCase()}.svg`}
                       onError={(e) => (e.target.src = defaultImg)}
+                      alt={`${category.alias || category.name}-img`}
                     />
                   </div>
                   <span>{capitalizeFirstLetter(category.alias || category.name)}</span>
