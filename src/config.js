@@ -1,5 +1,6 @@
 // src/config.js
 const BASE_URL_API = process.env.REACT_APP_API_URL;
+const BASE_URL_DEV_API = process.env.REACT_APP_DEV_API_URL;
 const NOVATIDE_URL_API = process.env.REACT_APP_NOVATIDE_URL_API;
 const BOTS_V2 = process.env.REACT_APP_V2_API;
 const ACCESS_KEY_AWS = process.env.REACT_APP_AWS_ACCESS_KEY_ID
@@ -17,6 +18,7 @@ const config = {
    AWS_REGION: AWS_REGION,
    S3_BUCKET: AWS_ICONS,
    X_API_KEY: X_API_KEY,
+   BASE_URL_DEV: BASE_URL_DEV_API
 }
 
 export default config
