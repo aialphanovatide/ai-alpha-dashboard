@@ -130,9 +130,9 @@ const ListItem = (params) => {
           onClick={toggleDrawer(
             true,
             isBot ? (
-              <BotForm isEdit={true} bot={item} />
+              <BotForm bot={item} />
             ) : (
-              <NewCategoryForm isEdit={true} category={item} />
+              <NewCategoryForm category={item} />
             ),
             "right",
           )}
