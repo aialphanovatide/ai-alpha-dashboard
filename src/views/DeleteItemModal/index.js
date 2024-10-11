@@ -42,6 +42,7 @@ const DeleteItemModal = (props) => {
               ? "Category deleted successfully."
               : `${successCount} categories deleted successfully.`,
           icon: "success",
+          customClass: "swal",
         });
 
         const updatedCategories = categories.filter(
@@ -63,12 +64,13 @@ const DeleteItemModal = (props) => {
         Swal.fire({
           text: `${errorCount} categories failed to delete.`,
           icon: "error",
+          customClass: "swal",
         });
         setLoading(false);
         setVisible(false);
       }
     } catch (error) {
-      Swal.fire({ text: error.message, icon: "error" });
+      Swal.fire({ text: error.message, icon: "error", customClass: "swal", });
       setLoading(false);
       setVisible(false);
     }
@@ -112,7 +114,7 @@ const DeleteItemModal = (props) => {
                     }}
                   >
                     <img
-                      src={`https://aialphaicons.s3.us-east-2.amazonaws.com/${category.alias?.toLowerCase()}.svg`}
+                      src={`https://aialphaicons.s3.us-east-2.amazonaws.com/${category.alias || category.name}.svg`}
                       onError={(e) => (e.target.src = defaultImg)}
                       alt={`${category.alias || category.name}-img`}
                     />
