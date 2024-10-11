@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./index.css";
-import CustomTooltip from "src/components/ToolTip";
+import CustomTooltip from "src/components/CustomTooltip";
 import CIcon from "@coreui/icons-react";
 import { cilPen } from "@coreui/icons";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -112,13 +112,13 @@ const ListItem = (params) => {
         >
           <img
             alt={`${isBot ? "bot" : "category"}-img`}
-            src={isBot? `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${item.name.toLowerCase()}.png` : `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias || item.name}.svg`}
+            src={isBot? `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${item.name?.toLowerCase()}.png` : `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias || item.name}.svg`}
             onError={(e) => (e.target.src = defaultImg)}
           />
         </div>
         <div className="item-details">
-          <div className="item-name">{item.name}</div>
-          {<div>{capitalizeFirstLetter(item.alias || item.name)}</div>}
+          <div className="item-name">{item.name || item.alias || (isBot ? "Bot name" : "Category name")}</div>
+          <div>{capitalizeFirstLetter(item.alias || item.name || (isBot ? "Bot alias" : "Category alias"))}</div>
           {isBot && (
             <div className="item-last-run">
               Last Run: {formatDateTime(item.updated_at)}
