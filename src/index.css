@@ -48,17 +48,26 @@ textarea:focus-visible {
   outline: none;
 }
 
-.MuiDrawer-root {
+/* .MuiDrawer-root {
   z-index: 1 !important;
+}
+
+.sidebar {
+  z-index: 2 !important;
 }
 
 .fade.modal, .fade.modal-backdrop {
   z-index: 2 !important;
+} */
+
+.MuiDrawer-paper, .css-1u2w381-MuiModal-root-MuiDrawer-root {
+  z-index: 3 !important;
 }
 
-.swal2-container {
-  z-index: 3;
+.swal2-container, .swal {
+  z-index: 4 !important;
 }
+
 
 @media screen and (max-width: 450px) {
   .footer {
@@ -68,4 +77,14 @@ textarea:focus-visible {
     bottom: 0px;
     z-index: 1;
   }
+}
+
+
+*::-webkit-scrollbar {
+  width: 7px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgb(104, 104, 104);
+  border-radius: 10px;
 }
