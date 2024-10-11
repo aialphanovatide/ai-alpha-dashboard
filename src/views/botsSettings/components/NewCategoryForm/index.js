@@ -4,8 +4,12 @@ import CIcon from "@coreui/icons-react";
 import React, { useMemo, useState } from "react";
 import styles from "./index.module.css";
 import { HelpOutline } from "@mui/icons-material";
-import CustomTooltip from "src/components/ToolTip";
-import { createCategory, getCategories } from "src/services/categoryService";
+import CustomTooltip from "src/components/CustomTooltip";
+import {
+  createCategory,
+  editCategory,
+  getCategories,
+} from "src/services/categoryService";
 import Swal from "sweetalert2";
 
 const NewCategoryForm = ({ category, setCategories }) => {
@@ -13,13 +17,23 @@ const NewCategoryForm = ({ category, setCategories }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    name: category ? category.category : "",
-    alias: category ? category.alias : "",
+    name: category && category.name ? category.name : "",
+    alias: category && category.alias ? category.alias : "",
     prompt: "",
     slack_channel: "",
-    border_color: category ? category.color.slice(1) : "",
+    border_color:
+      category && category.border_color
+        ? category.border_color.includes("#")
+          ? category.border_color.replace("#", "")
+          : ""
+        : "",
     icon: "",
-    iconPreview: "",
+    iconPreview:
+      category && category.icon
+        ? `https://aialphaicons.s3.us-east-2.amazonaws.com/${
+            category.alias || category.name
+          }.svg`
+        : "",
   });
 
   let isFormValid = useMemo(
@@ -63,8 +77,9 @@ const NewCategoryForm = ({ category, setCategories }) => {
 
       if (response.success) {
         Swal.fire({
-          text: "Category created successfully!",
+          text: `Category ${category ? "updated" : "created"} successfully!`,
           icon: "success",
+          customClass: "swal",
         }).then(async () => {
           const updatedCategories = await getCategories();
           setCategories(updatedCategories);
@@ -88,8 +103,9 @@ const NewCategoryForm = ({ category, setCategories }) => {
       }
     } catch (err) {
       Swal.fire({
-        text: err.message || "An error occurred while creating the category",
+        text: err.message || `An error occurred while ${category ? "updating" : "creating"} the category`,
         icon: "error",
+        customClass: "swal",
       });
     }
   };
@@ -284,6 +300,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
             />
           </div>
           <div
+            id="category-alias"
             style={{
               margin: "auto",
               marginTop: 15,
@@ -302,7 +319,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
           type="submit"
           disabled={!isFormValid}
         >
-          {isLoading ? "Creating..." : "Create"}
+          {isLoading ? (category ? "Updating..." : "Creating...") : (category ? "Update" : "Create")}
         </button>
       </form>
     </>
