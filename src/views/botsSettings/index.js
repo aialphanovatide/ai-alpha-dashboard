@@ -60,7 +60,7 @@ const BotsSettings = () => {
             </button>
           </div>
         </div>
-        <div className="create" style={{ width: "30%" }}>
+        <div className="create" style={{ width: "35%" }}>
           <span>Create</span>
           <div
             style={{
@@ -80,12 +80,7 @@ const BotsSettings = () => {
           </div>
         </div>
         <div
-          className="keywords"
-          style={{
-            width: "40%",
-            color: selectedBots[0] ? "black" : "#a3a3a3",
-            borderColor: selectedBots[0] ? "black" : "#a3a3a3",
-          }}
+          className={`keywords ${selectedBots[0] ? "" : "disabled"}`}
         >
           <span>Keywords</span>
           <div>
