@@ -6,7 +6,7 @@ const headers = {
 
 const getCategories = async () => {
   try {
-    const response = await fetch(`${config.BASE_URL}/categories`, {
+    const response = await fetch(`${config.BASE_URL_DEV}/categories`, {
       method: "GET",
       headers,
     });
@@ -30,7 +30,7 @@ const getCategories = async () => {
 
 const createCategory = async (payload) => {
   try {
-    const response = await fetch(`${config.BASE_URL}/category`, {
+    const response = await fetch(`${config.BASE_URL_DEV}/category`, {
       method: "POST",
       headers: {
         "X-API-Key": config.X_API_KEY,
@@ -62,7 +62,7 @@ const createCategory = async (payload) => {
 
 const editCategory = async (category_id, payload) => {
   try {
-    const response = await fetch(`${config.BASE_URL}/category/${category_id}`, {
+    const response = await fetch(`${config.BASE_URL_DEV}/category/${category_id}`, {
       method: "PUT",
       headers,
       body: payload,
@@ -87,7 +87,7 @@ const editCategory = async (category_id, payload) => {
 
 const deleteCategory = async (category_id) => {
   try {
-    const response = await fetch(`${config.BASE_URL}/category/${category_id}`, {
+    const response = await fetch(`${config.BASE_URL_DEV}/category/${category_id}`, {
       method: "DELETE",
       headers,
     });
@@ -117,7 +117,7 @@ const deleteCategory = async (category_id) => {
 const toggleAllCategoriesState = async (isEveryCategoryActive) => {
   try {
     const response = await fetch(
-      `${config.BASE_URL}/categories/global-toggle`,
+      `${config.BASE_URL_DEV}/categories/global-toggle`,
       {
         method: "POST",
         headers,
@@ -151,7 +151,7 @@ const toggleAllCategoriesState = async (isEveryCategoryActive) => {
 const toggleCategoryState = async (category_id, isActive) => {
   try {
     const response = await fetch(
-      `${config.BASE_URL}/categories/${category_id}/toggle-coins`,
+      `${config.BASE_URL_DEV}/categories/${category_id}/toggle-coins`,
       {
         method: "POST",
         headers,
