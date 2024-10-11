@@ -75,6 +75,7 @@ const AllAnalysis = ({ items, fetchAnalysis}) => {
           title: data.message,
           showConfirmButton: false,
           timer: 1500,
+          customClass: "swal",
         });
         fetchAnalysis();
       } else {
@@ -84,6 +85,7 @@ const AllAnalysis = ({ items, fetchAnalysis}) => {
           title: data.error,
           showConfirmButton: false,
           timer: 1500,
+          customClass: "swal",
         });
       }
     } catch (error) {
@@ -93,6 +95,7 @@ const AllAnalysis = ({ items, fetchAnalysis}) => {
         title: error.message || "An error occurred",
         showConfirmButton: false,
         timer: 1500,
+        customClass: "swal",
       });
     }
   };

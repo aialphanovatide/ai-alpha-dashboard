@@ -173,6 +173,7 @@ const ChartsPage = () => {
           title: responseData.message,
           showConfirmButton: false,
           timer: 1000,
+          customClass: "swal",
         });
       } else {
         console.error("Error saving chart:", response.statusText);
@@ -180,6 +181,7 @@ const ChartsPage = () => {
           icon: "error",
           title: responseData.message,
           showConfirmButton: false,
+          customClass: "swal",
         });
       }
     } catch (error) {
@@ -188,6 +190,7 @@ const ChartsPage = () => {
         icon: "error",
         title: error,
         showConfirmButton: false,
+        customClass: "swal",
       });
     }
   };
