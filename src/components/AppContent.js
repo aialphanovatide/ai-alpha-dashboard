@@ -8,7 +8,7 @@ import SpinnerComponent from "./Spinner";
 
 const AppContent = () => {
   return (
-    <CContainer className="px-5" style={{height: "100%"}} lg>
+    <CContainer className="px-5" style={{height: "100%", overflowY: "auto"}} lg>
       <Suspense
         fallback={
           <SpinnerComponent style={{ height: "80vh", width: "100%" }} />
