@@ -21,37 +21,37 @@ const Home = () => {
   const [botsStatusMessage, setBotsStatusMessage] = useState("Loading...");
 
   // Obtener la última actualización del gráfico
-  useEffect(() => {
-    const getLastChartUpdate = async () => {
-      try {
-        const response = await fetch(
-          `${config.BASE_URL}/get_last_chart_update`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "ngrok-skip-browser-warning": "true",
-            },
-          },
-        );
+  // useEffect(() => {
+  //   const getLastChartUpdate = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `${config.BASE_URL}/get_last_chart_update`,
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             "ngrok-skip-browser-warning": "true",
+  //           },
+  //         },
+  //       );
 
-        if (response.ok) {
-          const data = await response.json();
-          const { coin_bot_name, formatted_date } = data.last_update;
-          setLastChartUpdate({
-            coin_bot_name: coin_bot_name.toUpperCase(),
-            formatted_date,
-          });
-        } else {
-          console.error("Error:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error making request:", error);
-      }
-    };
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         const { coin_bot_name, formatted_date } = data.last_update;
+  //         setLastChartUpdate({
+  //           coin_bot_name: coin_bot_name.toUpperCase(),
+  //           formatted_date,
+  //         });
+  //       } else {
+  //         console.error("Error:", response.statusText);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error making request:", error);
+  //     }
+  //   };
 
-    getLastChartUpdate();
-  }, []);
+  //   getLastChartUpdate();
+  // }, []);
 
   // Obtener el último análisis creado
   useEffect(() => {
