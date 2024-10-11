@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "./index.css";
 import DeleteItemModal from "src/views/DeleteItemModal";
 import { HelpOutline } from "@mui/icons-material";
-import CustomTooltip from "src/components/CustomTooltip";
+import CustomTooltip from "src/components/ToolTip";
 import SpinnerComponent from "src/components/Spinner";
 import ListItem from "./ListItem";
 import NoData from "src/components/NoData";
