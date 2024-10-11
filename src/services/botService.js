@@ -6,7 +6,7 @@ const headers = {
 
 const createBot = async (payload) => {
   try {
-    const response = await fetch(`${config.BASE_URL}/coin`, {
+    const response = await fetch(`${config.BASE_URL_DEV}/coin`, {
       method: "POST",
       headers,
       body: payload,
@@ -37,7 +37,7 @@ const createBot = async (payload) => {
 
 const editBot = async (payload) => {
   try {
-    const response = await fetch(`${config.BASE_URL}/coin`, {
+    const response = await fetch(`${config.BASE_URL_DEV}/coin`, {
       method: "POST",
       headers,
       body: payload,
