@@ -7,6 +7,7 @@ import CIcon from "@coreui/icons-react";
 import { cilCheckCircle, cilClock } from "@coreui/icons";
 import SpinnerComponent from "src/components/Spinner";
 import Title from "src/components/commons/Title";
+import defaultImg from "../../assets/images/defaultUserImg.jpg";
 
 const UserDetail = () => {
   const { user_id } = useParams();
@@ -50,7 +51,7 @@ const UserDetail = () => {
       ) : (
         <>
           <div className="rounded overflow-hidden shadow user-info-container">
-            <img className="user-img" src={user.picture || userImg} alt="" />
+            <img className="user-img" src={user.picture || userImg} alt="" onError={(e) => (e.target.src = defaultImg)} />
             <CIcon
               icon={cilCheckCircle}
               className="text-info"
