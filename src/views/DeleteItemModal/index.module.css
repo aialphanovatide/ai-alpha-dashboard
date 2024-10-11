@@ -148,3 +148,9 @@
 .elementsContainer::-webkit-scrollbar-button {
   display: none;
 }
+
+@media screen and (max-width: 620px) {
+  .modal>div>div {
+    width: fit-content;
+  }
+}

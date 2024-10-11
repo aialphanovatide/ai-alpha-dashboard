@@ -85,6 +85,7 @@
 
 .item-details::-webkit-scrollbar {
   width: 5px;
+  height: 5px;
 }
 
 .item-details::-webkit-scrollbar-thumb {
@@ -143,8 +144,10 @@
   .img-container img {
     width: 40px;
     height: 40px;
-    margin-inline: 10px;
+    /* margin-inline: 10px; */
   }
 
-
+  .container-lg {
+    padding: 30px !important;
+  }
 }

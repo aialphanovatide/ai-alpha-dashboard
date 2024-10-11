@@ -9,6 +9,7 @@
   outline: none;
   border: none;
   padding-inline: 1rem;
+  width: 125px;
 }
 
 .loginButton:hover {

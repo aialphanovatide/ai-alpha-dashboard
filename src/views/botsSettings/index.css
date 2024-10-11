@@ -15,6 +15,7 @@
 }
 
 .bot-settings-container>h2 {
+  gap: 10px;
   margin: 0;
   height: 13%;
   font-size: 2.5rem;
@@ -38,6 +39,17 @@
   color: black
 }
 
+.keywords {
+  width: 45%;
+  color: black;
+  border-color: black;
+}
+
+.keywords.disabled {
+  color: #a3a3a3;
+  border-color: #a3a3a3;
+}
+
 .settings-container>div>span {
   position: relative;
   top: -13px;
@@ -51,6 +63,8 @@
   border: none;
   padding: 0;
   background-color: transparent;
+  align-items: center;
+  display: flex;
 }
 
 /* .modal-btn {
@@ -171,15 +185,19 @@
   color: #a3a3a3;
 }
 
-@media screen and (max-width: 450px) {
-
-  .bot-settings-container>h2 {
-    font-size: 30px;
-    gap: 10px;
-    height: fit-content;
-    margin-block: 20px;
+@media screen and (max-width: 750px) {
+  .settings-container button {
+    font-size: small;
   }
+}
 
+@media screen and (max-width: 700px) {
+  .settings-container button {
+    font-size: x-small;
+  }
+}
+
+@media screen and (max-width: 580px) {
   .settings-container {
     flex-direction: column;
   }
@@ -189,17 +207,23 @@
     margin-bottom: 15px;
   }
 
-  .settings-container {
-    height: fit-content;
-  }
-
   .treshold>div,
   .create>div {
     bottom: 0px;
     margin-bottom: 10px;
   }
-  
+
   .keywords>div {
     margin-bottom: 10px;
   }
+
+  .bot-settings-container>h2 {
+    font-size: 30px;
+    height: fit-content;
+    margin-block: 15px;
+  }
+
+  .settings-container {
+    height: fit-content;
+  } 
 }

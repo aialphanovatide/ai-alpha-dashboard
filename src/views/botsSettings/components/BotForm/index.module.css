@@ -229,3 +229,9 @@
   text-align: left;
   appearance: none;
 }
+
+@media screen and (max-width: 715px) {
+  .keywordInput {
+    width: 70%;
+  }
+}

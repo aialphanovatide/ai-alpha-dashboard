@@ -66,7 +66,7 @@
   display: none;
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 530px) {
   .top-container {
     height: fit-content;
     grid-template-columns: 10% 48% 30%;
