@@ -27,6 +27,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -45,8 +46,9 @@ const Login = () => {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
-      const response = await fetch(`${config.BASE_URL}/admin/login`, {
+      const response = await fetch(`${config.BASE_URL_DEV}/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,6 +66,8 @@ const Login = () => {
       }
     } catch (error) {
       setError("Error making request. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -79,7 +83,10 @@ const Login = () => {
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm onSubmit={(e) => e.preventDefault()}  className={styles.loginForm}>
+                  <CForm
+                    onSubmit={(e) => e.preventDefault()}
+                    className={styles.loginForm}
+                  >
                     <img
                       src={require("../../../assets/brand/logo.png")}
                       alt="logo"
@@ -131,7 +138,7 @@ const Login = () => {
                           className={styles.loginButton}
                           onClick={handleSubmit}
                         >
-                          Login
+                          {isLoading ? "Logging in..." : "Login"}
                         </CButton>
                       </CCol>
                     </CRow>
