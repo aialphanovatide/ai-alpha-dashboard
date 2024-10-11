@@ -1,9 +1,6 @@
 import {
   cilDataTransferDown,
   cilFile,
-  cilImagePlus,
-  cilLockLocked,
-  cilLockUnlocked,
   cilPlus,
   cilX,
 } from "@coreui/icons";
@@ -13,7 +10,7 @@ import styles from "./index.module.css";
 import { HelpOutline } from "@mui/icons-material";
 import { ReactComponent as OpenLock } from "../../../../assets/icons/openLock.svg";
 import { ReactComponent as ClosedLock } from "../../../../assets/icons/closedLock.svg";
-import CustomTooltip from "src/components/ToolTip";
+import CustomTooltip from "src/components/CustomTooltip";
 import Swal from "sweetalert2";
 import { getCategories } from "src/services/categoryService";
 import { createBot } from "src/services/botService";
@@ -25,11 +22,11 @@ const BotForm = ({ bot }) => {
   const [categories, setCategories] = useState([]);
   const keyWordInputRef = React.createRef();
   const [formData, setFormData] = useState({
-    name: "", //req
-    alias: "", //req
-    symbol: "", //req
-    category_id: "", //req
-    background_color: "",
+    name: bot && bot.name ? capitalizeFirstLetter(bot.name) : "", //req
+    alias: bot && bot.alias ? bot.alias : "", //req
+    symbol: bot && bot.symbol ? bot.symbol : "", //req
+    category_id: bot && bot.category_id ? bot.category_id : "", //req
+    background_color: bot && bot.background_color ? bot.background_color : "",
     icon: null,
     iconPreview: null,
 
@@ -40,6 +37,15 @@ const BotForm = ({ bot }) => {
     url: "",
   });
 
+  //   {
+  //     "bot_id": 35,
+  //     "created_at": "Sun, 22 Sep 2024 01:47:12 GMT",
+  //     "gecko_id": null,
+  //     "icon": "/static/topmenu_icons_resize/intellichain.png",
+  //     "is_active": false,
+  //     "updated_at": "Sun, 22 Sep 2024 04:47:12 GMT"j
+  // }
+
   const fetchCategories = useCallback(async () => {
     try {
       const categories = await getCategories();
@@ -47,7 +53,7 @@ const BotForm = ({ bot }) => {
     } catch (err) {
       setError(err.message || "Error fetching categories");
     }
-  }, [setCategories, getCategories]);
+  }, [setCategories]);
 
   useEffect(() => {
     fetchCategories();
@@ -147,6 +153,7 @@ const BotForm = ({ bot }) => {
         Swal.fire({
           text: "Bot created successfully!",
           icon: "success",
+          customClass: "swal",
         }).then(async () => {
           const updatedCategories = await getCategories();
           setCategories(updatedCategories);
@@ -178,6 +185,7 @@ const BotForm = ({ bot }) => {
       Swal.fire({
         text: err.message || "An error occurred while creating the bot",
         icon: "error",
+        customClass: "swal",
       });
     }
   };
@@ -186,7 +194,7 @@ const BotForm = ({ bot }) => {
     <>
       <form>
         <h4>
-          <CIcon icon={cilPlus} size="xl" /> Create New Coin/Bot
+          <CIcon icon={cilPlus} size="xl" /> {bot ? "Edit" : "Create New"} Coin/Bot
         </h4>
         <div className={styles.section}>
           <div className={styles.labelContainer}>
@@ -258,11 +266,10 @@ const BotForm = ({ bot }) => {
             className={styles.select}
             onChange={handleInputChange}
             name="category_id"
+            value={formData.category_id}
             required
           >
-            <option defaultValue={""} selected>
-              Select category
-            </option>
+            <option value="">Select category</option>{" "}
             {categories?.map((category) => (
               <option key={category.category_id} value={category.category_id}>
                 {capitalizeFirstLetter(category.name)}
@@ -538,6 +545,7 @@ const BotForm = ({ bot }) => {
               style={{
                 visibility: formData.iconPreview ? "visible" : "hidden",
               }}
+              alt="icon"
             />
             {formData.alias && <span>{formData.alias.toUpperCase()}</span>}
           </div>
@@ -548,7 +556,7 @@ const BotForm = ({ bot }) => {
           disabled={!isFormValid}
           onClick={handleSubmit}
         >
-          {isLoading ? "Creating..." : "Create"}
+          {isLoading ? (bot ? "Updating..." : "Creating...") : (bot ? "Update" : "Create")}
         </button>
         {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
