@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import config from "src/config";
-import "../analysis/analysis.css";
+import "../ContentCreation/index.css";
 import "./index.css";
 import Pagination from "../pagination/Pagination";
 import SpinnerComponent from "src/components/Spinner";

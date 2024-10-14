@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "quill/dist/quill.snow.css";
 import config from "../../config";
 import DropdownMenu from "../helpers/selectCoin/SelectCoin";
-import "./analysis.css";
+import "./index.css";
 import RichTextEditor from "../helpers/textEditor/textEditor";
 import Swal from "sweetalert2";
 import { AllAnalysis } from "./AllAnalysis";
@@ -15,7 +15,7 @@ import Title from "src/components/commons/Title";
 import NoData from "src/components/NoData";
 import ShowInAppSection from "./ShowInAppSection";
 
-const Analysis = () => {
+const ContentCreation = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
   const [selectedImage, setSelectedImage] = useState([]);
   const [content, setContent] = useState(null);
@@ -375,4 +375,4 @@ const Analysis = () => {
   );
 };
 
-export default Analysis;
+export default ContentCreation;

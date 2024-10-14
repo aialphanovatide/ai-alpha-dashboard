@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Item } from "./AllAnalysis";
 import config from "src/config";
-import "./analysis.css";
+import "./index.css";
 import EditModal from "./editModal";
 import NoData from "src/components/NoData";
 
