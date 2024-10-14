@@ -13,6 +13,7 @@ import ScheduledJob from "./ScheduledJob";
 import CategoryDropdown from "./CategoryDropdown";
 import Title from "src/components/commons/Title";
 import NoData from "src/components/NoData";
+import ShowInAppSection from "./ShowInAppSection";
 
 const Analysis = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -26,6 +27,7 @@ const Analysis = () => {
   const [scheduledJobs, setScheduledJobs] = useState([]);
   const [title, setTitle] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSection, setSelectedSection] = useState("");
 
   const deleteScheduled = async (jobId) => {
     try {
@@ -67,8 +69,8 @@ const Analysis = () => {
     setSelectedCategory(category);
   };
 
-  const handleTitleChange = (e) => {
-    setTitle(e.target.value);
+  const handleSectionSelect = (section) => {
+    setSelectedSection(section);
   };
 
   const handleSelectCoin = (coinId) => {
@@ -281,7 +283,7 @@ const Analysis = () => {
 
   return (
     <div className="analysisMain">
-      <Title>Analysis</Title>
+      <Title>Content Creation</Title>
       <div className="analysisSubmain">
         <div className="selectors-container">
           <DropdownMenu
@@ -291,6 +293,10 @@ const Analysis = () => {
           <CategoryDropdown
             selectedCategory={selectedCategory}
             onSelectCategory={handleCategorySelect}
+            />
+          <ShowInAppSection 
+            selectedSection={selectedSection}
+            onSelectSection={handleSectionSelect}
           />
         </div>
 
