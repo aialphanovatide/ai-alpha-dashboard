@@ -31,6 +31,7 @@ const ChartsPage = () => {
   const [coinData, setCoinData] = useState([]);
   const [temp, setTemp] = useState("");
   const [pairValue, setPairValue] = useState("");
+  const [isEssential, setIsEssential] = useState(false);
 
   const temporalities = ["1h", "4h", "1d", "1w"];
   const pairs = ["usdt", "btc", "eth"];
@@ -151,6 +152,7 @@ const ChartsPage = () => {
           token: selectedCoinName,
           pair: pairValue,
           temporality: temp,
+          is_essential: isEssential,
         }),
       });
 
@@ -166,6 +168,7 @@ const ChartsPage = () => {
           resistance3: "",
           resistance4: "",
         });
+        setIsEssential(false);
         fetchCoinData();
 
         Swal.fire({
@@ -336,7 +339,10 @@ const ChartsPage = () => {
                   ))}
                 </CCol>
               </CRow>
-
+              <div className="checkbox-container">
+                <input type="checkbox" value={isEssential} onChange={() => setIsEssential(!isEssential)}/>
+                <label className="label">Essential Update</label>
+              </div>
               <div className="lastContainer">
                 {/* Submit button */}
                 <CButton className="save-btn" type="submit">
