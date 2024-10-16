@@ -148,8 +148,8 @@ const ChartsPage = () => {
           resistance_2: formData.resistance2,
           resistance_3: formData.resistance3,
           resistance_4: formData.resistance4,
-          coin_bot_id: selectedCoin,
-          token: selectedCoinName,
+          coin_id: selectedCoin,
+          coin_name: selectedCoinName,
           pair: pairValue,
           temporality: temp,
           is_essential: isEssential,
@@ -340,7 +340,11 @@ const ChartsPage = () => {
                 </CCol>
               </CRow>
               <div className="checkbox-container">
-                <input type="checkbox" value={isEssential} onChange={() => setIsEssential(!isEssential)}/>
+                <input
+                  type="checkbox"
+                  value={isEssential}
+                  onChange={() => setIsEssential(!isEssential)}
+                />
                 <label className="label">Essential Update</label>
               </div>
               <div className="lastContainer">
