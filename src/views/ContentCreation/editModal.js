@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import RichTextEditor from "../helpers/textEditor/textEditor";
 import { Modal, Button } from "react-bootstrap";
 import Swal from "sweetalert2";
-import "./analysis.css";
+import "./index.css";
 
 const EditModal = ({ item, onSave, onClose, fetchAnalysis }) => {
   const [editedContent, setEditedContent] = useState("");

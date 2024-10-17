@@ -141,7 +141,7 @@ const Home = () => {
       <div className='dasboardSubMain'>
         <CenteredBox title="News Bot" date={botsStatusMessage} to={"/botsSettings"} />
         <CenteredBox title="Chart" coin={coin} date={date} to={"/chartsPage"} />
-        <CenteredBox title="Analysis" coin={analysisCoin} date={analysisDate} to={"/analysis"} />
+        <CenteredBox title="Analysis" coin={analysisCoin} date={analysisDate} to={"/contentCreation"} />
       </div> */}
       <div>
         <ApiUsage />

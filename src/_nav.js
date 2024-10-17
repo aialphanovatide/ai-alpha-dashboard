@@ -20,8 +20,8 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Analysis',
-    to: '/analysis',
+    name: 'Content Creation',
+    to: '/contentCreation',
     icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   },
   {

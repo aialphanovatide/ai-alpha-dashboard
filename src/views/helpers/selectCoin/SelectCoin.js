@@ -38,7 +38,7 @@ const DropdownMenu = ({ selectedCoin, onSelectCoin }) => {
 
   return (
     <div className="dropdown-container">
-      <label htmlFor="coinBotDropdown" className="label marLeft"></label>
+      {/* <label htmlFor="coinBotDropdown" className="label marLeft"></label> */}
       <select
         id="coinBotDropdown"
         onChange={handleDropdownChange}
