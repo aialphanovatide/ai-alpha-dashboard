@@ -29,6 +29,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
+  const [isLoading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,7 +50,8 @@ const Login = () => {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${config.BASE_URL_DEV}/admin/login`, {
+      setLoading(true)
+      const response = await fetch(`${config.BASE_URL}/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,6 +72,7 @@ const Login = () => {
     } finally {
       setIsLoading(false);
     }
+    setLoading(false)
   };
 
   const toggleShowPassword = () => {
@@ -94,7 +98,7 @@ const Login = () => {
                     />
                     <h1>Login</h1>
                     <p className="text-body-secondary">
-                      Sign In to your account
+                      Log In to your account
                     </p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
@@ -138,7 +142,7 @@ const Login = () => {
                           className={styles.loginButton}
                           onClick={handleSubmit}
                         >
-                          {isLoading ? "Logging in..." : "Login"}
+                          {isLoading ? "Logging in..." : "Log in"}
                         </CButton>
                       </CCol>
                     </CRow>
