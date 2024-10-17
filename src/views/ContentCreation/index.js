@@ -13,7 +13,6 @@ import ScheduledJob from "./ScheduledJob";
 import CategoryDropdown from "./CategoryDropdown";
 import Title from "src/components/commons/Title";
 import NoData from "src/components/NoData";
-import ShowInAppSection from "./ShowInAppSection";
 
 const ContentCreation = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -27,7 +26,6 @@ const ContentCreation = () => {
   const [scheduledJobs, setScheduledJobs] = useState([]);
   const [title, setTitle] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSection, setSelectedSection] = useState("");
 
   const deleteScheduled = async (jobId) => {
     try {
@@ -67,10 +65,6 @@ const ContentCreation = () => {
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
-  };
-
-  const handleSectionSelect = (section) => {
-    setSelectedSection(section);
   };
 
   const handleSelectCoin = (coinId) => {
@@ -294,10 +288,6 @@ const ContentCreation = () => {
             selectedCategory={selectedCategory}
             onSelectCategory={handleCategorySelect}
             />
-          <ShowInAppSection 
-            selectedSection={selectedSection}
-            onSelectSection={handleSectionSelect}
-          />
         </div>
 
         <RichTextEditor
