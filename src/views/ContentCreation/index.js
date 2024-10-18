@@ -26,6 +26,7 @@ const ContentCreation = () => {
   const [scheduledJobs, setScheduledJobs] = useState([]);
   const [title, setTitle] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [isTopStory, setIsTopStory] = useState(false);
 
   const deleteScheduled = async (jobId) => {
     try {
@@ -218,6 +219,7 @@ const ContentCreation = () => {
       formData.append("content", content);
       formData.append("images", selectedImage);
       formData.append("category_name", selectedCategory);
+      formData.append("is_topstory", isTopStory);
   
       try {
         const response = await fetch(`${config.BASE_URL}/post_analysis`, {
@@ -288,6 +290,10 @@ const ContentCreation = () => {
             selectedCategory={selectedCategory}
             onSelectCategory={handleCategorySelect}
             />
+          <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10, width: 'fit-content'}}>
+            <input type='checkbox' value={isTopStory} onChange={() => setIsTopStory(!isTopStory)} />
+            <label>Top Story</label>
+          </div>
         </div>
 
         <RichTextEditor
