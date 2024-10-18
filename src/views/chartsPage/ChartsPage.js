@@ -138,6 +138,7 @@ const ChartsPage = () => {
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true",
+          "X-API-KEY": config.X_API_KEY_DEV
         },
         body: JSON.stringify({
           support_1: formData.support1,
