@@ -9,6 +9,7 @@ const SECRET_ACCESS_KEY_AWS = process.env.REACT_APP_AWS_SECRET_ACCESS_KEY
 const AWS_REGION = process.env.REACT_APP_AWS_REGION
 const AWS_ICONS = process.env.REACT_APP_AWS_ICONS_BUCKET
 const X_API_KEY = process.env.REACT_APP_X_API_KEY
+const X_API_KEY_DEV = process.env.REACT_APP_X_API_KEY_DEV
 //config server
 const config = {
    BASE_URL:  BASE_URL_API,
@@ -21,6 +22,7 @@ const config = {
    AWS_REGION: AWS_REGION,
    S3_BUCKET: AWS_ICONS,
    X_API_KEY: X_API_KEY,
+   X_API_KEY_DEV: X_API_KEY_DEV,
 }
 
 export default config
