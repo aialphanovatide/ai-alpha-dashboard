@@ -27,9 +27,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const location = useLocation();
   const [isLoading, setLoading] = useState(false);
+  const location = useLocation();
 
   const navigate = useNavigate();
 
@@ -48,7 +47,6 @@ const Login = () => {
   };
 
   const handleSubmit = async () => {
-    setIsLoading(true);
     try {
       setLoading(true)
       const response = await fetch(`${config.BASE_URL}/admin/login`, {
@@ -69,8 +67,6 @@ const Login = () => {
       }
     } catch (error) {
       setError("Error making request. Please try again.");
-    } finally {
-      setIsLoading(false);
     }
     setLoading(false)
   };
