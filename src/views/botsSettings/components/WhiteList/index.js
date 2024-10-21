@@ -127,7 +127,7 @@ const WhiteList = ({ coins, isRemove }) => {
               className={styles.errorMessage}
               style={{ visibility: errorMessage ? "visible" : "hidden" }}
             >
-              <NotInterestedIcon />
+              <NotInterestedIcon style={{fill: 'red'}} />
               {errorMessage}
             </span>
             <form className={styles.formContainer}>
