@@ -1,9 +1,4 @@
-import {
-  cilDataTransferDown,
-  cilFile,
-  cilPlus,
-  cilX,
-} from "@coreui/icons";
+import { cilDataTransferDown, cilFile, cilPlus, cilX } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./index.module.css";
@@ -13,7 +8,7 @@ import { ReactComponent as ClosedLock } from "../../../../assets/icons/closedLoc
 import CustomTooltip from "src/components/CustomTooltip";
 import Swal from "sweetalert2";
 import { getCategories } from "src/services/categoryService";
-import { createBot } from "src/services/botService";
+import { createBot, getBot } from "src/services/botService";
 import { capitalizeFirstLetter } from "src/utils";
 
 const BotForm = ({ bot }) => {
@@ -29,13 +24,22 @@ const BotForm = ({ bot }) => {
     background_color: bot && bot.background_color ? bot.background_color : "",
     icon: null,
     iconPreview: null,
-
+    bot_category: "",
     // name: "", //req
     // category_id: "",//req
     blacklist: [],
     keywords: [],
     url: "",
   });
+
+  const fetchBot = async () => {
+    try {
+      const bot = await getBot();
+      // setBot(bot);
+    } catch (err) {
+      setError(err.message || "Error fetching bot");
+    }
+  };
 
   //   {
   //     "bot_id": 35,
@@ -157,6 +161,10 @@ const BotForm = ({ bot }) => {
         }).then(async () => {
           const updatedCategories = await getCategories();
           setCategories(updatedCategories);
+
+          // Additional fetch to the server
+          const bot = await getBot();
+          // setBot(bot);
         });
 
         setFormData({
@@ -194,7 +202,8 @@ const BotForm = ({ bot }) => {
     <>
       <form>
         <h4>
-          <CIcon icon={cilPlus} size="xl" /> {bot ? "Edit" : "Create New"} Coin/Bot
+          <CIcon icon={cilPlus} size="xl" /> {bot ? "Edit" : "Create New"}{" "}
+          Coin/Bot
         </h4>
         <div className={styles.section}>
           <div className={styles.labelContainer}>
@@ -412,7 +421,7 @@ const BotForm = ({ bot }) => {
             ))}
           </div>
         </div>
-        {/* <div className={styles.section}>
+        <div className={styles.section}>
           <div className={styles.labelContainer}>
             <label>
               <strong>DALL-E Prompt</strong>
@@ -433,7 +442,29 @@ const BotForm = ({ bot }) => {
             An example of use could be: 
             “Imagine that you are one of the world’s foremost experts on Bitcoin and also a globally renowned journalist skilled at summarizing articles about Bitcoin...”"
           />
-        </div> */}
+        </div>
+        <div className={styles.section}>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong> Category Prompt</strong>
+            </label>
+            <CustomTooltip
+              title={"Create a bot"}
+              content={
+                "Add at least one additional detail (excluding icon or background color) to enable the bot for news bot creation."
+              }
+            >
+              <HelpOutline fontSize="small" />
+            </CustomTooltip>
+          </div>
+          <textarea
+            name="prompt"
+            className={styles.textarea}
+            placeholder="Enter article generator prompt. 
+            An example of use could be: 
+            “Imagine that you are one of the world’s foremost experts on Bitcoin and also a globally renowned journalist skilled at summarizing articles about Bitcoin...”"
+          />
+        </div>
         {/* <div className={styles.section} style={{ width: 200 }}>
           <div className={styles.labelContainer}>
             <label>
@@ -556,7 +587,13 @@ const BotForm = ({ bot }) => {
           disabled={!isFormValid}
           onClick={handleSubmit}
         >
-          {isLoading ? (bot ? "Updating..." : "Creating...") : (bot ? "Update" : "Create")}
+          {isLoading
+            ? bot
+              ? "Updating..."
+              : "Creating..."
+            : bot
+              ? "Update"
+              : "Create"}
         </button>
         {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
