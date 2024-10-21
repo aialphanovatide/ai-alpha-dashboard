@@ -9,6 +9,7 @@ import { getBot } from "src/services/botService";
 import Swal from "sweetalert2";
 import { addKeywords } from "src/services/keywordService";
 import SpinnerComponent from "src/components/Spinner";
+import { capitalizeFirstLetter } from "src/utils";
 
 const WhiteList = ({ coins, isRemove }) => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -35,22 +36,28 @@ const WhiteList = ({ coins, isRemove }) => {
       return "Please enter a keyword.";
     }
     if (whitelistKeywords.includes(keyword.toLowerCase())) {
-      return "Keyword already exists.";
+      return `"${capitalizeFirstLetter(keyword)}" keyword already exists.`;
     }
     if (blacklistKeywords.includes(keyword.toLowerCase())) {
-      return "Keyword is on the blacklist.";
+      return `"${capitalizeFirstLetter(keyword)}" keyword is on the blacklist.`;
     }
     return null;
   };
 
   const addKeyword = (e) => {
     e.preventDefault();
-    const error = validateKeyword(keyword);
-    if (error) {
-      setErrorMessage(error);
-      return;
+    const newKeywords = keyword.split(",").map((kw) => kw.trim());
+    let error = null;
+    for (const kw of newKeywords) {
+      error = validateKeyword(kw);
+      if (error) {
+        setErrorMessage(error);
+        return;
+      }
     }
-    setKeywords([...keywords, keyword]);
+    if (error) return;
+
+    setKeywords([...keywords, ...newKeywords]);
     setKeyword("");
     setErrorMessage(null);
   };
