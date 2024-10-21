@@ -1,7 +1,35 @@
 import config from "../config";
 const headers = {
-  "X-API-Key": config.X_API_KEY,
+  "X-API-Key": config.X_API_KEY_DEV,
   "Content-Type": "application/json",
+};
+
+const getCategory = async (category_id, isNewsBotsServer) => {
+  try {
+    const url = isNewsBotsServer
+      ? `${config.BOTS_V2_DEV_API}/category?category_name=${category_id}`
+      : `${config.BASE_URL_DEV}/category/${category_id}`;
+      
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+    });
+
+    let responseText = await response.text();
+
+    try {
+      const data = JSON.parse(responseText);
+      if (data) {
+        return data;
+      } else {
+        console.error("Error in response:", data.error);
+      }
+    } catch (parseError) {
+      console.error("Error parsing JSON:", parseError);
+    }
+  } catch (error) {
+    console.error("Error fetching category:", error);
+  }
 };
 
 const getCategories = async () => {
@@ -36,7 +64,7 @@ const createCategory = async (payload) => {
         "X-API-Key": config.X_API_KEY,
         Accept: "application/json",
       },
-      body: payload
+      body: payload,
     });
 
     let responseText = await response.text();
@@ -48,7 +76,10 @@ const createCategory = async (payload) => {
         return { success: true, data };
       } else {
         // Error de cliente (400) o servidor (500)
-        return { success: false, error: data.error || "Unknown error occurred" };
+        return {
+          success: false,
+          error: data.error || "Unknown error occurred",
+        };
       }
     } catch (parseError) {
       console.error("Error parsing JSON:", parseError);
@@ -62,11 +93,14 @@ const createCategory = async (payload) => {
 
 const editCategory = async (category_id, payload) => {
   try {
-    const response = await fetch(`${config.BASE_URL_DEV}/category/${category_id}`, {
-      method: "PUT",
-      headers,
-      body: payload,
-    });
+    const response = await fetch(
+      `${config.BASE_URL_DEV}/category/${category_id}`,
+      {
+        method: "PUT",
+        headers,
+        body: payload,
+      },
+    );
 
     let responseText = await response.text();
 
@@ -87,10 +121,13 @@ const editCategory = async (category_id, payload) => {
 
 const deleteCategory = async (category_id) => {
   try {
-    const response = await fetch(`${config.BASE_URL_DEV}/category/${category_id}`, {
-      method: "DELETE",
-      headers,
-    });
+    const response = await fetch(
+      `${config.BASE_URL_DEV}/category/${category_id}`,
+      {
+        method: "DELETE",
+        headers,
+      },
+    );
 
     let responseText = await response.text();
 
