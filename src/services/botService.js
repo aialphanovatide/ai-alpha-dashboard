@@ -1,7 +1,36 @@
 import config from "../config";
 const headers = {
-  "X-API-Key": config.X_API_KEY,
+  "X-API-Key": config.X_API_KEY_DEV,
   "Content-Type": "application/json",
+};
+
+const getBot = async (query, searchBy = "id") => {
+  try {
+    const response = await fetch(`${config.BOTS_V2_DEV_API}/bot?bot_${searchBy}=${query}`, {
+      method: "GET",
+      headers,
+    });
+
+    let responseText = await response.text();
+
+    try {
+      const data = JSON.parse(responseText).data;
+      if (response.ok) {
+        return { success: true, data };
+      } else {
+        return {
+          success: false,
+          error: data.error || "Unknown error occurred",
+        };
+      }
+    } catch (parseError) {
+      console.error("Error parsing JSON:", parseError);
+      return { success: false, error: "Failed to parse server response" };
+    }
+  } catch (error) {
+    console.error("Error fetching bot:", error);
+    return { success: false, error: "Network error or server is unreachable" };
+  }
 };
 
 const createBot = async (payload) => {
@@ -68,4 +97,5 @@ const editBot = async (payload) => {
 
 export { 
   createBot, 
+  getBot,
 };
