@@ -90,7 +90,7 @@ const BotsSettings = () => {
               </span>
               <div>
                 <button
-                  onClick={toggleDrawer(true, <WhiteList />, "bottom")}
+                  onClick={toggleDrawer(true, <WhiteList coins={selectedBots}/>, "bottom")}
                   disabled={!selectedBots[0]}
                 >
                   <CIcon icon={cilPlus} /> Add
