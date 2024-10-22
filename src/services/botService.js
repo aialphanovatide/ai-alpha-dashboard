@@ -6,7 +6,7 @@ const headers = {
 
 const getBot = async (query, searchBy = "id") => {
   try {
-    const response = await fetch(`${config.BOTS_V2_DEV_API}/bot?bot_${searchBy}=${query}`, {
+    const response = await fetch(`${config.BOTS_V2_DEV_API}/bot?bot_${searchBy}=${query.toLowerCase()}`, {
       method: "GET",
       headers,
     });
