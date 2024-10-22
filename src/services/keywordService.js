@@ -42,13 +42,20 @@ const deleteKeywords = async (type, keywords, bots_ids) => {
 
 const addKeywords = async (type, keywords, bots_ids) => {
   try {
+    const payload = {
+      "bot_ids": bots_ids,
+    }
+
+    if (type === "blacklist") {
+      payload["entries"] = keywords;
+    } else {
+      payload["keywords"] = keywords;
+    }
+
     const response = await fetch(`${config.BOTS_V2_DEV_API}/${type}`, {
       method: "POST",
       headers,
-      body: JSON.stringify({
-        "keywords": keywords,
-        "bot_ids": bots_ids,
-      }),
+      body: JSON.stringify(payload),
     });
 
     let responseText = await response.text();
