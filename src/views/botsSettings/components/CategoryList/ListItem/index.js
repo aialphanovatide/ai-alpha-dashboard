@@ -218,7 +218,7 @@ const ListItem = (params) => {
               selectedCoins={selectedCoins}
               setSelectedCoins={setSelectedCoins}
               selectedCategories={selectedCategories}
-              updateCategoryState={updateCategoryState} // Pasar la función de callback
+              updateCategoryState={updateCategoryState}
               isCategoryActive={!isCoin && item.is_active}
             />
           ))}
