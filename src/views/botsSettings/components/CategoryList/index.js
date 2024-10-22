@@ -7,27 +7,52 @@ import SpinnerComponent from "src/components/Spinner";
 import ListItem from "./ListItem";
 import NoData from "src/components/NoData";
 import { toggleAllCategoriesState } from "src/services/categoryService";
+import Swal from "sweetalert2";
 
 const CategoryList = ({
   categories,
   toggleDrawer,
-  selectedBots,
-  setSelectedBots,
+  selectedCoins,
+  setSelectedCoins,
   setCategories,
 }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleAllStatusSwitchToggle = async (e) => {
-    const response = await toggleAllCategoriesState(isEveryCategoryActive);
+    // const response = await toggleAllCategoriesState(isEveryCategoryActive);
 
     // if (response.success) {
-    //   setIsItemActive(!isItemActive);
+      categories.forEach(category => {
+        updateCategoryState(category.category_id, !isEveryCategoryActive);
+      });
+
+    //   Swal.fire({
+    //     text: response.message,
+    //     icon: "success",
+    //     customClass: 'swal',
+    //   });
+    // } else {
+    //   Swal.fire({
+    //     text: response.error,
+    //     icon: "error",
+    //     customClass: 'swal',
+    //   });
     // }
   };
 
+  const updateCategoryState = (categoryId, isActive) => {
+    setCategories(prevCategories =>
+      prevCategories.map(category =>
+        category.category_id === categoryId
+          ? { ...category, is_active: isActive }
+          : category
+      )
+    );
+  };
+
   const isEveryCategoryActive = useMemo(
-    () => categories.every((category) => category.isActive),
+    () => categories.every((category) => category.is_active),
     [categories],
   );
 
@@ -36,7 +61,7 @@ const CategoryList = ({
       <div className="top-container">
         <DeleteItemModal
           categories={categories}
-          bots={selectedBots}
+          bots={selectedCoins}
           setCategories={setCategories}
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
@@ -89,10 +114,11 @@ const CategoryList = ({
               setSelectedCategories={setSelectedCategories}
               selectedCategories={selectedCategories}
               toggleDrawer={toggleDrawer}
-              setSelectedBots={setSelectedBots}
-              selectedBots={selectedBots}
+              setSelectedCoins={setSelectedCoins}
+              selectedCoins={selectedCoins}
               bots={category.coins}
               index={index}
+              updateCategoryState={updateCategoryState}
             />
           ))
         ) : (
