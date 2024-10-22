@@ -132,13 +132,23 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
     });
   };
 
+  const getCommonKeywords = (allKeywords) => {
+    const keywordCounts = allKeywords.reduce((acc, keyword) => {
+      acc[keyword] = (acc[keyword] || 0) + 1;
+      return acc;
+    }, {});
+    const commonKeywords = Object.keys(keywordCounts).filter(
+      (kw) => keywordCounts[kw] === coins.length,
+    );
+    return commonKeywords;
+  };
+
   const onKeywordChange = (keyword) => {
     if (isKeywordChecked) {
       setKeywords(keywords.filter((kw) => kw !== keyword));
     } else {
       setKeywords((prev) => [...prev, keyword]);
     }
-
     setIsKeywordChecked(!isKeywordChecked);
   };
 
@@ -211,7 +221,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                 <div className={styles.keyWordsContainer}>
                   {isRemove
                     ? isBlacklist
-                      ? blacklistKeywords?.map((keyword, index) => (
+                      ? getCommonKeywords(blacklistKeywords)?.map((keyword, index) => (
                           <div
                             className={styles.keyword}
                             key={index}
@@ -225,7 +235,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                             <span>{keyword}</span>
                           </div>
                         ))
-                      : whitelistKeywords?.map((keyword, index) => (
+                      : getCommonKeywords(whitelistKeywords)?.map((keyword, index) => (
                           <div
                             className={styles.keyword}
                             key={index}
