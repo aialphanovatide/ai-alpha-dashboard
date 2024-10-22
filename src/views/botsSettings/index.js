@@ -20,7 +20,7 @@ const BotsSettings = () => {
   const [open, setOpen] = useState(false);
   const [drawerChildren, setDrawerChildren] = useState(<></>);
   const [drawerAnchor, setDrawerAnchor] = useState("right");
-  const [selectedBots, setSelectedBots] = useState([]);
+  const [selectedCoins, setSelectedCoins] = useState([]);
   const [error, setError] = useState("");
 
   const fetchCategories = useCallback(async () => {
@@ -84,7 +84,7 @@ const BotsSettings = () => {
             </button>
           </div>
         </div>
-        <div className={`keywords ${selectedBots[0] ? "" : "disabled"}`}>
+        <div className={`keywords ${selectedCoins[0] ? "" : "disabled"}`}>
           <span>Keywords</span>
           <div>
             <div>
@@ -95,20 +95,20 @@ const BotsSettings = () => {
                 <button
                   onClick={toggleDrawer(
                     true,
-                    <KeywordsSettings coins={selectedBots} />,
+                    <KeywordsSettings coins={selectedCoins} />,
                     "bottom",
                   )}
-                  disabled={!selectedBots[0]}
+                  disabled={!selectedCoins[0]}
                 >
                   <CIcon icon={cilPlus} /> Add
                 </button>
                 <button
                   onClick={toggleDrawer(
                     true,
-                    <KeywordsSettings coins={selectedBots} isRemove={true} />,
+                    <KeywordsSettings coins={selectedCoins} isRemove={true} />,
                     "bottom",
                   )}
-                  disabled={!selectedBots[0]}
+                  disabled={!selectedCoins[0]}
                 >
                   <CIcon icon={cilMinus} /> Remove
                 </button>
@@ -124,11 +124,11 @@ const BotsSettings = () => {
                     true,
                     <KeywordsSettings
                       isBlacklist={true}
-                      coins={selectedBots}
+                      coins={selectedCoins}
                     />,
                     "bottom",
                   )}
-                  disabled={!selectedBots[0]}
+                  disabled={!selectedCoins[0]}
                 >
                   <CIcon icon={cilPlus} /> Add
                 </button>
@@ -137,12 +137,12 @@ const BotsSettings = () => {
                     true,
                     <KeywordsSettings
                       isBlacklist={true}
-                      coins={selectedBots}
+                      coins={selectedCoins}
                       isRemove={true}
                     />,
                     "bottom",
                   )}
-                  disabled={!selectedBots[0]}
+                  disabled={!selectedCoins[0]}
                 >
                   <CIcon icon={cilMinus} /> Remove
                 </button>
@@ -158,8 +158,8 @@ const BotsSettings = () => {
           <CategoryList
             categories={categories}
             toggleDrawer={toggleDrawer}
-            selectedBots={selectedBots}
-            setSelectedBots={setSelectedBots}
+            selectedCoins={selectedCoins}
+            setSelectedCoins={setSelectedCoins}
             setCategories={setCategories}
           />
         ) : (
