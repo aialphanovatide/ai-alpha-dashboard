@@ -8,7 +8,8 @@ import { ReactComponent as ClosedLock } from "../../../../assets/icons/closedLoc
 import CustomTooltip from "src/components/CustomTooltip";
 import Swal from "sweetalert2";
 import { getCategories } from "src/services/categoryService";
-import { createBot, getBot } from "src/services/botService";
+import { getBot } from "src/services/botService";
+import { createCoin } from "src/services/coinService";
 import { capitalizeFirstLetter } from "src/utils";
 
 const BotForm = ({ bot }) => {
@@ -151,7 +152,7 @@ const BotForm = ({ bot }) => {
         formDataToSend.append("icon", formData.icon, formData.icon.name);
       }
 
-      const response = await createBot(formDataToSend);
+      const response = await createCoin(formDataToSend);
 
       if (response.success) {
         Swal.fire({
