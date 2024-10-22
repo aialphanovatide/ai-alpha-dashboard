@@ -6,16 +6,20 @@ const headers = {
 
 const deleteKeywords = async (type, keywords, bots_ids) => {
   try {
+    const payload = {
+      "bot_ids": bots_ids,
+    }
+
+    if (type === "blacklist") {
+      payload["entries"] = keywords;
+    } else {
+      payload["keywords"] = keywords;
+    }
+
     const response = await fetch(`${config.BOTS_V2_DEV_API}/${type}`, {
       method: "DELETE",
       headers,
-      body: JSON.stringify({
-        "keywords": keywords,
-        "bot_ids": bots_ids,
-        // "keyword_ids": [
-        //   0
-        // ],
-      }),
+      body: JSON.stringify(payload),
     });
 
     let responseText = await response.text();
@@ -87,7 +91,7 @@ const searchKeywords = async (type, query, bots_ids) => {
       headers,
       body: JSON.stringify({
         "bot_ids": bots_ids,
-        "queries": query,
+        "queries": [query],
       }),
     });
 
