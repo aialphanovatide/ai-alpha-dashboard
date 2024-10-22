@@ -50,6 +50,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
     } else {
       Swal.fire({ text: response.error, icon: "error", customClass: "swal" });
     }
+    setErrorMessage(null);
     setKeywords([]);
     setIsLoading(false);
   };
@@ -67,7 +68,9 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
       (!isBlacklist && blacklistKeywords.includes(keyword)) ||
       (isBlacklist && whitelistKeywords.includes(keyword))
     ) {
-      return `"${capitalizeFirstLetter(keyword)}" keyword is on the blacklist.`;
+      return `"${capitalizeFirstLetter(keyword)}" keyword is on the ${
+        isBlacklist ? "whitelist" : "blacklist"
+      }.`;
     }
     return null;
   };
