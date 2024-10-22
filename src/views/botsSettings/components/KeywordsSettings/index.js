@@ -7,10 +7,9 @@ import { cilMinus, cilPlus, cilSave, cilSearch, cilX } from "@coreui/icons";
 import NotInterestedIcon from "@mui/icons-material/NotInterested";
 import { getBot } from "src/services/botService";
 import Swal from "sweetalert2";
-import { addKeywords } from "src/services/keywordService";
+import { addKeywords, deleteKeywords } from "src/services/keywordService";
 import SpinnerComponent from "src/components/Spinner";
 import { capitalizeFirstLetter } from "src/utils";
-import { setLayerDimensions } from "pdfjs-dist";
 
 const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -20,18 +19,34 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
   const [keyword, setKeyword] = useState("");
   const [botsIDs, setBotsIDs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isKeywordChecked, setIsKeywordChecked] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     const keywordsType = isBlacklist ? "blacklist" : "keywords";
-    const response = await addKeywords(keywordsType, keywords, botsIDs);
+    const response = isRemove
+      ? await deleteKeywords(keywordsType, keywords, botsIDs)
+      : await addKeywords(keywordsType, keywords, botsIDs);
+
     if (response.success) {
       Swal.fire({
         text: "Keywords updated successfully",
         icon: "success",
         customClass: "swal",
       });
+
+      if (isRemove) {
+        if (isBlacklist) {
+          setBlacklistKeywords(
+            blacklistKeywords.filter((kw) => !keywords.includes(kw)),
+          );
+        } else {
+          setWhitelistKeywords(
+            whitelistKeywords.filter((kw) => !keywords.includes(kw)),
+          );
+        }
+      }
     } else {
       Swal.fire({ text: response.error, icon: "error", customClass: "swal" });
     }
@@ -40,7 +55,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
   };
 
   const validateKeyword = (keyword) => {
-    keyword = keyword.toLowerCase();
+    if (!isRemove) keyword = keyword.toLowerCase();
     if (keyword === "") {
       return "Please enter a keyword.";
     } else if (
@@ -69,7 +84,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
       }
     }
     if (error) return;
-    setKeywords([...keywords, ...newKeywords]);
+    setKeywords((prevKeywords) => [...prevKeywords, ...newKeywords]);
     setKeyword("");
     setErrorMessage(null);
   };
@@ -107,10 +122,21 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
 
   const updateKeywords = (keywords, setKeywords, currentKeywords) => {
     keywords.forEach((keyword) => {
+      if (!isRemove) keyword = keyword.toLowerCase();
       if (!currentKeywords.includes(keyword)) {
-        setKeywords([...currentKeywords, keyword.toLowerCase()]);
+        setKeywords((prevKeywords) => [...prevKeywords, keyword]);
       }
     });
+  };
+
+  const onKeywordChange = (keyword) => {
+    if (isKeywordChecked) {
+      setKeywords(keywords.filter((kw) => kw !== keyword));
+    } else {
+      setKeywords((prev) => [...prev, keyword]);
+    }
+
+    setIsKeywordChecked(!isKeywordChecked);
   };
 
   useEffect(() => {
@@ -180,27 +206,48 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                     : "All Keywords will be added to the selected coins"}
                 </span>
                 <div className={styles.keyWordsContainer}>
-                  {keywords.map((keyword, index) => (
-                    <div
-                      className={styles.keyword}
-                      key={index}
-                      id="keyword-tag"
-                    >
-                      {isRemove ? (
-                        <>
-                          <input type="checkbox" />
-                          <span>{keyword}</span>
-                        </>
-                      ) : (
-                        <>
+                  {isRemove
+                    ? isBlacklist
+                      ? blacklistKeywords?.map((keyword, index) => (
+                          <div
+                            className={styles.keyword}
+                            key={index}
+                            id="keyword-tag"
+                          >
+                            <input
+                              type="checkbox"
+                              onChange={() => onKeywordChange(keyword)}
+                              checked={keywords.includes(keyword)}
+                            />
+                            <span>{keyword}</span>
+                          </div>
+                        ))
+                      : whitelistKeywords?.map((keyword, index) => (
+                          <div
+                            className={styles.keyword}
+                            key={index}
+                            id="keyword-tag"
+                          >
+                            <input
+                              type="checkbox"
+                              onChange={() => onKeywordChange(keyword)}
+                              checked={keywords.includes(keyword)}
+                            />
+                            <span>{keyword}</span>
+                          </div>
+                        ))
+                    : keywords?.map((keyword, index) => (
+                        <div
+                          className={styles.keyword}
+                          key={index}
+                          id="keyword-tag"
+                        >
                           <span>{keyword}</span>
                           <button onClick={(e) => removeKeyword(e, index)}>
                             <CIcon icon={cilX} />
                           </button>
-                        </>
-                      )}
-                    </div>
-                  ))}
+                        </div>
+                      ))}
                 </div>
               </div>
               <button onClick={handleSubmit} disabled={keywords.length < 1}>
