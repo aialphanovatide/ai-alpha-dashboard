@@ -103,6 +103,10 @@
   font-size: smaller;
 }
 
+.keyword button svg {
+  vertical-align: middle;
+}
+
 .formContainer {
   display: flex;
   width: 100%;

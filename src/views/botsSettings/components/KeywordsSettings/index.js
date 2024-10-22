@@ -2,16 +2,17 @@ import React, { useEffect, useState } from "react";
 import styles from "./index.module.css";
 import CIcon from "@coreui/icons-react";
 import { ReactComponent as OpenLock } from "../../../../assets/icons/openLock.svg";
+import { ReactComponent as ClosedLock } from "../../../../assets/icons/closedLock.svg";
 import { cilMinus, cilPlus, cilSave, cilSearch, cilX } from "@coreui/icons";
 import NotInterestedIcon from "@mui/icons-material/NotInterested";
-import config from "src/config";
 import { getBot } from "src/services/botService";
 import Swal from "sweetalert2";
 import { addKeywords } from "src/services/keywordService";
 import SpinnerComponent from "src/components/Spinner";
 import { capitalizeFirstLetter } from "src/utils";
+import { setLayerDimensions } from "pdfjs-dist";
 
-const WhiteList = ({ coins, isRemove }) => {
+const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [keywords, setKeywords] = useState([]);
   const [whitelistKeywords, setWhitelistKeywords] = useState([]);
@@ -22,23 +23,35 @@ const WhiteList = ({ coins, isRemove }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await addKeywords("keywords", keywords, botsIDs);
+    setIsLoading(true);
+    const keywordsType = isBlacklist ? "blacklist" : "keywords";
+    const response = await addKeywords(keywordsType, keywords, botsIDs);
     if (response.success) {
-      Swal.fire({ text: "Keywords updated successfully", icon: "success" });
+      Swal.fire({
+        text: "Keywords updated successfully",
+        icon: "success",
+        customClass: "swal",
+      });
     } else {
-      Swal.fire({ text: response.error, icon: "error" });
+      Swal.fire({ text: response.error, icon: "error", customClass: "swal" });
     }
     setKeywords([]);
+    setIsLoading(false);
   };
 
   const validateKeyword = (keyword) => {
+    keyword = keyword.toLowerCase();
     if (keyword === "") {
       return "Please enter a keyword.";
-    }
-    if (whitelistKeywords.includes(keyword.toLowerCase())) {
+    } else if (
+      (isBlacklist && blacklistKeywords.includes(keyword)) ||
+      (!isBlacklist && whitelistKeywords.includes(keyword))
+    ) {
       return `"${capitalizeFirstLetter(keyword)}" keyword already exists.`;
-    }
-    if (blacklistKeywords.includes(keyword.toLowerCase())) {
+    } else if (
+      (!isBlacklist && blacklistKeywords.includes(keyword)) ||
+      (isBlacklist && whitelistKeywords.includes(keyword))
+    ) {
       return `"${capitalizeFirstLetter(keyword)}" keyword is on the blacklist.`;
     }
     return null;
@@ -56,7 +69,6 @@ const WhiteList = ({ coins, isRemove }) => {
       }
     }
     if (error) return;
-
     setKeywords([...keywords, ...newKeywords]);
     setKeyword("");
     setErrorMessage(null);
@@ -70,21 +82,27 @@ const WhiteList = ({ coins, isRemove }) => {
   };
 
   const storeKeywords = async (coins) => {
+    setIsLoading(true);
     for (const coin of coins) {
       await processCoinKeywords(coin);
     }
+    setIsLoading(false);
   };
 
   const processCoinKeywords = async (coin) => {
+    setIsLoading(true);
     const response = await getBot(coin.name, "name");
     if (response.success) {
       const bot = response.data;
-      setBotsIDs((prevBotsIDs) => [...prevBotsIDs, bot.id]);
+      if (!botsIDs.includes(bot.id)) {
+        setBotsIDs((prevBotsIDs) => [...prevBotsIDs, bot.id]);
+      }
       updateKeywords(bot.keywords, setWhitelistKeywords, whitelistKeywords);
       updateKeywords(bot.blacklist, setBlacklistKeywords, blacklistKeywords);
     } else {
-      Swal.fire({ text: response.error, icon: "error" });
+      Swal.fire({ text: response.error, icon: "error", customClass: "swal" });
     }
+    setIsLoading(false);
   };
 
   const updateKeywords = (keywords, setKeywords, currentKeywords) => {
@@ -96,9 +114,7 @@ const WhiteList = ({ coins, isRemove }) => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
     storeKeywords(coins);
-    setIsLoading(false);
   }, [coins]);
 
   return (
@@ -106,7 +122,15 @@ const WhiteList = ({ coins, isRemove }) => {
       <div>
         <span className={styles.keywordsText}>Keywords</span>
         <h4 className={styles.title}>
-          <OpenLock /> Whitelist
+          {isBlacklist ? (
+            <>
+              <ClosedLock /> BlackList
+            </>
+          ) : (
+            <>
+              <OpenLock /> Whitelist
+            </>
+          )}
         </h4>
         {isRemove ? (
           <span className={styles.organgeText}>
@@ -127,12 +151,12 @@ const WhiteList = ({ coins, isRemove }) => {
               className={styles.errorMessage}
               style={{ visibility: errorMessage ? "visible" : "hidden" }}
             >
-              <NotInterestedIcon style={{fill: 'red'}} />
+              <NotInterestedIcon style={{ fill: "red" }} />
               {errorMessage}
             </span>
             <form className={styles.formContainer}>
               <div className={styles.keyWordSearch}>
-                <div className={styles.keywordInput}>
+                <div className={styles.keywordInput} id="customInput">
                   <input
                     placeholder={
                       isRemove ? "" : "Apple, Communication, Notebook..."
@@ -151,24 +175,32 @@ const WhiteList = ({ coins, isRemove }) => {
                   )}
                 </div>
                 <span className={styles.disclaimer}>
-                  All Keywords will be added to the selected coins
+                  {isRemove
+                    ? "All Keywords will be removed from the selected coins."
+                    : "All Keywords will be added to the selected coins"}
                 </span>
                 <div className={styles.keyWordsContainer}>
-                  {isRemove
-                    ? keywords.map((keyword, index) => (
-                        <div className={styles.keyword} key={index}>
+                  {keywords.map((keyword, index) => (
+                    <div
+                      className={styles.keyword}
+                      key={index}
+                      id="keyword-tag"
+                    >
+                      {isRemove ? (
+                        <>
                           <input type="checkbox" />
                           <span>{keyword}</span>
-                        </div>
-                      ))
-                    : keywords.map((keyword, index) => (
-                        <div className={styles.keyword} key={index}>
+                        </>
+                      ) : (
+                        <>
                           <span>{keyword}</span>
                           <button onClick={(e) => removeKeyword(e, index)}>
                             <CIcon icon={cilX} />
                           </button>
-                        </div>
-                      ))}
+                        </>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
               <button onClick={handleSubmit} disabled={keywords.length < 1}>
@@ -182,4 +214,4 @@ const WhiteList = ({ coins, isRemove }) => {
   );
 };
 
-export default WhiteList;
+export default KeywordsSettings;
