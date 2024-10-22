@@ -11,6 +11,8 @@ import BotForm from "../../BotForm";
 import SwitchButton from "src/components/commons/SwitchButton";
 import defaultImg from "../../../../../assets/brand/logo.png";
 import { toggleCategoryState } from "src/services/categoryService";
+import Swal from "sweetalert2";
+import { toggleCoinStatus } from "src/services/coinService";
 
 const ListItem = (params) => {
   const {
@@ -18,19 +20,26 @@ const ListItem = (params) => {
     setSelectedCategories,
     selectedCategories = [],
     toggleDrawer,
-    isBot = false,
-    selectedBots = [],
-    setSelectedBots,
+    isCoin = false,
+    selectedCoins = [],
+    setSelectedCoins,
+    updateCategoryState,
+    isCategoryActive,
   } = params;
   const [isOpen, setIsOpen] = useState(false);
   const [isCategoryChecked, setCategoryChecked] = useState(false);
   const [isBotChecked, setBotChecked] = useState(false);
-  const [isItemActive, setIsItemActive] = useState(item.isActive);
+  const [isItemActive, setIsItemActive] = useState(false);
   const [isToggleLoading, setIsToggleLoading] = useState(false);
 
   const toggleOpen = () => setIsOpen(!isOpen);
 
-  useEffect(() => { 
+  useEffect(() => {
+    setIsItemActive(item.is_active);
+    isCoin && setIsItemActive(isCategoryActive);
+  }, [item.is_active, isCategoryActive]);
+
+  useEffect(() => {
     if (selectedCategories.length === 0) setCategoryChecked(false);
   }, [selectedCategories]);
 
@@ -54,9 +63,9 @@ const ListItem = (params) => {
     const checkedBot = JSON.parse(e.target.value);
 
     if (isBotChecked) {
-      setSelectedBots(selectedBots.filter((bot) => bot.id !== checkedBot.id));
+      setSelectedCoins(selectedCoins.filter((bot) => bot.id !== checkedBot.id));
     } else {
-      setSelectedBots([...selectedBots, checkedBot]);
+      setSelectedCoins([...selectedCoins, checkedBot]);
     }
 
     setBotChecked(!isBotChecked);
@@ -65,11 +74,16 @@ const ListItem = (params) => {
   const handleStatusSwitchToggle = async (e) => {
     setIsToggleLoading(true);
 
-    const response = await toggleCategoryState(item.category_id, isItemActive);
+    // const response = isCoin
+    //   ? await toggleCoinStatus(item.bot_id)
+    //   : await toggleCategoryState(item.category_id, isItemActive);
 
-    if (response.success) {
+    // if (response.success) {
       setIsItemActive(!isItemActive);
-    }
+      !isCoin && updateCategoryState(item.category_id, !isItemActive);
+    // } else {
+    //   Swal.fire({ text: response.error, icon: "error", customClass: "swal" });
+    // }
 
     setIsToggleLoading(false);
   };
@@ -79,25 +93,25 @@ const ListItem = (params) => {
       <div
         className={`item ${
           isCategoryChecked || isBotChecked ? "checked" : ""
-        } ${isBot ? "bot" : ""}`}
+        } ${isCoin ? "bot" : ""}`}
       >
         <div className="item-input">
           <CustomTooltip
             content={"Elements of different types cannot be selected."}
             isError={true}
             hide={
-              isBot
+              isCoin
                 ? !(selectedCategories.length > 0)
-                : !(selectedBots.length > 0)
+                : !(selectedCoins.length > 0)
             }
           >
             <input
               type="checkbox"
-              checked={isBot ? isBotChecked : isCategoryChecked}
-              onChange={isBot ? onBotCheck : onCategoryCheck}
+              checked={isCoin ? isBotChecked : isCategoryChecked}
+              onChange={isCoin ? onBotCheck : onCategoryCheck}
               value={JSON.stringify(item)}
               disabled={
-                isBot ? selectedCategories.length > 0 : selectedBots.length > 0
+                isCoin ? selectedCategories.length > 0 : selectedCoins.length > 0
               }
             />
           </CustomTooltip>
@@ -111,15 +125,29 @@ const ListItem = (params) => {
           }}
         >
           <img
-            alt={`${isBot ? "bot" : "category"}-img`}
-            src={isBot? `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${item.name?.toLowerCase()}.png` : `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias || item.name}.svg`}
+            alt={`${isCoin ? "bot" : "category"}-img`}
+            src={
+              isCoin
+                ? `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${item.name?.toLowerCase()}.png`
+                : `https://aialphaicons.s3.us-east-2.amazonaws.com/${
+                    item.alias || item.name
+                  }.svg`
+            }
             onError={(e) => (e.target.src = defaultImg)}
           />
         </div>
         <div className="item-details">
-          <div className="item-name">{item.name || item.alias || (isBot ? "Bot name" : "Category name")}</div>
-          <div>{capitalizeFirstLetter(item.alias || item.name || (isBot ? "Bot alias" : "Category alias"))}</div>
-          {isBot && (
+          <div className="item-name">
+            {item.name || item.alias || (isCoin ? "Bot name" : "Category name")}
+          </div>
+          <div>
+            {capitalizeFirstLetter(
+              item.alias ||
+                item.name ||
+                (isCoin ? "Bot alias" : "Category alias"),
+            )}
+          </div>
+          {isCoin && (
             <div className="item-last-run">
               Last Run: {formatDateTime(item.updated_at)}
             </div>
@@ -129,7 +157,7 @@ const ListItem = (params) => {
           className="edit-btn"
           onClick={toggleDrawer(
             true,
-            isBot ? (
+            isCoin ? (
               <BotForm bot={item} />
             ) : (
               <NewCategoryForm category={item} />
@@ -153,6 +181,7 @@ const ListItem = (params) => {
               isActive={isItemActive}
               handleClick={handleStatusSwitchToggle}
               isLoading={isToggleLoading}
+              isDisabled={isCoin && !isCategoryActive}
             />
           </div>
         </CustomTooltip>
@@ -185,10 +214,12 @@ const ListItem = (params) => {
               key={index}
               item={bot}
               toggleDrawer={toggleDrawer}
-              isBot={true}
-              selectedBots={selectedBots}
-              setSelectedBots={setSelectedBots}
+              isCoin={true}
+              selectedCoins={selectedCoins}
+              setSelectedCoins={setSelectedCoins}
               selectedCategories={selectedCategories}
+              updateCategoryState={updateCategoryState} // Pasar la función de callback
+              isCategoryActive={!isCoin && item.is_active}
             />
           ))}
         </div>
