@@ -204,7 +204,8 @@ body {
     .BotForm_imgContainer__tpUOv,
     .NewCategoryForm_imgContainer__E0geY,
     #category-alias,
-    .css-vtpge1-MuiSlider-root .MuiSlider-valueLabel {
+    .css-vtpge1-MuiSlider-root .MuiSlider-valueLabel, 
+    #customInput {
       background-color: #2a303d !important;
       color: white;
     }
@@ -213,6 +214,10 @@ body {
     .BotForm_imgPicker__9tI89::file-selector-button, 
     .NewCategoryForm_imgPicker__iTTJX::file-selector-button {
       background-color: #4e4e4e;
+    }
+
+    #keyword-tag {
+      background-color: #FF8739
     }
   }
 }
