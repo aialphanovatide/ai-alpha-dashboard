@@ -9,8 +9,7 @@ import CategoryList from "./components/CategoryList";
 import TresholdEdit from "./components/TresholdEdit";
 import NewCategoryForm from "./components/NewCategoryForm";
 import BotForm from "./components/BotForm";
-import WhiteList from "./components/WhiteList";
-import BlackList from "./components/BlackList";
+import KeywordsSettings from "./components/KeywordsSettings";
 import SpinnerComponent from "src/components/Spinner";
 import NoData from "src/components/NoData";
 import { getCategories } from "src/services/categoryService";
@@ -71,7 +70,13 @@ const BotsSettings = () => {
               alignItems: "center",
             }}
           >
-            <button onClick={toggleDrawer(true, <NewCategoryForm setCategories={setCategories} />, "right")}>
+            <button
+              onClick={toggleDrawer(
+                true,
+                <NewCategoryForm setCategories={setCategories} />,
+                "right",
+              )}
+            >
               <CIcon icon={cilPlus} /> New Category
             </button>
             <button onClick={toggleDrawer(true, <BotForm />, "right")}>
@@ -79,9 +84,7 @@ const BotsSettings = () => {
             </button>
           </div>
         </div>
-        <div
-          className={`keywords ${selectedBots[0] ? "" : "disabled"}`}
-        >
+        <div className={`keywords ${selectedBots[0] ? "" : "disabled"}`}>
           <span>Keywords</span>
           <div>
             <div>
@@ -90,13 +93,21 @@ const BotsSettings = () => {
               </span>
               <div>
                 <button
-                  onClick={toggleDrawer(true, <WhiteList coins={selectedBots}/>, "bottom")}
+                  onClick={toggleDrawer(
+                    true,
+                    <KeywordsSettings coins={selectedBots} />,
+                    "bottom",
+                  )}
                   disabled={!selectedBots[0]}
                 >
                   <CIcon icon={cilPlus} /> Add
                 </button>
                 <button
-                  onClick={toggleDrawer(true, <WhiteList isRemove />, "bottom")}
+                  onClick={toggleDrawer(
+                    true,
+                    <KeywordsSettings coins={selectedBots} isRemove={true} />,
+                    "bottom",
+                  )}
                   disabled={!selectedBots[0]}
                 >
                   <CIcon icon={cilMinus} /> Remove
@@ -109,13 +120,28 @@ const BotsSettings = () => {
               </span>
               <div>
                 <button
-                  onClick={toggleDrawer(true, <BlackList />, "bottom")}
+                  onClick={toggleDrawer(
+                    true,
+                    <KeywordsSettings
+                      isBlacklist={true}
+                      coins={selectedBots}
+                    />,
+                    "bottom",
+                  )}
                   disabled={!selectedBots[0]}
                 >
                   <CIcon icon={cilPlus} /> Add
                 </button>
                 <button
-                  onClick={toggleDrawer(true, <BlackList isRemove />, "bottom")}
+                  onClick={toggleDrawer(
+                    true,
+                    <KeywordsSettings
+                      isBlacklist={true}
+                      coins={selectedBots}
+                      isRemove={true}
+                    />,
+                    "bottom",
+                  )}
                   disabled={!selectedBots[0]}
                 >
                   <CIcon icon={cilMinus} /> Remove
