@@ -7,7 +7,7 @@ import { ReactComponent as OpenLock } from "../../../../assets/icons/openLock.sv
 import { ReactComponent as ClosedLock } from "../../../../assets/icons/closedLock.svg";
 import CustomTooltip from "src/components/CustomTooltip";
 import Swal from "sweetalert2";
-import { getCategories } from "src/services/categoryService";
+import { getCategories, getCategory } from "src/services/categoryService";
 import { getBot } from "src/services/botService";
 import { createCoin } from "src/services/coinService";
 import { capitalizeFirstLetter } from "src/utils";
@@ -16,49 +16,44 @@ const BotForm = ({ bot }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [newsBotsCategories, setNewsBotsCategories] = useState([]);
   const keyWordInputRef = React.createRef();
   const [formData, setFormData] = useState({
-    name: bot && bot.name ? capitalizeFirstLetter(bot.name) : "", //req
-    alias: bot && bot.alias ? bot.alias : "", //req
-    symbol: bot && bot.symbol ? bot.symbol : "", //req
-    category_id: bot && bot.category_id ? bot.category_id : "", //req
+    name: bot && bot.name ? capitalizeFirstLetter(bot.name) : "",
+    alias: bot && bot.alias ? bot.alias : "",
+    symbol: bot && bot.symbol ? bot.symbol : "",
+    category_id: bot && bot.category_id ? bot.category_id : "",
     background_color: bot && bot.background_color ? bot.background_color : "",
     icon: null,
     iconPreview: null,
-    bot_category: "",
-    // name: "", //req
-    // category_id: "",//req
+    bot_category_id: null,
+    dalle_prompt: "",
+    prompt: "",
+    run_frequency: 0,
     blacklist: [],
     keywords: [],
-    url: "",
+    // url: "",
   });
 
-  const fetchBot = async () => {
-    try {
-      const bot = await getBot();
-      // setBot(bot);
-    } catch (err) {
-      setError(err.message || "Error fetching bot");
-    }
-  };
-
-  //   {
-  //     "bot_id": 35,
-  //     "created_at": "Sun, 22 Sep 2024 01:47:12 GMT",
-  //     "gecko_id": null,
-  //     "icon": "/static/topmenu_icons_resize/intellichain.png",
-  //     "is_active": false,
-  //     "updated_at": "Sun, 22 Sep 2024 04:47:12 GMT"j
-  // }
+  // const fetchBot = async () => {
+  //   try {
+  //     const bot = await getBot();
+  //     // setBot(bot);
+  //   } catch (err) {
+  //     setError(err.message || "Error fetching bot");
+  //   }
+  // };
 
   const fetchCategories = useCallback(async () => {
     try {
       const categories = await getCategories();
+      const newsBotsCategories = await getCategories(true);
       setCategories(categories);
+      setNewsBotsCategories(newsBotsCategories);
     } catch (err) {
       setError(err.message || "Error fetching categories");
     }
-  }, [setCategories]);
+  }, [setCategories, setNewsBotsCategories]);
 
   useEffect(() => {
     fetchCategories();
@@ -115,8 +110,28 @@ const BotForm = ({ bot }) => {
     });
   };
 
+  const setBotCategoryId = async (categoryName) => {
+    // const response = await getCategory(categoryName, true)
+    // if (response.success) {
+    //   setFormData({ ...formData, bot_category_id: response.data.id });
+    // }
+    const newsBotCategory = newsBotsCategories.filter(
+      (category) => category.alias.toLowerCase() === categoryName.toLowerCase(),
+    );
+    setFormData({
+      ...formData,
+      bot_category_id: newsBotCategory[0].id,
+    });
+  };
+
   const handleInputChange = useCallback((e) => {
     e.preventDefault();
+
+    if (e.target.name === "category_id") {
+      let selectedCategoryName = e.target.options[e.target.selectedIndex].text;
+      setBotCategoryId(selectedCategoryName);
+    }
+
     const newData = { ...formData };
     newData[e.target.name] = e.target?.value;
     setFormData(newData);
@@ -155,34 +170,44 @@ const BotForm = ({ bot }) => {
       const response = await createCoin(formDataToSend);
 
       if (response.success) {
-        Swal.fire({
-          text: "Bot created successfully!",
-          icon: "success",
-          customClass: "swal",
-        }).then(async () => {
-          const updatedCategories = await getCategories();
-          setCategories(updatedCategories);
+        let formdataForBot = {
+          alias: formData.alias,
+          background_color: formData.background_color,
+          category_id: formData.bot_category_id,
+          dalle_prompt: formData.dalle_prompt,
+          name: formData.name,
+          prompt: formData.prompt,
+          run_frequency: formData.run_frequency,
+        };
 
-          // Additional fetch to the server
-          const bot = await getBot();
-          // setBot(bot);
-        });
+        // Swal.fire({
+        //   text: "Bot created successfully!",
+        //   icon: "success",
+        //   customClass: "swal",
+        // }).then(async () => {
+        //   const updatedCategories = await getCategories();
+        //   setCategories(updatedCategories);
 
-        setFormData({
-          name: "",
-          alias: "",
-          border_color: "",
-          icon: null,
-          iconPreview: null,
-          background_color: "",
-          category_id: "",
-          keywords: [],
-          blacklist: [],
-          url: "",
-          prompt: "",
-        });
-        document.querySelector('input[type="file"]').value = "";
-        setIsLoading(false);
+        //   // Additional fetch to the server
+        //   const bot = await getBot();
+        //   // setBot(bot);
+        // });
+
+        // setFormData({
+        //   name: "",
+        //   alias: "",
+        //   border_color: "",
+        //   icon: null,
+        //   iconPreview: null,
+        //   background_color: "",
+        //   category_id: "",
+        //   keywords: [],
+        //   blacklist: [],
+        //   url: "",
+        //   prompt: "",
+        // });
+        // document.querySelector('input[type="file"]').value = "";
+        // setIsLoading(false);
       } else {
         Swal.fire({
           text: response.error || "Error creating bot",
@@ -287,7 +312,7 @@ const BotForm = ({ bot }) => {
             ))}
           </select>
         </div>
-        <div className={styles.section}>
+        {/* <div className={styles.section}>
           <div className={styles.labelContainer}>
             <label>
               <strong>URL</strong>
@@ -309,7 +334,7 @@ const BotForm = ({ bot }) => {
             type="url"
             value={formData.url}
           />
-        </div>
+        </div> */}
         <div className={styles.section}>
           <div
             style={{
@@ -437,7 +462,9 @@ const BotForm = ({ bot }) => {
             </CustomTooltip>
           </div>
           <textarea
-            name="prompt"
+            name="dalle_prompt"
+            onChange={handleInputChange}
+            value={formData.dalle_prompt}
             className={styles.textarea}
             placeholder="Enter article generator prompt. 
             An example of use could be: 
@@ -460,13 +487,15 @@ const BotForm = ({ bot }) => {
           </div>
           <textarea
             name="prompt"
+            onChange={handleInputChange}
+            value={formData.prompt}
             className={styles.textarea}
             placeholder="Enter article generator prompt. 
             An example of use could be: 
             “Imagine that you are one of the world’s foremost experts on Bitcoin and also a globally renowned journalist skilled at summarizing articles about Bitcoin...”"
           />
         </div>
-        {/* <div className={styles.section} style={{ width: 200 }}>
+        <div className={styles.section} style={{ width: 200 }}>
           <div className={styles.labelContainer}>
             <label>
               <strong>Run frequency</strong>
@@ -481,16 +510,15 @@ const BotForm = ({ bot }) => {
             </CustomTooltip>
           </div>
           <input
-            name="frequency"
+            name="run_frequency"
             type="number"
-            defaultValue={0}
             id="frequency"
             onChange={handleInputChange}
             className={styles.frequencyInput}
             placeholder="Enter frequency"
-            value={formData.frequency}
+            value={formData.run_frequency}
           />
-        </div> */}
+        </div>
         <div className={styles.section}>
           <div className={styles.labelContainer}>
             <label>
