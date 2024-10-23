@@ -15,7 +15,7 @@ import { capitalizeFirstLetter } from "src/utils";
 const BotForm = ({ bot, setCategories }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [categories, setCategories] = useState([]);
+  const [selectCategories, setSelectCategories] = useState([]);
   const [newsBotsCategories, setNewsBotsCategories] = useState([]);
   const keyWordInputRef = React.createRef();
   const [formData, setFormData] = useState({
@@ -48,12 +48,12 @@ const BotForm = ({ bot, setCategories }) => {
     try {
       const categories = await getCategories();
       const newsBotsCategories = await getCategories(true);
-      setCategories(categories);
+      setSelectCategories(categories);
       setNewsBotsCategories(newsBotsCategories);
     } catch (err) {
       setError(err.message || "Error fetching categories");
     }
-  }, [setCategories, setNewsBotsCategories]);
+  }, [setSelectCategories, setNewsBotsCategories]);
 
   useEffect(() => {
     fetchCategories();
@@ -323,7 +323,7 @@ const BotForm = ({ bot, setCategories }) => {
             required
           >
             <option value="">Select category</option>{" "}
-            {categories?.map((category) => (
+            {selectCategories?.map((category) => (
               <option key={category.category_id} value={category.category_id}>
                 {capitalizeFirstLetter(category.name)}
               </option>
