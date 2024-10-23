@@ -191,7 +191,7 @@ const ListItem = (params) => {
         >
           <SwitchButton isActive={item.isActive} isAppsSwitch={true} />
         </div> */}
-        {!isBot && (
+        {!isCoin && (
           <button
             onClick={toggleOpen}
             className="chevron-button"
