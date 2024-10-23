@@ -105,6 +105,7 @@
   height: 150px;
   border-radius: 10px;
   padding: 10px;
+  resize: none;
 }
 
 .divInput {
@@ -210,11 +211,10 @@
 /* set button(top and bottom of the scrollbar) */
 .textarea::-webkit-scrollbar-button {
   display: none;
-}
-
-.textarea::-webkit-resizer {
-  border-bottom-right-radius: 7px;
-  background-color: #404040;
+  visibility: hidden;
+  appearance: none;
+  background-color: transparent;
+  width: 1px;
 }
 
 .textarea::placeholder {
