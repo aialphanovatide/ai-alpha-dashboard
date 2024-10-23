@@ -51,14 +51,14 @@ const BotsSettings = () => {
         News Bot settings
       </h2>
       <div className="settings-container">
-        <div className="treshold" style={{ width: "15%" }}>
+        {/* <div className="treshold" style={{ width: "15%" }}>
           <span>Treshold</span>
           <div>
             <button onClick={toggleDrawer(true, <TresholdEdit />, "right")}>
               <CIcon icon={cilPencil} size="sm" /> Edit
             </button>
           </div>
-        </div>
+        </div> */}
         <div className="create" style={{ width: "35%" }}>
           <span>Create</span>
           <div
