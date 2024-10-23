@@ -148,12 +148,6 @@ body {
       background-color: #945d15;
     }
 
-    .switch-button.active,
-    .BotForm_submitButton__aSQ\+-:disabled,
-    .NewCategoryForm_submitButton__IenMY:disabled {
-      background-color: #6e4b00 !important;
-    }
-
     .settings-container>div>span,
     .MuiDrawer-paper {
       background-color: #1e222a;
@@ -228,6 +222,8 @@ body {
     #botform-blacklist-keyword {
       background-color: #8b8b8b;;
     }
+
+    .switch-button.active,
     #bot-form-submit-button,
     #categoryform-submit-button {
       background-color: #6e4b00;
