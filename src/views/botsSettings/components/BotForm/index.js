@@ -12,7 +12,7 @@ import { createBot, getBot } from "src/services/botService";
 import { createCoin } from "src/services/coinService";
 import { capitalizeFirstLetter } from "src/utils";
 
-const BotForm = ({ bot }) => {
+const BotForm = ({ bot, setCategories }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -29,7 +29,7 @@ const BotForm = ({ bot }) => {
     bot_category_id: null,
     dalle_prompt: "",
     prompt: "",
-    run_frequency: 0,
+    run_frequency: 20,
     blacklist: [],
     keywords: [],
     // url: "",
@@ -74,8 +74,15 @@ const BotForm = ({ bot }) => {
       formData.name &&
       formData.alias &&
       formData.category_id &&
+      formData.symbol &&
+      formData.bot_category_id,
+    [
+      formData.name,
+      formData.alias,
+      formData.category_id,
       formData.symbol,
-    [formData.name, formData.alias, formData.category_id, formData.symbol],
+      formData.bot_category_id,
+    ],
   );
 
   const addKeyword = (e) => {
@@ -110,7 +117,7 @@ const BotForm = ({ bot }) => {
     });
   };
 
-  const setBotCategoryId = async (categoryName) => {
+  const getBotCategoryId = (categoryName) => {
     // const response = await getCategory(categoryName, true)
     // if (response.success) {
     //   setFormData({ ...formData, bot_category_id: response.data.id });
@@ -118,22 +125,22 @@ const BotForm = ({ bot }) => {
     const newsBotCategory = newsBotsCategories.filter(
       (category) => category.alias.toLowerCase() === categoryName.toLowerCase(),
     );
-    setFormData({
-      ...formData,
-      bot_category_id: newsBotCategory[0].id,
-    });
+
+    return newsBotCategory[0].id;
   };
 
   const handleInputChange = useCallback((e) => {
     e.preventDefault();
+    const newData = { ...formData };
 
     if (e.target.name === "category_id") {
       let selectedCategoryName = e.target.options[e.target.selectedIndex].text;
-      setBotCategoryId(selectedCategoryName);
+      let botCategoryId = getBotCategoryId(selectedCategoryName);
+      newData.bot_category_id = botCategoryId;
     }
 
-    const newData = { ...formData };
     newData[e.target.name] = e.target?.value;
+    console.log(newData);
     setFormData(newData);
   });
 
@@ -187,20 +194,23 @@ const BotForm = ({ bot }) => {
             text: "Coin/Bot created successfully!",
             icon: "success",
             customClass: "swal",
-          })
+          }).then(async () => {
+            const updatedCategories = await getCategories();
+            setCategories(updatedCategories);
+          });;
 
           setFormData({
             name: "",
             alias: "",
             symbol: "",
             category_id: "",
-            background_color:"",
+            background_color: "",
             icon: null,
             iconPreview: null,
             bot_category_id: null,
             dalle_prompt: "",
             prompt: "",
-            run_frequency: 0,
+            run_frequency: 20,
             blacklist: [],
             keywords: [],
             // url: "",
@@ -390,9 +400,16 @@ const BotForm = ({ bot }) => {
               <CIcon icon={cilPlus} /> Add
             </button>
           </div>
-          <div className={styles.keywordsContainer} id="whitelist-keywords-container">
+          <div
+            className={styles.keywordsContainer}
+            id="whitelist-keywords-container"
+          >
             {formData.keywords?.map((keyword, index) => (
-              <div className={styles.keyword} key={index} id="botform-whitelist-keyword">
+              <div
+                className={styles.keyword}
+                key={index}
+                id="botform-whitelist-keyword"
+              >
                 <span>{keyword}</span>
                 <button onClick={(e) => removeKeyword(keyword, "keywords")}>
                   <CIcon icon={cilX} />
@@ -435,7 +452,7 @@ const BotForm = ({ bot }) => {
             </div>
           </div>
           <div className={styles.keywordInput} id="blacklist-keywords-input">
-            <input placeholder="Enter keywords" name="blacklist"/>
+            <input placeholder="Enter keywords" name="blacklist" />
             <button
               onClick={addKeyword}
               // disabled={isAddKeywordButtonDisabled("blacklist")}
@@ -444,9 +461,16 @@ const BotForm = ({ bot }) => {
               <CIcon icon={cilPlus} /> Add
             </button>
           </div>
-          <div className={styles.keywordsContainer} id="blacklist-keywords-container">
+          <div
+            className={styles.keywordsContainer}
+            id="blacklist-keywords-container"
+          >
             {formData.blacklist?.map((keyword, index) => (
-              <div className={styles.keyword} key={index} id="botform-blacklist-keyword">
+              <div
+                className={styles.keyword}
+                key={index}
+                id="botform-blacklist-keyword"
+              >
                 <span>{keyword}</span>
                 <button onClick={(e) => removeKeyword(keyword, "blacklist")}>
                   <CIcon icon={cilX} />
@@ -525,6 +549,7 @@ const BotForm = ({ bot }) => {
             className={styles.frequencyInput}
             placeholder="Enter frequency"
             value={formData.run_frequency}
+            min="20"
           />
         </div>
         <div className={styles.section}>
