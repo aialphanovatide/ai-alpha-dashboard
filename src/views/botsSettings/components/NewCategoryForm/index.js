@@ -19,7 +19,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
   const [formData, setFormData] = useState({
     name: category && category.name ? category.name : "",
     alias: category && category.alias ? category.alias : "",
-    prompt: "",
+    // prompt: "",
     slack_channel: "",
     border_color:
       category && category.border_color
@@ -67,10 +67,12 @@ const NewCategoryForm = ({ category, setCategories }) => {
       let formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
       formDataToSend.append("alias", formData.alias);
-      formDataToSend.append("border_color", `#${formData.border_color}`);
 
+      if (formData.border_color) {
+        formDataToSend.append("border_color", `#${formData.border_color}`);
+      }
       if (formData.icon) {
-        formDataToSend.append("icon", formData.icon, formData.icon.name);
+        formDataToSend.append("icon", formData.icon, formData.icon);
       }
 
       const response = await createCategory(formDataToSend);
@@ -104,7 +106,11 @@ const NewCategoryForm = ({ category, setCategories }) => {
       }
     } catch (err) {
       Swal.fire({
-        text: err.message || `An error occurred while ${category ? "updating" : "creating"} the category`,
+        text:
+          err.message ||
+          `An error occurred while ${
+            category ? "updating" : "creating"
+          } the category`,
         icon: "error",
         customClass: "swal",
       });
@@ -165,7 +171,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
             required
           />
         </div>
-        <div className={styles.section}>
+        {/* <div className={styles.section}>
           <div className={styles.labelContainer}>
             <label>
               <strong>News Prompt</strong>
@@ -188,7 +194,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
             onChange={handleInputChange}
             name="prompt"
           />
-        </div>
+        </div> */}
         <div className={styles.section}>
           <div className={styles.labelContainer}>
             <label>
@@ -324,7 +330,13 @@ const NewCategoryForm = ({ category, setCategories }) => {
           disabled={!isFormValid}
           id="categoryform-submit-button"
         >
-          {isLoading ? (category ? "Updating..." : "Creating...") : (category ? "Update" : "Create")}
+          {isLoading
+            ? category
+              ? "Updating..."
+              : "Creating..."
+            : category
+              ? "Update"
+              : "Create"}
         </button>
       </form>
     </>
