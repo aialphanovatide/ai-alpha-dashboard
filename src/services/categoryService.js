@@ -1,7 +1,7 @@
 import config from "../config";
 const headers = {
-  "X-API-Key": config.X_API_KEY_DEV,
-  "Content-Type": "application/json",
+  'Accept': "*/*",
+  "X-Api-Key": config.X_API_KEY_DEV,
 };
 
 const getCategory = async (category_id, isNewsBotsServer) => {
@@ -73,10 +73,8 @@ const createCategory = async (payload) => {
     try {
       const data = JSON.parse(responseText);
       if (response.ok) {
-        // Respuesta de éxito
         return { success: true, data };
       } else {
-        // Error de cliente (400) o servidor (500)
         return {
           success: false,
           error: data.error || "Unknown error occurred",
