@@ -173,13 +173,19 @@ body {
 
 
     // Category list scroll bar
-    .bot-list-container::-webkit-scrollbar {
+    .bot-list-container::-webkit-scrollbar,
+    .css-1160xiw-MuiPaper-root-MuiDrawer-paper::-webkit-scrollbar {
       background-color: #1e222a;
     }
 
-    .bot-list-container::-webkit-scrollbar-thumb {
+    .bot-list-container::-webkit-scrollbar-thumb,
+    .css-1160xiw-MuiPaper-root-MuiDrawer-paper::-webkit-scrollbar-thumb {
       background-color: #484848;
       border-color: #1e222a;
+    }
+
+    .MuiDrawer-paper textarea::-webkit-scrollbar-thumb {
+      border-color: #2a303d;
     }
 
     .item {
@@ -195,6 +201,7 @@ body {
     .MuiDrawer-paper input,
     .MuiDrawer-paper select,
     .MuiDrawer-paper textarea,
+    .MuiDrawer-paper textarea::-webkit-scrollbar,
     .NewCategoryForm_input__b5u00,
     .BotForm_keywordInput__OaLIj,
     .WhiteList_keywordInput__Odyg6,
@@ -205,14 +212,32 @@ body {
     .NewCategoryForm_imgContainer__E0geY,
     #category-alias,
     .css-vtpge1-MuiSlider-root .MuiSlider-valueLabel, 
-    #customInput {
+    #customInput,
+    #background-color-input,
+    #whitelist-keywords-container,
+    #blacklist-keywords-container,
+    #blacklist-keywords-input,
+    #whitelist-keywords-input,
+    #categoryform-icon-container,
+    #categoryform-border-color-input {
       background-color: #2a303d !important;
       color: white;
     }
 
+    #botform-whitelist-keyword,
+    #botform-blacklist-keyword {
+      background-color: #8b8b8b;;
+    }
+    #bot-form-submit-button,
+    #categoryform-submit-button {
+      background-color: #6e4b00;
+    }
+
     .BotForm_submitButton__aSQ\+-:disabled,
     .BotForm_imgPicker__9tI89::file-selector-button, 
-    .NewCategoryForm_imgPicker__iTTJX::file-selector-button {
+    .NewCategoryForm_imgPicker__iTTJX::file-selector-button,
+    #botform-icon-input::file-selector-button,
+    #categoryform-icon-input::file-selector-button {
       background-color: #4e4e4e;
     }
 
