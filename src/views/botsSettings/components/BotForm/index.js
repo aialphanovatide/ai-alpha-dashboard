@@ -8,7 +8,7 @@ import { ReactComponent as ClosedLock } from "../../../../assets/icons/closedLoc
 import CustomTooltip from "src/components/CustomTooltip";
 import Swal from "sweetalert2";
 import { getCategories, getCategory } from "src/services/categoryService";
-import { getBot } from "src/services/botService";
+import { createBot, getBot } from "src/services/botService";
 import { createCoin } from "src/services/coinService";
 import { capitalizeFirstLetter } from "src/utils";
 
@@ -180,38 +180,46 @@ const BotForm = ({ bot }) => {
           run_frequency: formData.run_frequency,
         };
 
-        // Swal.fire({
-        //   text: "Bot created successfully!",
-        //   icon: "success",
-        //   customClass: "swal",
-        // }).then(async () => {
-        //   const updatedCategories = await getCategories();
-        //   setCategories(updatedCategories);
+        const response = await createBot(formdataForBot);
 
-        //   // Additional fetch to the server
-        //   const bot = await getBot();
-        //   // setBot(bot);
-        // });
+        if (response.success) {
+          Swal.fire({
+            text: "Coin/Bot created successfully!",
+            icon: "success",
+            customClass: "swal",
+          })
 
-        // setFormData({
-        //   name: "",
-        //   alias: "",
-        //   border_color: "",
-        //   icon: null,
-        //   iconPreview: null,
-        //   background_color: "",
-        //   category_id: "",
-        //   keywords: [],
-        //   blacklist: [],
-        //   url: "",
-        //   prompt: "",
-        // });
-        // document.querySelector('input[type="file"]').value = "";
-        // setIsLoading(false);
+          setFormData({
+            name: "",
+            alias: "",
+            symbol: "",
+            category_id: "",
+            background_color:"",
+            icon: null,
+            iconPreview: null,
+            bot_category_id: null,
+            dalle_prompt: "",
+            prompt: "",
+            run_frequency: 0,
+            blacklist: [],
+            keywords: [],
+            // url: "",
+          });
+          document.querySelector('input[type="file"]').value = "";
+          setIsLoading(false);
+        } else {
+          Swal.fire({
+            text: response.error || "Error creating bot",
+            icon: "error",
+            customClass: "swal",
+          });
+          setIsLoading(false);
+        }
       } else {
         Swal.fire({
-          text: response.error || "Error creating bot",
+          text: response.error || "Error creating coin",
           icon: "error",
+          customClass: "swal",
         });
         setIsLoading(false);
       }
@@ -368,7 +376,7 @@ const BotForm = ({ bot }) => {
               </CustomTooltip>
             </div>
           </div>
-          <div className={styles.keywordInput}>
+          <div className={styles.keywordInput} id="whitelist-keywords-input">
             <input
               placeholder="Enter keywords"
               name="keywords"
@@ -382,9 +390,9 @@ const BotForm = ({ bot }) => {
               <CIcon icon={cilPlus} /> Add
             </button>
           </div>
-          <div className={styles.keywordsContainer}>
+          <div className={styles.keywordsContainer} id="whitelist-keywords-container">
             {formData.keywords?.map((keyword, index) => (
-              <div className={styles.keyword} key={index}>
+              <div className={styles.keyword} key={index} id="botform-whitelist-keyword">
                 <span>{keyword}</span>
                 <button onClick={(e) => removeKeyword(keyword, "keywords")}>
                   <CIcon icon={cilX} />
@@ -426,8 +434,8 @@ const BotForm = ({ bot }) => {
               </CustomTooltip>
             </div>
           </div>
-          <div className={styles.keywordInput}>
-            <input placeholder="Enter keywords" name="blacklist" />
+          <div className={styles.keywordInput} id="blacklist-keywords-input">
+            <input placeholder="Enter keywords" name="blacklist"/>
             <button
               onClick={addKeyword}
               // disabled={isAddKeywordButtonDisabled("blacklist")}
@@ -436,9 +444,9 @@ const BotForm = ({ bot }) => {
               <CIcon icon={cilPlus} /> Add
             </button>
           </div>
-          <div className={styles.keywordsContainer}>
+          <div className={styles.keywordsContainer} id="blacklist-keywords-container">
             {formData.blacklist?.map((keyword, index) => (
-              <div className={styles.keyword} key={index}>
+              <div className={styles.keyword} key={index} id="botform-blacklist-keyword">
                 <span>{keyword}</span>
                 <button onClick={(e) => removeKeyword(keyword, "blacklist")}>
                   <CIcon icon={cilX} />
@@ -533,6 +541,7 @@ const BotForm = ({ bot }) => {
                 accept=".svg"
                 onChange={handleImageChange}
                 className={styles.imgPicker}
+                id="botform-icon-input"
               />
             </div>
           </div>
@@ -553,6 +562,7 @@ const BotForm = ({ bot }) => {
               justifyContent: "space-between",
               alignItems: "center",
             }}
+            id="background-color-input"
           >
             <span style={{ fontSize: 20, fontWeight: 600 }}>#</span>
             <input
@@ -596,8 +606,10 @@ const BotForm = ({ bot }) => {
                 ? formData.background_color.includes("#")
                   ? formData.background_color
                   : `#${formData.background_color}`
-                : "#F5F5F5",
+                : "transparent",
+                // : "#F5F5F5",
             }}
+            id="bot-form-preview-container"
           >
             <img
               src={formData.iconPreview}
@@ -615,6 +627,7 @@ const BotForm = ({ bot }) => {
           type="submit"
           disabled={!isFormValid}
           onClick={handleSubmit}
+          id="bot-form-submit-button"
         >
           {isLoading
             ? bot
