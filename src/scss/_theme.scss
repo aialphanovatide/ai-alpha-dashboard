@@ -224,9 +224,9 @@ body {
     }
 
     .switch-button.active,
-    #bot-form-submit-button,
-    #categoryform-submit-button {
-      background-color: #6e4b00;
+    #bot-form-submit-button:disabled,
+    #categoryform-submit-button:disabled {
+      background-color: #6b4d0c;
     }
 
     .BotForm_submitButton__aSQ\+-:disabled,
