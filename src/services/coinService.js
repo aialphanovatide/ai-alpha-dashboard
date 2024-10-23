@@ -1,7 +1,7 @@
 import config from "../config";
 const headers = {
-  "X-API-Key": config.X_API_KEY_DEV,
-  "Content-Type": "application/json",
+  'Accept': "*/*",
+  "X-Api-Key": config.X_API_KEY_DEV,
 };
 
 const createCoin = async (payload) => {
