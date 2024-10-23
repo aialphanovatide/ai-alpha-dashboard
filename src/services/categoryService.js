@@ -9,7 +9,7 @@ const getCategory = async (category_id, isNewsBotsServer) => {
     const url = isNewsBotsServer
       ? `${config.BOTS_V2_DEV_API}/category?category_name=${category_id}`
       : `${config.BASE_URL_DEV}/category/${category_id}`;
-      
+
     const response = await fetch(url, {
       method: "GET",
       headers,
@@ -32,9 +32,13 @@ const getCategory = async (category_id, isNewsBotsServer) => {
   }
 };
 
-const getCategories = async () => {
+const getCategories = async (isNewsBotsServer) => {
   try {
-    const response = await fetch(`${config.BASE_URL_DEV}/categories`, {
+    const url = isNewsBotsServer
+      ? `${config.BOTS_V2_DEV_API}/categories`
+      : `${config.BASE_URL_DEV}/categories`;
+
+    const response = await fetch(url, {
       method: "GET",
       headers,
     });
@@ -43,8 +47,8 @@ const getCategories = async () => {
 
     try {
       const data = JSON.parse(responseText);
-      if (data && data.categories) {
-        return data.categories;
+      if (data && (data.categories || data.data.categories)) {
+        return !isNewsBotsServer ? data.categories : data.data.categories;
       } else {
         console.error("Error in response:", data.error);
       }
@@ -226,4 +230,5 @@ export {
   deleteCategory,
   toggleAllCategoriesState,
   toggleCategoryState,
+  getCategory,
 };
