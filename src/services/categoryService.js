@@ -64,10 +64,7 @@ const createCategory = async (payload) => {
   try {
     const response = await fetch(`${config.BASE_URL_DEV}/category`, {
       method: "POST",
-      headers: {
-        "X-API-Key": config.X_API_KEY,
-        Accept: "application/json",
-      },
+      headers,
       body: payload,
     });
 
