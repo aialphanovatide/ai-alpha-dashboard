@@ -1,6 +1,5 @@
 import config from "../config";
 const headers = {
-  "X-API-Key": config.X_API_KEY_DEV,
   "Content-Type": "application/json",
 };
 
@@ -35,7 +34,7 @@ const getBot = async (query, searchBy = "id") => {
 
 const createBot = async (payload) => {
   try {
-    const response = await fetch(`${config.BASE_URL_DEV}/coin`, {
+    const response = await fetch(`${config.BOTS_V2_DEV_API}/bot`, {
       method: "POST",
       headers,
       body: payload,
@@ -62,7 +61,6 @@ const createBot = async (payload) => {
     return { success: false, error: "Network error or server is unreachable" };
   }
 };
-
 
 const editBot = async (payload) => {
   try {
@@ -98,4 +96,5 @@ const editBot = async (payload) => {
 export { 
   createBot, 
   getBot,
+  editBot,
 };
