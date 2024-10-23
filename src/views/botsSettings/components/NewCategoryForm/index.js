@@ -98,6 +98,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
         Swal.fire({
           text: response.error || "Error creating category",
           icon: "error",
+          customClass: "swal",
         });
         setIsLoading(false);
       }
@@ -224,6 +225,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
                 accept=".svg"
                 onChange={handleImageChange}
                 className={styles.imgPicker}
+                id="categoryform-icon-input"
               />
             </div>
           </div>
@@ -244,6 +246,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
               justifyContent: "space-between",
               alignItems: "center",
             }}
+            id="categoryform-border-color-input"
           >
             <span style={{ fontSize: 20, fontWeight: 600 }}>#</span>
             <input
@@ -281,6 +284,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
             <strong>Preview</strong>
           </label>
           <div
+            id="categoryform-icon-container"
             className={styles.imgContainer}
             style={{
               borderColor: formData.border_color
@@ -318,6 +322,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
           className={styles.submitButton}
           type="submit"
           disabled={!isFormValid}
+          id="categoryform-submit-button"
         >
           {isLoading ? (category ? "Updating..." : "Creating...") : (category ? "Update" : "Create")}
         </button>
