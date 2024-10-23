@@ -79,7 +79,13 @@ const BotsSettings = () => {
             >
               <CIcon icon={cilPlus} /> New Category
             </button>
-            <button onClick={toggleDrawer(true, <BotForm />, "right")}>
+            <button
+              onClick={toggleDrawer(
+                true,
+                <BotForm setCategories={setCategories} />,
+                "right",
+              )}
+            >
               <CIcon icon={cilPlus} /> New Coin/Bot
             </button>
           </div>
