@@ -79,6 +79,7 @@ const AllNarrativeTrading = ({ items, fetchNarrativeTrading }) => {
           title: data.message,
           showConfirmButton: false,
           timer: 1500,
+          customClass: "swal",
         });
         fetchNarrativeTrading();
       } else {
@@ -88,6 +89,7 @@ const AllNarrativeTrading = ({ items, fetchNarrativeTrading }) => {
           title: data.error,
           showConfirmButton: false,
           timer: 1500,
+          customClass: "swal",
         });
       }
     } catch (error) {
@@ -97,6 +99,7 @@ const AllNarrativeTrading = ({ items, fetchNarrativeTrading }) => {
         title: error.message || "An error occurred",
         showConfirmButton: false,
         timer: 1500,
+        customClass: "swal",
       });
     }
   };
