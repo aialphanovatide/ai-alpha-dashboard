@@ -37,7 +37,7 @@ const createBot = async (payload) => {
     const response = await fetch(`${config.BOTS_V2_DEV_API}/bot`, {
       method: "POST",
       headers,
-      body: payload,
+      body: JSON.stringify(payload),
     });
 
     let responseText = await response.text();
