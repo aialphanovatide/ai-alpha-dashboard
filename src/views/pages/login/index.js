@@ -21,6 +21,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import ServerStatus from "src/components/ServerStatus";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -49,11 +50,12 @@ const Login = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`${config.BASE_URL}/admin/login`, {
+      const response = await fetch(`${config.BASE_URL_DEV}/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true",
+          "X-Api-Key": config.X_API_KEY_DEV,
         },
         body: JSON.stringify({ username, password }),
       });
@@ -90,10 +92,11 @@ const Login = () => {
                       className={styles.loginLogo}
                     />
                     <h1>Login</h1>
-                    <p className="text-body-secondary">
+                    <p className="text-body-secondary m-0">
                       Log In to your account
                     </p>
-                    <CInputGroup className="mb-3">
+                    <ServerStatus/>
+                    <CInputGroup className="m-2">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>

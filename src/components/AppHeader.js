@@ -23,6 +23,7 @@ import {
 } from '@coreui/icons'
 
 import { AppHeaderDropdown } from './header/index'
+import ServerStatus from './ServerStatus'
 
 const AppHeader = () => {
   const headerRef = useRef()
@@ -100,6 +101,7 @@ const AppHeader = () => {
           <AppHeaderDropdown />
         </CHeaderNav>
       </CContainer>
+      <ServerStatus isFullWidth/>
     </CHeader>
   )
 }
