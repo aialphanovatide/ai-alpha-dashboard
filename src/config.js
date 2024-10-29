@@ -24,5 +24,4 @@ const config = {
    X_API_KEY: X_API_KEY,
    X_API_KEY_DEV: X_API_KEY_DEV,
 }
-
 export default config

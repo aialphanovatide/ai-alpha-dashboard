@@ -31,6 +31,7 @@ const ChartsPage = () => {
   const [coinData, setCoinData] = useState([]);
   const [temp, setTemp] = useState("");
   const [pairValue, setPairValue] = useState("");
+  const [isEssential, setIsEssential] = useState(false);
 
   const temporalities = ["1h", "4h", "1d", "1w"];
   const pairs = ["usdt", "btc", "eth"];
@@ -132,11 +133,12 @@ const ChartsPage = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${config.BASE_URL}/api/chart/save_chart`, {
+      const response = await fetch(`${config.BASE_URL_DEV}/chart`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true",
+          "X-API-KEY": config.X_API_KEY_DEV
         },
         body: JSON.stringify({
           support_1: formData.support1,
@@ -147,10 +149,11 @@ const ChartsPage = () => {
           resistance_2: formData.resistance2,
           resistance_3: formData.resistance3,
           resistance_4: formData.resistance4,
-          coin_bot_id: selectedCoin,
-          token: selectedCoinName,
+          coin_id: selectedCoin,
+          coin_name: selectedCoinName,
           pair: pairValue,
           temporality: temp,
+          is_essential: isEssential,
         }),
       });
 
@@ -166,6 +169,7 @@ const ChartsPage = () => {
           resistance3: "",
           resistance4: "",
         });
+        setIsEssential(false);
         fetchCoinData();
 
         Swal.fire({
@@ -339,7 +343,14 @@ const ChartsPage = () => {
                   ))}
                 </CCol>
               </CRow>
-
+              <div className="checkbox-container">
+                <input
+                  type="checkbox"
+                  value={isEssential}
+                  onChange={() => setIsEssential(!isEssential)}
+                />
+                <label className="label">Essential Update</label>
+              </div>
               <div className="lastContainer">
                 {/* Submit button */}
                 <CButton className="save-btn" type="submit">

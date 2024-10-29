@@ -13,7 +13,7 @@
   }
   
   .select-dropdown {
-    width: 90%;
+    width: 100%;
     padding: 8px;
     border-radius: 4px;
     border: 1px solid #ccc;
@@ -28,6 +28,7 @@
   .selectors-container {
     display: flex;
     align-items: center; /* Centra verticalmente */
+    gap: 10px;
   }
   
   .or-text {

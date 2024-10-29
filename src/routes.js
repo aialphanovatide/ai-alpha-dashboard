@@ -1,7 +1,7 @@
 import React from 'react'
 const ChartsPage = React.lazy(() => import('./views/chartsPage/ChartsPage'))
 const Home = React.lazy(() => import('./views/Home'))
-const Analysis = React.lazy(() => import('./views/analysis/Analysis'))
+const ContentCreation = React.lazy(() => import('./views/ContentCreation'))
 const Fundamentals = React.lazy(() => import('./views/Fundamentals'))
 const BotsSettings = React.lazy(() => import('./views/botsSettings'))
 const NarrativeTrading = React.lazy(() => import('./views/narrativeTrading/NarrativeTrading'))
@@ -67,7 +67,7 @@ const routes = [
   { path: '/narrativeTrading', name: 'NarrativeTrading', element: NarrativeTrading },
   { path: '/botsSettings', name: 'BotsSettings', element: BotsSettings },
   { path: '/chartsPage', name: 'ChartsPage', element: ChartsPage },
-  { path: '/analysis', name: 'Analysis', element: Analysis },
+  { path: '/contentCreation', name: 'Content Creation', element: ContentCreation },
   { path: '/topStories', name: 'Top Stories', element: topSories },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
