@@ -52,9 +52,9 @@ const BotForm = ({ bot, setCategories }) => {
 
     if (response.success) {
       if (isBlacklist) {
-        setBlacklist(response.data);
+        setBlacklist(prev => [...prev, ...response.data]);
       } else {
-        setKeywords(response.data);
+        setKeywords(prev => [...prev, ...response.data]);
       }
     } else {
       Swal.fire({
