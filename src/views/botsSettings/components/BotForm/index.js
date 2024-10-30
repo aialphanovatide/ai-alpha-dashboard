@@ -11,13 +11,18 @@ import { getCategories, getCategory } from "src/services/categoryService";
 import { createBot, getBot } from "src/services/botService";
 import { createCoin } from "src/services/coinService";
 import { capitalizeFirstLetter } from "src/utils";
+import { extractKeywords } from "src/services/keywordService";
 
 const BotForm = ({ bot, setCategories }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectCategories, setSelectCategories] = useState([]);
   const [newsBotsCategories, setNewsBotsCategories] = useState([]);
+  const [isWhitelistFileUploading, setWhitelistFileUploading] = useState(false);
+  const [isBlacklistFileUploading, setBlacklistFileUploading] = useState(false);
   const keyWordInputRef = React.createRef();
+  const [blacklist, setBlacklist] = useState([]);
+  const [keywords, setKeywords] = useState([]);
   const [formData, setFormData] = useState({
     name: bot && bot.name ? capitalizeFirstLetter(bot.name) : "",
     alias: bot && bot.alias ? bot.alias : "",
@@ -30,10 +35,38 @@ const BotForm = ({ bot, setCategories }) => {
     dalle_prompt: "",
     prompt: "",
     run_frequency: 20,
-    blacklist: [],
-    keywords: [],
     // url: "",
   });
+
+  const onFileUpload = async (event, isBlacklist) => {
+    const setFileUploading = isBlacklist
+      ? setBlacklistFileUploading
+      : setWhitelistFileUploading;
+    setFileUploading(true);
+    
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file, file.name);
+
+    const response = await extractKeywords(formData, isBlacklist);
+
+    if (response.success) {
+      if (isBlacklist) {
+        setBlacklist(response.data);
+      } else {
+        setKeywords(response.data);
+      }
+    } else {
+      Swal.fire({
+        text: response.error || "Error extracting keywords",
+        icon: "error",
+        customClass: "swal",
+      });
+    }
+
+    document.querySelector('input[accept=".xls,.xlsx"]').value = "";
+    setFileUploading(false);
+  };
 
   // const fetchBot = async () => {
   //   try {
@@ -85,7 +118,7 @@ const BotForm = ({ bot, setCategories }) => {
     ],
   );
 
-  const addKeyword = (e) => {
+  const addKeyword = (e, isBlacklist) => {
     e.preventDefault();
     const input = document.querySelector(`input[name="${e.target.name}"]`);
     const keyword = input?.value.trim();
@@ -95,26 +128,29 @@ const BotForm = ({ bot, setCategories }) => {
       return;
     }
 
-    setFormData((prevFormData) => {
-      if (prevFormData[e.target.name].includes(keyword)) {
+    if (isBlacklist) {
+      if (blacklist.includes(keyword)) {
         setError("Keyword already added");
-        return prevFormData;
+        return;
       }
-
-      return {
-        ...prevFormData,
-        [e.target.name]: [...prevFormData[e.target.name], keyword],
-      };
-    });
+      setBlacklist([...blacklist, keyword]);
+    } else {
+      if (keywords.includes(keyword)) {
+        setError("Keyword already added");
+        return;
+      }
+      setKeywords([...keywords, keyword]);
+    }
 
     input.value = "";
   };
 
-  const removeKeyword = (keywordToRemove, type) => {
-    setFormData({
-      ...formData,
-      [type]: formData[type].filter((keyword) => keyword !== keywordToRemove),
-    });
+  const removeKeyword = (keywordToRemove, isBlacklist) => {
+    if (isBlacklist) {
+      setBlacklist(blacklist.filter((keyword) => keyword !== keywordToRemove));
+    } else {
+      setKeywords(keywords.filter((keyword) => keyword !== keywordToRemove));
+    }
   };
 
   const getBotCategoryId = (categoryName) => {
@@ -140,7 +176,6 @@ const BotForm = ({ bot, setCategories }) => {
     }
 
     newData[e.target.name] = e.target?.value;
-    console.log(newData);
     setFormData(newData);
   });
 
@@ -197,7 +232,7 @@ const BotForm = ({ bot, setCategories }) => {
           }).then(async () => {
             const updatedCategories = await getCategories();
             setCategories(updatedCategories);
-          });;
+          });
 
           setFormData({
             name: "",
@@ -368,10 +403,17 @@ const BotForm = ({ bot, setCategories }) => {
               </strong>
             </label>
             <div style={{ display: "flex", flexDirection: "row" }}>
-              {/* <button className={styles.button}>
+              <input
+                type="file"
+                accept=".xls,.xlsx"
+                onChange={onFileUpload}
+                id="uploadWhitelistBtn"
+                className={styles.uploadBtn}
+              />
+              <label htmlFor="uploadWhitelistBtn" className={styles.fileLabel}>
                 <CIcon icon={cilFile} />
-                Upload .xsl
-              </button> */}
+                {isWhitelistFileUploading ? "Uploading..." : "Upload .xsl"}
+              </label>
               {/* <button className={styles.button}>
                 <CIcon icon={cilDataTransferDown} />
                 Download
@@ -404,14 +446,14 @@ const BotForm = ({ bot, setCategories }) => {
             className={styles.keywordsContainer}
             id="whitelist-keywords-container"
           >
-            {formData.keywords?.map((keyword, index) => (
+            {keywords?.map((keyword, index) => (
               <div
                 className={styles.keyword}
                 key={index}
                 id="botform-whitelist-keyword"
               >
                 <span>{keyword}</span>
-                <button onClick={(e) => removeKeyword(keyword, "keywords")}>
+                <button onClick={(e) => removeKeyword(keyword)}>
                   <CIcon icon={cilX} />
                 </button>
               </div>
@@ -433,10 +475,17 @@ const BotForm = ({ bot, setCategories }) => {
               </strong>
             </label>
             <div style={{ display: "flex", flexDirection: "row" }}>
-              {/* <button className={styles.button}>
+              <input
+                type="file"
+                accept=".xls,.xlsx"
+                onChange={(e) => onFileUpload(e, true)}
+                id="uploadBlacklistBtn"
+                className={styles.uploadBtn}
+              />
+              <label htmlFor="uploadBlacklistBtn" className={styles.fileLabel}>
                 <CIcon icon={cilFile} />
-                Upload .xsl
-              </button> */}
+                {isBlacklistFileUploading ? "Uploading..." : "Upload .xsl"}
+              </label>
               {/* <button className={styles.button}>
                 <CIcon icon={cilDataTransferDown} />
                 Download
@@ -454,7 +503,7 @@ const BotForm = ({ bot, setCategories }) => {
           <div className={styles.keywordInput} id="blacklist-keywords-input">
             <input placeholder="Enter keywords" name="blacklist" />
             <button
-              onClick={addKeyword}
+              onClick={(e) => addKeyword(e, true)}
               // disabled={isAddKeywordButtonDisabled("blacklist")}
               name="blacklist"
             >
@@ -465,14 +514,14 @@ const BotForm = ({ bot, setCategories }) => {
             className={styles.keywordsContainer}
             id="blacklist-keywords-container"
           >
-            {formData.blacklist?.map((keyword, index) => (
+            {blacklist?.map((keyword, index) => (
               <div
                 className={styles.keyword}
                 key={index}
                 id="botform-blacklist-keyword"
               >
                 <span>{keyword}</span>
-                <button onClick={(e) => removeKeyword(keyword, "blacklist")}>
+                <button onClick={(e) => removeKeyword(keyword, true)}>
                   <CIcon icon={cilX} />
                 </button>
               </div>
@@ -632,7 +681,7 @@ const BotForm = ({ bot, setCategories }) => {
                   ? formData.background_color
                   : `#${formData.background_color}`
                 : "transparent",
-                // : "#F5F5F5",
+              // : "#F5F5F5",
             }}
             id="bot-form-preview-container"
           >
