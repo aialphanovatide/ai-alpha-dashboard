@@ -7,8 +7,8 @@ const headers = {
 const deleteKeywords = async (type, keywords, bots_ids) => {
   try {
     const payload = {
-      "bot_ids": bots_ids,
-    }
+      bot_ids: bots_ids,
+    };
 
     if (type === "blacklist") {
       payload["entries"] = keywords;
@@ -42,13 +42,13 @@ const deleteKeywords = async (type, keywords, bots_ids) => {
     console.error("Error deleting keywords:", error);
     return { success: false, error: "Network error or server is unreachable" };
   }
-}
+};
 
 const addKeywords = async (type, keywords, bots_ids) => {
   try {
     const payload = {
-      "bot_ids": bots_ids,
-    }
+      bot_ids: bots_ids,
+    };
 
     if (type === "blacklist") {
       payload["entries"] = keywords;
@@ -82,7 +82,7 @@ const addKeywords = async (type, keywords, bots_ids) => {
     console.error("Error adding keywords:", error);
     return { success: false, error: "Network error or server is unreachable" };
   }
-}
+};
 
 const searchKeywords = async (type, query, bots_ids) => {
   try {
@@ -90,8 +90,8 @@ const searchKeywords = async (type, query, bots_ids) => {
       method: "POST",
       headers,
       body: JSON.stringify({
-        "bot_ids": bots_ids,
-        "queries": [query],
+        bot_ids: bots_ids,
+        queries: [query],
       }),
     });
 
@@ -115,10 +115,37 @@ const searchKeywords = async (type, query, bots_ids) => {
     console.error("Error searching keywords:", error);
     return { success: false, error: "Network error or server is unreachable" };
   }
-}
+};
+
+const extractKeywords = async (file, isBlacklist) => {
+  try {
+    const response = await fetch(`${config.BOTS_V2_DEV_API}/keywords/extract`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+      body: file,
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      const formattedData = isBlacklist ? data.data.blacklist : data.data.keywords
+      return { success: true, data: formattedData.split(",") };
+    } else {
+      return {
+        success: false,
+        error: data.error || "Unknown error occurred",
+      };
+    };
+  } catch (error) {
+    console.error("Error extracting keywords:", error);
+    return { success: false, error: "Network error or server is unreachable" };
+  };
+};
 
 export {
   addKeywords,
   searchKeywords,
   deleteKeywords,
-}
+  extractKeywords,
+};
