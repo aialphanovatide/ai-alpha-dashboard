@@ -3,7 +3,7 @@ const ChartsPage = React.lazy(() => import('./views/chartsPage/ChartsPage'))
 const Home = React.lazy(() => import('./views/Home'))
 const ContentCreation = React.lazy(() => import('./views/ContentCreation'))
 const Fundamentals = React.lazy(() => import('./views/Fundamentals'))
-const BotsSettings = React.lazy(() => import('./views/botsSettings'))
+const GeneralSettings = React.lazy(() => import('./views/generalSettings'))
 const NarrativeTrading = React.lazy(() => import('./views/narrativeTrading/NarrativeTrading'))
 const topSories = React.lazy(() => import('./views/topStories'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -65,7 +65,7 @@ const routes = [
   { path: '/newsCreatorTool', name: 'News Creator Tool', element: NewsCreatorTool },
   { path: '/fundamentals', name: 'Fundamentals', element: Fundamentals },
   { path: '/narrativeTrading', name: 'NarrativeTrading', element: NarrativeTrading },
-  { path: '/botsSettings', name: 'BotsSettings', element: BotsSettings },
+  { path: '/generalSettings', name: 'GeneralSettings', element: GeneralSettings },
   { path: '/chartsPage', name: 'ChartsPage', element: ChartsPage },
   { path: '/contentCreation', name: 'Content Creation', element: ContentCreation },
   { path: '/topStories', name: 'Top Stories', element: topSories },

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import "../botsSettings/index.css";
+import "../generalSettings/index.css";
 import "../deleteWordsModal/deleteWordsModal.css";
 import { CButton } from "@coreui/react";
 import { Form, Alert, Modal, Button } from "react-bootstrap";

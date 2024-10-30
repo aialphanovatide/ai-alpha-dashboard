@@ -14,7 +14,7 @@ import SpinnerComponent from "src/components/Spinner";
 import NoData from "src/components/NoData";
 import { getCategories } from "src/services/categoryService";
 
-const BotsSettings = () => {
+const GeneralSettings = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -48,7 +48,7 @@ const BotsSettings = () => {
     <div className="bot-settings-container">
       <h2>
         <CIcon icon={cilSitemap} size="3xl" />
-        News Bot settings
+        General settings
       </h2>
       <div className="settings-container">
         {/* <div className="treshold" style={{ width: "15%" }}>
@@ -184,4 +184,4 @@ const BotsSettings = () => {
   );
 };
 
-export default BotsSettings;
+export default GeneralSettings;
