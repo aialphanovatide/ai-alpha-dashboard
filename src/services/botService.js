@@ -5,9 +5,10 @@ const headers = {
 };
 
 const getBot = async (query, searchBy = "id") => {
+  query = searchBy === "id" ? parseInt(query) : query.toLowerCase();
   try {
     const response = await fetch(
-      `${config.BOTS_V2_DEV_API}/bot?bot_${searchBy}=${query.toLowerCase()}`,
+      `${config.BOTS_V2_DEV_API}/bot?bot_${searchBy}=${query}`,
       {
         method: "GET",
         headers,
