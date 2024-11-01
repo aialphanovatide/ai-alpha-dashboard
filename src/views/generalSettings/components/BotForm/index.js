@@ -43,7 +43,7 @@ const BotForm = ({ bot, setCategories }) => {
       ? setBlacklistFileUploading
       : setWhitelistFileUploading;
     setFileUploading(true);
-    
+
     const file = event.target.files[0];
     const formData = new FormData();
     formData.append("file", file, file.name);
@@ -212,6 +212,7 @@ const BotForm = ({ bot, setCategories }) => {
       const response = await createCoin(formDataToSend);
 
       if (response.success) {
+        let keywordsToAdd = { whitelist: [...keywords], blacklist: [...blacklist] };
         let formdataForBot = {
           alias: formData.alias,
           background_color: formData.background_color,
@@ -222,7 +223,7 @@ const BotForm = ({ bot, setCategories }) => {
           run_frequency: formData.run_frequency,
         };
 
-        const response = await createBot(formdataForBot);
+        const response = await createBot(formdataForBot, keywordsToAdd);
 
         if (response.success) {
           Swal.fire({
@@ -250,6 +251,8 @@ const BotForm = ({ bot, setCategories }) => {
             keywords: [],
             // url: "",
           });
+          setBlacklist([]);
+          setKeywords([]);
           document.querySelector('input[type="file"]').value = "";
           setIsLoading(false);
         } else {

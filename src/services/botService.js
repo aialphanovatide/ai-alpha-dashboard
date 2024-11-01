@@ -1,14 +1,18 @@
 import config from "../config";
+import { addKeywords } from "./keywordService";
 const headers = {
   "Content-Type": "application/json",
 };
 
 const getBot = async (query, searchBy = "id") => {
   try {
-    const response = await fetch(`${config.BOTS_V2_DEV_API}/bot?bot_${searchBy}=${query.toLowerCase()}`, {
-      method: "GET",
-      headers,
-    });
+    const response = await fetch(
+      `${config.BOTS_V2_DEV_API}/bot?bot_${searchBy}=${query.toLowerCase()}`,
+      {
+        method: "GET",
+        headers,
+      },
+    );
 
     let responseText = await response.text();
 
@@ -32,7 +36,7 @@ const getBot = async (query, searchBy = "id") => {
   }
 };
 
-const createBot = async (payload) => {
+const createBot = async (payload, keywords) => {
   try {
     const response = await fetch(`${config.BOTS_V2_DEV_API}/bot`, {
       method: "POST",
@@ -45,6 +49,31 @@ const createBot = async (payload) => {
     try {
       const data = JSON.parse(responseText);
       if (response.ok) {
+        const { whitelist, blacklist } = keywords;
+        const botId = data.bot.id;
+
+        if (whitelist.length > 0) {
+          const response = await addKeywords("keywords", whitelist, [botId]);
+          if (!response.success) {
+            return {
+              success: false,
+              error: response.error || "Error adding whitelist keywords",
+            };
+          }
+        }
+
+        if (blacklist.length > 0) {
+          const response = await addKeywords("blacklist", blacklist, [botId]);
+          if (!response.success) {
+            if (!response.success) {
+              return {
+                success: false,
+                error: response.error || "Error adding blacklist keywords",
+              };
+            }
+          }
+        }
+
         return { success: true, data };
       } else {
         return {
@@ -92,9 +121,4 @@ const editBot = async (payload) => {
   }
 };
 
-
-export { 
-  createBot, 
-  getBot,
-  editBot,
-};
+export { createBot, getBot, editBot };
