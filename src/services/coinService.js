@@ -29,15 +29,15 @@ const createCoin = async (payload) => {
       return { success: false, error: "Failed to parse server response" };
     }
   } catch (error) {
-    console.error("Error creating bot:", error);
+    console.error("Error creating coin:", error);
     return { success: false, error: "Network error or server is unreachable" };
   }
 };
 
-const editCoin = async (payload) => {
+const editCoin = async (payload, coinID) => {
   try {
-    const response = await fetch(`${config.BASE_URL_DEV}/coin`, {
-      method: "POST",
+    const response = await fetch(`${config.BASE_URL_DEV}/coin/${coinID}`, {
+      method: "PUT",
       headers,
       body: payload,
     });
@@ -59,7 +59,7 @@ const editCoin = async (payload) => {
       return { success: false, error: "Failed to parse server response" };
     }
   } catch (error) {
-    console.error("Error creating bot:", error);
+    console.error("Error updating coin:", error);
     return { success: false, error: "Network error or server is unreachable" };
   }
 };
