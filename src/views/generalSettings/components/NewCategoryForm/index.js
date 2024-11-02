@@ -80,24 +80,42 @@ const NewCategoryForm = ({ category, setCategories }) => {
       const response = await createCategory(formDataToSend);
 
       if (response.success) {
-        Swal.fire({
-          text: `Category ${category ? "updated" : "created"} successfully!`,
-          icon: "success",
-          customClass: "swal",
-        }).then(async () => {
-          const updatedCategories = await getCategories();
-          setCategories(updatedCategories);
-        });
+        let formDataForNewsBotServer = {
+          alias: formData.alias,
+          border_color: formData.border_color,
+          name: formData.name,
+          slack_channel: formData.slack_channel,
+        };
 
-        setFormData({
-          name: "",
-          alias: "",
-          border_color: "",
-          icon: null,
-          iconPreview: null,
-        });
-        document.querySelector('input[type="file"]').value = "";
-        setIsSubmitting(false);
+        const response = await createCategory(formDataForNewsBotServer, true);
+
+        if (response.success) {
+          Swal.fire({
+            text: `Category ${category ? "updated" : "created"} successfully!`,
+            icon: "success",
+            customClass: "swal",
+          }).then(async () => {
+            const updatedCategories = await getCategories();
+            setCategories(updatedCategories);
+          });
+
+          setFormData({
+            name: "",
+            alias: "",
+            border_color: "",
+            icon: null,
+            iconPreview: null,
+          });
+          document.querySelector('input[type="file"]').value = "";
+          setIsSubmitting(false);
+        } else {
+          Swal.fire({
+            text: response.error || "Error creating category in news bot server",
+            icon: "error",
+            customClass: "swal",
+          });
+          setIsSubmitting(false);
+        }
       } else {
         Swal.fire({
           text: response.error || "Error creating category",
@@ -122,11 +140,11 @@ const NewCategoryForm = ({ category, setCategories }) => {
   return (
     <>
       <h4>
-        <CIcon icon={category ? cilPen : cilPlus} size="xl" /> {category ? "Edit" : "Create New"}{" "}
-        Category
+        <CIcon icon={category ? cilPen : cilPlus} size="xl" />{" "}
+        {category ? "Edit" : "Create New"} Category
       </h4>
       {isLoading ? (
-        <SpinnerComponent style={{height: '80vh'}} />
+        <SpinnerComponent style={{ height: "80vh" }} />
       ) : (
         <form onSubmit={handleSubmit}>
           {error && <div className={styles.error}>{error}</div>}
