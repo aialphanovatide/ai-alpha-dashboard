@@ -1,6 +1,6 @@
 import config from "../config";
-const headers = {
-  'Accept': "*/*",
+let headers = {
+  Accept: "*/*",
   "X-Api-Key": config.X_API_KEY_DEV,
 };
 
@@ -60,9 +60,19 @@ const getCategories = async (isNewsBotsServer) => {
   }
 };
 
-const createCategory = async (payload) => {
+const createCategory = async (payload, isNewsBotsServer) => {
   try {
-    const response = await fetch(`${config.BASE_URL_DEV}/category`, {
+    const url = isNewsBotsServer
+      ? `${config.BOTS_V2_DEV_API}/category`
+      : `${config.BASE_URL_DEV}/category`;
+
+    headers = isNewsBotsServer
+      ? { "Content-Type": "application/json" }
+      : { ...headers }
+
+    payload = isNewsBotsServer ? JSON.stringify(payload) : payload;
+
+    const response = await fetch(url, {
       method: "POST",
       headers,
       body: payload,
