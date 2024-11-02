@@ -19,13 +19,13 @@ const CategoryList = ({
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const handleAllStatusSwitchToggle = async (e) => {
+  // const handleAllStatusSwitchToggle = async (e) => {
     // const response = await toggleAllCategoriesState(isEveryCategoryActive);
 
     // if (response.success) {
-      categories.forEach(category => {
-        updateCategoryState(category.category_id, !isEveryCategoryActive);
-      });
+      // categories.forEach(category => {
+      //   updateCategoryState(category.category_id, !isEveryCategoryActive);
+      // });
 
     //   Swal.fire({
     //     text: response.message,
@@ -39,7 +39,7 @@ const CategoryList = ({
     //     customClass: 'swal',
     //   });
     // }
-  };
+  // };
 
   const updateCategoryState = (categoryId, isActive) => {
     setCategories(prevCategories =>
@@ -51,10 +51,10 @@ const CategoryList = ({
     );
   };
 
-  const isEveryCategoryActive = useMemo(
-    () => categories.every((category) => category.is_active),
-    [categories],
-  );
+  // const isEveryCategoryActive = useMemo(
+  //   () => categories.every((category) => category.is_active),
+  //   [categories],
+  // );
 
   return (
     <>
@@ -62,12 +62,13 @@ const CategoryList = ({
         <DeleteItemModal
           categories={categories}
           bots={selectedCoins}
+          setSelectedCoins={setSelectedCoins}
           setCategories={setCategories}
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
         />
         <div style={{ gridColumn: 2 }}></div>
-        <button
+        {/* <button
           className="pause-btn"
           onClick={handleAllStatusSwitchToggle}
           disabled={loading}
@@ -80,7 +81,7 @@ const CategoryList = ({
             <HelpOutline fontSize="small" />
           </CustomTooltip>
           <span>{isEveryCategoryActive ? "Pause All" : "Activate All"}</span>
-        </button>
+        </button> */}
         {/* <button
           className="hide-btn"
           disabled={loading}
@@ -119,6 +120,7 @@ const CategoryList = ({
               bots={category.coins}
               index={index}
               updateCategoryState={updateCategoryState}
+              setCategories={setCategories}
             />
           ))
         ) : (
