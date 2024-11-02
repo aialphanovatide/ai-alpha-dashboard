@@ -5,7 +5,6 @@ const headers = {
 };
 
 const getBot = async (query, searchBy = "id") => {
-  query = searchBy === "id" ? parseInt(query) : query.toLowerCase();
   try {
     const response = await fetch(
       `${config.BOTS_V2_DEV_API}/bot?bot_${searchBy}=${query}`,
@@ -92,12 +91,12 @@ const createBot = async (payload, keywords) => {
   }
 };
 
-const editBot = async (payload) => {
+const editBot = async (payload, botID) => {
   try {
-    const response = await fetch(`${config.BASE_URL_DEV}/coin`, {
-      method: "POST",
+    const response = await fetch(`${config.BOTS_V2_DEV_API}/bot/${botID}`, {
+      method: "PUT",
       headers,
-      body: payload,
+      body: JSON.stringify(payload),
     });
 
     let responseText = await response.text();
@@ -117,7 +116,7 @@ const editBot = async (payload) => {
       return { success: false, error: "Failed to parse server response" };
     }
   } catch (error) {
-    console.error("Error creating bot:", error);
+    console.error("Error updating bot:", error);
     return { success: false, error: "Network error or server is unreachable" };
   }
 };
