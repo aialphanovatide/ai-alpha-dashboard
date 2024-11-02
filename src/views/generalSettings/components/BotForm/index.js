@@ -159,7 +159,7 @@ const BotForm = ({ bot, setCategories }) => {
     //   setFormData({ ...formData, bot_category_id: response.data.id });
     // }
     const newsBotCategory = newsBotsCategories.filter(
-      (category) => category.alias.toLowerCase() === categoryName.toLowerCase(),
+      (category) => category.name.toLowerCase() === categoryName.toLowerCase(),
     );
 
     return newsBotCategory[0].id;
