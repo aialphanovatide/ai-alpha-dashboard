@@ -24,7 +24,7 @@ const ListItem = (params) => {
     selectedCoins = [],
     setSelectedCoins,
     updateCategoryState,
-    isCategoryActive,
+    setCategories,
   } = params;
   const [isOpen, setIsOpen] = useState(false);
   const [isCategoryChecked, setCategoryChecked] = useState(false);
@@ -36,8 +36,7 @@ const ListItem = (params) => {
 
   useEffect(() => {
     setIsItemActive(item.is_active);
-    isCoin && setIsItemActive(isCategoryActive);
-  }, [item.is_active, isCategoryActive]);
+  }, [item.is_active]);
 
   useEffect(() => {
     if (selectedCategories.length === 0) setCategoryChecked(false);
@@ -74,18 +73,47 @@ const ListItem = (params) => {
   const handleStatusSwitchToggle = async (e) => {
     setIsToggleLoading(true);
 
-    // const response = isCoin
-    //   ? await toggleCoinStatus(item.bot_id)
-    //   : await toggleCategoryState(item.category_id, isItemActive);
+    try {
+      if (isCoin) {
+        const response = await toggleCoinStatus(item.bot_id);
+        if (response.success) {
+          setIsItemActive(!isItemActive);
+        } else {
+          throw new Error(response.error);
+        }
+      } else {
+        const responses = await Promise.all(
+          item.coins.map(async (coin) => {
+            if (
+              (isItemActive && !coin.is_active) ||
+              (!isItemActive && coin.is_active)
+            ) return { success: true };
+            const response = await toggleCoinStatus(coin.bot_id);
+            if (response.success) setIsItemActive(!isItemActive);
+            return response;
+          }),
+        );
 
-    // if (response.success) {
-      setIsItemActive(!isItemActive);
-      !isCoin && updateCategoryState(item.category_id, !isItemActive);
-    // } else {
-    //   Swal.fire({ text: response.error, icon: "error", customClass: "swal" });
-    // }
+        const allSuccessful = responses.every((res) => res.success);
 
-    setIsToggleLoading(false);
+        if (allSuccessful) {
+          setIsItemActive(!isItemActive);
+          updateCategoryState(item.category_id, !isItemActive);
+        } else {
+          const errorMessage = responses.find((res) => !res.success).error;
+          throw new Error(errorMessage);
+        }
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Some coins couldn't be activated",
+        text: error.message,
+        icon: "error",
+        customClass: "swal",
+      });
+    } finally {
+      setIsToggleLoading(false);
+    }
   };
 
   return (
@@ -111,7 +139,9 @@ const ListItem = (params) => {
               onChange={isCoin ? onBotCheck : onCategoryCheck}
               value={JSON.stringify(item)}
               disabled={
-                isCoin ? selectedCategories.length > 0 : selectedCoins.length > 0
+                isCoin
+                  ? selectedCategories.length > 0
+                  : selectedCoins.length > 0
               }
             />
           </CustomTooltip>
@@ -158,7 +188,7 @@ const ListItem = (params) => {
           onClick={toggleDrawer(
             true,
             isCoin ? (
-              <BotForm bot={item} />
+              <BotForm bot={item} setCategories={setCategories} />
             ) : (
               <NewCategoryForm category={item} />
             ),
@@ -169,22 +199,24 @@ const ListItem = (params) => {
           {"  "}
           Edit
         </button>
-        <CustomTooltip
-          content={
-            "Information is missing. Please check Fundamentals, Charts, and News."
-          }
-          isError={true}
-          hide={true}
-        >
-          <div style={{ gridColumn: 5, height: "fit-content" }}>
-            <SwitchButton
-              isActive={isItemActive}
-              handleClick={handleStatusSwitchToggle}
-              isLoading={isToggleLoading}
-              isDisabled={isCoin && !isCategoryActive}
-            />
-          </div>
-        </CustomTooltip>
+        {(!isCoin && item.coins.length !== 0) || isCoin ? (
+          <CustomTooltip
+            content={
+              "Information is missing. Please check Fundamentals, Charts, and News."
+            }
+            isError={true}
+            hide={true}
+          >
+            <div style={{ gridColumn: 5, height: "fit-content" }}>
+              <SwitchButton
+                isActive={isItemActive}
+                handleClick={handleStatusSwitchToggle}
+                isLoading={isToggleLoading}
+                // isDisabled={isCoin && !isCategoryActive}
+              />
+            </div>
+          </CustomTooltip>
+        ) : null}
         {/* <div
           style={{ gridColumn: 6, height: "fit-content" }}
           // onClick={() => toggleState(index)}
