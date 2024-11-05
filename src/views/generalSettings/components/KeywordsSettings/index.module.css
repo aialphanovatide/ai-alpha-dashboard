@@ -20,8 +20,12 @@
   margin-bottom: 5px;
 }
 
-.keywordInput button {
+.keywordInput button:disabled {
   color: #737373;
+}
+
+.keywordInput button {
+  color: black;
   background: none;
   border: none;
   font-size: smaller;
