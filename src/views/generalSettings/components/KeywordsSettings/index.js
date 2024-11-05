@@ -56,10 +56,10 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
   };
 
   const validateKeyword = (keyword) => {
+    if (keywords.includes(keyword))
+      return `"${capitalizeFirstLetter(keyword)}" keyword already exists.`;
     if (!isRemove) keyword = keyword.toLowerCase();
-    if (keyword === "") {
-      return "Please enter a keyword.";
-    } else if (
+    if (
       (isBlacklist && blacklistKeywords.includes(keyword)) ||
       (!isBlacklist && whitelistKeywords.includes(keyword))
     ) {
@@ -208,7 +208,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                       <CIcon icon={cilSearch} />
                     </button>
                   ) : (
-                    <button onClick={addKeyword}>
+                    <button onClick={addKeyword} disabled={!keyword}>
                       <CIcon icon={cilPlus} /> Add
                     </button>
                   )}
@@ -221,34 +221,38 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                 <div className={styles.keyWordsContainer}>
                   {isRemove
                     ? isBlacklist
-                      ? getCommonKeywords(blacklistKeywords)?.map((keyword, index) => (
-                          <div
-                            className={styles.keyword}
-                            key={index}
-                            id="keyword-tag"
-                          >
-                            <input
-                              type="checkbox"
-                              onChange={() => onKeywordChange(keyword)}
-                              checked={keywords.includes(keyword)}
-                            />
-                            <span>{keyword}</span>
-                          </div>
-                        ))
-                      : getCommonKeywords(whitelistKeywords)?.map((keyword, index) => (
-                          <div
-                            className={styles.keyword}
-                            key={index}
-                            id="keyword-tag"
-                          >
-                            <input
-                              type="checkbox"
-                              onChange={() => onKeywordChange(keyword)}
-                              checked={keywords.includes(keyword)}
-                            />
-                            <span>{keyword}</span>
-                          </div>
-                        ))
+                      ? getCommonKeywords(blacklistKeywords)?.map(
+                          (keyword, index) => (
+                            <div
+                              className={styles.keyword}
+                              key={index}
+                              id="keyword-tag"
+                            >
+                              <input
+                                type="checkbox"
+                                onChange={() => onKeywordChange(keyword)}
+                                checked={keywords.includes(keyword)}
+                              />
+                              <span>{keyword}</span>
+                            </div>
+                          ),
+                        )
+                      : getCommonKeywords(whitelistKeywords)?.map(
+                          (keyword, index) => (
+                            <div
+                              className={styles.keyword}
+                              key={index}
+                              id="keyword-tag"
+                            >
+                              <input
+                                type="checkbox"
+                                onChange={() => onKeywordChange(keyword)}
+                                checked={keywords.includes(keyword)}
+                              />
+                              <span>{keyword}</span>
+                            </div>
+                          ),
+                        )
                     : keywords?.map((keyword, index) => (
                         <div
                           className={styles.keyword}
