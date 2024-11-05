@@ -35,7 +35,7 @@ const ListItem = (params) => {
   const toggleOpen = () => setIsOpen(!isOpen);
 
   useEffect(() => {
-    setIsItemActive(item.is_active);
+    if (isCoin) setIsItemActive(item.is_active);
   }, [item.is_active]);
 
   useEffect(() => {
