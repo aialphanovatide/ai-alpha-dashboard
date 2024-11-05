@@ -17,6 +17,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
   const [whitelistKeywords, setWhitelistKeywords] = useState([]);
   const [blacklistKeywords, setBlacklistKeywords] = useState([]);
   const [keyword, setKeyword] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [botsIDs, setBotsIDs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isKeywordChecked, setIsKeywordChecked] = useState(false);
@@ -156,6 +157,13 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
     storeKeywords(coins);
   }, [coins]);
 
+  const filteredKeywords = (keywordsList) => {
+    return keywordsList.filter((kw) =>
+      // kw.toLowerCase().includes(searchTerm.toLowerCase())
+      kw.toLowerCase().startsWith(searchTerm.toLowerCase())
+    );
+  };
+
   return (
     <div className={styles.container}>
       <div>
@@ -200,8 +208,8 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                     placeholder={
                       isRemove ? "" : "Apple, Communication, Notebook..."
                     }
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
+                    value={isRemove ? searchTerm : keyword}
+                    onChange={(e) => isRemove ? setSearchTerm(e.target.value) : setKeyword(e.target.value)}
                   />
                   {isRemove ? (
                     <button style={{ textAlign: "right" }}>
@@ -221,7 +229,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                 <div className={styles.keyWordsContainer}>
                   {isRemove
                     ? isBlacklist
-                      ? getCommonKeywords(blacklistKeywords)?.map(
+                      ? filteredKeywords(getCommonKeywords(blacklistKeywords))?.map(
                           (keyword, index) => (
                             <div
                               className={styles.keyword}
@@ -237,7 +245,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                             </div>
                           ),
                         )
-                      : getCommonKeywords(whitelistKeywords)?.map(
+                      : filteredKeywords(getCommonKeywords(whitelistKeywords))?.map(
                           (keyword, index) => (
                             <div
                               className={styles.keyword}
