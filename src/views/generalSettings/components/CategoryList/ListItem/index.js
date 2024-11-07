@@ -10,7 +10,6 @@ import NewCategoryForm from "../../NewCategoryForm";
 import BotForm from "../../BotForm";
 import SwitchButton from "src/components/commons/SwitchButton";
 import defaultImg from "../../../../../assets/brand/logo.png";
-import { toggleCategoryState } from "src/services/categoryService";
 import Swal from "sweetalert2";
 import { toggleCoinStatus } from "src/services/coinService";
 
@@ -36,11 +35,13 @@ const ListItem = (params) => {
 
   useEffect(() => {
     if (isCoin) setIsItemActive(item.is_active);
+    else setIsItemActive(item.coins.every((coin) => coin.is_active));
   }, [item.is_active]);
 
   useEffect(() => {
     if (selectedCategories.length === 0) setCategoryChecked(false);
-  }, [selectedCategories]);
+    if (selectedCoins.length === 0) setBotChecked(false);
+  }, [selectedCategories, selectedCoins]);
 
   const onCategoryCheck = (e) => {
     const checkedCategory = JSON.parse(e.target.value);
@@ -87,9 +88,10 @@ const ListItem = (params) => {
             if (
               (isItemActive && !coin.is_active) ||
               (!isItemActive && coin.is_active)
-            ) return { success: true };
+            )
+              return { success: true };
             const response = await toggleCoinStatus(coin.bot_id);
-            if (response.success) setIsItemActive(!isItemActive);
+            if (response.success) coin.is_active = !coin.is_active;
             return response;
           }),
         );
@@ -157,25 +159,21 @@ const ListItem = (params) => {
           <img
             alt={`${isCoin ? "bot" : "category"}-img`}
             src={
-              isCoin
+              item.icon ||
+              (isCoin
                 ? `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${item.name?.toLowerCase()}.png`
-                : `https://aialphaicons.s3.us-east-2.amazonaws.com/${
-                    item.alias || item.name
-                  }.svg`
+                : `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.name.toLowerCase()}.svg`)
             }
             onError={(e) => (e.target.src = defaultImg)}
           />
         </div>
         <div className="item-details">
           <div className="item-name">
-            {item.name || item.alias || (isCoin ? "Bot name" : "Category name")}
+            {item.name || (isCoin ? "Bot name" : "Category name")}
           </div>
           <div>
-            {capitalizeFirstLetter(
-              item.alias ||
-                item.name ||
-                (isCoin ? "Bot alias" : "Category alias"),
-            )}
+            {capitalizeFirstLetter(item.alias) ||
+              (isCoin ? "Bot alias" : "Category alias")}
           </div>
           {isCoin && (
             <div className="item-last-run">
@@ -188,9 +186,9 @@ const ListItem = (params) => {
           onClick={toggleDrawer(
             true,
             isCoin ? (
-              <BotForm bot={item} setCategories={setCategories} />
+              <BotForm coin={item} setCategories={setCategories} />
             ) : (
-              <NewCategoryForm category={item} />
+              <NewCategoryForm category={item} setCategories={setCategories} />
             ),
             "right",
           )}
@@ -252,6 +250,7 @@ const ListItem = (params) => {
               selectedCategories={selectedCategories}
               updateCategoryState={updateCategoryState}
               isCategoryActive={!isCoin && item.is_active}
+              setCategories={setCategories}
             />
           ))}
         </div>
