@@ -1,4 +1,10 @@
-import { cilDataTransferDown, cilFile, cilPlus, cilX } from "@coreui/icons";
+import {
+  cilDataTransferDown,
+  cilFile,
+  cilPen,
+  cilPlus,
+  cilX,
+} from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./index.module.css";
@@ -8,14 +14,17 @@ import { ReactComponent as ClosedLock } from "../../../../assets/icons/closedLoc
 import CustomTooltip from "src/components/CustomTooltip";
 import Swal from "sweetalert2";
 import { getCategories, getCategory } from "src/services/categoryService";
-import { createBot, getBot } from "src/services/botService";
-import { createCoin } from "src/services/coinService";
+import { createBot, editBot, getBot } from "src/services/botService";
+import { createCoin, editCoin } from "src/services/coinService";
 import { capitalizeFirstLetter } from "src/utils";
 import { extractKeywords } from "src/services/keywordService";
+import SpinnerComponent from "src/components/Spinner";
+import defaultImg from "../../../../assets/brand/logo.png"; 
 
-const BotForm = ({ bot, setCategories }) => {
+const BotForm = ({ coin, setCategories }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectCategories, setSelectCategories] = useState([]);
   const [newsBotsCategories, setNewsBotsCategories] = useState([]);
   const [isWhitelistFileUploading, setWhitelistFileUploading] = useState(false);
@@ -23,14 +32,16 @@ const BotForm = ({ bot, setCategories }) => {
   const keyWordInputRef = React.createRef();
   const [blacklist, setBlacklist] = useState([]);
   const [keywords, setKeywords] = useState([]);
+  const [bot, setBot] = useState(null);
   const [formData, setFormData] = useState({
-    name: bot && bot.name ? capitalizeFirstLetter(bot.name) : "",
-    alias: bot && bot.alias ? bot.alias : "",
-    symbol: bot && bot.symbol ? bot.symbol : "",
-    category_id: bot && bot.category_id ? bot.category_id : "",
-    background_color: bot && bot.background_color ? bot.background_color : "",
+    name: coin && coin.name ? capitalizeFirstLetter(coin.name) : "",
+    alias: coin && coin.alias ? coin.alias : "",
+    symbol: coin && coin.symbol ? coin.symbol : "",
+    category_id: coin && coin.category_id ? coin.category_id : "",
+    background_color:
+      coin && coin.background_color ? coin.background_color : "",
     icon: null,
-    iconPreview: null,
+    iconPreview: coin?.icon || null,
     bot_category_id: null,
     dalle_prompt: "",
     prompt: "",
@@ -52,9 +63,9 @@ const BotForm = ({ bot, setCategories }) => {
 
     if (response.success) {
       if (isBlacklist) {
-        setBlacklist(prev => [...prev, ...response.data]);
+        setBlacklist((prev) => [...prev, ...response.data]);
       } else {
-        setKeywords(prev => [...prev, ...response.data]);
+        setKeywords((prev) => [...prev, ...response.data]);
       }
     } else {
       Swal.fire({
@@ -68,23 +79,58 @@ const BotForm = ({ bot, setCategories }) => {
     setFileUploading(false);
   };
 
-  // const fetchBot = async () => {
-  //   try {
-  //     const bot = await getBot();
-  //     // setBot(bot);
-  //   } catch (err) {
-  //     setError(err.message || "Error fetching bot");
-  //   }
-  // };
+  useEffect(() => {
+    if (coin) {
+      fetchBot(coin.name);
+    }
+  }, [coin]);
+
+  const fetchBot = async (name) => {
+    try {
+      setIsLoading(true);
+      const response = await getBot(capitalizeFirstLetter(name), "name");
+
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+
+      setBot(response.data);
+      setBlacklist((prev) => [...prev, ...response.data.blacklist]);
+      setKeywords((prev) => [...prev, ...response.data.keywords]);
+      setFormData((prev) => ({
+        ...prev,
+        bot_category_id: response.data.category_id,
+        dalle_prompt: response.data.dalle_prompt,
+        prompt: response.data.prompt,
+        run_frequency: response.data.run_frequency,
+        iconPreview: formData.iconPreview
+          ? formData.iconPreview
+          : response.data.icon
+            ? response.data.icon
+            : `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${coin.name?.toLowerCase()}.png`,
+      }));
+    } catch (err) {
+      Swal.fire({
+        text: err.message || "Error fetching bot",
+        icon: "error",
+        customClass: "swal",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const fetchCategories = useCallback(async () => {
     try {
+      setIsLoading(true);
       const categories = await getCategories();
       const newsBotsCategories = await getCategories(true);
       setSelectCategories(categories);
       setNewsBotsCategories(newsBotsCategories);
     } catch (err) {
       setError(err.message || "Error fetching categories");
+    } finally {
+      setIsLoading(false);
     }
   }, [setSelectCategories, setNewsBotsCategories]);
 
@@ -145,7 +191,8 @@ const BotForm = ({ bot, setCategories }) => {
     input.value = "";
   };
 
-  const removeKeyword = (keywordToRemove, isBlacklist) => {
+  const removeKeyword = (e, keywordToRemove, isBlacklist) => {
+    e.preventDefault();
     if (isBlacklist) {
       setBlacklist(blacklist.filter((keyword) => keyword !== keywordToRemove));
     } else {
@@ -153,16 +200,22 @@ const BotForm = ({ bot, setCategories }) => {
     }
   };
 
-  const getBotCategoryId = (categoryName) => {
-    // const response = await getCategory(categoryName, true)
-    // if (response.success) {
-    //   setFormData({ ...formData, bot_category_id: response.data.id });
-    // }
-    const newsBotCategory = newsBotsCategories.filter(
-      (category) => category.name.toLowerCase() === categoryName.toLowerCase(),
-    );
-
-    return newsBotCategory[0].id;
+  const getBotCategoryId = async (categoryName) => {
+    try {
+      const response = await getCategory(categoryName, true);
+      if (response.success) {
+        setFormData((prev) => ({
+          ...prev,
+          bot_category_id: response.data.category.id,
+        }));
+      }
+    } catch (error) {
+      Swal.fire({
+        text: error.message || "Error fetching bot category",
+        icon: "error",
+        customClass: "swal",
+      });
+    }
   };
 
   const handleInputChange = useCallback((e) => {
@@ -194,7 +247,7 @@ const BotForm = ({ bot, setCategories }) => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      setIsLoading(true);
+      setIsSubmitting(true);
 
       let formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
@@ -209,10 +262,15 @@ const BotForm = ({ bot, setCategories }) => {
         formDataToSend.append("icon", formData.icon, formData.icon.name);
       }
 
-      const response = await createCoin(formDataToSend);
+      const response = !coin
+        ? await createCoin(formDataToSend)
+        : await editCoin(formDataToSend, coin.bot_id);
 
       if (response.success) {
-        let keywordsToAdd = { whitelist: [...keywords], blacklist: [...blacklist] };
+        let keywordsToAdd = {
+          whitelist: [...keywords],
+          blacklist: [...blacklist],
+        };
         let formdataForBot = {
           alias: formData.alias,
           background_color: formData.background_color,
@@ -220,14 +278,18 @@ const BotForm = ({ bot, setCategories }) => {
           dalle_prompt: formData.dalle_prompt,
           name: formData.name,
           prompt: formData.prompt,
-          run_frequency: formData.run_frequency,
+          run_frequency: parseInt(formData.run_frequency),
+          whitelist: keywords.join(","),
+          blacklist: blacklist.join(","),
         };
 
-        const response = await createBot(formdataForBot, keywordsToAdd);
+        const response = !coin
+          ? await createBot(formdataForBot, keywordsToAdd)
+          : await editBot(formdataForBot, bot.id);
 
         if (response.success) {
           Swal.fire({
-            text: "Coin/Bot created successfully!",
+            text: `Coin/Bot ${coin ? "updated" : "created"} successfully!`,
             icon: "success",
             customClass: "swal",
           }).then(async () => {
@@ -235,33 +297,35 @@ const BotForm = ({ bot, setCategories }) => {
             setCategories(updatedCategories);
           });
 
-          setFormData({
-            name: "",
-            alias: "",
-            symbol: "",
-            category_id: "",
-            background_color: "",
-            icon: null,
-            iconPreview: null,
-            bot_category_id: null,
-            dalle_prompt: "",
-            prompt: "",
-            run_frequency: 20,
-            blacklist: [],
-            keywords: [],
-            // url: "",
-          });
-          setBlacklist([]);
-          setKeywords([]);
-          document.querySelector('input[type="file"]').value = "";
-          setIsLoading(false);
+          if (!coin) {
+            setFormData({
+              name: "",
+              alias: "",
+              symbol: "",
+              category_id: "",
+              background_color: "",
+              icon: null,
+              iconPreview: null,
+              bot_category_id: null,
+              dalle_prompt: "",
+              prompt: "",
+              run_frequency: 20,
+              blacklist: [],
+              keywords: [],
+              // url: "",
+            });
+            setBlacklist([]);
+            setKeywords([]);
+            document.querySelector('input[type="file"]').value = "";
+          }
+          setIsSubmitting(false);
         } else {
           Swal.fire({
             text: response.error || "Error creating bot",
             icon: "error",
             customClass: "swal",
           });
-          setIsLoading(false);
+          setIsSubmitting(false);
         }
       } else {
         Swal.fire({
@@ -269,7 +333,7 @@ const BotForm = ({ bot, setCategories }) => {
           icon: "error",
           customClass: "swal",
         });
-        setIsLoading(false);
+        setIsSubmitting(false);
       }
     } catch (err) {
       Swal.fire({
@@ -282,93 +346,96 @@ const BotForm = ({ bot, setCategories }) => {
 
   return (
     <>
-      <form>
-        <h4>
-          <CIcon icon={cilPlus} size="xl" /> {bot ? "Edit" : "Create New"}{" "}
-          Coin/Bot
-        </h4>
-        <div className={styles.section}>
-          <div className={styles.labelContainer}>
-            <label>
-              <strong>Name</strong>
-              <span> *</span>
-            </label>
-            <CustomTooltip
-              title={"Create a coin"}
-              content={
-                "Enter a name, alias and category to enable the coin in Analysis, Fundamentals, Charts and Narrative Trading."
-              }
-            >
+      <h4>
+        <CIcon icon={coin ? cilPen : cilPlus} size="xl" />{" "}
+        {coin ? "Edit" : "Create New"} Coin
+      </h4>
+      {isLoading ? (
+        <SpinnerComponent style={{ height: "80vh" }} />
+      ) : (
+        <form>
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>Name</strong>
+                <span> *</span>
+              </label>
+              <CustomTooltip
+                title={"Create a coin"}
+                content={
+                  "Enter a name, alias and category to enable the coin in Analysis, Fundamentals, Charts and Narrative Trading."
+                }
+              >
+                <HelpOutline fontSize="small" />
+              </CustomTooltip>
+            </div>
+            <input
+              className={styles.input}
+              placeholder="Enter bot name"
+              onChange={handleInputChange}
+              name="name"
+              required
+              value={formData.name}
+            />
+          </div>
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>Alias</strong>
+                <span> *</span>
+              </label>
               <HelpOutline fontSize="small" />
-            </CustomTooltip>
+            </div>
+            <input
+              className={styles.input}
+              placeholder="Enter bot alias"
+              onChange={handleInputChange}
+              name="alias"
+              required
+              value={formData.alias}
+            />
           </div>
-          <input
-            className={styles.input}
-            placeholder="Enter bot name"
-            onChange={handleInputChange}
-            name="name"
-            required
-            value={formData.name}
-          />
-        </div>
-        <div className={styles.section}>
-          <div className={styles.labelContainer}>
-            <label>
-              <strong>Alias</strong>
-              <span> *</span>
-            </label>
-            <HelpOutline fontSize="small" />
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>Symbol</strong>
+                <span> *</span>
+              </label>
+              <HelpOutline fontSize="small" />
+            </div>
+            <input
+              className={styles.input}
+              placeholder="Enter bot symbol"
+              onChange={handleInputChange}
+              name="symbol"
+              required
+              value={formData.symbol}
+            />
           </div>
-          <input
-            className={styles.input}
-            placeholder="Enter bot alias"
-            onChange={handleInputChange}
-            name="alias"
-            required
-            value={formData.alias}
-          />
-        </div>
-        <div className={styles.section}>
-          <div className={styles.labelContainer}>
-            <label>
-              <strong>Symbol</strong>
-              <span> *</span>
-            </label>
-            <HelpOutline fontSize="small" />
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>Category</strong>
+                <span> *</span>
+              </label>
+              <HelpOutline fontSize="small" />
+            </div>
+            <select
+              className={styles.select}
+              onChange={handleInputChange}
+              name="category_id"
+              value={formData.category_id}
+              required
+            >
+              <option value="">Select category</option>{" "}
+              {selectCategories?.map((category) => (
+                <option key={category.category_id} value={category.category_id}>
+                  {capitalizeFirstLetter(category.name)}
+                </option>
+              ))}
+            </select>
           </div>
-          <input
-            className={styles.input}
-            placeholder="Enter bot symbol"
-            onChange={handleInputChange}
-            name="symbol"
-            required
-            value={formData.symbol}
-          />
-        </div>
-        <div className={styles.section}>
-          <div className={styles.labelContainer}>
-            <label>
-              <strong>Category</strong>
-              <span> *</span>
-            </label>
-            <HelpOutline fontSize="small" />
-          </div>
-          <select
-            className={styles.select}
-            onChange={handleInputChange}
-            name="category_id"
-            value={formData.category_id}
-            required
-          >
-            <option value="">Select category</option>{" "}
-            {selectCategories?.map((category) => (
-              <option key={category.category_id} value={category.category_id}>
-                {capitalizeFirstLetter(category.name)}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* <div className={styles.section}>
+          {/* <div className={styles.section}>
           <div className={styles.labelContainer}>
             <label>
               <strong>URL</strong>
@@ -391,331 +458,339 @@ const BotForm = ({ bot, setCategories }) => {
             value={formData.url}
           />
         </div> */}
-        <div className={styles.section}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <label>
-              <strong>
-                <OpenLock style={{ height: 20, width: 20 }} />
-                Whitelist
-              </strong>
-            </label>
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <input
-                type="file"
-                accept=".xls,.xlsx"
-                onChange={onFileUpload}
-                id="uploadWhitelistBtn"
-                className={styles.uploadBtn}
-              />
-              <label htmlFor="uploadWhitelistBtn" className={styles.fileLabel}>
-                <CIcon icon={cilFile} />
-                {isWhitelistFileUploading ? "Uploading..." : "Upload .xsl"}
-              </label>
-              {/* <button className={styles.button}>
-                <CIcon icon={cilDataTransferDown} />
-                Download
-              </button> */}
-              <CustomTooltip
-                title={"Create a bot"}
-                content={
-                  "Add at least one additional detail (excluding icon or background color) to enable the bot for news bot creation."
-                }
-              >
-                <HelpOutline sx={{ fontSize: 20, color: "#525252" }} />
-              </CustomTooltip>
-            </div>
-          </div>
-          <div className={styles.keywordInput} id="whitelist-keywords-input">
-            <input
-              placeholder="Enter keywords"
-              name="keywords"
-              ref={keyWordInputRef}
-            />
-            <button
-              onClick={addKeyword}
-              // disabled={isAddKeywordButtonDisabled("keywords")}
-              name="keywords"
-            >
-              <CIcon icon={cilPlus} /> Add
-            </button>
-          </div>
-          <div
-            className={styles.keywordsContainer}
-            id="whitelist-keywords-container"
-          >
-            {keywords?.map((keyword, index) => (
-              <div
-                className={styles.keyword}
-                key={index}
-                id="botform-whitelist-keyword"
-              >
-                <span>{keyword}</span>
-                <button onClick={(e) => removeKeyword(keyword)}>
-                  <CIcon icon={cilX} />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className={styles.section}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <label>
-              <strong>
-                <ClosedLock style={{ height: 20, width: 20 }} />
-                Blacklist
-              </strong>
-            </label>
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <input
-                type="file"
-                accept=".xls,.xlsx"
-                onChange={(e) => onFileUpload(e, true)}
-                id="uploadBlacklistBtn"
-                className={styles.uploadBtn}
-              />
-              <label htmlFor="uploadBlacklistBtn" className={styles.fileLabel}>
-                <CIcon icon={cilFile} />
-                {isBlacklistFileUploading ? "Uploading..." : "Upload .xsl"}
-              </label>
-              {/* <button className={styles.button}>
-                <CIcon icon={cilDataTransferDown} />
-                Download
-              </button> */}
-              <CustomTooltip
-                title={"Create a bot"}
-                content={
-                  "Add at least one additional detail (excluding icon or background color) to enable the bot for news bot creation."
-                }
-              >
-                <HelpOutline sx={{ fontSize: 20, color: "#525252" }} />
-              </CustomTooltip>
-            </div>
-          </div>
-          <div className={styles.keywordInput} id="blacklist-keywords-input">
-            <input placeholder="Enter keywords" name="blacklist" />
-            <button
-              onClick={(e) => addKeyword(e, true)}
-              // disabled={isAddKeywordButtonDisabled("blacklist")}
-              name="blacklist"
-            >
-              <CIcon icon={cilPlus} /> Add
-            </button>
-          </div>
-          <div
-            className={styles.keywordsContainer}
-            id="blacklist-keywords-container"
-          >
-            {blacklist?.map((keyword, index) => (
-              <div
-                className={styles.keyword}
-                key={index}
-                id="botform-blacklist-keyword"
-              >
-                <span>{keyword}</span>
-                <button onClick={(e) => removeKeyword(keyword, true)}>
-                  <CIcon icon={cilX} />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className={styles.section}>
-          <div className={styles.labelContainer}>
-            <label>
-              <strong>DALL-E Prompt</strong>
-            </label>
-            <CustomTooltip
-              title={"Create a bot"}
-              content={
-                "Add at least one additional detail (excluding icon or background color) to enable the bot for news bot creation."
-              }
-            >
-              <HelpOutline fontSize="small" />
-            </CustomTooltip>
-          </div>
-          <textarea
-            name="dalle_prompt"
-            onChange={handleInputChange}
-            value={formData.dalle_prompt}
-            className={styles.textarea}
-            placeholder="Enter article generator prompt. 
-            An example of use could be: 
-            “Imagine that you are one of the world’s foremost experts on Bitcoin and also a globally renowned journalist skilled at summarizing articles about Bitcoin...”"
-          />
-        </div>
-        <div className={styles.section}>
-          <div className={styles.labelContainer}>
-            <label>
-              <strong> Category Prompt</strong>
-            </label>
-            <CustomTooltip
-              title={"Create a bot"}
-              content={
-                "Add at least one additional detail (excluding icon or background color) to enable the bot for news bot creation."
-              }
-            >
-              <HelpOutline fontSize="small" />
-            </CustomTooltip>
-          </div>
-          <textarea
-            name="prompt"
-            onChange={handleInputChange}
-            value={formData.prompt}
-            className={styles.textarea}
-            placeholder="Enter article generator prompt. 
-            An example of use could be: 
-            “Imagine that you are one of the world’s foremost experts on Bitcoin and also a globally renowned journalist skilled at summarizing articles about Bitcoin...”"
-          />
-        </div>
-        <div className={styles.section} style={{ width: 200 }}>
-          <div className={styles.labelContainer}>
-            <label>
-              <strong>Run frequency</strong>
-            </label>
-            <CustomTooltip
-              title={"Create a bot"}
-              content={
-                "Add at least one additional detail (excluding icon or background color) to enable the bot for news bot creation."
-              }
-            >
-              <HelpOutline fontSize="small" />
-            </CustomTooltip>
-          </div>
-          <input
-            name="run_frequency"
-            type="number"
-            id="frequency"
-            onChange={handleInputChange}
-            className={styles.frequencyInput}
-            placeholder="Enter frequency"
-            value={formData.run_frequency}
-            min="20"
-          />
-        </div>
-        <div className={styles.section}>
-          <div className={styles.labelContainer}>
-            <label>
-              <strong>Upload Icon</strong>
-            </label>
-            <HelpOutline />
-          </div>
-          <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
-            <div className={styles.divInput}>
-              <input
-                type="file"
-                accept=".svg"
-                onChange={handleImageChange}
-                className={styles.imgPicker}
-                id="botform-icon-input"
-              />
-            </div>
-          </div>
-        </div>
-        <div className={styles.section}>
-          <div className={styles.labelContainer}>
-            <label>
-              <strong>Background Color</strong>
-            </label>
-            <HelpOutline fontSize="small" />
-          </div>
-          <div
-            className={styles.input}
-            style={{
-              paddingBlock: 0,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-            id="background-color-input"
-          >
-            <span style={{ fontSize: 20, fontWeight: 600 }}>#</span>
-            <input
-              style={{
-                background: "transparent",
-                border: "none",
-                width: "80%",
-              }}
-              placeholder="Enter HEX code"
-              value={formData.background_color}
-              onChange={handleInputChange}
-              name="background_color"
-            />
+          <div className={styles.section}>
             <div
               style={{
-                height: 19,
-                width: 19,
-                borderRadius: "50%",
-                background: formData.background_color
-                  ? `#${formData.background_color}`
-                  : "transparent",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
               }}
-            ></div>
+            >
+              <label>
+                <strong>
+                  <OpenLock style={{ height: 20, width: 20 }} />
+                  Whitelist
+                </strong>
+              </label>
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                <input
+                  type="file"
+                  accept=".xls,.xlsx"
+                  onChange={onFileUpload}
+                  id="uploadWhitelistBtn"
+                  className={styles.uploadBtn}
+                />
+                <label
+                  htmlFor="uploadWhitelistBtn"
+                  className={styles.fileLabel}
+                >
+                  <CIcon icon={cilFile} />
+                  {isWhitelistFileUploading ? "Uploading..." : "Upload .xsl"}
+                </label>
+                {/* <button className={styles.button}>
+                <CIcon icon={cilDataTransferDown} />
+                Download
+              </button> */}
+                <CustomTooltip
+                  title={"Create a bot"}
+                  content={
+                    "Add at least one additional detail (excluding icon or background color) to enable the bot for news bot creation."
+                  }
+                >
+                  <HelpOutline sx={{ fontSize: 20, color: "#525252" }} />
+                </CustomTooltip>
+              </div>
+            </div>
+            <div className={styles.keywordInput} id="whitelist-keywords-input">
+              <input
+                placeholder="Enter keywords"
+                name="keywords"
+                ref={keyWordInputRef}
+              />
+              <button
+                onClick={addKeyword}
+                // disabled={isAddKeywordButtonDisabled("keywords")}
+                name="keywords"
+              >
+                <CIcon icon={cilPlus} /> Add
+              </button>
+            </div>
+            <div
+              className={styles.keywordsContainer}
+              id="whitelist-keywords-container"
+            >
+              {keywords?.map((keyword, index) => (
+                <div
+                  className={styles.keyword}
+                  key={index}
+                  id="botform-whitelist-keyword"
+                >
+                  <span>{keyword}</span>
+                  <button onClick={(e) => removeKeyword(e, keyword)}>
+                    <CIcon icon={cilX} />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <div
-          style={{
-            width: "100%",
-            padding: 20,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <label style={{ margin: "auto", marginBottom: 15 }}>
-            <strong>Preview</strong>
-          </label>
-          <div
-            className={styles.imgContainer}
-            style={{
-              background: formData.background_color
-                ? formData.background_color.includes("#")
-                  ? formData.background_color
-                  : `#${formData.background_color}`
-                : "transparent",
-              // : "#F5F5F5",
-            }}
-            id="bot-form-preview-container"
-          >
-            <img
-              src={formData.iconPreview}
-              className={styles.img}
+          <div className={styles.section}>
+            <div
               style={{
-                visibility: formData.iconPreview ? "visible" : "hidden",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
               }}
-              alt="icon"
-            />
-            {formData.alias && <span>{formData.alias.toUpperCase()}</span>}
+            >
+              <label>
+                <strong>
+                  <ClosedLock style={{ height: 20, width: 20 }} />
+                  Blacklist
+                </strong>
+              </label>
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                <input
+                  type="file"
+                  accept=".xls,.xlsx"
+                  onChange={(e) => onFileUpload(e, true)}
+                  id="uploadBlacklistBtn"
+                  className={styles.uploadBtn}
+                />
+                <label
+                  htmlFor="uploadBlacklistBtn"
+                  className={styles.fileLabel}
+                >
+                  <CIcon icon={cilFile} />
+                  {isBlacklistFileUploading ? "Uploading..." : "Upload .xsl"}
+                </label>
+                {/* <button className={styles.button}>
+                <CIcon icon={cilDataTransferDown} />
+                Download
+              </button> */}
+                <CustomTooltip
+                  title={"Create a bot"}
+                  content={
+                    "Add at least one additional detail (excluding icon or background color) to enable the bot for news bot creation."
+                  }
+                >
+                  <HelpOutline sx={{ fontSize: 20, color: "#525252" }} />
+                </CustomTooltip>
+              </div>
+            </div>
+            <div className={styles.keywordInput} id="blacklist-keywords-input">
+              <input placeholder="Enter keywords" name="blacklist" />
+              <button
+                onClick={(e) => addKeyword(e, true)}
+                // disabled={isAddKeywordButtonDisabled("blacklist")}
+                name="blacklist"
+              >
+                <CIcon icon={cilPlus} /> Add
+              </button>
+            </div>
+            <div
+              className={styles.keywordsContainer}
+              id="blacklist-keywords-container"
+            >
+              {blacklist?.map((keyword, index) => (
+                <div
+                  className={styles.keyword}
+                  key={index}
+                  id="botform-blacklist-keyword"
+                >
+                  <span>{keyword}</span>
+                  <button onClick={(e) => removeKeyword(e, keyword, true)}>
+                    <CIcon icon={cilX} />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <button
-          className={styles.submitButton}
-          type="submit"
-          disabled={!isFormValid}
-          onClick={handleSubmit}
-          id="bot-form-submit-button"
-        >
-          {isLoading
-            ? bot
-              ? "Updating..."
-              : "Creating..."
-            : bot
-              ? "Update"
-              : "Create"}
-        </button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-      </form>
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>DALL-E Prompt</strong>
+              </label>
+              <CustomTooltip
+                title={"Create a bot"}
+                content={
+                  "Add at least one additional detail (excluding icon or background color) to enable the bot for news bot creation."
+                }
+              >
+                <HelpOutline fontSize="small" />
+              </CustomTooltip>
+            </div>
+            <textarea
+              name="dalle_prompt"
+              onChange={handleInputChange}
+              value={formData.dalle_prompt}
+              className={styles.textarea}
+              placeholder="Enter article generator prompt. 
+            An example of use could be: 
+            “Imagine that you are one of the world’s foremost experts on Bitcoin and also a globally renowned journalist skilled at summarizing articles about Bitcoin...”"
+            />
+          </div>
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong> News Prompt</strong>
+              </label>
+              <CustomTooltip
+                title={"Create a bot"}
+                content={
+                  "Add at least one additional detail (excluding icon or background color) to enable the bot for news bot creation."
+                }
+              >
+                <HelpOutline fontSize="small" />
+              </CustomTooltip>
+            </div>
+            <textarea
+              name="prompt"
+              onChange={handleInputChange}
+              value={formData.prompt}
+              className={styles.textarea}
+              placeholder="Enter article generator prompt. 
+            An example of use could be: 
+            “Imagine that you are one of the world’s foremost experts on Bitcoin and also a globally renowned journalist skilled at summarizing articles about Bitcoin...”"
+            />
+          </div>
+          <div className={styles.section} style={{ width: 200 }}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>Run frequency</strong>
+              </label>
+              <CustomTooltip
+                title={"Create a bot"}
+                content={
+                  "Add at least one additional detail (excluding icon or background color) to enable the bot for news bot creation."
+                }
+              >
+                <HelpOutline fontSize="small" />
+              </CustomTooltip>
+            </div>
+            <input
+              name="run_frequency"
+              type="number"
+              id="frequency"
+              onChange={handleInputChange}
+              className={styles.frequencyInput}
+              placeholder="Enter frequency"
+              value={formData.run_frequency}
+              min="20"
+            />
+          </div>
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>Upload Icon</strong>
+              </label>
+              <HelpOutline />
+            </div>
+            <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+              <div className={styles.divInput}>
+                <input
+                  type="file"
+                  accept=".svg"
+                  onChange={handleImageChange}
+                  className={styles.imgPicker}
+                  id="botform-icon-input"
+                />
+              </div>
+            </div>
+          </div>
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>Background Color</strong>
+              </label>
+              <HelpOutline fontSize="small" />
+            </div>
+            <div
+              className={styles.input}
+              style={{
+                paddingBlock: 0,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+              id="background-color-input"
+            >
+              <span style={{ fontSize: 20, fontWeight: 600 }}>#</span>
+              <input
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  width: "80%",
+                }}
+                placeholder="Enter HEX code"
+                value={formData.background_color}
+                onChange={handleInputChange}
+                name="background_color"
+              />
+              <div
+                style={{
+                  height: 19,
+                  width: 19,
+                  borderRadius: "50%",
+                  background: formData.background_color
+                    ? `#${formData.background_color}`
+                    : "transparent",
+                }}
+              ></div>
+            </div>
+          </div>
+          <div
+            style={{
+              width: "100%",
+              padding: 20,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <label style={{ margin: "auto", marginBottom: 15 }}>
+              <strong>Preview</strong>
+            </label>
+            <div
+              className={styles.imgContainer}
+              style={{
+                background: formData.background_color
+                  ? formData.background_color.includes("#")
+                    ? formData.background_color
+                    : `#${formData.background_color}`
+                  : "transparent",
+                // : "#F5F5F5",
+              }}
+              id="bot-form-preview-container"
+            >
+              <img
+                src={formData.iconPreview}
+                className={styles.img}
+                onError={(e) => (e.target.src = defaultImg)}
+                style={{
+                  visibility: formData.iconPreview ? "visible" : "hidden",
+                }}
+                alt="icon"
+              />
+              {formData.alias && <span>{formData.alias.toUpperCase()}</span>}
+            </div>
+          </div>
+          <button
+            className={styles.submitButton}
+            type="submit"
+            disabled={!coin && !isFormValid}
+            onClick={handleSubmit}
+            id="bot-form-submit-button"
+          >
+            {isSubmitting
+              ? coin
+                ? "Updating..."
+                : "Creating..."
+              : coin
+                ? "Update"
+                : "Create"}
+          </button>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+        </form>
+      )}
     </>
   );
 };
