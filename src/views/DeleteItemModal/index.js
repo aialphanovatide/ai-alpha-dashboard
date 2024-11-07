@@ -4,7 +4,7 @@ import styles from "./index.module.css";
 import CIcon from "@coreui/icons-react";
 import { cilX } from "@coreui/icons";
 import { ReactComponent as TrashIcon } from "../../assets/icons/trashIcon.svg";
-import { deleteCategory } from "../../services/categoryService";
+import { deleteCategory, getCategories } from "../../services/categoryService";
 import Swal from "sweetalert2";
 import defaultImg from "../../assets/brand/logo.png";
 import { capitalizeFirstLetter } from "src/utils";
@@ -23,15 +23,30 @@ const DeleteItemModal = (props) => {
     e.preventDefault();
     try {
       setLoading(true);
+      const newsBotsCategories = await getCategories(true);
+      const newsBotsCategoriesMap = new Map(
+        newsBotsCategories.map((category) => [category.name, category.id]),
+      );
       let successCount = 0;
       let errorCount = 0;
 
       for (const category of selectedCategories) {
-        const response = await deleteCategory(category.category_id);
-        if (response.success) {
-          successCount++;
-        } else {
-          errorCount++;
+        const newsBotsCategoryId = newsBotsCategoriesMap.get(category.name);
+        if (newsBotsCategoryId) {
+          const newsBotsResponse = await deleteCategory(
+            newsBotsCategoryId,
+            true,
+          );
+          if (!newsBotsResponse.success) {
+            errorCount++;
+            continue;
+          }
+          const response = await deleteCategory(category.category_id);
+          if (response.success) {
+            successCount++;
+          } else {
+            errorCount++;
+          }
         }
       }
 
@@ -55,22 +70,14 @@ const DeleteItemModal = (props) => {
 
         setSelectedCategories([]);
         setCategories(updatedCategories);
-
-        setLoading(false);
-        setVisible(false);
       }
 
       if (errorCount > 0) {
-        Swal.fire({
-          text: `${errorCount} categories failed to delete.`,
-          icon: "error",
-          customClass: "swal",
-        });
-        setLoading(false);
-        setVisible(false);
+        throw new Error(`${errorCount} categories failed to delete.`);
       }
     } catch (error) {
-      Swal.fire({ text: error.message, icon: "error", customClass: "swal", });
+      Swal.fire({ text: error.message, icon: "error", customClass: "swal" });
+    } finally {
       setLoading(false);
       setVisible(false);
     }
@@ -114,12 +121,12 @@ const DeleteItemModal = (props) => {
                     }}
                   >
                     <img
-                      src={`https://aialphaicons.s3.us-east-2.amazonaws.com/${category.alias || category.name}.svg`}
+                      src={category.icon}
                       onError={(e) => (e.target.src = defaultImg)}
                       alt={`${category.alias || category.name}-img`}
                     />
                   </div>
-                  <span>{capitalizeFirstLetter(category.alias || category.name)}</span>
+                  <span>{capitalizeFirstLetter(category.name)}</span>
                 </div>
               ))}
             </div>
