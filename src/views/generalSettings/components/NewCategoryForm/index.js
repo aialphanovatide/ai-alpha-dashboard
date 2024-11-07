@@ -1,7 +1,7 @@
 // index.js
 import { cilPen, cilPlus } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "./index.module.css";
 import { HelpOutline } from "@mui/icons-material";
 import CustomTooltip from "src/components/CustomTooltip";
@@ -9,34 +9,60 @@ import {
   createCategory,
   editCategory,
   getCategories,
+  getCategory,
 } from "src/services/categoryService";
 import Swal from "sweetalert2";
 import SpinnerComponent from "src/components/Spinner";
+import defaultImg from "../../../../assets/brand/logo.png"; 
 
 const NewCategoryForm = ({ category, setCategories }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [newsBotsCategory, setNewsBotsCategory] = useState(null);
   const [formData, setFormData] = useState({
-    name: category && category.name ? category.name : "",
-    alias: category && category.alias ? category.alias : "",
-    // prompt: "",
+    name: category?.name || "",
+    alias: category?.alias || "",
     slack_channel: "",
-    border_color:
-      category && category.border_color
-        ? category.border_color.includes("#")
-          ? category.border_color.replace("#", "")
-          : ""
-        : "",
+    border_color: category?.border_color
+      ? category.border_color.includes("#")
+        ? category.border_color.replace("#", "")
+        : ""
+      : "",
     icon: "",
-    iconPreview:
-      category && category.icon
-        ? `https://aialphaicons.s3.us-east-2.amazonaws.com/${
-            category.alias || category.name
-          }.svg`
-        : "",
+    iconPreview: category?.icon || "",
   });
+
+  useEffect(() => {
+    if (category) getNewsBotsCategory(category.name);
+  }, [category]);
+
+  const getNewsBotsCategory = async (categoryName) => {
+    try {
+      setIsLoading(true);
+      const response = await getCategory(categoryName, true);
+      if (!response.success) {
+        throw new Error(response.error || "Error fetching news bot category");
+      }
+      const category = response.data.category;
+      setFormData((prev) => ({
+        ...prev,
+        alias: category.alias,
+        name: category.name,
+        slack_channel: category.slack_channel,
+        iconPreview: formData.iconPreview ? formData.iconPreview : category.icon,
+      }));
+      setNewsBotsCategory(category);
+    } catch (err) {
+      Swal({
+        text: err.message || "Error fetching news bot category",
+        icon: "error",
+        customClass: "swal",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   let isFormValid = useMemo(
     () => formData.name && formData.alias,
@@ -77,7 +103,9 @@ const NewCategoryForm = ({ category, setCategories }) => {
         formDataToSend.append("icon", formData.icon, formData.icon);
       }
 
-      const response = await createCategory(formDataToSend);
+      const response = category
+        ? await editCategory(formDataToSend, category.category_id)
+        : await createCategory(formDataToSend);
 
       if (response.success) {
         let formDataForNewsBotServer = {
@@ -87,7 +115,13 @@ const NewCategoryForm = ({ category, setCategories }) => {
           slack_channel: formData.slack_channel,
         };
 
-        const response = await createCategory(formDataForNewsBotServer, true);
+        const response = category
+          ? await editCategory(
+              formDataForNewsBotServer,
+              newsBotsCategory.id,
+              true,
+            )
+          : await createCategory(formDataForNewsBotServer, true);
 
         if (response.success) {
           Swal.fire({
@@ -99,18 +133,22 @@ const NewCategoryForm = ({ category, setCategories }) => {
             setCategories(updatedCategories);
           });
 
-          setFormData({
-            name: "",
-            alias: "",
-            border_color: "",
-            icon: null,
-            iconPreview: null,
-          });
-          document.querySelector('input[type="file"]').value = "";
+          if (!category) {
+            setFormData({
+              name: "",
+              alias: "",
+              border_color: "",
+              icon: null,
+              iconPreview: null,
+              slack_channel: "",
+            });
+            document.querySelector('input[type="file"]').value = "";
+          }
           setIsSubmitting(false);
         } else {
           Swal.fire({
-            text: response.error || "Error creating category in news bot server",
+            text:
+              response.error || "Error creating category in news bot server",
             icon: "error",
             customClass: "swal",
           });
@@ -147,7 +185,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
         <SpinnerComponent style={{ height: "80vh" }} />
       ) : (
         <form onSubmit={handleSubmit}>
-          {error && <div className={styles.error}>{error}</div>}
+          {/* {error && <div className={styles.error}>{error}</div>} */}
           <div className={styles.section}>
             <div className={styles.labelContainer}>
               <label>
@@ -189,30 +227,6 @@ const NewCategoryForm = ({ category, setCategories }) => {
               required
             />
           </div>
-          {/* <div className={styles.section}>
-            <div className={styles.labelContainer}>
-              <label>
-                <strong>News Prompt</strong>
-              </label>
-              <CustomTooltip
-                title={"Create a bot category"}
-                content={
-                  "Add at least one additional detail (excluding icon or background color) to enable the category for news bot creation."
-                }
-              >
-                <HelpOutline fontSize="small" />
-              </CustomTooltip>
-            </div>
-            <textarea
-              className={styles.textarea}
-              placeholder={
-                "Enter article generator prompt.\nAn example of use could be:\n“Imagine that you are one of the world’s foremost experts on Bitcoin and also a globally renowned journalist skilled at summarizing articles about Bitcoin...”"
-              }
-              value={formData.prompt}
-              onChange={handleInputChange}
-              name="prompt"
-            />
-          </div> */}
           <div className={styles.section}>
             <div className={styles.labelContainer}>
               <label>
@@ -320,6 +334,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
             >
               <img
                 src={formData.iconPreview}
+                onError={(e) => (e.target.src = defaultImg)}
                 className={styles.img}
                 style={{
                   visibility: formData.iconPreview ? "visible" : "hidden",
