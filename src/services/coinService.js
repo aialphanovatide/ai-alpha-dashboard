@@ -96,4 +96,33 @@ const toggleCoinStatus = async (coin_id) => {
   }
 };
 
-export { createCoin, editCoin, toggleCoinStatus };
+const deleteCoin = async (coin_id) => {
+  try {
+    const response = await fetch(`${config.BASE_URL_DEV}/coin/${coin_id}`, {
+      method: "DELETE",
+      headers,
+    });
+
+    let responseText = await response.text();
+
+    try {
+      const data = JSON.parse(responseText);
+      if (response.ok) {
+        return { success: true, message: data.message };
+      } else {
+        return {
+          success: false,
+          error: data.error || "Unknown error occurred",
+        };
+      }
+    } catch (parseError) {
+      console.error("Error parsing JSON:", parseError);
+      return { success: false, error: "Failed to parse server response" };
+    }
+  } catch (error) {
+    console.error("Error deleting coin:", error);
+    return { success: false, error: "Network error or server is unreachable" };
+  }
+}
+
+export { createCoin, editCoin, toggleCoinStatus, deleteCoin };
