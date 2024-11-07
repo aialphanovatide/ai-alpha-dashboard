@@ -57,7 +57,7 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
         className="select-dropdown"
         disabled={loading || categories.length === 0}
       >
-        <option value="" disabled>Select Category...</option>
+        <option value="" disabled>Select Coin Category...</option>
         {categories.map((category) => (
           <option key={category.id} value={category.alias}>
             {category.alias}
