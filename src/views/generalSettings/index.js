@@ -59,7 +59,7 @@ const GeneralSettings = () => {
             </button>
           </div>
         </div> */}
-        <div className="create" style={{ width: "35%" }}>
+        <div className="create" style={{ width: "40%" }}>
           <span>Create</span>
           <div
             style={{
