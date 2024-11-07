@@ -61,7 +61,7 @@ const CategoryList = ({
       <div className="top-container">
         <DeleteItemModal
           categories={categories}
-          bots={selectedCoins}
+          selectedCoins={selectedCoins}
           setSelectedCoins={setSelectedCoins}
           setCategories={setCategories}
           selectedCategories={selectedCategories}
