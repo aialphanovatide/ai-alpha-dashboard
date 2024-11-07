@@ -225,7 +225,8 @@ body {
 
     .switch-button.active,
     #bot-form-submit-button:disabled,
-    #categoryform-submit-button:disabled {
+    #categoryform-submit-button:disabled,
+    .switch-button.active {
       background-color: #6b4d0c;
     }
 
