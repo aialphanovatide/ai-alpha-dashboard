@@ -62,19 +62,19 @@ const getCategories = async (isNewsBotsServer) => {
 
 const createCategory = async (payload, isNewsBotsServer) => {
   try {
-    const url = isNewsBotsServer
-      ? `${config.BOTS_V2_DEV_API}/category`
-      : `${config.BASE_URL_DEV}/category`;
+    const url = `${
+      isNewsBotsServer ? config.BOTS_V2_DEV_API : config.BASE_URL_DEV
+    }/category`;
 
-    headers = isNewsBotsServer
+    const customHeaders = isNewsBotsServer
       ? { "Content-Type": "application/json" }
-      : { ...headers }
+      : { ...headers };
 
     payload = isNewsBotsServer ? JSON.stringify(payload) : payload;
 
     const response = await fetch(url, {
       method: "POST",
-      headers,
+      headers: customHeaders,
       body: payload,
     });
 
@@ -100,16 +100,23 @@ const createCategory = async (payload, isNewsBotsServer) => {
   }
 };
 
-const editCategory = async (category_id, payload) => {
+const editCategory = async (payload, category_id, isNewsBotsServer) => {
   try {
-    const response = await fetch(
-      `${config.BASE_URL_DEV}/category/${category_id}`,
-      {
-        method: "PUT",
-        headers,
-        body: payload,
-      },
-    );
+    const url = `${
+      isNewsBotsServer ? config.BOTS_V2_DEV_API : config.BASE_URL_DEV
+    }/category/${category_id}`;
+
+    const customHeaders = isNewsBotsServer
+      ? { "Content-Type": "application/json" }
+      : { ...headers };
+
+    payload = isNewsBotsServer ? JSON.stringify(payload) : payload;
+
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: customHeaders,
+      body: payload,
+    });
 
     let responseText = await response.text();
 
@@ -128,15 +135,16 @@ const editCategory = async (category_id, payload) => {
   }
 };
 
-const deleteCategory = async (category_id) => {
+const deleteCategory = async (category_id, isNewsBotsServer) => {
   try {
-    const response = await fetch(
-      `${config.BASE_URL_DEV}/category/${category_id}`,
-      {
-        method: "DELETE",
-        headers,
-      },
-    );
+    const url = isNewsBotsServer
+      ? `${config.BOTS_V2_DEV_API}/category/${category_id}`
+      : `${config.BASE_URL_DEV}/category/${category_id}`;
+
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers,
+    });
 
     let responseText = await response.text();
 
