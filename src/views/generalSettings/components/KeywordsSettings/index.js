@@ -31,7 +31,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
 
     if (response.success) {
       Swal.fire({
-        text: "Keywords updated successfully",
+        text: `${isBlacklist ? 'Blacklist' : 'Whitelist'} updated successfully`,
         icon: "success",
         customClass: "swal",
       });
