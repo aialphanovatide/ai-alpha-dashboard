@@ -227,19 +227,31 @@ const BotForm = ({ coin, setCategories }) => {
     }
   };
 
-  const handleInputChange = useCallback((e) => {
-    e.preventDefault();
-    const newData = { ...formData };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => {
+      const newData = { ...prevData, [name]: value };
+      localStorage.setItem('botFormData', JSON.stringify(newData));
+      return newData;
+    });
+  };
 
-    if (e.target.name === "category_id") {
-      let selectedCategoryName = e.target.options[e.target.selectedIndex].text;
-      let botCategoryId = getBotCategoryId(selectedCategoryName);
-      newData.bot_category_id = botCategoryId;
+  useEffect(() => {
+    const savedFormData = localStorage.getItem('botFormData');
+    if (savedFormData) {
+      setFormData(JSON.parse(savedFormData));
     }
 
-    newData[e.target.name] = e.target?.value;
-    setFormData(newData);
-  });
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('botFormData');
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -354,6 +366,8 @@ const BotForm = ({ coin, setCategories }) => {
         icon: "error",
         customClass: "swal",
       });
+    } finally {
+      localStorage.removeItem('botFormData');
     }
   };
 

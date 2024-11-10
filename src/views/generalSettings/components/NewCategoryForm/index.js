@@ -70,10 +70,30 @@ const NewCategoryForm = ({ category, setCategories }) => {
   );
 
   const handleInputChange = (e) => {
-    let newData = { ...formData };
-    newData[e.target.name] = e.target.value;
-    setFormData(newData);
+    const { name, value } = e.target;
+    setFormData((prevData) => {
+      const newData = { ...prevData, [name]: value };
+      localStorage.setItem('categoryFormData', JSON.stringify(newData));
+      return newData;
+    });
   };
+
+  useEffect(() => {
+    const savedFormData = localStorage.getItem('categoryFormData');
+    if (savedFormData) {
+      setFormData(JSON.parse(savedFormData));
+    }
+
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('categoryFormData');
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -143,6 +163,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
               slack_channel: "",
             });
             document.querySelector('input[type="file"]').value = "";
+            localStorage.removeItem('categoryFormData');
           }
           setIsSubmitting(false);
         } else {
@@ -172,6 +193,8 @@ const NewCategoryForm = ({ category, setCategories }) => {
         icon: "error",
         customClass: "swal",
       });
+    } finally {
+      localStorage.removeItem('categoryFormData');
     }
   };
 
