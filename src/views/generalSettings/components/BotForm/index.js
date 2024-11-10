@@ -21,7 +21,6 @@ import SpinnerComponent from "src/components/Spinner";
 import defaultImg from "../../../../assets/brand/logo.png"; 
 
 const BotForm = ({ coin, setCategories }) => {
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectCategories, setSelectCategories] = useState([]);
@@ -127,7 +126,11 @@ const BotForm = ({ coin, setCategories }) => {
       setSelectCategories(categories);
       setNewsBotsCategories(newsBotsCategories);
     } catch (err) {
-      setError(err.message || "Error fetching categories");
+      Swal.fire({
+        text: err.message || "Error fetching categories",
+        icon: "error",
+        customClass: "swal",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -169,19 +172,26 @@ const BotForm = ({ coin, setCategories }) => {
     const keyword = input?.value.trim();
 
     if (!keyword) {
-      setError("Please enter a keyword");
       return;
     }
 
     if (isBlacklist) {
       if (blacklist.includes(keyword)) {
-        setError("Keyword already added");
+        Swal.fire({
+          text: "Keyword already added",
+          icon: "error",
+          customClass: "swal",
+        });
         return;
       }
       setBlacklist([...blacklist, keyword]);
     } else {
       if (keywords.includes(keyword)) {
-        setError("Keyword already added");
+        Swal.fire({
+          text: "Keyword already added",
+          icon: "error",
+          customClass: "swal",
+        });
         return;
       }
       setKeywords([...keywords, keyword]);
@@ -239,7 +249,11 @@ const BotForm = ({ coin, setCategories }) => {
 
       setFormData({ ...formData, icon: file, iconPreview: previewUrl });
     } else {
-      setError("Please select a valid SVG file");
+      Swal.fire({
+        text: "Please upload a valid SVG file",
+        icon: "error",
+        customClass: "swal",
+      });
     }
   };
 
@@ -787,7 +801,6 @@ const BotForm = ({ coin, setCategories }) => {
                 ? "Update"
                 : "Create"}
           </button>
-          {error && <p style={{ color: "red" }}>{error}</p>}
         </form>
       )}
     </>
