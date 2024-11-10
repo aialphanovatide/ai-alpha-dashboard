@@ -7,7 +7,6 @@ import { ReactComponent as TrashIcon } from "../../assets/icons/trashIcon.svg";
 import { deleteCategory, getCategories } from "../../services/categoryService";
 import Swal from "sweetalert2";
 import defaultImg from "../../assets/brand/logo.png";
-import { capitalizeFirstLetter } from "src/utils";
 import { deleteBot, getBots } from "src/services/botService";
 import { deleteCoin } from "src/services/coinService";
 
@@ -244,7 +243,7 @@ const DeleteItemModal = (props) => {
                       alt={'item-icon'}
                     />
                   </div>
-                  <span>{capitalizeFirstLetter(item.name)}</span>
+                  <span>{item.name}</span>
                 </div>
               ))}
             </div>

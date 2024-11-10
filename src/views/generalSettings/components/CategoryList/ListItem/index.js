@@ -5,7 +5,7 @@ import CIcon from "@coreui/icons-react";
 import { cilPen } from "@coreui/icons";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { capitalizeFirstLetter, formatDateTime } from "src/utils";
+import { formatDateTime } from "src/utils";
 import NewCategoryForm from "../../NewCategoryForm";
 import BotForm from "../../BotForm";
 import SwitchButton from "src/components/commons/SwitchButton";
@@ -172,7 +172,7 @@ const ListItem = (params) => {
             {item.name || (isCoin ? "Bot name" : "Category name")}
           </div>
           <div>
-            {capitalizeFirstLetter(item.alias) ||
+            {item.alias ||
               (isCoin ? "Bot alias" : "Category alias")}
           </div>
           {isCoin && (

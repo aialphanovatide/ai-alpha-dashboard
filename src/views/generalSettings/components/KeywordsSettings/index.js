@@ -9,7 +9,6 @@ import { getBot } from "src/services/botService";
 import Swal from "sweetalert2";
 import { addKeywords, deleteKeywords } from "src/services/keywordService";
 import SpinnerComponent from "src/components/Spinner";
-import { capitalizeFirstLetter } from "src/utils";
 
 const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -58,18 +57,18 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
 
   const validateKeyword = (keyword) => {
     if (keywords.includes(keyword))
-      return `"${capitalizeFirstLetter(keyword)}" keyword already exists.`;
+      return `"${keyword}" keyword already exists.`;
     if (!isRemove) keyword = keyword.toLowerCase();
     if (
       (isBlacklist && blacklistKeywords.includes(keyword)) ||
       (!isBlacklist && whitelistKeywords.includes(keyword))
     ) {
-      return `"${capitalizeFirstLetter(keyword)}" keyword already exists.`;
+      return `"${keyword}" keyword already exists.`;
     } else if (
       (!isBlacklist && blacklistKeywords.includes(keyword)) ||
       (isBlacklist && whitelistKeywords.includes(keyword))
     ) {
-      return `"${capitalizeFirstLetter(keyword)}" keyword is on the ${
+      return `"${keyword}" keyword is on the ${
         isBlacklist ? "whitelist" : "blacklist"
       }.`;
     }

@@ -16,7 +16,6 @@ import Swal from "sweetalert2";
 import { getCategories, getCategory } from "src/services/categoryService";
 import { createBot, editBot, getBot } from "src/services/botService";
 import { createCoin, editCoin } from "src/services/coinService";
-import { capitalizeFirstLetter } from "src/utils";
 import { extractKeywords } from "src/services/keywordService";
 import SpinnerComponent from "src/components/Spinner";
 import defaultImg from "../../../../assets/brand/logo.png"; 
@@ -34,7 +33,7 @@ const BotForm = ({ coin, setCategories }) => {
   const [keywords, setKeywords] = useState([]);
   const [bot, setBot] = useState(null);
   const [formData, setFormData] = useState({
-    name: coin && coin.name ? capitalizeFirstLetter(coin.name) : "",
+    name: coin && coin.name ? coin.name : "",
     alias: coin && coin.alias ? coin.alias : "",
     symbol: coin && coin.symbol ? coin.symbol : "",
     category_id: coin && coin.category_id ? coin.category_id : "",
@@ -88,7 +87,7 @@ const BotForm = ({ coin, setCategories }) => {
   const fetchBot = async (name) => {
     try {
       setIsLoading(true);
-      const response = await getBot(capitalizeFirstLetter(name), "name");
+      const response = await getBot(name, "name");
 
       if (!response.success) {
         throw new Error(response.error);
@@ -430,7 +429,7 @@ const BotForm = ({ coin, setCategories }) => {
               <option value="">Select category</option>{" "}
               {selectCategories?.map((category) => (
                 <option key={category.category_id} value={category.category_id}>
-                  {capitalizeFirstLetter(category.name)}
+                  {category.name}
                 </option>
               ))}
             </select>
