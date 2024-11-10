@@ -21,7 +21,7 @@
   height: 34px;
 }
 
-.trashBtn>svg>path {
+.trashBtn:disabled>svg>path {
   fill: #c8c8c8;
   stroke: #c8c8c8;
 }
