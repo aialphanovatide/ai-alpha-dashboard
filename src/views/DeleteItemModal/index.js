@@ -29,54 +29,6 @@ const DeleteItemModal = (props) => {
     );
   }, [selectedCategories, selectedCoins]);
 
-  //   const fetchEntitiesFromServer = async (entityType) => {
-  //   try {
-  //     const response = await fetch(`https://other-server.com/api/${entityType}`);
-  //     const data = await response.json();
-  //     return data.success ? data[entityType] : [];
-  //   } catch (error) {
-  //     console.error(`Error fetching ${entityType}:`, error);
-  //     return [];
-  //   }
-  // };
-
-  // const deleteEntities = async (entities, entityType, deleteFunction) => {
-  //   try {
-  //     const remoteEntities = await fetchEntitiesFromServer(entityType);
-  //     const entitiesToDelete = remoteEntities.filter(remoteEntity =>
-  //       entities.some(entity => entity.name === remoteEntity.name)
-  //     );
-
-  //     // Delete entities from the local server
-  //     await Promise.all(entities.map(entity => deleteFunction(entity.id)));
-
-  //     // Delete entities from the remote server
-  //     await Promise.all(entitiesToDelete.map(entity => deleteFunction(entity.id, true)));
-  //   } catch (error) {
-  //     console.error(`Error deleting ${entityType}:`, error);
-  //   }
-  // };
-
-  // const handleDeleteEntities = async (e, entities, entityType, deleteFunction) => {
-  //   e.preventDefault();
-  //   try {
-  //     setLoading(true);
-  //     await deleteEntities(entities, entityType, deleteFunction);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // Usage for categories
-  // const handleDeleteCategory = (e) => {
-  //   handleDeleteEntities(e, selectedCategories, 'categories', deleteCategory);
-  // };
-
-  // // Usage for coins
-  // const handleDeleteCoinBot = (e) => {
-  //   handleDeleteEntities(e, selectedCoins, 'coins', deleteCoin);
-  // };
-
   const handleDeleteCategory = async (e) => {
     e.preventDefault();
     try {
