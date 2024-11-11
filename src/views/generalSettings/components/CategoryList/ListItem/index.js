@@ -14,6 +14,7 @@ import defaultImg from "../../../../../assets/brand/logo.png";
 import Swal from "sweetalert2";
 import { toggleCoinStatus } from "src/services/coinService";
 import ErrorList from "src/components/ErrorList";
+import CoinBotDetails from "src/views/CoinBotDetails";
 
 const ListItem = (params) => {
   const {
@@ -32,6 +33,7 @@ const ListItem = (params) => {
   const [isBotChecked, setBotChecked] = useState(false);
   const [isItemActive, setIsItemActive] = useState(false);
   const [isToggleLoading, setIsToggleLoading] = useState(false);
+  const [isCoinBotDetailVisible, setIsCoinBotDetailVisible] = useState(false);
 
   const toggleOpen = () => setIsOpen(!isOpen);
 
@@ -65,7 +67,9 @@ const ListItem = (params) => {
     const checkedBot = JSON.parse(e.target.value);
 
     if (isBotChecked) {
-      setSelectedCoins(selectedCoins.filter((bot) => bot.bot_id !== checkedBot.bot_id));
+      setSelectedCoins(
+        selectedCoins.filter((bot) => bot.bot_id !== checkedBot.bot_id),
+      );
     } else {
       setSelectedCoins([...selectedCoins, checkedBot]);
     }
@@ -133,6 +137,7 @@ const ListItem = (params) => {
         className={`item ${
           isCategoryChecked || isBotChecked ? "checked" : ""
         } ${isCoin ? "bot" : ""}`}
+        onClick={isCoin ? () => setIsCoinBotDetailVisible(true) : null}
       >
         <div className="item-input">
           <CustomTooltip
@@ -261,6 +266,11 @@ const ListItem = (params) => {
           ))}
         </div>
       )}
+      <CoinBotDetails
+        isVisible={isCoinBotDetailVisible}
+        setIsVisible={setIsCoinBotDetailVisible}
+        coin={item}
+      />
     </>
   );
 };
