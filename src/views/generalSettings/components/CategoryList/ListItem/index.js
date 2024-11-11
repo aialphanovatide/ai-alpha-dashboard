@@ -13,18 +13,7 @@ import SwitchButton from "src/components/commons/SwitchButton";
 import defaultImg from "../../../../../assets/brand/logo.png";
 import Swal from "sweetalert2";
 import { toggleCoinStatus } from "src/services/coinService";
-
-const ActivationErrorsContainer = ({ errorMessages }) => {
-  return (
-    <div className="error-messages-container">
-      {errorMessages?.map((errorMessage, index) => (
-        <div key={index}>
-          <strong>{errorMessage.coinName}</strong>: {errorMessage.error}
-        </div>
-      ))}
-    </div>
-  );
-};
+import ErrorList from "src/components/ErrorList";
 
 const ListItem = (params) => {
   const {
@@ -128,7 +117,7 @@ const ListItem = (params) => {
       Swal.fire({
         title: "Some coins couldn't be activated",
         html: ReactDOMServer.renderToString(
-          <ActivationErrorsContainer errorMessages={errorArray} />,
+          <ErrorList errorMessages={errorArray} />,
         ),
         icon: "error",
         customClass: "swal",

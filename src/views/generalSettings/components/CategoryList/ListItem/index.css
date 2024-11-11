@@ -122,16 +122,6 @@
   grid-column: 6;
 }
 
-.error-messages-container {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  text-align: left;
-  max-height: 120px;
-  overflow-y: auto;
-  font-size: smaller;
-}
-
 @media screen and (max-width: 1200px) {
   .item {
     width: 100%;
