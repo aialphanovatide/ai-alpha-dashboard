@@ -157,6 +157,7 @@ const DeleteItemModal = (props) => {
       <div className={styles.buttonContainer}>
         <button
           className={styles.trashBtn}
+          id="trashBtn"
           onClick={() => setVisible(true)}
           disabled={selectedCategories.length === 0 && selectedCoins.length === 0}
         >

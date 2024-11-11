@@ -241,5 +241,14 @@ body {
     #keyword-tag {
       background-color: #FF8739
     }
+
+    #trashBtn>svg>path {
+      fill: white ;
+      stroke: white ;
+    }
+    #trashBtn:disabled>svg>path {
+      fill: #4e4e4e ;
+      stroke: #4e4e4e ;
+    }
   }
 }
