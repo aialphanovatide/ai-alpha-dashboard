@@ -65,7 +65,7 @@ const ListItem = (params) => {
     const checkedBot = JSON.parse(e.target.value);
 
     if (isBotChecked) {
-      setSelectedCoins(selectedCoins.filter((bot) => bot.id !== checkedBot.id));
+      setSelectedCoins(selectedCoins.filter((bot) => bot.bot_id !== checkedBot.bot_id));
     } else {
       setSelectedCoins([...selectedCoins, checkedBot]);
     }
