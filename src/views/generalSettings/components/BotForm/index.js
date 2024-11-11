@@ -19,6 +19,8 @@ import { createCoin, editCoin } from "src/services/coinService";
 import { extractKeywords } from "src/services/keywordService";
 import SpinnerComponent from "src/components/Spinner";
 import defaultImg from "../../../../assets/brand/logo.png";
+import ReactDOMServer from "react-dom/server";
+import ErrorList from "src/components/ErrorList";
 
 const BotForm = ({ coin, setCategories }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -62,10 +64,33 @@ const BotForm = ({ coin, setCategories }) => {
     const response = await extractKeywords(formData, isBlacklist);
 
     if (response.success) {
+      const validKeywords = [];
+      const invalidKeywords = [];
+
+      response.data.forEach((keyword) => {
+        const errorMessage = validateKeyword(keyword, isBlacklist);
+        if (errorMessage) {
+          invalidKeywords.push({ keyword, error: errorMessage });
+        } else {
+          validKeywords.push(keyword);
+        }
+      });
+
       if (isBlacklist) {
-        setBlacklist((prev) => [...prev, ...response.data]);
+        setBlacklist((prev) => [...prev, ...validKeywords]);
       } else {
-        setKeywords((prev) => [...prev, ...response.data]);
+        setKeywords((prev) => [...prev, ...validKeywords]);
+      }
+
+      if (invalidKeywords.length > 0) {
+        Swal.fire({
+          title: "Some keywords were not added",
+          html: ReactDOMServer.renderToString(
+            <ErrorList errorMessages={invalidKeywords} />,
+          ),
+          icon: "error",
+          customClass: "swal",
+        });
       }
     } else {
       Swal.fire({
@@ -165,7 +190,7 @@ const BotForm = ({ coin, setCategories }) => {
     if (listToCheck.includes(keyword)) {
       return "Keyword already added";
     } else if (oppositeList.includes(keyword)) {
-      return `Keyword already added to ${isBlacklist ? "whitelist" : "blacklist"}`;
+      return `Keyword already added to ${isBlacklist ? "Whitelist" : "Blacklist"}`;
     }
     return null;
   };
