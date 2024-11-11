@@ -159,55 +159,37 @@ const BotForm = ({ coin, setCategories }) => {
   );
 
   const validateKeyword = (keyword, isBlacklist = false) => {
-    if (isBlacklist) {
-      if (blacklist.includes(keyword)) {
-        Swal.fire({
-          text: "Keyword already added",
-          icon: "error",
-          customClass: "swal",
-        });
-        return false;
-      } else if (keywords.includes(keyword)) {
-        Swal.fire({
-          text: "Keyword already added to whitelist",
-          icon: "error",
-          customClass: "swal",
-        });
-        return false;
-      }
-      return true;
-    } else {
-      if (keywords.includes(keyword)) {
-        Swal.fire({
-          text: "Keyword already added",
-          icon: "error",
-          customClass: "swal",
-        });
-        return false;
-      } else if (blacklist.includes(keyword)) {
-        Swal.fire({
-          text: "Keyword already added to blacklist",
-          icon: "error",
-          customClass: "swal",
-        });
-        return false;
-      }
-      return true;
+    const listToCheck = isBlacklist ? blacklist : keywords;
+    const oppositeList = isBlacklist ? keywords : blacklist;
+
+    if (listToCheck.includes(keyword)) {
+      return "Keyword already added";
+    } else if (oppositeList.includes(keyword)) {
+      return `Keyword already added to ${isBlacklist ? "whitelist" : "blacklist"}`;
     }
+    return null;
   };
 
   const addKeyword = (e, isBlacklist = false) => {
     e.preventDefault();
     const keyword = isBlacklist ? blacklistKeyword : whitelistKeyword;
+    const errorMessage = validateKeyword(keyword, isBlacklist);
 
-    if (validateKeyword(keyword, isBlacklist)) {
-      if (isBlacklist) {
-        setBlacklist((prev) => [...prev, keyword]);
-        setBlacklistKeyword("");
-      } else {
-        setKeywords((prev) => [...prev, keyword]);
-        setWhitelistKeyword("");
-      }
+    if (errorMessage) {
+      Swal.fire({
+        text: errorMessage,
+        icon: "error",
+        customClass: "swal",
+      });
+      return;
+    }
+
+    if (isBlacklist) {
+      setBlacklist((prev) => [...prev, keyword]);
+      setBlacklistKeyword("");
+    } else {
+      setKeywords((prev) => [...prev, keyword]);
+      setWhitelistKeyword("");
     }
   };
 
