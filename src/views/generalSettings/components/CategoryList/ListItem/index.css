@@ -127,8 +127,9 @@
   flex-direction: column;
   gap: 5px;
   text-align: left;
-  height: 150px;
+  max-height: 120px;
   overflow-y: auto;
+  font-size: smaller;
 }
 
 @media screen and (max-width: 1200px) {
