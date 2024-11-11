@@ -18,7 +18,7 @@ import { createBot, editBot, getBot } from "src/services/botService";
 import { createCoin, editCoin } from "src/services/coinService";
 import { extractKeywords } from "src/services/keywordService";
 import SpinnerComponent from "src/components/Spinner";
-import defaultImg from "../../../../assets/brand/logo.png"; 
+import defaultImg from "../../../../assets/brand/logo.png";
 
 const BotForm = ({ coin, setCategories }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +29,9 @@ const BotForm = ({ coin, setCategories }) => {
   const [isBlacklistFileUploading, setBlacklistFileUploading] = useState(false);
   const keyWordInputRef = React.createRef();
   const [blacklist, setBlacklist] = useState([]);
+  const [blacklistKeyword, setBlacklistKeyword] = useState("");
   const [keywords, setKeywords] = useState([]);
+  const [whitelistKeyword, setWhitelistKeyword] = useState("");
   const [bot, setBot] = useState(null);
   const [formData, setFormData] = useState({
     name: coin && coin.name ? coin.name : "",
@@ -93,8 +95,8 @@ const BotForm = ({ coin, setCategories }) => {
       }
 
       setBot(response.data);
-      setBlacklist((prev) => [...prev, ...response.data.blacklist]);
-      setKeywords((prev) => [...prev, ...response.data.keywords]);
+      setBlacklist([...response.data.blacklist]);
+      setKeywords([...response.data.keywords]);
       setFormData((prev) => ({
         ...prev,
         bot_category_id: response.data.category_id,
@@ -140,16 +142,6 @@ const BotForm = ({ coin, setCategories }) => {
     fetchCategories();
   }, [fetchCategories]);
 
-  // const isAddKeywordButtonDisabled = useCallback(
-  //   (type) => {
-  //     const input = document.querySelector(`input[name="${type}"]`);
-  //     const keyword = input?.value.trim();
-
-  //     return !keyword || formData[type].includes(keyword);
-  //   },
-  //   [formData.keywords, formData.blacklist, keyWordInputRef],
-  // );
-
   const isFormValid = useMemo(
     () =>
       formData.name &&
@@ -166,15 +158,7 @@ const BotForm = ({ coin, setCategories }) => {
     ],
   );
 
-  const addKeyword = (e, isBlacklist) => {
-    e.preventDefault();
-    const input = document.querySelector(`input[name="${e.target.name}"]`);
-    const keyword = input?.value.trim();
-
-    if (!keyword) {
-      return;
-    }
-
+  const validateKeyword = (keyword, isBlacklist = false) => {
     if (isBlacklist) {
       if (blacklist.includes(keyword)) {
         Swal.fire({
@@ -182,9 +166,16 @@ const BotForm = ({ coin, setCategories }) => {
           icon: "error",
           customClass: "swal",
         });
-        return;
+        return false;
+      } else if (keywords.includes(keyword)) {
+        Swal.fire({
+          text: "Keyword already added to whitelist",
+          icon: "error",
+          customClass: "swal",
+        });
+        return false;
       }
-      setBlacklist([...blacklist, keyword]);
+      return true;
     } else {
       if (keywords.includes(keyword)) {
         Swal.fire({
@@ -192,12 +183,32 @@ const BotForm = ({ coin, setCategories }) => {
           icon: "error",
           customClass: "swal",
         });
-        return;
+        return false;
+      } else if (blacklist.includes(keyword)) {
+        Swal.fire({
+          text: "Keyword already added to blacklist",
+          icon: "error",
+          customClass: "swal",
+        });
+        return false;
       }
-      setKeywords([...keywords, keyword]);
+      return true;
     }
+  };
 
-    input.value = "";
+  const addKeyword = (e, isBlacklist = false) => {
+    e.preventDefault();
+    const keyword = isBlacklist ? blacklistKeyword : whitelistKeyword;
+
+    if (validateKeyword(keyword, isBlacklist)) {
+      if (isBlacklist) {
+        setBlacklist((prev) => [...prev, keyword]);
+        setBlacklistKeyword("");
+      } else {
+        setKeywords((prev) => [...prev, keyword]);
+        setWhitelistKeyword("");
+      }
+    }
   };
 
   const removeKeyword = (e, keywordToRemove, isBlacklist) => {
@@ -519,10 +530,12 @@ const BotForm = ({ coin, setCategories }) => {
                 placeholder="Enter keywords"
                 name="keywords"
                 ref={keyWordInputRef}
+                value={whitelistKeyword}
+                onChange={(e) => setWhitelistKeyword(e.target.value)}
               />
               <button
                 onClick={addKeyword}
-                // disabled={isAddKeywordButtonDisabled("keywords")}
+                disabled={!whitelistKeyword}
                 name="keywords"
               >
                 <CIcon icon={cilPlus} /> Add
@@ -590,10 +603,15 @@ const BotForm = ({ coin, setCategories }) => {
               </div>
             </div>
             <div className={styles.keywordInput} id="blacklist-keywords-input">
-              <input placeholder="Enter keywords" name="blacklist" />
+              <input
+                placeholder="Enter keywords"
+                name="blacklist"
+                value={blacklistKeyword}
+                onChange={(e) => setBlacklistKeyword(e.target.value)}
+              />
               <button
                 onClick={(e) => addKeyword(e, true)}
-                // disabled={isAddKeywordButtonDisabled("blacklist")}
+                disabled={!blacklistKeyword}
                 name="blacklist"
               >
                 <CIcon icon={cilPlus} /> Add
