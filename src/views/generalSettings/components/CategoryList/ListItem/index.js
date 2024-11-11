@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./index.css";
+import * as ReactDOMServer from "react-dom/server";
 import CustomTooltip from "src/components/CustomTooltip";
 import CIcon from "@coreui/icons-react";
 import { cilPen } from "@coreui/icons";
@@ -12,6 +13,18 @@ import SwitchButton from "src/components/commons/SwitchButton";
 import defaultImg from "../../../../../assets/brand/logo.png";
 import Swal from "sweetalert2";
 import { toggleCoinStatus } from "src/services/coinService";
+
+const ActivationErrorsContainer = ({ errorMessages }) => {
+  return (
+    <div className="error-messages-container">
+      {errorMessages?.map((errorMessage, index) => (
+        <div key={index}>
+          <strong>{errorMessage.coinName}</strong>: {errorMessage.error}
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const ListItem = (params) => {
   const {
@@ -92,7 +105,7 @@ const ListItem = (params) => {
               return { success: true };
             const response = await toggleCoinStatus(coin.bot_id);
             if (response.success) coin.is_active = !coin.is_active;
-            return response;
+            return { ...response, coinName: coin.name };
           }),
         );
 
@@ -102,14 +115,21 @@ const ListItem = (params) => {
           setIsItemActive(!isItemActive);
           updateCategoryState(item.category_id, !isItemActive);
         } else {
-          const errorMessage = responses.find((res) => !res.success).error;
-          throw new Error(errorMessage);
+          const errorMessages = responses
+            .filter((res) => !res.success)
+            .map((res) => ({ coinName: res.coinName, error: res.error }));
+          throw new Error(JSON.stringify(errorMessages));
         }
       }
     } catch (error) {
+      const errorString = error.message.replace(/^Error: /, "");
+      const errorArray = JSON.parse(errorString);
+
       Swal.fire({
         title: "Some coins couldn't be activated",
-        text: error.message,
+        html: ReactDOMServer.renderToString(
+          <ActivationErrorsContainer errorMessages={errorArray} />,
+        ),
         icon: "error",
         customClass: "swal",
       });
@@ -171,10 +191,7 @@ const ListItem = (params) => {
           <div className="item-name">
             {item.name || (isCoin ? "Bot name" : "Category name")}
           </div>
-          <div>
-            {item.alias ||
-              (isCoin ? "Bot alias" : "Category alias")}
-          </div>
+          <div>{item.alias || (isCoin ? "Bot alias" : "Category alias")}</div>
           {isCoin && (
             <div className="item-last-run">
               Last Run: {formatDateTime(item.updated_at)}
