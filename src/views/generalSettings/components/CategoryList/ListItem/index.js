@@ -226,12 +226,6 @@ const ListItem = (params) => {
             </div>
           </CustomTooltip>
         ) : null}
-        {/* <div
-          style={{ gridColumn: 6, height: "fit-content" }}
-          // onClick={() => toggleState(index)}
-        >
-          <SwitchButton isActive={item.isActive} isAppsSwitch={true} />
-        </div> */}
         {!isCoin && (
           <button
             onClick={toggleOpen}
