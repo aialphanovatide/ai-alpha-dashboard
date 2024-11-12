@@ -4,12 +4,12 @@ const Home = React.lazy(() => import('./views/Home'))
 const ContentCreation = React.lazy(() => import('./views/ContentCreation'))
 const Fundamentals = React.lazy(() => import('./views/Fundamentals'))
 const BotsSettings = React.lazy(() => import('./views/botsSettings/BotsSettings'))
-const NarrativeTrading = React.lazy(() => import('./views/narrativeTrading/NarrativeTrading'))
+// const NarrativeTrading = React.lazy(() => import('./views/narrativeTrading/NarrativeTrading'))
 const topSories = React.lazy(() => import('./views/topStories'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 const NewsSearchTool = React.lazy(() => import('./views/NewsSearchTool'))
-const NewsCreatorTool = React.lazy(() => import('./views/newsCreatorTool/NewsCreatorTool'))
+// const NewsCreatorTool = React.lazy(() => import('./views/newsCreatorTool/NewsCreatorTool'))
 const UsersList = React.lazy(() => import('./views/UsersList'))
 const UserDetail = React.lazy(() => import('./views/UserDetail'))
 // Base
@@ -62,9 +62,9 @@ const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/newsSearchTool', name: 'Search Tool', element: NewsSearchTool },
   { path: '/home', name: 'Home', element: Home },
-  { path: '/newsCreatorTool', name: 'News Creator Tool', element: NewsCreatorTool },
+  // { path: '/newsCreatorTool', name: 'News Creator Tool', element: NewsCreatorTool },
   { path: '/fundamentals', name: 'Fundamentals', element: Fundamentals },
-  { path: '/narrativeTrading', name: 'NarrativeTrading', element: NarrativeTrading },
+  // { path: '/narrativeTrading', name: 'NarrativeTrading', element: NarrativeTrading },
   { path: '/botsSettings', name: 'BotsSettings', element: BotsSettings },
   { path: '/chartsPage', name: 'ChartsPage', element: ChartsPage },
   { path: '/contentCreation', name: 'Content Creation', element: ContentCreation },
