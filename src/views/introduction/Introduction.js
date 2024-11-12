@@ -17,7 +17,6 @@ const Introduction = () => {
     const getAllBots = async () => {
       try {
         const response = await fetch(`${config.BOTS_V2_DEV_API}/bots`, {
-        // const response = await fetch(`${config.BOTS_V2_API}/get_all_coin_bots`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -26,7 +25,6 @@ const Introduction = () => {
         });
 
         const data = await response.json();
-        // console.log(data)
         if (data && data.data) {
           setBots(data.data);
         } else {
