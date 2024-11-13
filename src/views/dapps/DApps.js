@@ -16,12 +16,13 @@ const DApps = () => {
   const getDappsData = async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL}/api/dapps?coin_bot_id=${selectedCoinBot}`,
+        `${config.BASE_URL_DEV}/api/dapps?coin_bot_id=${selectedCoinBot}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            'X-Api-Key': config.X_API_KEY_DEV
           },
         },
       );
@@ -44,7 +45,7 @@ const DApps = () => {
   useEffect(() => {
     const getAllBots = async () => {
       try {
-        const response = await fetch(`${config.BOTS_V2_API}/get_all_coin_bots`, {
+        const response = await fetch(`${config.BOTS_V2_DEV_API}/bots`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -53,8 +54,8 @@ const DApps = () => {
         });
 
         const data = await response.json();
-        if (data && data.data.coin_bots) {
-          setBots(data.data.coin_bots);
+        if (data && data.data) {
+          setBots(data.data);
         } else {
           console.error("Error fetching bots:", data.error);
         }
@@ -71,12 +72,13 @@ const DApps = () => {
     const getDappsData = async () => {
       try {
         const response = await fetch(
-          `${config.BASE_URL}/api/dapps?coin_bot_id=${selectedCoinBot}`,
+          `${config.BASE_URL_DEV}/api/dapps?coin_bot_id=${selectedCoinBot}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               "ngrok-skip-browser-warning": "true",
+              'X-Api-Key': config.X_API_KEY_DEV
             },
           },
         );
