@@ -36,24 +36,24 @@ const _nav = [
     to: '/fundamentals',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
   },
-  {
-    component: CNavItem,
-    name: 'Narrative Trading',
-    to: '/narrativeTrading',
-    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
-  },
+  // {
+  //   component: CNavItem,
+  //   name: 'Narrative Trading',
+  //   to: '/narrativeTrading',
+  //   icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+  // },
   {
     component: CNavItem,
     name: 'News Bots Settings',
     to: '/botsSettings',
     icon: <CIcon icon={cilSitemap} customClassName="nav-icon" />,
   },
-  {
-    component: CNavItem,
-    name: 'News Creator Tool',
-    to: '/newsCreatorTool',
-    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
-  },
+  // {
+  //   component: CNavItem,
+  //   name: 'News Creator Tool',
+  //   to: '/newsCreatorTool',
+  //   icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+  // },
   {
     component: CNavItem,
     name: 'News Search Tool',

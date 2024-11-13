@@ -41,7 +41,7 @@ const ChartsPage = () => {
     const fetchCoinBots = async () => {
       try {
         const response = await fetch(
-          `${config.BOTS_V2_API}/get_all_coin_bots`,
+          `${config.BOTS_V2_DEV_API}/bots`,
           {
             method: "GET",
             headers: {
@@ -53,7 +53,7 @@ const ChartsPage = () => {
 
         if (response.ok) {
           const data = await response.json();
-          setCoinBots(data.data.coin_bots);
+          setCoinBots(data.data);
         } else {
           console.error("Error fetching coin bots:", response.statusText);
         }
@@ -68,12 +68,13 @@ const ChartsPage = () => {
   const fetchCoinData = useCallback(async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL}/api/coin-support-resistance?coin_id=${selectedCoin}&temporality=${temp}&pair=${pairValue}`,
+        `${config.BASE_URL_DEV}/chart?coin_id=${selectedCoin}&temporality=${temp}&pair=${pairValue}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-API-KEY": config.X_API_KEY_DEV
           },
         },
       );
