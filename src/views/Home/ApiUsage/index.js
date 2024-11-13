@@ -15,7 +15,13 @@ const ApiUsage = () => {
     const fetchData = async () => {
       try {
         // Fetch CoinGecko data
-        const cgResponse = await fetch(`${config.BOTS_V2_API}/coingecko/usage`)
+        const cgResponse = await fetch(`${config.BASE_URL_DEV}/coingecko/usage`,
+          {
+            headers: {
+              "x-api-key": config.X_API_KEY_DEV,
+            },
+          },
+        )
         if (!cgResponse.ok) {
           throw new Error("Network response was not ok for CoinGecko");
         }
