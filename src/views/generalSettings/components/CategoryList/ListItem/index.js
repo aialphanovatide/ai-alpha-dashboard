@@ -14,7 +14,7 @@ import defaultImg from "../../../../../assets/brand/logo.png";
 import Swal from "sweetalert2";
 import { toggleCoinStatus } from "src/services/coinService";
 import ErrorList from "src/components/ErrorList";
-import CoinBotDetails from "src/views/CoinBotDetails";
+import { useNavigate } from "react-router-dom";
 
 const ListItem = (params) => {
   const {
@@ -33,7 +33,11 @@ const ListItem = (params) => {
   const [isBotChecked, setBotChecked] = useState(false);
   const [isItemActive, setIsItemActive] = useState(false);
   const [isToggleLoading, setIsToggleLoading] = useState(false);
-  const [isCoinBotDetailVisible, setIsCoinBotDetailVisible] = useState(false);
+  const navigate = useNavigate();
+
+  const goToBotDetails = (bot_name) => {
+    navigate(`/botdetails/${bot_name}`);
+  };
 
   const toggleOpen = () => setIsOpen(!isOpen);
 
@@ -137,7 +141,6 @@ const ListItem = (params) => {
         className={`item ${
           isCategoryChecked || isBotChecked ? "checked" : ""
         } ${isCoin ? "bot" : ""}`}
-        onClick={isCoin ? () => setIsCoinBotDetailVisible(true) : null}
       >
         <div className="item-input">
           <CustomTooltip
@@ -181,7 +184,10 @@ const ListItem = (params) => {
             onError={(e) => (e.target.src = defaultImg)}
           />
         </div>
-        <div className="item-details">
+        <div
+          className="item-details"
+          onClick={isCoin ? () => goToBotDetails(item.name) : null}
+        >
           <div className="item-name">
             {item.name || (isCoin ? "Bot name" : "Category name")}
           </div>
@@ -260,11 +266,6 @@ const ListItem = (params) => {
           ))}
         </div>
       )}
-      <CoinBotDetails
-        isVisible={isCoinBotDetailVisible}
-        setIsVisible={setIsCoinBotDetailVisible}
-        coin={item}
-      />
     </>
   );
 };
