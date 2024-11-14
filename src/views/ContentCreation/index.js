@@ -46,6 +46,7 @@ const ContentCreation = () => {
           title: "Scheduled Post deleted successfully",
           showConfirmButton: false,
           timer: 1000,
+          customClass: "swal",
         });
         // Actualiza la lista de trabajos programados después de eliminar uno
         handleGetJobs();
@@ -55,6 +56,7 @@ const ContentCreation = () => {
           title: "Scheduled Post cannot delete successfully",
           showConfirmButton: false,
           timer: 1000,
+          customClass: "swal",
         });
         console.error("Error deleting scheduled job:", response.statusText);
       }
@@ -147,6 +149,7 @@ const ContentCreation = () => {
         title: "One or more required fields are missing",
         showConfirmButton: false,
         timer: 1000,
+        customClass: "swal",
       });
     }
   
@@ -174,6 +177,7 @@ const ContentCreation = () => {
             title: responseData.message,
             showConfirmButton: false,
             timer: 1000,
+            customClass: "swal",
           });
         } else {
           Swal.fire({
@@ -181,6 +185,7 @@ const ContentCreation = () => {
             title: "Error scheduling post",
             showConfirmButton: false,
             timer: 1000,
+            customClass: "swal",
           });
         }
       } catch (error) {
@@ -190,6 +195,7 @@ const ContentCreation = () => {
           text: error.message,
           showConfirmButton: false,
           timer: 1000,
+          customClass: "swal",
         });
       }
     }
@@ -204,6 +210,7 @@ const ContentCreation = () => {
         title: "One or more required fields are missing",
         showConfirmButton: false,
         timer: 1000,
+        customClass: "swal",
       });
     }
   
@@ -231,6 +238,7 @@ const ContentCreation = () => {
             title: responseData.message,
             showConfirmButton: false,
             timer: 1000,
+            customClass: "swal",
           });
         } else {
           Swal.fire({
@@ -238,6 +246,7 @@ const ContentCreation = () => {
             title: "Error creating analysis",
             showConfirmButton: false,
             timer: 1000,
+            customClass: "swal",
           });
         }
       } catch (error) {
@@ -246,6 +255,7 @@ const ContentCreation = () => {
           title: error,
           showConfirmButton: false,
           timer: 1000,
+          customClass: "swal",
         });
       }
     }

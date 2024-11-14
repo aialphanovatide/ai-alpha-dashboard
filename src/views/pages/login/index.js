@@ -28,8 +28,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const location = useLocation();
   const [isLoading, setLoading] = useState(false);
+  const location = useLocation();
 
   const navigate = useNavigate();
 
@@ -85,7 +85,10 @@ const Login = () => {
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm onSubmit={(e) => e.preventDefault()}  className={styles.loginForm}>
+                  <CForm
+                    onSubmit={(e) => e.preventDefault()}
+                    className={styles.loginForm}
+                  >
                     <img
                       src={require("../../../assets/brand/logo.png")}
                       alt="logo"
@@ -138,7 +141,7 @@ const Login = () => {
                           className={styles.loginButton}
                           onClick={handleSubmit}
                         >
-                          {isLoading ? "Loging in..." : "Log in"}
+                          {isLoading ? "Logging in..." : "Log in"}
                         </CButton>
                       </CCol>
                     </CRow>

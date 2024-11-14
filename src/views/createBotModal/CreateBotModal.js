@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { CButton } from '@coreui/react';
 import { Form, InputGroup, FormControl, Alert, Modal, Button } from 'react-bootstrap';
 import config from '../../config';
-import './CreateBotModal.css';
 
 const CreateBotModal = () => {
   const [showAlert, setShowAlert] = useState(false);

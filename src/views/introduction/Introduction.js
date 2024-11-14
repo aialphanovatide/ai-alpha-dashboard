@@ -102,6 +102,7 @@ const Introduction = () => {
           icon: "error",
           title: "Please, select a coin",
           showConfirmButton: false,
+          customClass: "swal",
         });
         return;
       }
@@ -133,12 +134,14 @@ const Introduction = () => {
           title: responseData.message,
           showConfirmButton: false,
           timer: 1000,
+          customClass: "swal",
         });
       } else {
         Swal.fire({
           icon: "error",
           title: responseData.message,
           showConfirmButton: false,
+          customClass: "swal",
         });
       }
 
@@ -152,6 +155,7 @@ const Introduction = () => {
         icon: "error",
         title: error,
         showConfirmButton: false,
+        customClass: "swal",
       });
     }
   };
@@ -164,6 +168,7 @@ const Introduction = () => {
           icon: "error",
           title: "Coin or content is missing",
           showConfirmButton: false,
+          customClass: "swal",
         });
         return;
       }
@@ -193,12 +198,14 @@ const Introduction = () => {
           title: responseData.message,
           showConfirmButton: false,
           timer: 3000,
+          customClass: "swal",
         });
       } else {
         Swal.fire({
           icon: "error",
           title: responseData.message,
           showConfirmButton: false,
+          customClass: "swal",
         });
       }
 
@@ -212,6 +219,7 @@ const Introduction = () => {
         icon: "success",
         title: error,
         showConfirmButton: false,
+        customClass: "swal",
       });
     }
   };

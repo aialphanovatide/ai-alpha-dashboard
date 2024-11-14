@@ -32,6 +32,7 @@ const StoryCard = ({ article, getTopStories }) => {
           title: data.message,
           showConfirmButton: false,
           timer: 1500,
+          customClass: "swal",
         });
         getTopStories();
       } else {
@@ -40,6 +41,7 @@ const StoryCard = ({ article, getTopStories }) => {
           icon: "error",
           title: data.error,
           showConfirmButton: false,
+          customClass: "swal",
         });
       }
     } catch (error) {
@@ -48,6 +50,7 @@ const StoryCard = ({ article, getTopStories }) => {
         icon: "error",
         title: error,
         showConfirmButton: false,
+        customClass: "swal",
       });
     }
   };
@@ -103,6 +106,7 @@ const StoryCard = ({ article, getTopStories }) => {
                   }`}
                   src={article.image}
                   onLoad={handleImageLoaded}
+                  alt="News"
                 />
                 <h2>{article.title}</h2>
                 <p><AccessTime />{" "}{article.date}</p>

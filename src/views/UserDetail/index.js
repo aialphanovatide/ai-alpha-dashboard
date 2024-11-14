@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import config from "src/config";
 import userImg from "src/assets/images/defaultUserImg.jpg";
@@ -7,13 +7,14 @@ import CIcon from "@coreui/icons-react";
 import { cilCheckCircle, cilClock } from "@coreui/icons";
 import SpinnerComponent from "src/components/Spinner";
 import Title from "src/components/commons/Title";
+import defaultImg from "../../assets/images/defaultUserImg.jpg";
 
 const UserDetail = () => {
   const { user_id } = useParams();
   const [user, setUser] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
-  const getUser = async () => {
+  const getUser = useCallback(async () => {
     try {
       const response = await fetch(
         `${config.BASE_URL}/user?user_id=${user_id}`,
@@ -36,11 +37,11 @@ const UserDetail = () => {
     } catch (error) {
       console.log("Error:", error);
     }
-  };
+  }, [user_id]);
 
   useEffect(() => {
     getUser();
-  }, []);
+  }, [getUser]);
 
   return (
     <>
@@ -50,7 +51,7 @@ const UserDetail = () => {
       ) : (
         <>
           <div className="rounded overflow-hidden shadow user-info-container">
-            <img className="user-img" src={user.picture || userImg} />
+            <img className="user-img" src={user.picture || userImg} alt="" onError={(e) => (e.target.src = defaultImg)} />
             <CIcon
               icon={cilCheckCircle}
               className="text-info"

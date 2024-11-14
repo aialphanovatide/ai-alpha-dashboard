@@ -1,0 +1,113 @@
+.switch-button.disabled {
+  cursor: url('../../../assets/icons/disabledIcon.svg') 10 10, auto;
+}
+
+.status-label {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+.switch-button {
+  width: 50px;
+  height: 25px;
+  border-radius: 25px;
+  background-color: #ccc;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  margin: auto;
+}
+
+.switch-button.apps-active, .switch-button.active {
+  background-color: #FF8739;
+}
+
+.switch-button.disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.switch-button .toggle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  position: absolute;
+  top: 2.5px;
+  transition: left 0.3s;
+}
+
+.switch-button .toggle.on {
+  left: 27px;
+}
+
+.switch-button .toggle.off {
+  left: 3px;
+}
+
+
+/* Animación para girar el spinner */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.error-message {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f44336;
+  color: white;
+  font-size: 14px;
+  border-radius: 4px;
+  text-align: center;
+  max-width: 200px;
+}
+
+
+
+
+
+
+
+/* HTML: <div class="loading-spinner"></div> */
+.loading-spinner {
+  display: grid;
+  border-radius: 50%;
+  background: linear-gradient(0deg, #fff 30%, #0000 0 70%, #fff 0) 50% / 8% 100%, linear-gradient(90deg, #fff 30%, #0000 0 70%, #fff 0) 50% / 100% 8%;
+  background-repeat: no-repeat;
+  animation: l23 1s infinite steps(12);
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 2.5px;
+  transition: left 0.3s;
+  left: 27px;
+}
+.loading-spinner::before,
+.loading-spinner::after {
+   content: "";
+   grid-area: 1/1;
+   border-radius: 50%;
+   background: inherit;
+   opacity: 0.915;
+   transform: rotate(30deg);
+}
+.loading-spinner::after {
+   opacity: 0.83;
+   transform: rotate(60deg);
+}
+@keyframes l23 {
+  100% {transform: rotate(1turn)}
+}
+
+
+/* @media screen and (max-width: 450px) {
+  {width: 30px;}
+} */

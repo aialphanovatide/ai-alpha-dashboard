@@ -5,6 +5,8 @@ import CIcon from "@coreui/icons-react";
 import { cilTrash } from "@coreui/icons";
 import EditModal from "./editModal";
 import NoData from "src/components/NoData";
+import { formatDateTime } from "src/utils";
+import { AccessTime } from "@mui/icons-material";
 
 const Item = ({ item, onDelete, base64Image, openEditModal }) => {
   console.log("item: ", item);
@@ -30,14 +32,17 @@ const Item = ({ item, onDelete, base64Image, openEditModal }) => {
         className="itemContent"
         dangerouslySetInnerHTML={{ __html: item.narrative_trading }}
       />
+      <div style={{display: "flex", gap: 10}}>
+      <span><AccessTime />{formatDateTime(item.created_at)}</span>
       {onDelete && (
         <CIcon
-          size="xxl"
+          size="xl"
           icon={cilTrash}
           className="deleteBtn"
           onClick={handleDeleteClick}
         />
       )}
+      </div>
     </li>
   );
 };
@@ -74,6 +79,7 @@ const AllNarrativeTrading = ({ items, fetchNarrativeTrading }) => {
           title: data.message,
           showConfirmButton: false,
           timer: 1500,
+          customClass: "swal",
         });
         fetchNarrativeTrading();
       } else {
@@ -83,6 +89,7 @@ const AllNarrativeTrading = ({ items, fetchNarrativeTrading }) => {
           title: data.error,
           showConfirmButton: false,
           timer: 1500,
+          customClass: "swal",
         });
       }
     } catch (error) {
@@ -92,6 +99,7 @@ const AllNarrativeTrading = ({ items, fetchNarrativeTrading }) => {
         title: error.message || "An error occurred",
         showConfirmButton: false,
         timer: 1500,
+        customClass: "swal",
       });
     }
   };

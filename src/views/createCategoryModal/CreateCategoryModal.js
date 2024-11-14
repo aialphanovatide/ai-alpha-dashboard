@@ -42,57 +42,57 @@ const CreateCategoryModal = () => {
   };
 
   const handleCreateCategory = async () => {
-    if (!name || !alias || !slackChannel) {
-      setAlertMessage("Name, Alias, and Slack Channel are required.");
-      setAlertVariant("danger");
-      setShowAlert(true);
-      return;
-    }
+    // if (!name || !alias || !slackChannel) {
+    //   setAlertMessage("Name, Alias, and Slack Channel are required.");
+    //   setAlertVariant("danger");
+    //   setShowAlert(true);
+    //   return;
+    // }
 
-    setIsCreating(true);
+    // setIsCreating(true);
 
     try {
       const formData = new FormData();
-      formData.append("image", imageFile);
+      // formData.append("image", imageFile);
 
-      // Other data in JSON format
       const otherData = {
         name,
         alias,
-        prompt,
-        time_interval: timeInterval,
-        slack_channel: slackChannel,
+        // prompt,
+        // time_interval: timeInterval,
+        // slack_channel: slackChannel,
         border_color: borderColor,
       };
 
       formData.append("data", JSON.stringify(otherData));
+      alert(formData)
 
-      const response = await fetch(`${config.BOTS_V2_API}/add_new_category`, {
-        method: "POST",
-        body: formData,
-      });
+      // const response = await fetch(`${config.BASE_URL}/category`, {
+      //   method: "POST",
+      //   body: formData,
+      // });
 
-      const result = await response.json();
-      if (result.success) {
-        setAlertMessage("Category created successfully.");
-        setAlertVariant("success");
-        setShowAlert(true);
-        setTimeout(() => {
-          setIsCreating(false); // Termina el proceso de creación
-          clearFields();
-          setVisible(false); // Cierra el modal después de que se muestra el mensaje
-        }, 2000); // Muestra el mensaje por 2 segundos
-      } else {
-        setAlertMessage(result.error || "Error creating category.");
-        setAlertVariant("danger");
-        setShowAlert(true);
-        setIsCreating(false); // Termina el proceso de creación
-      }
+      // const result = await response.json();
+      // if (result.success) {
+      //   setAlertMessage("Category created successfully.");
+      //   setAlertVariant("success");
+      //   setShowAlert(true);
+      //   setTimeout(() => {
+      //     setIsCreating(false); // Termina el proceso de creación
+      //     clearFields();
+      //     setVisible(false); // Cierra el modal después de que se muestra el mensaje
+      //   }, 2000); // Muestra el mensaje por 2 segundos
+      // } else {
+      //   setAlertMessage(result.error || "Error creating category.");
+      //   setAlertVariant("danger");
+      //   setShowAlert(true);
+      //   setIsCreating(false); // Termina el proceso de creación
+      // }
     } catch (error) {
       setAlertMessage("Error creating category: " + error.message);
       setAlertVariant("danger");
       setShowAlert(true);
-      setIsCreating(false); // Termina el proceso de creación
+      setIsCreating(false);
     }
   };
 

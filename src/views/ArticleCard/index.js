@@ -5,6 +5,7 @@ import { formatDateTime } from "src/utils";
 import Card from "src/components/commons/Card";
 import SpinnerComponent from "src/components/Spinner";
 import { AccessTime } from "@mui/icons-material";
+import defaultImg from "src/assets/brand/logo.png";
 
 const ArticleCard = ({ article }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -92,6 +93,8 @@ const ArticleCard = ({ article }) => {
                   }`}
                   src={article.image}
                   onLoad={handleImageLoaded}
+                  alt={article.title}
+                  onError={(e) => (e.target.src = defaultImg)}
                 />
                 <h2>{article.title}</h2>
                 <p><AccessTime />{" "}{article.date}</p>
