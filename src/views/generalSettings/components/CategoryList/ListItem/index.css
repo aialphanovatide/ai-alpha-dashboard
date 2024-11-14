@@ -18,7 +18,6 @@
   /* grid-template-columns: 12% 11% 34% 18% 13% 12%; */
   grid-template-columns: 12% 13% 38% 18% 19%;
   margin-bottom: 20px;
-  cursor: pointer;
 }
 
 .item-input {
@@ -82,6 +81,7 @@
   justify-content: space-evenly;
   overflow: auto;
   margin-block: 9px;
+  cursor: pointer;
 }
 
 .item-details::-webkit-scrollbar {
