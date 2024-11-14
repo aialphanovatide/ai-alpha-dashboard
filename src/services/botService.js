@@ -151,6 +151,78 @@ const deleteBot = async (botID) => {
     console.error("Error deleting bot:", error);
     return { success: false, error: "Network error or server is unreachable" };
   }
-}
+};
 
-export { createBot, getBot, editBot, getBots, deleteBot };
+const getBotLogs = async (botID) => {
+  try {
+    const response = await fetch(
+      `${config.BOTS_V2_DEV_API}/bot/${botID}/logs`,
+      {
+        method: "GET",
+        headers,
+      },
+    );
+
+    let responseText = await response.text();
+
+    try {
+      const data = JSON.parse(responseText);
+      if (response.ok) {
+        return { success: true, data: data.data };
+      } else {
+        return {
+          success: false,
+          error: data.error || "Unknown error occurred",
+        };
+      }
+    } catch (parseError) {
+      console.error("Error parsing JSON:", parseError);
+      return { success: false, error: "Failed to parse server response" };
+    }
+  } catch (error) {
+    console.error("Error fetching bot logs:", error);
+    return { success: false, error: "Network error or server is unreachable" };
+  }
+};
+
+const toggleBotStatus = async (botID) => {
+  try {
+    const response = await fetch(
+      `${config.BOTS_V2_DEV_API}/bot/${botID}/toggle-activation`,
+      {
+        method: "POST",
+        headers,
+      },
+    );
+
+    let responseText = await response.text();
+
+    try {
+      const data = JSON.parse(responseText);
+      if (response.ok) {
+        return { success: true, data };
+      } else {
+        return {
+          success: false,
+          error: data.error || "Unknown error occurred",
+        };
+      }
+    } catch (parseError) {
+      console.error("Error parsing JSON:", parseError);
+      return { success: false, error: "Failed to parse server response" };
+    }
+  } catch (error) {
+    console.error("Error toggling bot status:", error);
+    return { success: false, error: "Network error or server is unreachable" };
+  }
+};
+
+export {
+  createBot,
+  getBot,
+  editBot,
+  getBots,
+  deleteBot,
+  getBotLogs,
+  toggleBotStatus,
+};
