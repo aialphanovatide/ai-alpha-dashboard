@@ -5,7 +5,7 @@ const DefaultLayout = () => {
   return (
     <div>
       <AppSidebar />
-      <div style={{height: "100%"}} className="wrapper d-flex flex-column">
+      <div style={{height: "100%", overflow: "hidden"}} className="wrapper d-flex flex-column">
         <AppHeader />
         <div className="body" style={{maxHeight: "84%", minHeight: "84%"}}>
           <AppContent />
