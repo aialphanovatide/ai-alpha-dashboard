@@ -39,7 +39,10 @@ const ListItem = (params) => {
     navigate(`/botdetails/${bot_name}`);
   };
 
-  const toggleOpen = () => setIsOpen(!isOpen);
+  const toggleOpen = (e) => {
+    e.stopPropagation();
+    setIsOpen(!isOpen);
+  }
 
   useEffect(() => {
     if (isCoin) setIsItemActive(item.is_active);
@@ -140,7 +143,8 @@ const ListItem = (params) => {
       <div
         className={`item ${
           isCategoryChecked || isBotChecked ? "checked" : ""
-        } ${isCoin ? "bot" : ""}`}
+        } ${isCoin ? "bot" : (item.coins?.length > 0 ? "clickable" : "")}`}
+        onClick={!isCoin && item.coins?.length > 0 ? toggleOpen : null}
       >
         <div className="item-input">
           <CustomTooltip
@@ -185,7 +189,7 @@ const ListItem = (params) => {
           />
         </div>
         <div
-          className="item-details"
+          className={`item-details ${isCoin ? "bot" : ""}`}
           onClick={isCoin ? () => goToBotDetails(item.name) : null}
         >
           <div className="item-name">
@@ -248,7 +252,7 @@ const ListItem = (params) => {
           </button>
         )}
       </div>
-      {isOpen && item.coins && (
+      {isOpen && item.coins?.length > 0 && (
         <div>
           {item.coins.map((bot, index) => (
             <ListItem
