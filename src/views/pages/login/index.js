@@ -50,12 +50,12 @@ const Login = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`${config.BASE_URL_DEV}/admin/login`, {
+      const response = await fetch(`${config.BASE_URL}/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true",
-          "X-Api-Key": config.X_API_KEY_DEV,
+          "X-Api-Key": config.X_API_KEY,
         },
         body: JSON.stringify({ username, password }),
       });

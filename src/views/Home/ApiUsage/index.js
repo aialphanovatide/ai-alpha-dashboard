@@ -15,10 +15,10 @@ const ApiUsage = () => {
     const fetchData = async () => {
       try {
         // Fetch CoinGecko data
-        const cgResponse = await fetch(`${config.BASE_URL_DEV}/coingecko/usage`,
+        const cgResponse = await fetch(`${config.BASE_URL}/coingecko/usage`,
           {
             headers: {
-              "x-api-key": config.X_API_KEY_DEV,
+              "x-api-key": config.X_API_KEY,
             },
           },
         )
