@@ -35,6 +35,7 @@ const BotForm = ({ coin, setCategories }) => {
   const [keywords, setKeywords] = useState([]);
   const [whitelistKeyword, setWhitelistKeyword] = useState("");
   const [bot, setBot] = useState(null);
+  const [isFetchingCategory, setIsFetchingCategory] = useState(false);
   const [formData, setFormData] = useState({
     name: coin && coin.name ? coin.name : "",
     alias: coin && coin.alias ? coin.alias : "",
@@ -173,13 +174,17 @@ const BotForm = ({ coin, setCategories }) => {
       formData.alias &&
       formData.category_id &&
       formData.symbol &&
-      formData.bot_category_id,
+      formData.bot_category_id &&
+      !isFetchingCategory &&
+      !isSubmitting,
     [
       formData.name,
       formData.alias,
       formData.category_id,
       formData.symbol,
       formData.bot_category_id,
+      isFetchingCategory,
+      isSubmitting,
     ],
   );
 
@@ -231,6 +236,7 @@ const BotForm = ({ coin, setCategories }) => {
 
   const getBotCategoryId = async (categoryName) => {
     try {
+      setIsFetchingCategory(true);
       const response = await getCategory(categoryName, true);
       if (response.success) {
         setFormData((prev) => ({
@@ -244,6 +250,8 @@ const BotForm = ({ coin, setCategories }) => {
         icon: "error",
         customClass: "swal",
       });
+    } finally {
+      setIsFetchingCategory(false);
     }
   };
 
@@ -368,7 +376,7 @@ const BotForm = ({ coin, setCategories }) => {
         text: `${err.message}` || "An error occurred while creating the bot",
         icon: "error",
         customClass: "swal",
-      })
+      });
     } finally {
       setIsSubmitting(false);
     }
