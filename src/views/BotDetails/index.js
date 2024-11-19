@@ -1,4 +1,5 @@
 import { cilArrowLeft, cilClock, cilSearch, cilSettings } from "@coreui/icons";
+import * as ReactDOMServer from "react-dom/server";
 import CIcon from "@coreui/icons-react";
 import React, { useEffect, useState } from "react";
 import { getBot, getBotLogs, toggleBotStatus } from "src/services/botService";
@@ -14,6 +15,7 @@ import { useParams } from "react-router-dom";
 import AddIcon from "../../assets/icons/add.svg";
 import CheckRepeatIcon from "../../assets/icons/checkRepeat.svg";
 import TimeRepeatIcon from "../../assets/icons/timeRepeat.svg";
+import ErrorList from "src/components/ErrorList";
 
 const InfoDisplayItem = ({ icon, label, value, isImportedIcon }) => {
   return (
@@ -76,12 +78,15 @@ const BotDetails = () => {
         throw new Error(response.error);
       }
     } catch (error) {
+      let parsedError = JSON.parse(error.message);
       Swal.fire({
-        title: "Bot status couldn't be updated",
-        text: error.message,
+        title: parsedError.message || "Bot status couldn't be updated",
         icon: "error",
         customClass: "swal",
         backdrop: false,
+        html: ReactDOMServer.renderToString(
+          <ErrorList errorMessages={parsedError.validation_errors}/>,
+        )
       });
     } finally {
       setIsToggleLoading(false);
