@@ -46,7 +46,7 @@ const returnToPreviousPage = () => {
 
 const BotDetails = () => {
   const [bot, setBot] = useState(null);
-  const [isFetching, setIsFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const { bot_name } = useParams();
   const [logs, setLogs] = useState("");
   const [isToggleLoading, setIsToggleLoading] = useState(false);
