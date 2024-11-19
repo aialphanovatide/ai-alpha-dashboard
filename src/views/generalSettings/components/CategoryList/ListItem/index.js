@@ -37,8 +37,8 @@ const ListItem = (params) => {
 
   useEffect(() => {
     if (isCoin) setIsItemActive(item.is_active);
-    else setIsItemActive(item.coins.every((coin) => coin.is_active));
-  }, [item.is_active]);
+    else setIsItemActive(item.coins?.every((coin) => coin.is_active));
+  }, [item.is_active, item.coins]);
 
   useEffect(() => {
     if (selectedCategories.length === 0) setCategoryChecked(false);
@@ -65,7 +65,9 @@ const ListItem = (params) => {
     const checkedBot = JSON.parse(e.target.value);
 
     if (isBotChecked) {
-      setSelectedCoins(selectedCoins.filter((bot) => bot.bot_id !== checkedBot.bot_id));
+      setSelectedCoins(
+        selectedCoins.filter((bot) => bot.bot_id !== checkedBot.bot_id),
+      );
     } else {
       setSelectedCoins([...selectedCoins, checkedBot]);
     }
@@ -114,14 +116,16 @@ const ListItem = (params) => {
       const errorString = error.message.replace(/^Error: /, "");
       const errorArray = JSON.parse(errorString);
 
-      Swal.fire({
+      const swal = {
         title: "Some coins couldn't be activated",
-        html: ReactDOMServer.renderToString(
-          <ErrorList errorMessages={errorArray} />,
-        ),
         icon: "error",
         customClass: "swal",
-      });
+      };
+
+      if (!isCoin) {
+      }
+
+      Swal.fire();
     } finally {
       setIsToggleLoading(false);
     }
@@ -171,7 +175,7 @@ const ListItem = (params) => {
               item.icon ||
               (isCoin
                 ? `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${item.name?.toLowerCase()}.png`
-                : `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.name.toLowerCase()}.svg`)
+                : `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias?.toLowerCase()}.svg`)
             }
             onError={(e) => (e.target.src = defaultImg)}
           />
