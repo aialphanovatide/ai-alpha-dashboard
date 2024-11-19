@@ -91,6 +91,7 @@ const BotForm = ({ coin, setCategories }) => {
           ),
           icon: "error",
           customClass: "swal",
+          backdrop: false,
         });
       }
     } else {
@@ -98,6 +99,7 @@ const BotForm = ({ coin, setCategories }) => {
         text: response.error || "Error extracting keywords",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     }
 
@@ -140,6 +142,7 @@ const BotForm = ({ coin, setCategories }) => {
         text: err.message || "Error fetching bot",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     } finally {
       setIsLoading(false);
@@ -158,6 +161,7 @@ const BotForm = ({ coin, setCategories }) => {
         text: err.message || "Error fetching categories",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     } finally {
       setIsLoading(false);
@@ -212,6 +216,7 @@ const BotForm = ({ coin, setCategories }) => {
         text: errorMessage,
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
       return;
     }
@@ -249,6 +254,7 @@ const BotForm = ({ coin, setCategories }) => {
         text: error.message || "Error fetching bot category",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     } finally {
       setIsFetchingCategory(false);
@@ -281,6 +287,7 @@ const BotForm = ({ coin, setCategories }) => {
         text: "Please upload a valid SVG file",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     }
   };
@@ -340,6 +347,7 @@ const BotForm = ({ coin, setCategories }) => {
         text: `Coin/Bot ${coin ? "updated" : "created"} successfully!`,
         icon: "success",
         customClass: "swal",
+        backdrop: false,
       }).then(async () => {
         const updatedCategories = await getCategories();
         setCategories(updatedCategories);
@@ -370,12 +378,13 @@ const BotForm = ({ coin, setCategories }) => {
       if (coinId && !coin) {
         await deleteCoin(coinId);
       }
-      
+
       Swal.fire({
         title: `Error ${coin ? "updating" : "creating"} coin/bot`,
         text: `${err.message}` || "An error occurred while creating the bot",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     } finally {
       setIsSubmitting(false);

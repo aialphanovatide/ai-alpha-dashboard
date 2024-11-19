@@ -68,6 +68,7 @@ const DeleteItemModal = (props) => {
               : `${successCount} categories deleted successfully.`,
           icon: "success",
           customClass: "swal",
+          backdrop: false,
         });
 
         const updatedCategories = categories.filter(
@@ -86,7 +87,12 @@ const DeleteItemModal = (props) => {
         throw new Error(`${errorCount} categories failed to delete.`);
       }
     } catch (error) {
-      Swal.fire({ text: error.message, icon: "error", customClass: "swal" });
+      Swal.fire({
+        text: error.message,
+        icon: "error",
+        customClass: "swal",
+        backdrop: false,
+      });
     } finally {
       setLoading(false);
       setVisible(false);
@@ -134,6 +140,7 @@ const DeleteItemModal = (props) => {
               : `${successCount} coins/bots deleted successfully.`,
           icon: "success",
           customClass: "swal",
+          backdrop: false,
         }).then(async () => {
           const updatedCategories = await getCategories();
           setCategories(updatedCategories);
@@ -144,7 +151,12 @@ const DeleteItemModal = (props) => {
         throw new Error(`${errorCount} coins/bots failed to delete.`);
       }
     } catch (error) {
-      Swal.fire({ text: error.message, icon: "error", customClass: "swal" });
+      Swal.fire({
+        text: error.message,
+        icon: "error",
+        customClass: "swal",
+        backdrop: false,
+      });
     } finally {
       setLoading(false);
       setVisible(false);

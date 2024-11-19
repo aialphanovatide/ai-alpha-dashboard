@@ -61,6 +61,7 @@ const CategoryForm = ({ category, setCategories }) => {
         text: err.message || "Error fetching news bot category",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     } finally {
       setIsLoading(false);
@@ -143,6 +144,7 @@ const CategoryForm = ({ category, setCategories }) => {
         text: `Category ${category ? "updated" : "created"} successfully!`,
         icon: "success",
         customClass: "swal",
+        backdrop: false,
       }).then(async () => {
         const updatedCategories = await getCategories();
         setCategories(updatedCategories);
@@ -173,6 +175,7 @@ const CategoryForm = ({ category, setCategories }) => {
           } the category`,
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     } finally {
       setIsSubmitting(false);

@@ -118,6 +118,7 @@ const ListItem = (params) => {
           : "Coin activation failed",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       };
 
       if (!isCoin) {

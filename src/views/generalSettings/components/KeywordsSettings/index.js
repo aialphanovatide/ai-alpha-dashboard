@@ -34,6 +34,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
         text: `${isBlacklist ? 'Blacklist' : 'Whitelist'} updated successfully`,
         icon: "success",
         customClass: "swal",
+        backdrop: false,
       });
 
       if (isRemove) {
@@ -48,7 +49,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
         }
       }
     } else {
-      Swal.fire({ text: response.error, icon: "error", customClass: "swal" });
+      Swal.fire({ text: response.error, icon: "error", customClass: "swal", backdrop: false });
     }
     setErrorMessage(null);
     setKeywords([]);
@@ -120,7 +121,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
       updateKeywords(bot.keywords, setWhitelistKeywords, whitelistKeywords);
       updateKeywords(bot.blacklist, setBlacklistKeywords, blacklistKeywords);
     } else {
-      Swal.fire({ text: response.error, icon: "error", customClass: "swal" });
+      Swal.fire({ text: response.error, icon: "error", customClass: "swal", backdrop: false });
     }
     setIsLoading(false);
   };
