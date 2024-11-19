@@ -190,7 +190,9 @@ const BotForm = ({ coin, setCategories }) => {
     if (listToCheck.includes(keyword)) {
       return "Keyword already added";
     } else if (oppositeList.includes(keyword)) {
-      return `Keyword already added to ${isBlacklist ? "Whitelist" : "Blacklist"}`;
+      return `Keyword already added to ${
+        isBlacklist ? "Whitelist" : "Blacklist"
+      }`;
     }
     return null;
   };
@@ -498,7 +500,7 @@ const BotForm = ({ coin, setCategories }) => {
               }}
             >
               <label>
-                <strong>
+                <strong style={{ display: "flex", alignItems: "center" }}>
                   <OpenLock style={{ height: 20, width: 20 }} />
                   Whitelist
                 </strong>
@@ -575,7 +577,7 @@ const BotForm = ({ coin, setCategories }) => {
               }}
             >
               <label>
-                <strong>
+                <strong style={{ display: "flex", alignItems: "center" }}>
                   <ClosedLock style={{ height: 20, width: 20 }} />
                   Blacklist
                 </strong>
