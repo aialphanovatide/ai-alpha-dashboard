@@ -6,8 +6,6 @@ import CustomTooltip from "src/components/CustomTooltip";
 import SpinnerComponent from "src/components/Spinner";
 import ListItem from "./ListItem";
 import NoData from "src/components/NoData";
-import { toggleAllCategoriesState } from "src/services/categoryService";
-import Swal from "sweetalert2";
 
 const CategoryList = ({
   categories,
@@ -19,33 +17,6 @@ const CategoryList = ({
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const scrollY = window.scrollY;
-    window.scrollTo(0, scrollY);
-  }, [categories]);
-
-  // const handleAllStatusSwitchToggle = async (e) => {
-    // const response = await toggleAllCategoriesState(isEveryCategoryActive);
-
-    // if (response.success) {
-      // categories.forEach(category => {
-      //   updateCategoryState(category.category_id, !isEveryCategoryActive);
-      // });
-
-    //   Swal.fire({
-    //     text: response.message,
-    //     icon: "success",
-    //     customClass: 'swal',
-    //   });
-    // } else {
-    //   Swal.fire({
-    //     text: response.error,
-    //     icon: "error",
-    //     customClass: 'swal',
-    //   });
-    // }
-  // };
-
   const updateCategoryState = (categoryId, isActive) => {
     setCategories(prevCategories =>
       prevCategories.map(category =>
@@ -55,11 +26,6 @@ const CategoryList = ({
       )
     );
   };
-
-  // const isEveryCategoryActive = useMemo(
-  //   () => categories.every((category) => category.is_active),
-  //   [categories],
-  // );
 
   return (
     <>
