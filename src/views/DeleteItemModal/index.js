@@ -198,9 +198,7 @@ const DeleteItemModal = (props) => {
                     <img
                       src={
                         item.icon ||
-                        (selectedCategories.length > 0
-                          ? `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias?.toLowerCase()}.svg`
-                          : `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${item.name?.toLowerCase()}.png`)
+                        `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias?.toLowerCase()}.svg`
                       }
                       onError={(e) => (e.target.src = defaultImg)}
                       alt={"item-icon"}

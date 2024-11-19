@@ -7,7 +7,7 @@ import { cilPen } from "@coreui/icons";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { formatDateTime } from "src/utils";
-import NewCategoryForm from "../../NewCategoryForm";
+import CategoryForm from "../../CategoryForm";
 import BotForm from "../../BotForm";
 import SwitchButton from "src/components/commons/SwitchButton";
 import defaultImg from "../../../../../assets/brand/logo.png";
@@ -173,9 +173,7 @@ const ListItem = (params) => {
             alt={`${isCoin ? "bot" : "category"}-img`}
             src={
               item.icon ||
-              (isCoin
-                ? `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${item.name?.toLowerCase()}.png`
-                : `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias?.toLowerCase()}.svg`)
+              `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias?.toLowerCase()}.svg`
             }
             onError={(e) => (e.target.src = defaultImg)}
           />
@@ -198,7 +196,7 @@ const ListItem = (params) => {
             isCoin ? (
               <BotForm coin={item} setCategories={setCategories} />
             ) : (
-              <NewCategoryForm category={item} setCategories={setCategories} />
+              <CategoryForm category={item} setCategories={setCategories} />
             ),
             "right",
           )}
