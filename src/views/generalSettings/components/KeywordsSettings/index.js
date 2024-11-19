@@ -236,7 +236,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                               className={styles.keyword}
                               key={index}
                               id="keyword-tag"
-                              style={!keywords.includes(keyword) ? {background: '#737373'} : {}}
+                              style={!keywords.includes(keyword) ? {background: '#d9d9d9'} : {}}
                             >
                               <input
                                 type="checkbox"
