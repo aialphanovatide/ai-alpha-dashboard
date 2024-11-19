@@ -155,13 +155,10 @@ const deleteBot = async (botID) => {
 
 const getBotLogs = async (botID) => {
   try {
-    const response = await fetch(
-      `${config.BOTS_V2_API}/bot/${botID}/logs`,
-      {
-        method: "GET",
-        headers,
-      },
-    );
+    const response = await fetch(`${config.BOTS_V2_API}/bot/${botID}/logs`, {
+      method: "GET",
+      headers,
+    });
 
     let responseText = await response.text();
 
@@ -199,20 +196,18 @@ const toggleBotStatus = async (botID) => {
 
     try {
       const data = JSON.parse(responseText);
-      if (response.ok) {
-        return { success: true, data };
-      } else {
+      if (!response.ok) {
         return {
           success: false,
-          error: data.error || "Unknown error occurred",
+          error: JSON.stringify({message: data.error,
+          validation_errors: data.validation_errors || []}),
         };
       }
+      return { success: true, data };
     } catch (parseError) {
-      console.error("Error parsing JSON:", parseError);
       return { success: false, error: "Failed to parse server response" };
     }
   } catch (error) {
-    console.error("Error toggling bot status:", error);
     return { success: false, error: "Network error or server is unreachable" };
   }
 };
