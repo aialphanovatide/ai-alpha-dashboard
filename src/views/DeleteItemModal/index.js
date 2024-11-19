@@ -159,7 +159,9 @@ const DeleteItemModal = (props) => {
           className={styles.trashBtn}
           id="trashBtn"
           onClick={() => setVisible(true)}
-          disabled={selectedCategories.length === 0 && selectedCoins.length === 0}
+          disabled={
+            selectedCategories.length === 0 && selectedCoins.length === 0
+          }
         >
           <TrashIcon style={{ height: 25 }} />
         </button>
@@ -174,7 +176,10 @@ const DeleteItemModal = (props) => {
           >
             <CIcon icon={cilX} size="xl" />
           </button>
-          <div className={styles.subcontainer}>
+          <div
+            className={styles.subcontainer}
+            id="deleteItemModal-subcontainer"
+          >
             <TrashIcon className={styles.icon} />
             <h5>Are you sure you want to delete these elements?</h5>
             <div className={styles.elementsContainer}>
@@ -191,9 +196,14 @@ const DeleteItemModal = (props) => {
                     }}
                   >
                     <img
-                      src={item.icon || defaultImg}
+                      src={
+                        item.icon ||
+                        (selectedCategories.length > 0
+                          ? `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias?.toLowerCase()}.svg`
+                          : `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${item.name?.toLowerCase()}.png`)
+                      }
                       onError={(e) => (e.target.src = defaultImg)}
-                      alt={'item-icon'}
+                      alt={"item-icon"}
                     />
                   </div>
                   <span>{item.name}</span>
