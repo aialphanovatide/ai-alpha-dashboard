@@ -81,6 +81,7 @@ const BotDetails = () => {
         text: error.message,
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     } finally {
       setIsToggleLoading(false);
@@ -99,6 +100,7 @@ const BotDetails = () => {
         icon: "error",
         title: "Something went wrong!",
         text: error.message,
+        backdrop: false,
       });
     } finally {
       setIsFetching(false);
@@ -134,8 +136,8 @@ const BotDetails = () => {
               <img
                 alt="item-icon"
                 src={
-                  // bot?.icon ||
-                  `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${bot_name.toLowerCase()}.png`
+                  bot?.icon ||
+                  `https://aialphaicons.s3.us-east-2.amazonaws.com/${bot?.alias?.toLowerCase()}.svg`
                 }
                 onError={(e) => (e.target.src = defaultImg)}
               />
@@ -144,7 +146,7 @@ const BotDetails = () => {
               <span className={styles.botName}>{bot?.name}</span>
               <span>{bot?.alias}</span>
               <span className={styles.lastRun}>
-                Last Run: {formatDateTime(bot?.updated_at)}
+                Last Run: {formatDateTime(bot?.last_run_time) || "-"}
               </span>
             </div>
             <div className={styles.switchContainer}>
