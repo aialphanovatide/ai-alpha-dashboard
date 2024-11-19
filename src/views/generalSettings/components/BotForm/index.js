@@ -196,7 +196,9 @@ const BotForm = ({ coin, setCategories }) => {
     const listToCheck = isBlacklist ? blacklist : keywords;
     const oppositeList = isBlacklist ? keywords : blacklist;
 
-    if (listToCheck.includes(keyword)) {
+    if (!/[a-zA-Z0-9]/.test(keyword)) {
+      return `"${keyword}" keyword must contain at least one letter or number.`;
+    } else if (listToCheck.includes(keyword)) {
       return "Keyword already added";
     } else if (oppositeList.includes(keyword)) {
       return `Keyword already added to ${
