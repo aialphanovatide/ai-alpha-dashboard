@@ -5,6 +5,11 @@ body,
   height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+
 .sidebar-backdrop.show {
   display: none;
 }

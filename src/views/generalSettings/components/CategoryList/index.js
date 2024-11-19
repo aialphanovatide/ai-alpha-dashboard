@@ -19,6 +19,12 @@ const CategoryList = ({
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);  
+
   // const handleAllStatusSwitchToggle = async (e) => {
     // const response = await toggleAllCategoriesState(isEveryCategoryActive);
 
