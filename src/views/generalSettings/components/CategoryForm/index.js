@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 import SpinnerComponent from "src/components/Spinner";
 import defaultImg from "../../../../assets/brand/logo.png";
 
-const NewCategoryForm = ({ category, setCategories }) => {
+const CategoryForm = ({ category, setCategories }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -381,4 +381,4 @@ const NewCategoryForm = ({ category, setCategories }) => {
   );
 };
 
-export default NewCategoryForm;
+export default CategoryForm;
