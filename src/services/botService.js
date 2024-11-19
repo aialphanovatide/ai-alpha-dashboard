@@ -156,7 +156,7 @@ const deleteBot = async (botID) => {
 const getBotLogs = async (botID) => {
   try {
     const response = await fetch(
-      `${config.BOTS_V2_DEV_API}/bot/${botID}/logs`,
+      `${config.BOTS_V2_API}/bot/${botID}/logs`,
       {
         method: "GET",
         headers,
@@ -188,7 +188,7 @@ const getBotLogs = async (botID) => {
 const toggleBotStatus = async (botID) => {
   try {
     const response = await fetch(
-      `${config.BOTS_V2_DEV_API}/bot/${botID}/toggle-activation`,
+      `${config.BOTS_V2_API}/bot/${botID}/toggle-activation`,
       {
         method: "POST",
         headers,
