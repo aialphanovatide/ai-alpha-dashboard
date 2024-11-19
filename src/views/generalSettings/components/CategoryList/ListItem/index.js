@@ -77,7 +77,6 @@ const ListItem = (params) => {
 
   const handleStatusSwitchToggle = async (e) => {
     setIsToggleLoading(true);
-
     try {
       if (isCoin) {
         const response = await toggleCoinStatus(item.bot_id);
@@ -113,19 +112,26 @@ const ListItem = (params) => {
         }
       }
     } catch (error) {
-      const errorString = error.message.replace(/^Error: /, "");
-      const errorArray = JSON.parse(errorString);
-
       const swal = {
-        title: "Some coins couldn't be activated",
+        title: !isCoin
+          ? "Some coins couldn't be activated"
+          : "Coin activation failed",
         icon: "error",
         customClass: "swal",
       };
 
       if (!isCoin) {
+        const errorString = error.message.replace(/^Error: /, "");
+        const errorArray = JSON.parse(errorString);
+
+        swal.html = ReactDOMServer.renderToString(
+          <ErrorList errorMessages={errorArray} />,
+        );
+      } else {
+        swal.text = error.message;
       }
 
-      Swal.fire();
+      Swal.fire(swal);
     } finally {
       setIsToggleLoading(false);
     }
