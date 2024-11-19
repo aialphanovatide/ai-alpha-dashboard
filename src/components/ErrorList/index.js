@@ -5,7 +5,11 @@ const ErrorList = ({ errorMessages }) => {
     <div style={styles.errorMessagesContainer}>
       {errorMessages?.map((errorMessage, index) => (
         <div key={index}>
-          <strong>{errorMessage.coinName || errorMessage.keyword }</strong>: {errorMessage.error}
+          {typeof errorMessage === 'string' ? (
+            <span style={{textAlign: 'center', display: 'block'}}>{errorMessage}</span>
+          ) : (
+          <span><strong>{errorMessage.coinName || errorMessage.keyword }</strong>: {errorMessage.error}</span>
+          )}
         </div>
       ))}
     </div>
