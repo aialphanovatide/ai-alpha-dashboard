@@ -1,14 +1,14 @@
 import config from "../config";
 let headers = {
   Accept: "*/*",
-  "X-Api-Key": config.X_API_KEY_DEV,
+  "X-Api-Key": config.X_API_KEY,
 };
 
 const getCategory = async (category_id, isNewsBotsServer) => {
   try {
     const url = isNewsBotsServer
-      ? `${config.BOTS_V2_DEV_API}/category?category_name=${category_id}`
-      : `${config.BASE_URL_DEV}/category/${category_id}`;
+      ? `${config.BOTS_V2_API}/category?category_name=${category_id}`
+      : `${config.BASE_URL}/category/${category_id}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -35,8 +35,8 @@ const getCategory = async (category_id, isNewsBotsServer) => {
 const getCategories = async (isNewsBotsServer) => {
   try {
     const url = isNewsBotsServer
-      ? `${config.BOTS_V2_DEV_API}/categories`
-      : `${config.BASE_URL_DEV}/categories`;
+      ? `${config.BOTS_V2_API}/categories`
+      : `${config.BASE_URL}/categories`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -63,7 +63,7 @@ const getCategories = async (isNewsBotsServer) => {
 const createCategory = async (payload, isNewsBotsServer) => {
   try {
     const url = `${
-      isNewsBotsServer ? config.BOTS_V2_DEV_API : config.BASE_URL_DEV
+      isNewsBotsServer ? config.BOTS_V2_API : config.BASE_URL
     }/category`;
 
     const customHeaders = isNewsBotsServer
@@ -103,7 +103,7 @@ const createCategory = async (payload, isNewsBotsServer) => {
 const editCategory = async (payload, category_id, isNewsBotsServer) => {
   try {
     const url = `${
-      isNewsBotsServer ? config.BOTS_V2_DEV_API : config.BASE_URL_DEV
+      isNewsBotsServer ? config.BOTS_V2_API : config.BASE_URL
     }/category/${category_id}`;
 
     const customHeaders = isNewsBotsServer
@@ -138,8 +138,8 @@ const editCategory = async (payload, category_id, isNewsBotsServer) => {
 const deleteCategory = async (category_id, isNewsBotsServer) => {
   try {
     const url = isNewsBotsServer
-      ? `${config.BOTS_V2_DEV_API}/category/${category_id}`
-      : `${config.BASE_URL_DEV}/category/${category_id}`;
+      ? `${config.BOTS_V2_API}/category/${category_id}`
+      : `${config.BASE_URL}/category/${category_id}`;
 
     const response = await fetch(url, {
       method: "DELETE",
@@ -171,7 +171,7 @@ const deleteCategory = async (category_id, isNewsBotsServer) => {
 const toggleAllCategoriesState = async (isEveryCategoryActive) => {
   try {
     const response = await fetch(
-      `${config.BASE_URL_DEV}/categories/global-toggle`,
+      `${config.BASE_URL}/categories/global-toggle`,
       {
         method: "POST",
         headers,
@@ -205,7 +205,7 @@ const toggleAllCategoriesState = async (isEveryCategoryActive) => {
 const toggleCategoryState = async (category_id, isActive) => {
   try {
     const response = await fetch(
-      `${config.BASE_URL_DEV}/categories/${category_id}/toggle-coins`,
+      `${config.BASE_URL}/categories/${category_id}/toggle-coins`,
       {
         method: "POST",
         headers,

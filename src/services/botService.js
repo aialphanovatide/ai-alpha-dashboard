@@ -6,7 +6,7 @@ const headers = {
 const getBot = async (query, searchBy = "id") => {
   try {
     const response = await fetch(
-      `${config.BOTS_V2_DEV_API}/bot?bot_${searchBy}=${query}`,
+      `${config.BOTS_V2_API}/bot?bot_${searchBy}=${query}`,
       {
         method: "GET",
         headers,
@@ -37,7 +37,7 @@ const getBot = async (query, searchBy = "id") => {
 
 const getBots = async () => {
   try {
-    const response = await fetch(`${config.BOTS_V2_DEV_API}/bots`, {
+    const response = await fetch(`${config.BOTS_V2_API}/bots`, {
       method: "GET",
       headers,
     });
@@ -66,7 +66,7 @@ const getBots = async () => {
 
 const createBot = async (payload) => {
   try {
-    const response = await fetch(`${config.BOTS_V2_DEV_API}/bot`, {
+    const response = await fetch(`${config.BOTS_V2_API}/bot`, {
       method: "POST",
       headers,
       body: JSON.stringify(payload),
@@ -96,7 +96,7 @@ const createBot = async (payload) => {
 
 const editBot = async (payload, botID) => {
   try {
-    const response = await fetch(`${config.BOTS_V2_DEV_API}/bot/${botID}`, {
+    const response = await fetch(`${config.BOTS_V2_API}/bot/${botID}`, {
       method: "PUT",
       headers,
       body: JSON.stringify(payload),
@@ -126,7 +126,7 @@ const editBot = async (payload, botID) => {
 
 const deleteBot = async (botID) => {
   try {
-    const response = await fetch(`${config.BOTS_V2_DEV_API}/bot/${botID}`, {
+    const response = await fetch(`${config.BOTS_V2_API}/bot/${botID}`, {
       method: "DELETE",
       headers,
     });

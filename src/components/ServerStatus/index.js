@@ -28,7 +28,7 @@ const ServerStatus = ({ isFullWidth }) => {
   const fetchServerStatus = async () => {
     try {
       const [aiAlphaServerResponse, newsBotsServerResponse] = await Promise.all(
-        [fetch(`${config.BASE_URL_DEV}`), fetch(`${config.BOTS_V2_DEV_API}`)],
+        [fetch(`${config.BASE_URL}`), fetch(`${config.BOTS_V2_API}`)],
       );
 
       if (

@@ -34,6 +34,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
         text: `${isBlacklist ? 'Blacklist' : 'Whitelist'} updated successfully`,
         icon: "success",
         customClass: "swal",
+        backdrop: false,
       });
 
       if (isRemove) {
@@ -48,7 +49,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
         }
       }
     } else {
-      Swal.fire({ text: response.error, icon: "error", customClass: "swal" });
+      Swal.fire({ text: response.error, icon: "error", customClass: "swal", backdrop: false });
     }
     setErrorMessage(null);
     setKeywords([]);
@@ -71,6 +72,8 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
       return `"${keyword}" keyword is on the ${
         isBlacklist ? "whitelist" : "blacklist"
       }.`;
+    } else if (!/[a-zA-Z0-9]/.test(keyword)) {
+      return `"${keyword}" keyword must contain at least one letter or number.`;
     }
     return null;
   };
@@ -118,7 +121,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
       updateKeywords(bot.keywords, setWhitelistKeywords, whitelistKeywords);
       updateKeywords(bot.blacklist, setBlacklistKeywords, blacklistKeywords);
     } else {
-      Swal.fire({ text: response.error, icon: "error", customClass: "swal" });
+      Swal.fire({ text: response.error, icon: "error", customClass: "swal", backdrop: false });
     }
     setIsLoading(false);
   };
@@ -225,7 +228,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                     ? "All Keywords will be removed from the selected coins."
                     : "All Keywords will be added to the selected coins"}
                 </span>
-                <div className={styles.keyWordsContainer}>
+                <div className={styles.keyWordsContainer} id="keywordsSettings-keywordsContainer">
                   {isRemove
                     ? isBlacklist
                       ? filteredKeywords(getCommonKeywords(blacklistKeywords))?.map(
@@ -234,6 +237,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                               className={styles.keyword}
                               key={index}
                               id="keyword-tag"
+                              style={!keywords.includes(keyword) ? {background: '#d9d9d9'} : {}}
                             >
                               <input
                                 type="checkbox"
@@ -250,6 +254,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                               className={styles.keyword}
                               key={index}
                               id="keyword-tag"
+                              style={!keywords.includes(keyword) ? {background: '#d9d9d9'} : {}}
                             >
                               <input
                                 type="checkbox"

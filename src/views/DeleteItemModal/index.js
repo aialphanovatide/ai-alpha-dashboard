@@ -68,6 +68,7 @@ const DeleteItemModal = (props) => {
               : `${successCount} categories deleted successfully.`,
           icon: "success",
           customClass: "swal",
+          backdrop: false,
         });
 
         const updatedCategories = categories.filter(
@@ -86,7 +87,12 @@ const DeleteItemModal = (props) => {
         throw new Error(`${errorCount} categories failed to delete.`);
       }
     } catch (error) {
-      Swal.fire({ text: error.message, icon: "error", customClass: "swal" });
+      Swal.fire({
+        text: error.message,
+        icon: "error",
+        customClass: "swal",
+        backdrop: false,
+      });
     } finally {
       setLoading(false);
       setVisible(false);
@@ -134,6 +140,7 @@ const DeleteItemModal = (props) => {
               : `${successCount} coins/bots deleted successfully.`,
           icon: "success",
           customClass: "swal",
+          backdrop: false,
         }).then(async () => {
           const updatedCategories = await getCategories();
           setCategories(updatedCategories);
@@ -144,7 +151,12 @@ const DeleteItemModal = (props) => {
         throw new Error(`${errorCount} coins/bots failed to delete.`);
       }
     } catch (error) {
-      Swal.fire({ text: error.message, icon: "error", customClass: "swal" });
+      Swal.fire({
+        text: error.message,
+        icon: "error",
+        customClass: "swal",
+        backdrop: false,
+      });
     } finally {
       setLoading(false);
       setVisible(false);
@@ -159,7 +171,9 @@ const DeleteItemModal = (props) => {
           className={styles.trashBtn}
           id="trashBtn"
           onClick={() => setVisible(true)}
-          disabled={selectedCategories.length === 0 && selectedCoins.length === 0}
+          disabled={
+            selectedCategories.length === 0 && selectedCoins.length === 0
+          }
         >
           <TrashIcon style={{ height: 25 }} />
         </button>
@@ -174,7 +188,10 @@ const DeleteItemModal = (props) => {
           >
             <CIcon icon={cilX} size="xl" />
           </button>
-          <div className={styles.subcontainer}>
+          <div
+            className={styles.subcontainer}
+            id="deleteItemModal-subcontainer"
+          >
             <TrashIcon className={styles.icon} />
             <h5>Are you sure you want to delete these elements?</h5>
             <div className={styles.elementsContainer}>
@@ -191,9 +208,12 @@ const DeleteItemModal = (props) => {
                     }}
                   >
                     <img
-                      src={item.icon || defaultImg}
+                      src={
+                        item.icon ||
+                        `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias?.toLowerCase()}.svg`
+                      }
                       onError={(e) => (e.target.src = defaultImg)}
-                      alt={'item-icon'}
+                      alt={"item-icon"}
                     />
                   </div>
                   <span>{item.name}</span>

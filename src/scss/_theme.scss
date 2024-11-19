@@ -77,10 +77,10 @@ body {
     .allAnalysisLI p,
     .allAnalysisLI span,
     .form-control.input,
-    .css-1ps6pg7-MuiPaper-root span,
-    .css-1ps6pg7-MuiPaper-root th,
-    .css-1ps6pg7-MuiPaper-root div,
-    .css-1ps6pg7-MuiPaper-root td,
+    .MuiDrawer-paper span,
+    .MuiDrawer-paper th,
+    .MuiDrawer-paper div,
+    .MuiDrawer-paper td,
     .analysisSubmain p,
     .search-tool-item p,
     .card p,
@@ -91,11 +91,11 @@ body {
     .top-container button,
     .MuiDrawer-paper,
     .user-info-subcontainer p,
-    .user-plans-container > div p {
+    .user-plans-container>div p {
       color: white !important;
     }
 
-    .DeleteItemModal_subcontainer__-ZHF3>svg,
+    #deleteItemModal-subcontainer>svg,
     .MuiDrawer-paper svg {
       fill: white;
     }
@@ -143,8 +143,7 @@ body {
     }
 
     .item.checked,
-    .WhiteList_keyword__b5GFq,
-    .BlackList_keyword__dsClM {
+    #keywordsSettings-keywordsContainer>div {
       background-color: #945d15;
     }
 
@@ -168,12 +167,12 @@ body {
 
     // Category list scroll bar
     .bot-list-container::-webkit-scrollbar,
-    .css-1160xiw-MuiPaper-root-MuiDrawer-paper::-webkit-scrollbar {
+    .MuiDrawer-paper::-webkit-scrollbar {
       background-color: #1e222a;
     }
 
     .bot-list-container::-webkit-scrollbar-thumb,
-    .css-1160xiw-MuiPaper-root-MuiDrawer-paper::-webkit-scrollbar-thumb {
+    .MuiDrawer-paper::-webkit-scrollbar-thumb {
       background-color: #484848;
       border-color: #1e222a;
     }
@@ -190,22 +189,22 @@ body {
       background-color: #272727;
     }
 
-    // Bot settings forms inputs
+    // general settings forms inputs
     #frequency,
     .MuiDrawer-paper input,
     .MuiDrawer-paper select,
     .MuiDrawer-paper textarea,
     .MuiDrawer-paper textarea::-webkit-scrollbar,
-    .NewCategoryForm_input__b5u00,
+    .CategoryForm_input__b5u00,
     .BotForm_keywordInput__OaLIj,
     .WhiteList_keywordInput__Odyg6,
     .BlackList_keywordInput__f9zAk,
     .BotForm_input__6xnak,
     .BotForm_keywordsContainer__-Nath,
-    .BotForm_imgContainer__tpUOv,
-    .NewCategoryForm_imgContainer__E0geY,
+    #bot-form-preview-container,
+    #categoryform-icon-container,
     #category-alias,
-    .css-vtpge1-MuiSlider-root .MuiSlider-valueLabel, 
+    .css-vtpge1-MuiSlider-root .MuiSlider-valueLabel,
     #customInput,
     #background-color-input,
     #whitelist-keywords-container,
@@ -220,7 +219,7 @@ body {
 
     #botform-whitelist-keyword,
     #botform-blacklist-keyword {
-      background-color: #8b8b8b;;
+      background-color: #8b8b8b;
     }
 
     .switch-button.active,
@@ -230,25 +229,26 @@ body {
       background-color: #6b4d0c;
     }
 
-    .BotForm_submitButton__aSQ\+-:disabled,
-    .BotForm_imgPicker__9tI89::file-selector-button, 
-    .NewCategoryForm_imgPicker__iTTJX::file-selector-button,
-    #botform-icon-input::file-selector-button,
-    #categoryform-icon-input::file-selector-button {
-      background-color: #4e4e4e;
-    }
-
     #keyword-tag {
       background-color: #FF8739
     }
 
-    #trashBtn>svg>path {
-      fill: white ;
-      stroke: white ;
+    #bot-form-submit-button:disabled,
+    #categoryform-icon-input::file-selector-button,
+    #botform-icon-input::file-selector-button,
+    #categoryform-icon-input::file-selector-button,
+    #keyword-tag[style="background: rgb(217, 217, 217);"] {
+      background-color: #4e4e4e !important;
     }
+
+    #trashBtn>svg>path {
+      fill: white;
+      stroke: white;
+    }
+
     #trashBtn:disabled>svg>path {
-      fill: #4e4e4e ;
-      stroke: #4e4e4e ;
+      fill: #4e4e4e;
+      stroke: #4e4e4e;
     }
 
     #bot-detail-prompt {

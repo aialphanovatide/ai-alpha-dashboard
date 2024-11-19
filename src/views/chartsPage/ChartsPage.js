@@ -41,7 +41,7 @@ const ChartsPage = () => {
     const fetchCoinBots = async () => {
       try {
         const response = await fetch(
-          `${config.BOTS_V2_DEV_API}/bots`,
+          `${config.BOTS_V2_API}/bots`,
           {
             method: "GET",
             headers: {
@@ -68,13 +68,13 @@ const ChartsPage = () => {
   const fetchCoinData = useCallback(async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL_DEV}/chart?coin_id=${selectedCoin}&temporality=${temp}&pair=${pairValue}`,
+        `${config.BASE_URL}/chart?coin_id=${selectedCoin}&temporality=${temp}&pair=${pairValue}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
-            "X-API-KEY": config.X_API_KEY_DEV
+            "X-API-KEY": config.X_API_KEY
           },
         },
       );
@@ -134,12 +134,12 @@ const ChartsPage = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${config.BASE_URL_DEV}/chart`, {
+      const response = await fetch(`${config.BASE_URL}/chart`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true",
-          "X-API-KEY": config.X_API_KEY_DEV
+          "X-API-KEY": config.X_API_KEY
         },
         body: JSON.stringify({
           support_1: formData.support1,

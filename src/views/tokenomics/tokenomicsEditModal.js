@@ -45,13 +45,13 @@ const TokenomicsEditModal = ({
   const getTokenomic = async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL_DEV}/get_tokenomic/${selectedItemForEdit.id}`,
+        `${config.BASE_URL}/get_tokenomic/${selectedItemForEdit.id}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
-            'X-Api-Key': config.X_API_KEY_DEV
+            'X-Api-Key': config.X_API_KEY
           },
         },
       );
@@ -70,13 +70,13 @@ const TokenomicsEditModal = ({
   const getTokenDistribution = async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL_DEV}/get_token_distribution/${selectedItemForEdit.id}`,
+        `${config.BASE_URL}/get_token_distribution/${selectedItemForEdit.id}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
-            'X-Api-Key': config.X_API_KEY_DEV
+            'X-Api-Key': config.X_API_KEY
           },
         },
       );
@@ -95,13 +95,13 @@ const TokenomicsEditModal = ({
   const getTokenUtility = async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL_DEV}/get_token_utility/${selectedItemForEdit.id}`,
+        `${config.BASE_URL}/get_token_utility/${selectedItemForEdit.id}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
-            'X-Api-Key': config.X_API_KEY_DEV
+            'X-Api-Key': config.X_API_KEY
           },
         },
       );
@@ -120,13 +120,13 @@ const TokenomicsEditModal = ({
   const getValueAccrual = async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL_DEV}/get_value_accrual/${selectedItemForEdit.id}`,
+        `${config.BASE_URL}/get_value_accrual/${selectedItemForEdit.id}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
-            'X-Api-Key': config.X_API_KEY_DEV
+            'X-Api-Key': config.X_API_KEY
           },
         },
       );

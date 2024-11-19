@@ -7,7 +7,7 @@ import { cilPen } from "@coreui/icons";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { formatDateTime } from "src/utils";
-import NewCategoryForm from "../../NewCategoryForm";
+import CategoryForm from "../../CategoryForm";
 import BotForm from "../../BotForm";
 import SwitchButton from "src/components/commons/SwitchButton";
 import defaultImg from "../../../../../assets/brand/logo.png";
@@ -46,8 +46,8 @@ const ListItem = (params) => {
 
   useEffect(() => {
     if (isCoin) setIsItemActive(item.is_active);
-    else setIsItemActive(item.coins.every((coin) => coin.is_active));
-  }, [item.is_active]);
+    else setIsItemActive(item.coins?.every((coin) => coin.is_active));
+  }, [item.is_active, item.coins]);
 
   useEffect(() => {
     if (selectedCategories.length === 0) setCategoryChecked(false);
@@ -86,7 +86,6 @@ const ListItem = (params) => {
 
   const handleStatusSwitchToggle = async (e) => {
     setIsToggleLoading(true);
-
     try {
       if (isCoin) {
         const response = await toggleCoinStatus(item.bot_id);
@@ -122,17 +121,27 @@ const ListItem = (params) => {
         }
       }
     } catch (error) {
-      const errorString = error.message.replace(/^Error: /, "");
-      const errorArray = JSON.parse(errorString);
-
-      Swal.fire({
-        title: "Some coins couldn't be activated",
-        html: ReactDOMServer.renderToString(
-          <ErrorList errorMessages={errorArray} />,
-        ),
+      const swal = {
+        title: !isCoin
+          ? "Some coins couldn't be activated"
+          : "Coin activation failed",
         icon: "error",
         customClass: "swal",
-      });
+        backdrop: false,
+      };
+
+      if (!isCoin) {
+        const errorString = error.message.replace(/^Error: /, "");
+        const errorArray = JSON.parse(errorString);
+
+        swal.html = ReactDOMServer.renderToString(
+          <ErrorList errorMessages={errorArray} />,
+        );
+      } else {
+        swal.text = error.message;
+      }
+
+      Swal.fire(swal);
     } finally {
       setIsToggleLoading(false);
     }
@@ -181,9 +190,7 @@ const ListItem = (params) => {
             alt={`${isCoin ? "bot" : "category"}-img`}
             src={
               item.icon ||
-              (isCoin
-                ? `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${item.name?.toLowerCase()}.png`
-                : `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.name.toLowerCase()}.svg`)
+              `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias?.toLowerCase()}.svg`
             }
             onError={(e) => (e.target.src = defaultImg)}
           />
@@ -209,7 +216,7 @@ const ListItem = (params) => {
             isCoin ? (
               <BotForm coin={item} setCategories={setCategories} />
             ) : (
-              <NewCategoryForm category={item} setCategories={setCategories} />
+              <CategoryForm category={item} setCategories={setCategories} />
             ),
             "right",
           )}

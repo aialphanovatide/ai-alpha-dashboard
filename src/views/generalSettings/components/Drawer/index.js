@@ -15,7 +15,7 @@ export default function DrawerComponent({
       open={open}
       onClose={toggleDrawer(false)}
       anchor={anchor}
-      className={styles.drawer}
+      classes={anchor === 'bottom' ? {paper: 'bottom-drawer'} : {}}
     >
       <div className={anchor == "right" ? styles.rightContainer : styles.bottomContainer}>
         <div className={anchor == "right" ? styles.buttonContainer : styles.buttonContainerBottom}>
