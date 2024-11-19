@@ -77,10 +77,10 @@ body {
     .allAnalysisLI p,
     .allAnalysisLI span,
     .form-control.input,
-    .css-1ps6pg7-MuiPaper-root span,
-    .css-1ps6pg7-MuiPaper-root th,
-    .css-1ps6pg7-MuiPaper-root div,
-    .css-1ps6pg7-MuiPaper-root td,
+    .MuiDrawer-paper span,
+    .MuiDrawer-paper th,
+    .MuiDrawer-paper div,
+    .MuiDrawer-paper td,
     .analysisSubmain p,
     .search-tool-item p,
     .card p,
@@ -95,7 +95,7 @@ body {
       color: white !important;
     }
 
-    .DeleteItemModal_subcontainer__-ZHF3>svg,
+    #deleteItemModal-subcontainer>svg,
     .MuiDrawer-paper svg {
       fill: white;
     }
@@ -143,8 +143,7 @@ body {
     }
 
     .item.checked,
-    .WhiteList_keyword__b5GFq,
-    .BlackList_keyword__dsClM {
+    #keywordsSettings-keywordsContainer>div {
       background-color: #945d15;
     }
 
@@ -168,12 +167,12 @@ body {
 
     // Category list scroll bar
     .bot-list-container::-webkit-scrollbar,
-    .css-1160xiw-MuiPaper-root-MuiDrawer-paper::-webkit-scrollbar {
+    .MuiDrawer-paper::-webkit-scrollbar {
       background-color: #1e222a;
     }
 
     .bot-list-container::-webkit-scrollbar-thumb,
-    .css-1160xiw-MuiPaper-root-MuiDrawer-paper::-webkit-scrollbar-thumb {
+    .MuiDrawer-paper::-webkit-scrollbar-thumb {
       background-color: #484848;
       border-color: #1e222a;
     }

@@ -5,8 +5,12 @@ body,
   height: 100%;
 }
 
-.css-9emuhu-MuiPaper-root-MuiDrawer-paper {
-  width: 800px;
+.sidebar-backdrop.show {
+  display: none;
+}
+
+.MuiDrawer-paperAnchorBottom, .bottom-drawer {
+  width: 800px !important;
   margin: auto;
   height: fit-content;
   border-top-left-radius: 10px;
@@ -15,30 +19,30 @@ body,
   padding-bottom: 0px;
 }
 
-.css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop {
+.MuiModal-backdrop {
   background-color: transparent !important;
 }
 
 /* Drawer scrollbar styles */
-.css-1160xiw-MuiPaper-root-MuiDrawer-paper {
+.MuiDrawer-paper {
   overflow-x: hidden;
 }
 
 /* total width */
-.css-1160xiw-MuiPaper-root-MuiDrawer-paper::-webkit-scrollbar {
+.MuiDrawer-paper::-webkit-scrollbar {
   background-color: #ffffff;
   width: 14px;
 }
 
 /* scrollbar itself */
-.css-1160xiw-MuiPaper-root-MuiDrawer-paper::-webkit-scrollbar-thumb {
+.MuiDrawer-paper::-webkit-scrollbar-thumb {
   background-color: #E5E5E5;
   border-radius: 16px;
   border: 4px solid #ffffff;
 }
 
 /* set button(top and bottom of the scrollbar) */
-.css-1160xiw-MuiPaper-root-MuiDrawer-paper::-webkit-scrollbar-button {
+.MuiDrawer-paper::-webkit-scrollbar-button {
   display: none;
 }
 
@@ -48,17 +52,9 @@ textarea:focus-visible {
   outline: none;
 }
 
-/* .MuiDrawer-root {
-  z-index: 1 !important;
-}
-
-
-.fade.modal, .fade.modal-backdrop {
-  z-index: 2 !important;
-  } */
-
 .MuiDrawer-paper,
-.css-1u2w381-MuiModal-root-MuiDrawer-root {
+.MuiDrawer-root,
+.MuiDrawer-modal {
   z-index: 3 !important;
 }
 
@@ -71,6 +67,14 @@ textarea:focus-visible {
   z-index: 4 !important;
 }
 
+*::-webkit-scrollbar {
+  width: 7px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgb(104, 104, 104);
+  border-radius: 10px;
+}
 
 @media screen and (max-width: 450px) {
   .footer {
@@ -80,14 +84,4 @@ textarea:focus-visible {
     bottom: 0px;
     z-index: 1;
   }
-}
-
-
-*::-webkit-scrollbar {
-  width: 7px;
-}
-
-*::-webkit-scrollbar-thumb {
-  background: rgb(104, 104, 104);
-  border-radius: 10px;
 }
