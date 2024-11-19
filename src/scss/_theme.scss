@@ -91,7 +91,7 @@ body {
     .top-container button,
     .MuiDrawer-paper,
     .user-info-subcontainer p,
-    .user-plans-container > div p {
+    .user-plans-container>div p {
       color: white !important;
     }
 
@@ -189,7 +189,7 @@ body {
       background-color: #272727;
     }
 
-    // Bot settings forms inputs
+    // general settings forms inputs
     #frequency,
     .MuiDrawer-paper input,
     .MuiDrawer-paper select,
@@ -201,10 +201,10 @@ body {
     .BlackList_keywordInput__f9zAk,
     .BotForm_input__6xnak,
     .BotForm_keywordsContainer__-Nath,
-    .BotForm_imgContainer__tpUOv,
-    .CategoryForm_imgContainer__E0geY,
+    #bot-form-preview-container,
+    #categoryform-icon-container,
     #category-alias,
-    .css-vtpge1-MuiSlider-root .MuiSlider-valueLabel, 
+    .css-vtpge1-MuiSlider-root .MuiSlider-valueLabel,
     #customInput,
     #background-color-input,
     #whitelist-keywords-container,
@@ -219,7 +219,7 @@ body {
 
     #botform-whitelist-keyword,
     #botform-blacklist-keyword {
-      background-color: #8b8b8b;;
+      background-color: #8b8b8b;
     }
 
     .switch-button.active,
@@ -229,25 +229,26 @@ body {
       background-color: #6b4d0c;
     }
 
-    .BotForm_submitButton__aSQ\+-:disabled,
-    .BotForm_imgPicker__9tI89::file-selector-button, 
-    .CategoryForm_imgPicker__iTTJX::file-selector-button,
-    #botform-icon-input::file-selector-button,
-    #categoryform-icon-input::file-selector-button {
-      background-color: #4e4e4e;
-    }
-
     #keyword-tag {
       background-color: #FF8739
     }
 
-    #trashBtn>svg>path {
-      fill: white ;
-      stroke: white ;
+    #bot-form-submit-button:disabled,
+    #categoryform-icon-input::file-selector-button,
+    #botform-icon-input::file-selector-button,
+    #categoryform-icon-input::file-selector-button,
+    #keyword-tag[style="background: rgb(115, 115, 115);"] {
+      background-color: #4e4e4e !important;
     }
+
+    #trashBtn>svg>path {
+      fill: white;
+      stroke: white;
+    }
+
     #trashBtn:disabled>svg>path {
-      fill: #4e4e4e ;
-      stroke: #4e4e4e ;
+      fill: #4e4e4e;
+      stroke: #4e4e4e;
     }
   }
 }
