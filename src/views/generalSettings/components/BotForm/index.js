@@ -15,7 +15,7 @@ import CustomTooltip from "src/components/CustomTooltip";
 import Swal from "sweetalert2";
 import { getCategories, getCategory } from "src/services/categoryService";
 import { createBot, editBot, getBot } from "src/services/botService";
-import { createCoin, editCoin } from "src/services/coinService";
+import { createCoin, deleteCoin, editCoin } from "src/services/coinService";
 import { extractKeywords } from "src/services/keywordService";
 import SpinnerComponent from "src/components/Spinner";
 import defaultImg from "../../../../assets/brand/logo.png";
@@ -278,6 +278,7 @@ const BotForm = ({ coin, setCategories }) => {
   };
 
   const handleSubmit = async (e) => {
+    let coinId;
     try {
       e.preventDefault();
       setIsSubmitting(true);
@@ -299,81 +300,77 @@ const BotForm = ({ coin, setCategories }) => {
         ? await createCoin(formDataToSend)
         : await editCoin(formDataToSend, coin.bot_id);
 
-      if (response.success) {
-        let keywordsToAdd = {
-          whitelist: [...keywords],
-          blacklist: [...blacklist],
-        };
-        let formdataForBot = {
-          alias: formData.alias,
-          background_color: formData.background_color,
-          category_id: formData.bot_category_id,
-          dalle_prompt: formData.dalle_prompt,
-          name: formData.name,
-          prompt: formData.prompt,
-          run_frequency: parseInt(formData.run_frequency),
-          whitelist: keywords.join(","),
-          blacklist: blacklist.join(","),
-        };
+      coinId = response.data?.coin.bot_id;
 
-        const response = !coin
-          ? await createBot(formdataForBot, keywordsToAdd)
-          : await editBot(formdataForBot, bot.id);
+      if (!response.success) {
+        throw new Error(response.error || "Error creating coin");
+      }
 
-        if (response.success) {
-          Swal.fire({
-            text: `Coin/Bot ${coin ? "updated" : "created"} successfully!`,
-            icon: "success",
-            customClass: "swal",
-          }).then(async () => {
-            const updatedCategories = await getCategories();
-            setCategories(updatedCategories);
-          });
+      let formdataForBot = {
+        alias: formData.alias,
+        background_color: formData.background_color,
+        category_id: formData.bot_category_id,
+        dalle_prompt: formData.dalle_prompt,
+        name: formData.name,
+        prompt: formData.prompt,
+        run_frequency: parseInt(formData.run_frequency),
+        whitelist: keywords.join(","),
+        blacklist: blacklist.join(","),
+      };
 
-          if (!coin) {
-            setFormData({
-              name: "",
-              alias: "",
-              symbol: "",
-              category_id: "",
-              background_color: "",
-              icon: null,
-              iconPreview: null,
-              bot_category_id: null,
-              dalle_prompt: "",
-              prompt: "",
-              run_frequency: 20,
-              blacklist: [],
-              keywords: [],
-              // url: "",
-            });
-            setBlacklist([]);
-            setKeywords([]);
-            document.querySelector('input[type="file"]').value = "";
-          }
-          setIsSubmitting(false);
-        } else {
-          Swal.fire({
-            text: response.error || "Error creating bot",
-            icon: "error",
-            customClass: "swal",
-          });
-          setIsSubmitting(false);
-        }
-      } else {
-        Swal.fire({
-          text: response.error || "Error creating coin",
-          icon: "error",
-          customClass: "swal",
+      const responseFromNewsBotServer = !coin
+        ? await createBot(formdataForBot)
+        : await editBot(formdataForBot, bot.id);
+
+      if (!responseFromNewsBotServer.success) {
+        throw new Error(
+          responseFromNewsBotServer.error || "Error creating bot",
+        );
+      }
+
+      Swal.fire({
+        text: `Coin/Bot ${coin ? "updated" : "created"} successfully!`,
+        icon: "success",
+        customClass: "swal",
+      }).then(async () => {
+        const updatedCategories = await getCategories();
+        setCategories(updatedCategories);
+      });
+
+      if (!coin) {
+        setFormData({
+          name: "",
+          alias: "",
+          symbol: "",
+          category_id: "",
+          background_color: "",
+          icon: null,
+          iconPreview: null,
+          bot_category_id: null,
+          dalle_prompt: "",
+          prompt: "",
+          run_frequency: 20,
+          blacklist: [],
+          keywords: [],
+          // url: "",
         });
-        setIsSubmitting(false);
+        setBlacklist([]);
+        setKeywords([]);
+        document.querySelector('input[type="file"]').value = "";
       }
     } catch (err) {
+      if (coinId && !coin) {
+        await deleteCoin(coinId);
+      }
+      
       Swal.fire({
-        text: err.message || "An error occurred while creating the bot",
+        title: `Error ${coin ? "updating" : "creating"} coin/bot`,
+        text: `${err.message}` || "An error occurred while creating the bot",
         icon: "error",
         customClass: "swal",
-      });
+      })
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
