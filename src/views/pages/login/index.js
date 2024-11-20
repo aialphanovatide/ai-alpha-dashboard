@@ -21,14 +21,15 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import ServerStatus from "src/components/ServerStatus";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const location = useLocation();
   const [isLoading, setLoading] = useState(false);
+  const location = useLocation();
 
   const navigate = useNavigate();
 
@@ -49,11 +50,12 @@ const Login = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`${config.BASE_URL}/admin/login`, {
+      const response = await fetch(`${config.BASE_URL_DEV}/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true",
+          "X-Api-Key": config.X_API_KEY_DEV,
         },
         body: JSON.stringify({ username, password }),
       });
@@ -83,17 +85,21 @@ const Login = () => {
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm onSubmit={(e) => e.preventDefault()}  className={styles.loginForm}>
+                  <CForm
+                    onSubmit={(e) => e.preventDefault()}
+                    className={styles.loginForm}
+                  >
                     <img
                       src={require("../../../assets/brand/logo.png")}
                       alt="logo"
                       className={styles.loginLogo}
                     />
                     <h1>Login</h1>
-                    <p className="text-body-secondary">
+                    <p className="text-body-secondary m-0">
                       Log In to your account
                     </p>
-                    <CInputGroup className="mb-3">
+                    <ServerStatus/>
+                    <CInputGroup className="m-2">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
@@ -135,7 +141,7 @@ const Login = () => {
                           className={styles.loginButton}
                           onClick={handleSubmit}
                         >
-                          {isLoading ? "Loging in..." : "Log in"}
+                          {isLoading ? "Logging in..." : "Log in"}
                         </CButton>
                       </CCol>
                     </CRow>

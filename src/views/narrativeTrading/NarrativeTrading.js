@@ -47,6 +47,7 @@ const NarrativeTrading = () => {
           title: "Scheduled Post deleted successfully",
           showConfirmButton: false,
           timer: 1000,
+          customClass: "swal",
         });
         // Actualiza la lista de trabajos programados después de eliminar uno
         handleGetJobs();
@@ -56,6 +57,7 @@ const NarrativeTrading = () => {
           title: "Scheduled Post cannot delete successfully",
           showConfirmButton: false,
           timer: 1000,
+          customClass: "swal",
         });
         console.error("Error deleting scheduled job:", response.statusText);
       }
@@ -163,6 +165,7 @@ const NarrativeTrading = () => {
         title: "One or more required fields are missing",
         showConfirmButton: false,
         timer: 1000,
+        customClass: "swal",
       });
     }
     setIsSubmitting(true);
@@ -211,6 +214,7 @@ const NarrativeTrading = () => {
             title: responseData.message,
             showConfirmButton: false,
             timer: 1000,
+            customClass: "swal",
           });
           setSelectedCoin(null);
           setIsNarrativeTradingCreated(true);
@@ -225,6 +229,7 @@ const NarrativeTrading = () => {
             title: "Error scheduling post",
             showConfirmButton: false,
             timer: 1000,
+            customClass: "swal",
           });
         }
       } catch (error) {
@@ -234,6 +239,7 @@ const NarrativeTrading = () => {
           text: error.message,
           showConfirmButton: false,
           timer: 1000,
+          customClass: "swal",
         });
       } finally {
         setIsSubmitting(false);
@@ -248,6 +254,7 @@ const NarrativeTrading = () => {
         title: "One or more required fields are missing",
         showConfirmButton: false,
         timer: 1000,
+        customClass: "swal",
       });
     }
     setIsSubmitting(true);
@@ -279,6 +286,7 @@ const NarrativeTrading = () => {
             title: responseData.message,
             showConfirmButton: false,
             timer: 1000,
+            customClass: "swal",
           });
           setIsNarrativeTradingCreated(true);
           setContent(null);
@@ -290,6 +298,7 @@ const NarrativeTrading = () => {
             title: "Error creating narrative trading",
             showConfirmButton: false,
             timer: 1000,
+            customClass: "swal",
           });
         }
       } catch (error) {
@@ -298,6 +307,7 @@ const NarrativeTrading = () => {
           title: error,
           showConfirmButton: false,
           timer: 1000,
+          customClass: "swal",
         });
       } finally {
         setIsSubmitting(false);

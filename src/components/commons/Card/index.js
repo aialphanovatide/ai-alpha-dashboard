@@ -3,6 +3,7 @@ import "./index.css";
 import { AccessTime } from "@mui/icons-material";
 import CIcon from "@coreui/icons-react";
 import { cilTrash } from "@coreui/icons";
+import defaultImg from "src/assets/brand/logo.png";
 
 const Card = (props) => {
   const { data, onClick, onDelete, onImgLoad } = props;
@@ -17,6 +18,8 @@ const Card = (props) => {
         className={`img-modal-news-card`}
         src={data.image}
         onLoad={onImgLoad}
+        alt="news"
+        onError={(e) => (e.target.src = defaultImg)}
       />
       <h6 style={{ margin: 10 }}>
         <strong>{data.title || "No Title"}</strong>

@@ -6,6 +6,7 @@ import { useColorModes } from "@coreui/react";
 import "./scss/style.scss";
 import SpinnerComponent from "./components/Spinner";
 import SessionValidator from "./components/SessionValidator";
+import "./app.css";
 
 // Containers
 const DefaultLayout = React.lazy(() => import("./layout/DefaultLayout"));

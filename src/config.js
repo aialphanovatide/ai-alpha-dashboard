@@ -10,6 +10,7 @@ const AWS_REGION = process.env.REACT_APP_AWS_REGION
 const AWS_ICONS = process.env.REACT_APP_AWS_ICONS_BUCKET
 const X_API_KEY = process.env.REACT_APP_X_API_KEY
 const X_API_KEY_DEV = process.env.REACT_APP_X_API_KEY_DEV
+
 //config server
 const config = {
    BASE_URL:  BASE_URL_API,

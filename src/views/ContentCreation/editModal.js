@@ -21,6 +21,7 @@ const EditModal = ({ item, onSave, onClose, fetchAnalysis }) => {
       title: "Analysis updated successfully",
       showConfirmButton: false,
       timer: 1000,
+      customClass: "swal",
     });
 
     // Aquí podrías llamar a la función fetchAnalysis si es necesario

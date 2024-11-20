@@ -297,7 +297,7 @@ const NewsSearchTool = () => {
         ) : (
           <>
             {currentArticles.length < 1 ? (
-              <NoData />
+              <NoData message={"No articles found!"}/>
             ) : (
               currentArticles.map((article, index) => (
                 <ArticleCard key={index} article={article} />
