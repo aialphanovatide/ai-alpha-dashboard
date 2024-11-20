@@ -18,7 +18,7 @@ const Competitors = () => {
   useEffect(() => {
     const getAllBots = async () => {
       try {
-        const response = await fetch(`${config.BOTS_V2_DEV_API}/bots`, {
+        const response = await fetch(`${config.BOTS_V2_API}/bots`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -47,13 +47,13 @@ const Competitors = () => {
     try {
       if (selectedCoinBot) {
         const response = await fetch(
-          `${config.BASE_URL_DEV}/get_competitors/${selectedCoinBot}`,
+          `${config.BASE_URL}/get_competitors/${selectedCoinBot}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               "ngrok-skip-browser-warning": "true",
-              'X-Api-key': config.X_API_KEY_DEV
+              'X-Api-key': config.X_API_KEY
             },
           },
         );

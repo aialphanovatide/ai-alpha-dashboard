@@ -1,6 +1,6 @@
 import config from "../config";
 const headers = {
-  "X-API-Key": config.X_API_KEY_DEV,
+  "X-API-Key": config.X_API_KEY,
   "Content-Type": "application/json",
 };
 
@@ -16,7 +16,7 @@ const deleteKeywords = async (type, keywords, bots_ids) => {
       payload["keywords"] = keywords;
     }
 
-    const response = await fetch(`${config.BOTS_V2_DEV_API}/${type}`, {
+    const response = await fetch(`${config.BOTS_V2_API}/${type}`, {
       method: "DELETE",
       headers,
       body: JSON.stringify(payload),
@@ -56,7 +56,7 @@ const addKeywords = async (type, keywords, bots_ids) => {
       payload["keywords"] = keywords;
     }
 
-    const response = await fetch(`${config.BOTS_V2_DEV_API}/${type}`, {
+    const response = await fetch(`${config.BOTS_V2_API}/${type}`, {
       method: "POST",
       headers,
       body: JSON.stringify(payload),
@@ -86,7 +86,7 @@ const addKeywords = async (type, keywords, bots_ids) => {
 
 const searchKeywords = async (type, query, bots_ids) => {
   try {
-    const response = await fetch(`${config.BOTS_V2_DEV_API}/${type}/search`, {
+    const response = await fetch(`${config.BOTS_V2_API}/${type}/search`, {
       method: "POST",
       headers,
       body: JSON.stringify({
@@ -119,7 +119,7 @@ const searchKeywords = async (type, query, bots_ids) => {
 
 const extractKeywords = async (file, isBlacklist) => {
   try {
-    const response = await fetch(`${config.BOTS_V2_DEV_API}/keywords/extract`, {
+    const response = await fetch(`${config.BOTS_V2_API}/keywords/extract`, {
       method: "POST",
       headers: {
         Accept: "application/json",
