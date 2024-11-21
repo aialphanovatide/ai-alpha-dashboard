@@ -9,7 +9,7 @@ const DropdownMenu = ({ selectedCoin, onSelectCoin }) => {
   useEffect(() => {
     const fetchCoinBots = async () => {
       try {
-        const response = await fetch(`${config.BOTS_V2_DEV_API}/bots`, {
+        const response = await fetch(`${config.BOTS_V2_API}/bots`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

@@ -1,12 +1,12 @@
 import config from "../config";
 const headers = {
   'Accept': "*/*",
-  "X-Api-Key": config.X_API_KEY_DEV,
+  "X-Api-Key": config.X_API_KEY,
 };
 
 const createCoin = async (payload) => {
   try {
-    const response = await fetch(`${config.BASE_URL_DEV}/coin`, {
+    const response = await fetch(`${config.BASE_URL}/coin`, {
       method: "POST",
       headers,
       body: payload,
@@ -36,7 +36,7 @@ const createCoin = async (payload) => {
 
 const editCoin = async (payload, coinID) => {
   try {
-    const response = await fetch(`${config.BASE_URL_DEV}/coin/${coinID}`, {
+    const response = await fetch(`${config.BASE_URL}/coin/${coinID}`, {
       method: "PUT",
       headers,
       body: payload,
@@ -67,7 +67,7 @@ const editCoin = async (payload, coinID) => {
 const toggleCoinStatus = async (coin_id) => {
   try {
     const response = await fetch(
-      `${config.BASE_URL_DEV}/coin/${coin_id}/toggle-coin`,
+      `${config.BASE_URL}/coin/${coin_id}/toggle-coin`,
       {
         method: "POST",
         headers,
@@ -98,7 +98,7 @@ const toggleCoinStatus = async (coin_id) => {
 
 const deleteCoin = async (coin_id) => {
   try {
-    const response = await fetch(`${config.BASE_URL_DEV}/coin/${coin_id}`, {
+    const response = await fetch(`${config.BASE_URL}/coin/${coin_id}`, {
       method: "DELETE",
       headers,
     });
