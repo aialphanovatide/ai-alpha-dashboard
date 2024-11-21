@@ -6,12 +6,13 @@ const SocketContext = createContext();
 
 export const useSocket = () => useContext(SocketContext);
 
-const socket = io(config.BASE_URL, {
-  // reconnection: true, // Enable reconnection
-  // reconnectionAttempts: Infinity, // Unlimited reconnection attempts
-  // reconnectionDelay: 1000, // Initial delay before reconnection attempt
-  // reconnectionDelayMax: 5000, // Maximum delay between reconnection attempts
-  // randomizationFactor: 0.5 // Randomization factor for reconnection delay
+const socket = io("http://localhost:4000", {
+// const socket = io(config.BASE_URL, {
+  reconnection: true, // Enable reconnection
+  reconnectionAttempts: Infinity, // Unlimited reconnection attempts
+  reconnectionDelay: 1000, // Initial delay before reconnection attempt
+  reconnectionDelayMax: 5000, // Maximum delay between reconnection attempts
+  randomizationFactor: 0.5 // Randomization factor for reconnection delay
 });
 
 export const SocketProvider = ({ children }) => {
@@ -26,9 +27,9 @@ export const SocketProvider = ({ children }) => {
       setNotifications((prev) => [...prev, data]);
     });
 
-    socket.on("disconnect", () => {
-      console.log("Disconnected from server, attempting to reconnect...");
-    });
+    // socket.on("disconnect", () => {
+    //   console.log("Disconnected from server, attempting to reconnect...");
+    // });
 
     return () => {
       socket.disconnect();
