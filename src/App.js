@@ -7,6 +7,7 @@ import "./scss/style.scss";
 import SpinnerComponent from "./components/Spinner";
 import SessionValidator from "./components/SessionValidator";
 import "./app.css";
+import { SocketProvider } from "./contexts/socketContext";
 
 // Containers
 const DefaultLayout = React.lazy(() => import("./layout/DefaultLayout"));
@@ -60,9 +61,11 @@ const App = () => {
             path="*"
             name="Home"
             element={
-              <SessionValidator>
-                <DefaultLayout />
-              </SessionValidator>
+              <SocketProvider>
+                <SessionValidator>
+                  <DefaultLayout />
+                </SessionValidator>
+              </SocketProvider>
             }
           />
         </Routes>
