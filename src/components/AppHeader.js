@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -13,9 +13,11 @@ import {
   CNavLink,
   CNavItem,
   useColorModes,
+  CButton,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
+  cilBell,
   cilContrast,
   cilMenu,
   cilMoon,
@@ -24,10 +26,17 @@ import {
 
 import { AppHeaderDropdown } from './header/index'
 import ServerStatus from './ServerStatus'
+import DrawerComponent from 'src/views/generalSettings/components/Drawer'
+import NotificationsList from './NotificationsList'
 
 const AppHeader = () => {
   const headerRef = useRef()
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
+  const [open, setOpen] = useState(false);
+
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen);
+  };
 
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebarShow)
@@ -59,9 +68,9 @@ const AppHeader = () => {
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav>
-          {/* <li className="nav-item py-1">
-            <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
-          </li> */}
+          <CButton onClick={toggleDrawer(true)}>
+            <CIcon icon={cilBell} />
+          </CButton>
           <CDropdown variant="nav-item" placement="bottom-end" >
             <CDropdownToggle caret={false}>
               {colorMode === 'dark' ? (
@@ -95,13 +104,18 @@ const AppHeader = () => {
               </CDropdownItem>
             </CDropdownMenu>
           </CDropdown>
-          {/* <li className="nav-item py-1">
-            <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
-          </li> */}
           <AppHeaderDropdown />
         </CHeaderNav>
       </CContainer>
       <ServerStatus isFullWidth/>
+      <DrawerComponent
+          toggleDrawer={toggleDrawer}
+          open={open}
+          anchor={'right'}
+          className="draweer"
+        >
+         <NotificationsList />
+        </DrawerComponent>
     </CHeader>
   )
 }
