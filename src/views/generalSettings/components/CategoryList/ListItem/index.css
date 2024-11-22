@@ -12,6 +12,10 @@
   align-items: center;
 }
 
+.item.clickable {
+  cursor: pointer;
+}
+
 .item.bot {
   width: 80%;
   margin: auto;
@@ -81,6 +85,10 @@
   justify-content: space-evenly;
   overflow: auto;
   margin-block: 9px;
+}
+
+.item-details.bot {
+  cursor: pointer;
 }
 
 .item-details::-webkit-scrollbar {

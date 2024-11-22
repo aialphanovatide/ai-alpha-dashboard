@@ -14,6 +14,7 @@ import defaultImg from "../../../../../assets/brand/logo.png";
 import Swal from "sweetalert2";
 import { toggleCoinStatus } from "src/services/coinService";
 import ErrorList from "src/components/ErrorList";
+import { useNavigate } from "react-router-dom";
 
 const ListItem = (params) => {
   const {
@@ -32,8 +33,16 @@ const ListItem = (params) => {
   const [isBotChecked, setBotChecked] = useState(false);
   const [isItemActive, setIsItemActive] = useState(false);
   const [isToggleLoading, setIsToggleLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const toggleOpen = () => setIsOpen(!isOpen);
+  const goToBotDetails = (bot_name) => {
+    navigate(`/botdetails/${bot_name}`);
+  };
+
+  const toggleOpen = (e) => {
+    e.stopPropagation();
+    setIsOpen(!isOpen);
+  }
 
   useEffect(() => {
     if (isCoin) setIsItemActive(item.is_active);
@@ -143,7 +152,8 @@ const ListItem = (params) => {
       <div
         className={`item ${
           isCategoryChecked || isBotChecked ? "checked" : ""
-        } ${isCoin ? "bot" : ""}`}
+        } ${isCoin ? "bot" : (item.coins?.length > 0 ? "clickable" : "")}`}
+        onClick={!isCoin && item.coins?.length > 0 ? toggleOpen : null}
       >
         <div className="item-input">
           <CustomTooltip
@@ -185,7 +195,10 @@ const ListItem = (params) => {
             onError={(e) => (e.target.src = defaultImg)}
           />
         </div>
-        <div className="item-details">
+        <div
+          className={`item-details ${isCoin ? "bot" : ""}`}
+          onClick={isCoin ? () => goToBotDetails(item.name) : null}
+        >
           <div className="item-name">
             {item.name || (isCoin ? "Bot name" : "Category name")}
           </div>
@@ -230,12 +243,6 @@ const ListItem = (params) => {
             </div>
           </CustomTooltip>
         ) : null}
-        {/* <div
-          style={{ gridColumn: 6, height: "fit-content" }}
-          // onClick={() => toggleState(index)}
-        >
-          <SwitchButton isActive={item.isActive} isAppsSwitch={true} />
-        </div> */}
         {!isCoin && (
           <button
             onClick={toggleOpen}
@@ -252,7 +259,7 @@ const ListItem = (params) => {
           </button>
         )}
       </div>
-      {isOpen && item.coins && (
+      {isOpen && item.coins?.length > 0 && (
         <div>
           {item.coins.map((bot, index) => (
             <ListItem

@@ -250,5 +250,18 @@ body {
       fill: #4e4e4e;
       stroke: #4e4e4e;
     }
+
+    #bot-detail-prompt {
+      background-color: #4d4d4d;
+    }
+
+    .infoDisplayItem-label,
+    #botDetails-switchContainer-span {
+      color: #d6d6d6;
+    }
+
+    #info-display-item-icon {
+      filter: invert(1);
+    }
   }
 }
