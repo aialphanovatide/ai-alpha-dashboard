@@ -31,7 +31,7 @@ const NewsSearchTool = () => {
     const getAllBots = async () => {
       try {
         const response = await fetch(
-          `${config.BOTS_V2_API}/get_all_coin_bots`,
+          `${config.BOTS_V2_API}/bots`,
           {
             method: "GET",
             headers: {
@@ -42,8 +42,8 @@ const NewsSearchTool = () => {
         );
 
         const data = await response.json();
-        if (data && data.data.coin_bots) {
-          setBots(data.data.coin_bots);
+        if (data && data.data) {
+          setBots(data.data);
         } else {
           console.error("Error fetching bots:", data.message);
           setBots([]);
@@ -64,7 +64,7 @@ const NewsSearchTool = () => {
 
     try {
       const response1 = await fetch(
-        `${config.BOTS_V2_API}/get_all_articles?limit=200`,
+        `${config.BOTS_V2_API}/articles?limit=200`,
       );
       const data1 = await response1.json();
 
@@ -78,7 +78,7 @@ const NewsSearchTool = () => {
       }
 
       const response2 = await fetch(
-        `${config.BOTS_V2_API}/get_unwanted_articles`,
+        `${config.BOTS_V2_API}/articles/unwanted`,
       );
       const data2 = await response2.json();
       if (response2.ok) {
