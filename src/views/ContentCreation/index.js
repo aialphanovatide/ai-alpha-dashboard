@@ -312,24 +312,7 @@ const ContentCreation = () => {
             selectedCategory={selectedCategory}
             onSelectCategory={handleCategorySelect}
           />
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 10,
-              width: "fit-content",
-            }}
-          >
-            <input
-              type="checkbox"
-              value={isTopStory}
-              onChange={() => setIsTopStory(!isTopStory)}
-            />
-            <label>Top Story</label>
-          </div>
         </div>
-
         <RichTextEditor
           handleImageSelect={handleImageSelect}
           images={selectedImage}
