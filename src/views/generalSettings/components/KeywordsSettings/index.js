@@ -161,7 +161,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
 
   const filteredKeywords = (keywordsList) => {
     return keywordsList.filter((kw) =>
-      kw.toLowerCase().startsWith(searchTerm.toLowerCase())
+      (kw.toLowerCase().startsWith(searchTerm.toLowerCase()) || keywords.includes(kw)),
     );
   };
 
