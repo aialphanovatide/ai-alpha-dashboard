@@ -161,10 +161,15 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
 
   const filteredKeywords = (keywordsList) => {
     return keywordsList.filter((kw) =>
-      // kw.toLowerCase().includes(searchTerm.toLowerCase())
       kw.toLowerCase().startsWith(searchTerm.toLowerCase())
     );
   };
+
+  const filteredKeywordsList = isRemove
+    ? isBlacklist
+      ? filteredKeywords(getCommonKeywords(blacklistKeywords))
+      : filteredKeywords(getCommonKeywords(whitelistKeywords))
+    : keywords;
 
   return (
     <div className={styles.container}>
@@ -229,54 +234,21 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                     : "All Keywords will be added to the selected coins"}
                 </span>
                 <div className={styles.keyWordsContainer} id="keywordsSettings-keywordsContainer">
-                  {isRemove
-                    ? isBlacklist
-                      ? filteredKeywords(getCommonKeywords(blacklistKeywords))?.map(
-                          (keyword, index) => (
-                            <div
-                              className={styles.keyword}
-                              key={index}
-                              id="keyword-tag"
-                              style={!keywords.includes(keyword) ? {background: '#d9d9d9'} : {}}
-                            >
-                              <input
-                                type="checkbox"
-                                onChange={() => onKeywordChange(keyword)}
-                                checked={keywords.includes(keyword)}
-                              />
-                              <span>{keyword}</span>
-                            </div>
-                          ),
-                        )
-                      : filteredKeywords(getCommonKeywords(whitelistKeywords))?.map(
-                          (keyword, index) => (
-                            <div
-                              className={styles.keyword}
-                              key={index}
-                              id="keyword-tag"
-                              style={!keywords.includes(keyword) ? {background: '#d9d9d9'} : {}}
-                            >
-                              <input
-                                type="checkbox"
-                                onChange={() => onKeywordChange(keyword)}
-                                checked={keywords.includes(keyword)}
-                              />
-                              <span>{keyword}</span>
-                            </div>
-                          ),
-                        )
-                    : keywords?.map((keyword, index) => (
-                        <div
-                          className={styles.keyword}
-                          key={index}
-                          id="keyword-tag"
-                        >
-                          <span>{keyword}</span>
-                          <button onClick={(e) => removeKeyword(e, index)}>
-                            <CIcon icon={cilX} />
-                          </button>
-                        </div>
-                      ))}
+                  {filteredKeywordsList?.map((keyword, index) => (
+                    <div
+                      className={styles.keyword}
+                      key={index}
+                      id="keyword-tag"
+                      style={!keywords.includes(keyword) ? {background: '#d9d9d9'} : {}}
+                    >
+                      <input
+                        type="checkbox"
+                        onChange={() => onKeywordChange(keyword)}
+                        checked={keywords.includes(keyword)}
+                      />
+                      <span>{keyword}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
               <button onClick={handleSubmit} disabled={keywords.length < 1}>
