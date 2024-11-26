@@ -85,15 +85,18 @@ const ContentCreation = () => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
-  
+
   const fetchCoinsByCategory = async (category) => {
     try {
-      const response = await fetch(`${config.BASE_URL}/get_bot_ids_by_category/${category}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await fetch(
+        `${config.BASE_URL}/get_bot_ids_by_category/${category}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        },
+      );
       const data = await response.json();
-      console.log("fetch: ",data)
+      console.log("fetch: ", data);
       if (response.ok) {
         return data.data.bot_ids; // Assuming the API returns a list of coins
       } else {
@@ -105,7 +108,7 @@ const ContentCreation = () => {
       return [];
     }
   };
-  
+
   // Define fetchAnalysis as a useCallback to prevent unnecessary re-renders
   const fetchAnalysis = useCallback(async () => {
     try {
@@ -144,7 +147,12 @@ const ContentCreation = () => {
   }, [selectedCoin, fetchAnalysis]); // Include fetchAnalysis as a dependency
 
   const handleScheduleSubmit = async () => {
-    if (selectedImage === null || content === null || selectedDate === null || title === null) {
+    if (
+      selectedImage === null ||
+      content === null ||
+      selectedDate === null ||
+      title === null
+    ) {
       return Swal.fire({
         icon: "error",
         title: "One or more required fields are missing",
@@ -153,19 +161,21 @@ const ContentCreation = () => {
         customClass: "swal",
       });
     }
-  
+
     setIsSubmitting(true);
-  
+
     // Determine which coins to use
-    const coins = selectedCoin ? [selectedCoin] : await fetchCoinsByCategory(selectedCategory);
-    
+    const coins = selectedCoin
+      ? [selectedCoin]
+      : await fetchCoinsByCategory(selectedCategory);
+
     for (const coin of coins) {
       const formDataToSchedule = new FormData();
       formDataToSchedule.append("coinBot", coin);
       formDataToSchedule.append("content", `Title: ${title}\n${content}`);
       formDataToSchedule.append("scheduledDate", selectedDate.toISOString());
       formDataToSchedule.append("category_name", selectedCategory);
-  
+
       try {
         const response = await fetch(`${config.BASE_URL}/schedule_post`, {
           method: "POST",
@@ -200,10 +210,10 @@ const ContentCreation = () => {
         });
       }
     }
-  
+
     setIsSubmitting(false);
   };
-  
+
   const handleSubmit = async () => {
     if (selectedImage === null || content === null) {
       return Swal.fire({
@@ -214,12 +224,14 @@ const ContentCreation = () => {
         customClass: "swal",
       });
     }
-  
+
     setIsSubmitting(true);
-  
+
     // Determine which coins to use
-    const coins = selectedCoin ? [selectedCoin] : await fetchCoinsByCategory(selectedCategory);
-    console.log('coins:',coins)
+    const coins = selectedCoin
+      ? [selectedCoin]
+      : await fetchCoinsByCategory(selectedCategory);
+    console.log("coins:", coins);
     for (const coin of coins) {
       const formData = new FormData();
       formData.append("coinBot", coin);
@@ -227,7 +239,7 @@ const ContentCreation = () => {
       formData.append("images", selectedImage);
       formData.append("category_name", selectedCategory);
       formData.append("is_topstory", isTopStory);
-  
+
       try {
         const response = await fetch(`${config.BASE_URL}/post_analysis`, {
           method: "POST",
@@ -261,7 +273,7 @@ const ContentCreation = () => {
         });
       }
     }
-  
+
     setIsSubmitting(false);
   };
 
@@ -299,9 +311,21 @@ const ContentCreation = () => {
           <CategoryDropdown
             selectedCategory={selectedCategory}
             onSelectCategory={handleCategorySelect}
+          />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+              width: "fit-content",
+            }}
+          >
+            <input
+              type="checkbox"
+              value={isTopStory}
+              onChange={() => setIsTopStory(!isTopStory)}
             />
-          <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10, width: 'fit-content'}}>
-            <input type='checkbox' value={isTopStory} onChange={() => setIsTopStory(!isTopStory)} />
             <label>Top Story</label>
           </div>
         </div>
@@ -374,7 +398,7 @@ const ContentCreation = () => {
             />
           ))
         ) : (
-          <NoData message={"No scheduled posts"}/>
+          <NoData message={"No scheduled posts"} />
         )}
       </div>
     </div>
