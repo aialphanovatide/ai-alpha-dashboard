@@ -49,7 +49,7 @@ const BotForm = ({ coin, setCategories }) => {
     dalle_prompt: "",
     prompt: "",
     run_frequency: 20,
-    // url: "",
+    url: "",
   });
 
   const onFileUpload = async (event, isBlacklist) => {
@@ -131,6 +131,7 @@ const BotForm = ({ coin, setCategories }) => {
         dalle_prompt: response.data.dalle_prompt,
         prompt: response.data.prompt,
         run_frequency: response.data.run_frequency,
+        url: response.data.url,
         iconPreview: formData.iconPreview
           ? formData.iconPreview
           : response.data.icon
@@ -329,6 +330,7 @@ const BotForm = ({ coin, setCategories }) => {
         category_id: formData.bot_category_id,
         dalle_prompt: formData.dalle_prompt,
         name: formData.name,
+        url: formData.url,
         prompt: formData.prompt,
         run_frequency: parseInt(formData.run_frequency),
         whitelist: keywords.join(","),
@@ -370,7 +372,7 @@ const BotForm = ({ coin, setCategories }) => {
           run_frequency: 20,
           blacklist: [],
           keywords: [],
-          // url: "",
+          url: "",
         });
         setBlacklist([]);
         setKeywords([]);
@@ -484,7 +486,7 @@ const BotForm = ({ coin, setCategories }) => {
               ))}
             </select>
           </div>
-          {/* <div className={styles.section}>
+          <div className={styles.section}>
           <div className={styles.labelContainer}>
             <label>
               <strong>URL</strong>
@@ -506,7 +508,7 @@ const BotForm = ({ coin, setCategories }) => {
             type="url"
             value={formData.url}
           />
-        </div> */}
+        </div>
           <div className={styles.section}>
             <div
               style={{
