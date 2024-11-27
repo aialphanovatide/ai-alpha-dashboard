@@ -1,4 +1,10 @@
-import { cilFile, cilPen, cilPlus, cilX } from "@coreui/icons";
+import {
+  cilDataTransferDown,
+  cilFile,
+  cilPen,
+  cilPlus,
+  cilX,
+} from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./index.module.css";
@@ -16,6 +22,7 @@ import defaultImg from "../../../../assets/brand/logo.png";
 import ReactDOMServer from "react-dom/server";
 import ErrorList from "src/components/ErrorList";
 import uploadIcon from "../../../../assets/icons/uploadIcon.svg";
+import { utils, writeFile } from "xlsx";
 
 const BotForm = ({ coin, setCategories }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +53,22 @@ const BotForm = ({ coin, setCategories }) => {
     run_frequency: 20,
     url: "",
   });
+
+  const downloadFile = (e, isBlacklist) => {
+    console.log(isBlacklist);
+    const fileTitle = isBlacklist ? "Blacklist" : "Whitelist";
+    const keywordsArray = isBlacklist ? blacklist : keywords;
+
+    const worksheet = utils.aoa_to_sheet([
+      [fileTitle],
+      ...keywordsArray.map((item) => [item]),
+    ]);
+
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    writeFile(workbook, `${fileTitle}.xlsx`);
+  };
 
   const onFileUpload = async (event, isBlacklist) => {
     const setFileUploading = isBlacklist
@@ -533,10 +556,14 @@ const BotForm = ({ coin, setCategories }) => {
                   <CIcon icon={cilFile} />
                   {isWhitelistFileUploading ? "Uploading..." : "Upload .xsl"}
                 </label>
-                {/* <button className={styles.button}>
-                <CIcon icon={cilDataTransferDown} />
-                Download
-              </button> */}
+                <button
+                  className={styles.button}
+                  onClick={downloadFile}
+                  disabled={keywords.length < 1}
+                >
+                  <CIcon icon={cilDataTransferDown} />
+                  Download
+                </button>
                 <CustomTooltip
                   title={"Create a bot"}
                   content={
@@ -610,10 +637,14 @@ const BotForm = ({ coin, setCategories }) => {
                   <CIcon icon={cilFile} />
                   {isBlacklistFileUploading ? "Uploading..." : "Upload .xsl"}
                 </label>
-                {/* <button className={styles.button}>
-                <CIcon icon={cilDataTransferDown} />
-                Download
-              </button> */}
+                <button
+                  className={styles.button}
+                  onClick={(e) => downloadFile(e, true)}
+                  disabled={blacklist.length < 1}
+                >
+                  <CIcon icon={cilDataTransferDown} />
+                  Download
+                </button>
                 <CustomTooltip
                   title={"Create a bot"}
                   content={
