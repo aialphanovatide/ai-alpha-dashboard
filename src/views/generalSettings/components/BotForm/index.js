@@ -6,7 +6,7 @@ import {
   cilX,
 } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { createRef, useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./index.module.css";
 import { HelpOutline } from "@mui/icons-material";
 import { ReactComponent as OpenLock } from "../../../../assets/icons/openLock.svg";
@@ -28,10 +28,9 @@ const BotForm = ({ coin, setCategories }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectCategories, setSelectCategories] = useState([]);
-  const [newsBotsCategories, setNewsBotsCategories] = useState([]);
   const [isWhitelistFileUploading, setWhitelistFileUploading] = useState(false);
   const [isBlacklistFileUploading, setBlacklistFileUploading] = useState(false);
-  const keyWordInputRef = React.createRef();
+  const keyWordInputRef = createRef();
   const [blacklist, setBlacklist] = useState([]);
   const [blacklistKeyword, setBlacklistKeyword] = useState("");
   const [keywords, setKeywords] = useState([]);
@@ -172,9 +171,7 @@ const BotForm = ({ coin, setCategories }) => {
     try {
       setIsLoading(true);
       const categories = await getCategories();
-      const newsBotsCategories = await getCategories(true);
       setSelectCategories(categories);
-      setNewsBotsCategories(newsBotsCategories);
     } catch (err) {
       Swal.fire({
         text: err.message || "Error fetching categories",
@@ -185,7 +182,7 @@ const BotForm = ({ coin, setCategories }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [setSelectCategories, setNewsBotsCategories]);
+  }, [setSelectCategories]);
 
   useEffect(() => {
     fetchCategories();
