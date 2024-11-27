@@ -22,7 +22,7 @@ import defaultImg from "../../../../assets/brand/logo.png";
 import ReactDOMServer from "react-dom/server";
 import ErrorList from "src/components/ErrorList";
 import uploadIcon from "../../../../assets/icons/uploadIcon.svg";
-import { utils, writeFile } from "xlsx";
+import * as XSLX from "xlsx";
 
 const BotForm = ({ coin, setCategories }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -54,19 +54,21 @@ const BotForm = ({ coin, setCategories }) => {
   });
 
   const downloadFile = (e, isBlacklist) => {
-    console.log(isBlacklist);
     const fileTitle = isBlacklist ? "Blacklist" : "Whitelist";
     const keywordsArray = isBlacklist ? blacklist : keywords;
 
-    const worksheet = utils.aoa_to_sheet([
+    const worksheet = XSLX.utils.aoa_to_sheet([
       [fileTitle],
       ...keywordsArray.map((item) => [item]),
     ]);
 
-    const workbook = utils.book_new();
-    utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    const workbook = XSLX.utils.book_new();
+    XSLX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
-    writeFile(workbook, `${fileTitle}.xlsx`);
+    const max_width = keywordsArray.reduce((w, r) => Math.max(w, r.length), 10);
+    worksheet["!cols"] = [ { wch: max_width - 5} ];
+
+    XSLX.writeFile(workbook, `${fileTitle}.xlsx`);
   };
 
   const onFileUpload = async (event, isBlacklist) => {
