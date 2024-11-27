@@ -1,10 +1,4 @@
-import {
-  cilDataTransferDown,
-  cilFile,
-  cilPen,
-  cilPlus,
-  cilX,
-} from "@coreui/icons";
+import { cilFile, cilPen, cilPlus, cilX } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./index.module.css";
@@ -21,6 +15,7 @@ import SpinnerComponent from "src/components/Spinner";
 import defaultImg from "../../../../assets/brand/logo.png";
 import ReactDOMServer from "react-dom/server";
 import ErrorList from "src/components/ErrorList";
+import uploadIcon from "../../../../assets/icons/uploadIcon.svg";
 
 const BotForm = ({ coin, setCategories }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -131,7 +126,7 @@ const BotForm = ({ coin, setCategories }) => {
         dalle_prompt: response.data.dalle_prompt,
         prompt: response.data.prompt,
         run_frequency: response.data.run_frequency,
-        url: response.data.url,
+        url: response.data.site?.url,
         iconPreview: formData.iconPreview
           ? formData.iconPreview
           : response.data.icon
@@ -742,17 +737,24 @@ const BotForm = ({ coin, setCategories }) => {
               </label>
               <HelpOutline />
             </div>
-            <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
-              <div className={styles.divInput}>
-                <input
-                  type="file"
-                  accept=".svg"
-                  onChange={handleImageChange}
-                  className={styles.imgPicker}
-                  id="botform-icon-input"
-                />
+              <div className={styles.divInput} id="botForm-img-input">
+                <div className={styles.imgPicker} id="botForm-img-input-button">
+                  <input
+                    type="file"
+                    accept=".svg"
+                    onChange={handleImageChange}
+                    style={{ display: "none" }}
+                    id="botform-icon-input"
+                  />
+                  <label htmlFor="botform-icon-input">
+                    <img src={uploadIcon} alt="icon" style={{ height: 16 }} />
+                    Upload
+                  </label>
+                </div>
+                <span style={formData.icon?.name? {color: 'black'} : {}}>
+                  {formData.icon ? formData.icon.name : "No files selected"}
+                </span>
               </div>
-            </div>
           </div>
           <div className={styles.section}>
             <div className={styles.labelContainer}>
