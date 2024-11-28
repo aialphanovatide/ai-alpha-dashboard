@@ -1,6 +1,6 @@
 import config from "../config";
 const headers = {
-  'Accept': "*/*",
+  Accept: "*/*",
   "X-Api-Key": config.X_API_KEY,
 };
 
@@ -123,6 +123,27 @@ const deleteCoin = async (coin_id) => {
     console.error("Error deleting coin:", error);
     return { success: false, error: "Network error or server is unreachable" };
   }
-}
+};
 
-export { createCoin, editCoin, toggleCoinStatus, deleteCoin };
+const getCoins = async () => {
+  try {
+    const response = await fetch(`${config.BASE_URL}/coins`, {
+      headers,
+    });
+
+    let responseText = await response.text();
+
+    const data = JSON.parse(responseText);
+    if (!data.success) {
+      throw new Error(data.error);
+    }
+    return { success: true, data: data.coins };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || "Network error or server is unreachable",
+    };
+  }
+};
+
+export { createCoin, editCoin, toggleCoinStatus, deleteCoin, getCoins };
