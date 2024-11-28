@@ -3,20 +3,16 @@ import CIcon from "@coreui/icons-react";
 import { cilTrash } from "@coreui/icons";
 
 const ScheduledJob = ({ job, onDelete }) => {
-  console.log("job,", job);
-
-  // Extraer fecha y hora de job.trigger
   const dateMatch = job.trigger.match(/\[(.*?)\]/);
   const nextRunDateTime = dateMatch
     ? dateMatch[1].replace(/ -\d{2}$/, "")
     : "Unknown";
 
-  // Extraer título de job.args
   const titleMatch = job.args.match(/Title:\s*(.*?)\\r\\n/);
   const title = titleMatch ? titleMatch[1] : "Unknown";
 
   const handleDeleteClick = () => {
-    onDelete(job.id); // Suponiendo que job tiene una propiedad id
+    onDelete(job.id);
   };
 
   return (
