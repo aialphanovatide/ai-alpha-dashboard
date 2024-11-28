@@ -8,12 +8,17 @@ import Swal from "sweetalert2";
 import CategoryDropdown from "./CategoryDropdown";
 import Title from "src/components/commons/Title";
 import { getSections } from "src/services/sectionService";
-import { getAnalyses, getCoinAnalysis, postAnalysis } from "src/services/contentCreationService";
+import {
+  createScheduleAnalysis,
+  deleteScheduledAnalysis,
+  getAnalyses,
+  getCoinAnalysis,
+  getScheduledAnalyses,
+  postAnalysis,
+} from "src/services/contentCreationService";
 import { AllAnalysis } from "./AllAnalysis";
-// import GeneralAnalysis from "./GeneralAnalysis";
-// import DatePicker from "react-datepicker";
-// import ScheduledJob from "./ScheduledJob";
-// import NoData from "src/components/NoData";
+import DatePicker from "react-datepicker";
+import ScheduledJob from "./ScheduledJob";
 
 const ContentCreation = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -26,166 +31,96 @@ const ContentCreation = () => {
   const [sections, setSections] = useState([]);
   const [isFetchingSections, setIsFetchingSections] = useState(true);
   const [items, setItems] = useState([]);
-  // const [showPostLaterSection, setShowPostLaterSection] = useState(false);
-  // const [selectedDate, setSelectedDate] = useState(null);
-  // const [scheduledJobs, setScheduledJobs] = useState([]);
-  // const [title, setTitle] = useState("");
-  // const [isTopStory, setIsTopStory] = useState(false);
+  const [showPostLaterSection, setShowPostLaterSection] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [scheduledJobs, setScheduledJobs] = useState([]);
+  const [title, setTitle] = useState("");
 
-  // const deleteScheduled = async (jobId) => {
-  //   try {
-  //     const response = await fetch(
-  //       `${config.BASE_URL}/delete_scheduled_job/${jobId}`,
-  //       {
-  //         method: "DELETE",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "ngrok-skip-browser-warning": "true",
-  //         },
-  //       },
-  //     );
+  const deleteScheduled = async (jobId) => {
+    try {
+      const response = await deleteScheduledAnalysis(jobId);
 
-  //     if (response.ok) {
-  //       Swal.fire({
-  //         icon: "success",
-  //         title: "Scheduled Post deleted successfully",
-  //         showConfirmButton: false,
-  //         timer: 1000,
-  //         customClass: "swal",
-  //       });
-  //       // Actualiza la lista de trabajos programados después de eliminar uno
-  //       handleGetJobs();
-  //     } else {
-  //       Swal.fire({
-  //         icon: "error",
-  //         title: "Scheduled Post cannot delete successfully",
-  //         showConfirmButton: false,
-  //         timer: 1000,
-  //         customClass: "swal",
-  //       });
-  //       console.error("Error deleting scheduled job:", response.statusText);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error deleting scheduled job:", error);
-  //   }
-  // };
+      if (!response.success) {
+        throw new Error(response.error);
+      }
 
-  // const handleDateChange = (date) => {
-  //   setSelectedDate(date);
-  // };
+      Swal.fire({
+        icon: "success",
+        title: "Scheduled Post deleted successfully",
+        customClass: "swal",
+      });
+      handleGetJobs();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "An error occurred",
+        text: error.message || "Failed to delete scheduled post",
+        customClass: "swal",
+      });
+    }
+  };
 
-  // const fetchCoinsByCategory = async (category) => {
-  //   try {
-  //     const response = await fetch(
-  //       `${config.BASE_URL}/get_bot_ids_by_category/${category}`,
-  //       {
-  //         method: "GET",
-  //         headers: { "Content-Type": "application/json" },
-  //       },
-  //     );
-  //     const data = await response.json();
-  //     console.log("fetch: ", data);
-  //     if (response.ok) {
-  //       return data.data.bot_ids; // Assuming the API returns a list of coins
-  //     } else {
-  //       console.error("Error fetching coins by category:", response.statusText);
-  //       return [];
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching coins by category:", error);
-  //     return [];
-  //   }
-  // };
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
 
-  // const handleScheduleSubmit = async () => {
-  //   if (
-  //     selectedImage === null ||
-  //     content === null ||
-  //     selectedDate === null ||
-  //     title === null
-  //   ) {
-  //     return Swal.fire({
-  //       icon: "error",
-  //       title: "One or more required fields are missing",
-  //       showConfirmButton: false,
-  //       timer: 1000,
-  //       customClass: "swal",
-  //     });
-  //   }
+  const handleScheduleSubmit = async () => {
+    try {
+      if (content === null || selectedDate === null || title === "") {
+        throw new Error("One or more required fields are missing");
+      }
 
-  //   setIsSubmitting(true);
+      setIsSubmitting(true);
 
-  //   // Determine which coins to use
-  //   const coins = selectedCoin
-  //     ? [selectedCoin]
-  //     : await fetchCoinsByCategory(selectedCategory);
+      const formDataToSchedule = new FormData();
+      formDataToSchedule.append("coin_id", selectedCoin);
+      formDataToSchedule.append("section_id", selectedSection);
+      formDataToSchedule.append("category_name", selectedCategory);
+      formDataToSchedule.append("content", `Title: ${title}\n${content}`);
+      formDataToSchedule.append("scheduled_date", selectedDate.toISOString());
 
-  //   for (const coin of coins) {
-  //     const formDataToSchedule = new FormData();
-  //     formDataToSchedule.append("coinBot", coin);
-  //     formDataToSchedule.append("content", `Title: ${title}\n${content}`);
-  //     formDataToSchedule.append("scheduledDate", selectedDate.toISOString());
-  //     formDataToSchedule.append("category_name", selectedCategory);
+      const response = await createScheduleAnalysis(formDataToSchedule);
 
-  //     try {
-  //       const response = await fetch(`${config.BASE_URL}/schedule_post`, {
-  //         method: "POST",
-  //         body: formDataToSchedule,
-  //       });
-  //       let responseData = await response.json();
-  //       if (response.ok) {
-  //         Swal.fire({
-  //           icon: "success",
-  //           title: responseData.message,
-  //           showConfirmButton: false,
-  //           timer: 1000,
-  //           customClass: "swal",
-  //         });
-  //       } else {
-  //         Swal.fire({
-  //           icon: "error",
-  //           title: "Error scheduling post",
-  //           showConfirmButton: false,
-  //           timer: 1000,
-  //           customClass: "swal",
-  //         });
-  //       }
-  //     } catch (error) {
-  //       Swal.fire({
-  //         icon: "error",
-  //         title: "An error occurred",
-  //         text: error.message,
-  //         showConfirmButton: false,
-  //         timer: 1000,
-  //         customClass: "swal",
-  //       });
-  //     }
-  //   }
+      if (!response.success) {
+        throw new Error(response.error);
+      }
 
-  //   setIsSubmitting(false);
-  // };
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Analysis scheduled successfully",
+        customClass: "swal",
+      });
+      handleGetJobs();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "An error occurred",
+        text: error.message,
+        customClass: "swal",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-  // const handleGetJobs = async () => {
-  //   try {
-  //     const response = await fetch(`${config.BASE_URL}/get_scheduled_jobs`, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "ngrok-skip-browser-warning": "true",
-  //       },
-  //     });
+  const handleGetJobs = async () => {
+    try {
+      const response = await getScheduledAnalyses();
 
-  //     const data = await response.json();
+      if (!response.success) {
+        throw new Error(response.error);
+      }
 
-  //     if (response.ok) {
-  //       setScheduledJobs(data.jobs); // Actualiza el estado con los trabajos programados
-  //     } else {
-  //       console.error("Error fetching jobs:", response.statusText);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching jobs:", error);
-  //   }
-  // };
+      setScheduledJobs(response.data);
+    } catch (error) {
+      console.error("Error fetching jobs:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    handleGetJobs();
+  }, []);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
@@ -210,23 +145,15 @@ const ContentCreation = () => {
   const fetchAnalysis = useCallback(async () => {
     try {
       const response = selectedCoin
-      ? await getCoinAnalysis(selectedCoin, selectedSection)
-      : await getAnalyses(selectedSection);
+        ? await getCoinAnalysis(selectedCoin, selectedSection)
+        : await getAnalyses(selectedSection);
 
       if (!response.success) {
         throw new Error(response.error);
       }
 
-      setItems(response.data); 
-    } catch (error) {
-      // Swal.fire({
-      //   icon: "error",
-      //   title: "Error",
-      //   text: error.message || "Failed to fetch analysis",
-      //   customClass: "swal",
-      //   backdrop: false,
-      // });
-    }
+      setItems(response.data);
+    } catch (error) {}
   }, [selectedCoin, selectedSection]);
 
   useEffect(() => {
@@ -277,19 +204,12 @@ const ContentCreation = () => {
 
     setIsSubmitting(true);
 
-    // Determine which coins to use
-    // const coins = selectedCoin
-    //   ? [selectedCoin]
-    //   : await fetchCoinsByCategory(selectedCategory);
-    // console.log("coins:", coins);
-    // for (const coin of coins) {
     const formData = new FormData();
     formData.append("coin_id", selectedCoin);
     formData.append("content", content);
     // formData.append("images", selectedImage);
     formData.append("category_name", selectedCategory);
     formData.append("section_id", selectedSection);
-    // formData.append("is_topstory", isTopStory);
 
     try {
       const response = await postAnalysis(formData);
@@ -315,7 +235,6 @@ const ContentCreation = () => {
         backdrop: false,
       });
     } finally {
-      // }
       setIsSubmitting(false);
       fetchAnalysis();
     }
@@ -368,13 +287,13 @@ const ContentCreation = () => {
         >
           {isSubmitting ? "Posting..." : "Post"}
         </button>
-        {/* <button
+        <button
           className="postLaterButton"
           onClick={() => setShowPostLaterSection(true)}
         >
           Post Later
-        </button> */}
-        {/* {showPostLaterSection && (
+        </button>
+        {showPostLaterSection && (
           <div className="postLaterSection">
             <hr />
             <p>Set a Title:</p>
@@ -397,34 +316,44 @@ const ContentCreation = () => {
               required
               placeholderText="Select date and time"
             />
-
-            <button className="schButton" onClick={handleScheduleSubmit}>
+            <button
+              className="schButton"
+              onClick={handleScheduleSubmit}
+              disabled={
+                !selectedCategory ||
+                !selectedCoin ||
+                !selectedDate ||
+                !title ||
+                !selectedSection ||
+                !content ||
+                isSubmitting
+              }
+            >
               Schedule Post
             </button>
           </div>
-        )} */}
+        )}
       </div>
-      {items.length > 0 && <AllAnalysis items={items} fetchAnalysis={fetchAnalysis} section_id={selectedSection}/>}
-      {/* <GeneralAnalysis
-        success={isAnalysisCreated}
-        onSuccess={setIsAnalysisCreated}
-        fetchAnalysis={fetchAnalysis}
-      /> */}
-      {/* <div className="analysisSubmain">
-        <h3>Scheduled Analysis Posts</h3>
-        {scheduledJobs.length > 0 ? (
-          scheduledJobs.map((job) => (
+      {items.length > 0 && (
+        <AllAnalysis
+          items={items}
+          fetchAnalysis={fetchAnalysis}
+          section_id={selectedSection}
+        />
+      )}
+      {scheduledJobs.length > 0 && (
+        <div className="analysisSubmain">
+          <h3>Scheduled Analysis Posts</h3>
+          {scheduledJobs.map((job) => (
             <ScheduledJob
               key={job.id}
               title={title}
               job={job}
               onDelete={deleteScheduled}
             />
-          ))
-        ) : (
-          <NoData message={"No scheduled posts"} />
-        )}
-      </div> */}
+          ))}
+        </div>
+      )}
     </div>
   );
 };
