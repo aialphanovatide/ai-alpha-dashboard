@@ -1,46 +1,32 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import '../helpers/selectCoin/selectCoinStyles.css';
-import config from "../../config";
+import { getCategories } from 'src/services/categoryService';
+import Swal from 'sweetalert2';
 
 const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const getAllBots = useCallback(async () => {
+  const fetchCategories = useCallback(async () => {
     try {
-      const response = await fetch(`${config.BOTS_V2_API}/get_all_bots`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-        },
-      });
-
-      const responseText = await response.text();
-      console.log("responseText : ", responseText);
-
-      try {
-        const data = JSON.parse(responseText);
-        console.log("data : ", data);
-        if (data && data.data) {
-          // Asumiendo que `data.data` es un array de categorías
-          setCategories(data.data);
-        } else {
-          console.error("Error in response:", data.message);
-        }
-      } catch (parseError) {
-        console.error("Error parsing JSON:", parseError);
-      }
+      const categories = await getCategories();
+      setCategories(categories);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message || 'Failed to fetch categories',
+        customClass: "swal",
+        backdrop: false,
+      });
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    getAllBots();
-  }, [getAllBots]);
+    fetchCategories();
+  }, [fetchCategories]);
 
   const handleDropdownChange = (event) => {
     const selectedCategory = event.target.value;
@@ -59,8 +45,8 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
       >
         <option value="" disabled>Select Coin Category...</option>
         {categories.map((category) => (
-          <option key={category.id} value={category.alias}>
-            {category.alias}
+          <option key={category.category_id} value={category.name}>
+            {category.name}
           </option>
         ))}
       </select>
