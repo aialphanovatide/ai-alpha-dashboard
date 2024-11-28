@@ -5,7 +5,6 @@ let headers = {
 };
 
 const getAnalyses = async (section_id) => {
-  //tested
   try {
     const response = await fetch(
       `${config.BASE_URL}/analyses?section_id=${section_id}`,
@@ -68,10 +67,13 @@ const postAnalysis = async (payload) => {
 
 const deleteAnalysis = async (analysis_id, section_id) => {
   try {
-    const response = await fetch(`${config.BASE_URL}/analysis/${analysis_id}?section_id=${section_id}`, {
-      method: "DELETE",
-      headers,
-    });
+    const response = await fetch(
+      `${config.BASE_URL}/analysis/${analysis_id}?section_id=${section_id}`,
+      {
+        method: "DELETE",
+        headers,
+      },
+    );
     const data = await response.json();
 
     if (!data.success) {
@@ -104,6 +106,73 @@ const editAnalysis = async (analysis_id, payload) => {
   } catch (error) {
     return { success: false, error: error.message };
   }
+};
+
+const createScheduleAnalysis = async (payload) => {
+  try {
+    const response = await fetch(`${config.BASE_URL}/scheduled-analyses`, {
+      method: "POST",
+      headers,
+      body: payload,
+    });
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.error);
+    }
+
+    return { success: true, data: data.data };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+const deleteScheduledAnalysis = async (analysis_id) => {
+  try {
+    const response = await fetch(
+      `${config.BASE_URL}/scheduled-analyses/${analysis_id}`,
+      {
+        method: "DELETE",
+        headers,
+      },
+    );
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.error);
+    }
+
+    return { success: true, data: data.data };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+const getScheduledAnalyses = async () => {
+  try {
+    const response = await fetch(`${config.BASE_URL}/scheduled-analyses`, {
+      method: "GET",
+      headers,
+    });
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.error);
+    }
+
+    return { success: true, data: data.data.jobs };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 }
 
-export { getAnalyses, getCoinAnalysis, postAnalysis, deleteAnalysis, editAnalysis };
+export {
+  getAnalyses,
+  getCoinAnalysis,
+  postAnalysis,
+  deleteAnalysis,
+  editAnalysis,
+  createScheduleAnalysis,
+  deleteScheduledAnalysis,
+  getScheduledAnalyses,
+};
