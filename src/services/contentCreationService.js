@@ -84,11 +84,14 @@ const deleteAnalysis = async (analysis_id, section_id) => {
   }
 };
 
-const editAnalysis = async (analysis_id, section_id, payload) => {
+const editAnalysis = async (analysis_id, payload) => {
   try {
-    const response = await fetch(`${config.BASE_URL}/analysis/${analysis_id}?section_id=${section_id}`, {
+    const response = await fetch(`${config.BASE_URL}/analysis/${analysis_id}`, {
       method: "PUT",
-      headers,
+      headers: {
+        ...headers,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(payload),
     });
     const data = await response.json();
@@ -103,4 +106,4 @@ const editAnalysis = async (analysis_id, section_id, payload) => {
   }
 }
 
-export { getAnalyses, getCoinAnalysis, postAnalysis, deleteAnalysis };
+export { getAnalyses, getCoinAnalysis, postAnalysis, deleteAnalysis, editAnalysis };
