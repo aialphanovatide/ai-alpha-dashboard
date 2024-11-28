@@ -1,35 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import config from '../../../config';
 import './selectCoinStyles.css';
+import { getCoins } from 'src/services/coinService';
+import Swal from 'sweetalert2';
 
 const DropdownMenu = ({ selectedCoin, onSelectCoin }) => {
   const [coinBots, setCoinBots] = useState([]);
 
-  // Gets all the coins
-  useEffect(() => {
-    const fetchCoinBots = async () => {
-      try {
-        const response = await fetch(`${config.BOTS_V2_API}/bots`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setCoinBots(data.data);
-        } else {
-          console.error('Error fetching coin bots:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error fetching coin bots:', error);
+  const fetchCoins = useCallback(async () => {
+    try {
+      const response = await getCoins();
+      if (!response.success) {
+        throw new Error(response.error);
       }
-    };
-
-    fetchCoinBots();
+      setCoinBots(response.data);
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message || 'Failed to fetch coins',
+        customClass: "swal",
+        backdrop: false,
+      });
+    }
   }, []);
+
+  useEffect(() => {
+    fetchCoins();
+  }, [fetchCoins]);
 
   const handleDropdownChange = (event) => {
     const selectedCoinId = event.target.value;
@@ -46,9 +44,9 @@ const DropdownMenu = ({ selectedCoin, onSelectCoin }) => {
         className="select-dropdown"
       >
         <option value="" disabled>Select Coin...</option>
-        {coinBots.map((coinBot) => (
-          <option key={coinBot.id} value={coinBot.id}>
-            {coinBot.name.toUpperCase()}
+        {coinBots.map((coinBot, index) => (
+          <option key={index} value={coinBot.bot_id}>
+            {coinBot.name}
           </option>
         ))}
       </select>
