@@ -15,7 +15,7 @@ import CustomTooltip from "src/components/CustomTooltip";
 import Swal from "sweetalert2";
 import { getCategories, getCategory } from "src/services/categoryService";
 import { createBot, editBot, getBot } from "src/services/botService";
-import { createCoin, editCoin } from "src/services/coinService";
+import { createCoin, deleteCoin, editCoin } from "src/services/coinService";
 import { extractKeywords } from "src/services/keywordService";
 import SpinnerComponent from "src/components/Spinner";
 import defaultImg from "../../../../assets/brand/logo.png";
@@ -35,6 +35,7 @@ const BotForm = ({ coin, setCategories }) => {
   const [keywords, setKeywords] = useState([]);
   const [whitelistKeyword, setWhitelistKeyword] = useState("");
   const [bot, setBot] = useState(null);
+  const [isFetchingCategory, setIsFetchingCategory] = useState(false);
   const [formData, setFormData] = useState({
     name: coin && coin.name ? coin.name : "",
     alias: coin && coin.alias ? coin.alias : "",
@@ -90,6 +91,7 @@ const BotForm = ({ coin, setCategories }) => {
           ),
           icon: "error",
           customClass: "swal",
+          backdrop: false,
         });
       }
     } else {
@@ -97,6 +99,7 @@ const BotForm = ({ coin, setCategories }) => {
         text: response.error || "Error extracting keywords",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     }
 
@@ -139,6 +142,7 @@ const BotForm = ({ coin, setCategories }) => {
         text: err.message || "Error fetching bot",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     } finally {
       setIsLoading(false);
@@ -157,6 +161,7 @@ const BotForm = ({ coin, setCategories }) => {
         text: err.message || "Error fetching categories",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     } finally {
       setIsLoading(false);
@@ -173,13 +178,17 @@ const BotForm = ({ coin, setCategories }) => {
       formData.alias &&
       formData.category_id &&
       formData.symbol &&
-      formData.bot_category_id,
+      formData.bot_category_id &&
+      !isFetchingCategory &&
+      !isSubmitting,
     [
       formData.name,
       formData.alias,
       formData.category_id,
       formData.symbol,
       formData.bot_category_id,
+      isFetchingCategory,
+      isSubmitting,
     ],
   );
 
@@ -187,10 +196,14 @@ const BotForm = ({ coin, setCategories }) => {
     const listToCheck = isBlacklist ? blacklist : keywords;
     const oppositeList = isBlacklist ? keywords : blacklist;
 
-    if (listToCheck.includes(keyword)) {
+    if (!/[a-zA-Z0-9]/.test(keyword)) {
+      return `"${keyword}" keyword must contain at least one letter or number.`;
+    } else if (listToCheck.includes(keyword)) {
       return "Keyword already added";
     } else if (oppositeList.includes(keyword)) {
-      return `Keyword already added to ${isBlacklist ? "Whitelist" : "Blacklist"}`;
+      return `Keyword already added to ${
+        isBlacklist ? "Whitelist" : "Blacklist"
+      }`;
     }
     return null;
   };
@@ -205,6 +218,7 @@ const BotForm = ({ coin, setCategories }) => {
         text: errorMessage,
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
       return;
     }
@@ -229,6 +243,7 @@ const BotForm = ({ coin, setCategories }) => {
 
   const getBotCategoryId = async (categoryName) => {
     try {
+      setIsFetchingCategory(true);
       const response = await getCategory(categoryName, true);
       if (response.success) {
         setFormData((prev) => ({
@@ -241,7 +256,10 @@ const BotForm = ({ coin, setCategories }) => {
         text: error.message || "Error fetching bot category",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
+    } finally {
+      setIsFetchingCategory(false);
     }
   };
 
@@ -271,11 +289,13 @@ const BotForm = ({ coin, setCategories }) => {
         text: "Please upload a valid SVG file",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     }
   };
 
   const handleSubmit = async (e) => {
+    let coinId;
     try {
       e.preventDefault();
       setIsSubmitting(true);
@@ -297,81 +317,79 @@ const BotForm = ({ coin, setCategories }) => {
         ? await createCoin(formDataToSend)
         : await editCoin(formDataToSend, coin.bot_id);
 
-      if (response.success) {
-        let keywordsToAdd = {
-          whitelist: [...keywords],
-          blacklist: [...blacklist],
-        };
-        let formdataForBot = {
-          alias: formData.alias,
-          background_color: formData.background_color,
-          category_id: formData.bot_category_id,
-          dalle_prompt: formData.dalle_prompt,
-          name: formData.name,
-          prompt: formData.prompt,
-          run_frequency: parseInt(formData.run_frequency),
-          whitelist: keywords.join(","),
-          blacklist: blacklist.join(","),
-        };
+      coinId = response.data?.coin.bot_id;
 
-        const response = !coin
-          ? await createBot(formdataForBot, keywordsToAdd)
-          : await editBot(formdataForBot, bot.id);
+      if (!response.success) {
+        throw new Error(response.error || "Error creating coin");
+      }
 
-        if (response.success) {
-          Swal.fire({
-            text: `Coin/Bot ${coin ? "updated" : "created"} successfully!`,
-            icon: "success",
-            customClass: "swal",
-          }).then(async () => {
-            const updatedCategories = await getCategories();
-            setCategories(updatedCategories);
-          });
+      let formdataForBot = {
+        alias: formData.alias,
+        background_color: formData.background_color,
+        category_id: formData.bot_category_id,
+        dalle_prompt: formData.dalle_prompt,
+        name: formData.name,
+        prompt: formData.prompt,
+        run_frequency: parseInt(formData.run_frequency),
+        whitelist: keywords.join(","),
+        blacklist: blacklist.join(","),
+      };
 
-          if (!coin) {
-            setFormData({
-              name: "",
-              alias: "",
-              symbol: "",
-              category_id: "",
-              background_color: "",
-              icon: null,
-              iconPreview: null,
-              bot_category_id: null,
-              dalle_prompt: "",
-              prompt: "",
-              run_frequency: 20,
-              blacklist: [],
-              keywords: [],
-              // url: "",
-            });
-            setBlacklist([]);
-            setKeywords([]);
-            document.querySelector('input[type="file"]').value = "";
-          }
-          setIsSubmitting(false);
-        } else {
-          Swal.fire({
-            text: response.error || "Error creating bot",
-            icon: "error",
-            customClass: "swal",
-          });
-          setIsSubmitting(false);
-        }
-      } else {
-        Swal.fire({
-          text: response.error || "Error creating coin",
-          icon: "error",
-          customClass: "swal",
+      const responseFromNewsBotServer = !coin
+        ? await createBot(formdataForBot)
+        : await editBot(formdataForBot, bot.id);
+
+      if (!responseFromNewsBotServer.success) {
+        throw new Error(
+          responseFromNewsBotServer.error || "Error creating bot",
+        );
+      }
+
+      Swal.fire({
+        text: `Coin/Bot ${coin ? "updated" : "created"} successfully!`,
+        icon: "success",
+        customClass: "swal",
+        backdrop: false,
+      }).then(async () => {
+        const updatedCategories = await getCategories();
+        setCategories(updatedCategories);
+      });
+
+      if (!coin) {
+        setFormData({
+          name: "",
+          alias: "",
+          symbol: "",
+          category_id: "",
+          background_color: "",
+          icon: null,
+          iconPreview: null,
+          bot_category_id: null,
+          dalle_prompt: "",
+          prompt: "",
+          run_frequency: 20,
+          blacklist: [],
+          keywords: [],
+          // url: "",
         });
-        setIsSubmitting(false);
+        setBlacklist([]);
+        setKeywords([]);
+        document.querySelector('input[type="file"]').value = "";
       }
     } catch (err) {
+      if (coinId && !coin) {
+        await deleteCoin(coinId);
+      }
+
       Swal.fire({
-        text: err.message || "An error occurred while creating the bot",
+        title: `Error ${coin ? "updating" : "creating"} coin/bot`,
+        text: `${err.message}` || "An error occurred while creating the bot",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -498,7 +516,7 @@ const BotForm = ({ coin, setCategories }) => {
               }}
             >
               <label>
-                <strong>
+                <strong style={{ display: "flex", alignItems: "center" }}>
                   <OpenLock style={{ height: 20, width: 20 }} />
                   Whitelist
                 </strong>
@@ -575,7 +593,7 @@ const BotForm = ({ coin, setCategories }) => {
               }}
             >
               <label>
-                <strong>
+                <strong style={{ display: "flex", alignItems: "center" }}>
                   <ClosedLock style={{ height: 20, width: 20 }} />
                   Blacklist
                 </strong>

@@ -7,13 +7,14 @@ import { cilPen } from "@coreui/icons";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { formatDateTime } from "src/utils";
-import NewCategoryForm from "../../NewCategoryForm";
+import CategoryForm from "../../CategoryForm";
 import BotForm from "../../BotForm";
 import SwitchButton from "src/components/commons/SwitchButton";
 import defaultImg from "../../../../../assets/brand/logo.png";
 import Swal from "sweetalert2";
 import { toggleCoinStatus } from "src/services/coinService";
 import ErrorList from "src/components/ErrorList";
+import { useNavigate } from "react-router-dom";
 
 const ListItem = (params) => {
   const {
@@ -32,13 +33,21 @@ const ListItem = (params) => {
   const [isBotChecked, setBotChecked] = useState(false);
   const [isItemActive, setIsItemActive] = useState(false);
   const [isToggleLoading, setIsToggleLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const toggleOpen = () => setIsOpen(!isOpen);
+  const goToBotDetails = (bot_name) => {
+    navigate(`/botdetails/${bot_name}`);
+  };
+
+  const toggleOpen = (e) => {
+    e.stopPropagation();
+    setIsOpen(!isOpen);
+  }
 
   useEffect(() => {
     if (isCoin) setIsItemActive(item.is_active);
-    else setIsItemActive(item.coins.every((coin) => coin.is_active));
-  }, [item.is_active]);
+    else setIsItemActive(item.coins?.every((coin) => coin.is_active));
+  }, [item.is_active, item.coins]);
 
   useEffect(() => {
     if (selectedCategories.length === 0) setCategoryChecked(false);
@@ -65,7 +74,9 @@ const ListItem = (params) => {
     const checkedBot = JSON.parse(e.target.value);
 
     if (isBotChecked) {
-      setSelectedCoins(selectedCoins.filter((bot) => bot.bot_id !== checkedBot.bot_id));
+      setSelectedCoins(
+        selectedCoins.filter((bot) => bot.bot_id !== checkedBot.bot_id),
+      );
     } else {
       setSelectedCoins([...selectedCoins, checkedBot]);
     }
@@ -75,7 +86,6 @@ const ListItem = (params) => {
 
   const handleStatusSwitchToggle = async (e) => {
     setIsToggleLoading(true);
-
     try {
       if (isCoin) {
         const response = await toggleCoinStatus(item.bot_id);
@@ -111,17 +121,27 @@ const ListItem = (params) => {
         }
       }
     } catch (error) {
-      const errorString = error.message.replace(/^Error: /, "");
-      const errorArray = JSON.parse(errorString);
-
-      Swal.fire({
-        title: "Some coins couldn't be activated",
-        html: ReactDOMServer.renderToString(
-          <ErrorList errorMessages={errorArray} />,
-        ),
+      const swal = {
+        title: !isCoin
+          ? "Some coins couldn't be activated"
+          : "Coin activation failed",
         icon: "error",
         customClass: "swal",
-      });
+        backdrop: false,
+      };
+
+      if (!isCoin) {
+        const errorString = error.message.replace(/^Error: /, "");
+        const errorArray = JSON.parse(errorString);
+
+        swal.html = ReactDOMServer.renderToString(
+          <ErrorList errorMessages={errorArray} />,
+        );
+      } else {
+        swal.text = error.message;
+      }
+
+      Swal.fire(swal);
     } finally {
       setIsToggleLoading(false);
     }
@@ -132,7 +152,8 @@ const ListItem = (params) => {
       <div
         className={`item ${
           isCategoryChecked || isBotChecked ? "checked" : ""
-        } ${isCoin ? "bot" : ""}`}
+        } ${isCoin ? "bot" : (item.coins?.length > 0 ? "clickable" : "")}`}
+        onClick={!isCoin && item.coins?.length > 0 ? toggleOpen : null}
       >
         <div className="item-input">
           <CustomTooltip
@@ -169,14 +190,15 @@ const ListItem = (params) => {
             alt={`${isCoin ? "bot" : "category"}-img`}
             src={
               item.icon ||
-              (isCoin
-                ? `https://aialphaicons.s3.us-east-2.amazonaws.com/coins/${item.name?.toLowerCase()}.png`
-                : `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.name.toLowerCase()}.svg`)
+              `https://aialphaicons.s3.us-east-2.amazonaws.com/${item.alias?.toLowerCase()}.svg`
             }
             onError={(e) => (e.target.src = defaultImg)}
           />
         </div>
-        <div className="item-details">
+        <div
+          className={`item-details ${isCoin ? "bot" : ""}`}
+          onClick={isCoin ? () => goToBotDetails(item.name) : null}
+        >
           <div className="item-name">
             {item.name || (isCoin ? "Bot name" : "Category name")}
           </div>
@@ -194,7 +216,7 @@ const ListItem = (params) => {
             isCoin ? (
               <BotForm coin={item} setCategories={setCategories} />
             ) : (
-              <NewCategoryForm category={item} setCategories={setCategories} />
+              <CategoryForm category={item} setCategories={setCategories} />
             ),
             "right",
           )}
@@ -221,12 +243,6 @@ const ListItem = (params) => {
             </div>
           </CustomTooltip>
         ) : null}
-        {/* <div
-          style={{ gridColumn: 6, height: "fit-content" }}
-          // onClick={() => toggleState(index)}
-        >
-          <SwitchButton isActive={item.isActive} isAppsSwitch={true} />
-        </div> */}
         {!isCoin && (
           <button
             onClick={toggleOpen}
@@ -243,7 +259,7 @@ const ListItem = (params) => {
           </button>
         )}
       </div>
-      {isOpen && item.coins && (
+      {isOpen && item.coins?.length > 0 && (
         <div>
           {item.coins.map((bot, index) => (
             <ListItem

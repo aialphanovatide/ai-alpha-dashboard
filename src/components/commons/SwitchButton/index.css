@@ -21,7 +21,7 @@
   margin: auto;
 }
 
-.switch-button.apps-active, .switch-button.active {
+.switch-button.active {
   background-color: #FF8739;
 }
 

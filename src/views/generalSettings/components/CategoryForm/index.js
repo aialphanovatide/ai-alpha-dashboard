@@ -7,15 +7,16 @@ import { HelpOutline } from "@mui/icons-material";
 import CustomTooltip from "src/components/CustomTooltip";
 import {
   createCategory,
+  deleteCategory,
   editCategory,
   getCategories,
   getCategory,
 } from "src/services/categoryService";
 import Swal from "sweetalert2";
 import SpinnerComponent from "src/components/Spinner";
-import defaultImg from "../../../../assets/brand/logo.png"; 
+import defaultImg from "../../../../assets/brand/logo.png";
 
-const NewCategoryForm = ({ category, setCategories }) => {
+const CategoryForm = ({ category, setCategories }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,7 +51,9 @@ const NewCategoryForm = ({ category, setCategories }) => {
         alias: category.alias,
         name: category.name,
         slack_channel: category.slack_channel,
-        iconPreview: formData.iconPreview ? formData.iconPreview : category.icon,
+        iconPreview: formData.iconPreview
+          ? formData.iconPreview
+          : category.icon,
       }));
       setNewsBotsCategory(category);
     } catch (err) {
@@ -58,6 +61,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
         text: err.message || "Error fetching news bot category",
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
     } finally {
       setIsLoading(false);
@@ -88,6 +92,7 @@ const NewCategoryForm = ({ category, setCategories }) => {
   };
 
   const handleSubmit = async (e) => {
+    let categoryId;
     try {
       e.preventDefault();
       setIsSubmitting(true);
@@ -107,63 +112,62 @@ const NewCategoryForm = ({ category, setCategories }) => {
         ? await editCategory(formDataToSend, category.category_id)
         : await createCategory(formDataToSend);
 
-      if (response.success) {
-        let formDataForNewsBotServer = {
-          alias: formData.alias,
-          border_color: formData.border_color,
-          name: formData.name,
-          slack_channel: formData.slack_channel,
-        };
+      categoryId = response.data?.category.category_id;
 
-        const response = category
-          ? await editCategory(
-              formDataForNewsBotServer,
-              newsBotsCategory.id,
-              true,
-            )
-          : await createCategory(formDataForNewsBotServer, true);
+      if (!response.success) {
+        throw new Error(response.error || "Error creating category");
+      }
 
-        if (response.success) {
-          Swal.fire({
-            text: `Category ${category ? "updated" : "created"} successfully!`,
-            icon: "success",
-            customClass: "swal",
-          }).then(async () => {
-            const updatedCategories = await getCategories();
-            setCategories(updatedCategories);
-          });
+      let formDataForNewsBotServer = {
+        alias: formData.alias,
+        border_color: formData.border_color,
+        name: formData.name,
+        slack_channel: formData.slack_channel,
+      };
 
-          if (!category) {
-            setFormData({
-              name: "",
-              alias: "",
-              border_color: "",
-              icon: null,
-              iconPreview: null,
-              slack_channel: "",
-            });
-            document.querySelector('input[type="file"]').value = "";
-          }
-          setIsSubmitting(false);
-        } else {
-          Swal.fire({
-            text:
-              response.error || "Error creating category in news bot server",
-            icon: "error",
-            customClass: "swal",
-          });
-          setIsSubmitting(false);
-        }
-      } else {
-        Swal.fire({
-          text: response.error || "Error creating category",
-          icon: "error",
-          customClass: "swal",
+      const responseFromNewsBotServer = category
+        ? await editCategory(
+            formDataForNewsBotServer,
+            newsBotsCategory.id,
+            true,
+          )
+        : await createCategory(formDataForNewsBotServer, true);
+
+      if (!responseFromNewsBotServer.success) {
+        throw new Error(
+          responseFromNewsBotServer.error ||
+            "Error creating category in news bot server",
+        );
+      }
+
+      Swal.fire({
+        text: `Category ${category ? "updated" : "created"} successfully!`,
+        icon: "success",
+        customClass: "swal",
+        backdrop: false,
+      }).then(async () => {
+        const updatedCategories = await getCategories();
+        setCategories(updatedCategories);
+      });
+
+      if (!category) {
+        setFormData({
+          name: "",
+          alias: "",
+          border_color: "",
+          icon: null,
+          iconPreview: null,
+          slack_channel: "",
         });
-        setIsSubmitting(false);
+        document.querySelector('input[type="file"]').value = "";
       }
     } catch (err) {
+      if (categoryId && !category) {
+        await deleteCategory(categoryId);
+      }
+
       Swal.fire({
+        title: `Error ${category ? "updating" : "creating"} category`,
         text:
           err.message ||
           `An error occurred while ${
@@ -171,7 +175,10 @@ const NewCategoryForm = ({ category, setCategories }) => {
           } the category`,
         icon: "error",
         customClass: "swal",
+        backdrop: false,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -377,4 +384,4 @@ const NewCategoryForm = ({ category, setCategories }) => {
   );
 };
 
-export default NewCategoryForm;
+export default CategoryForm;

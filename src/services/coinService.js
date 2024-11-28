@@ -1,6 +1,6 @@
 import config from "../config";
 const headers = {
-  Accept: "*/*",
+  'Accept': "*/*",
   "X-Api-Key": config.X_API_KEY,
 };
 

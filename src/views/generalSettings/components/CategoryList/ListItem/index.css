@@ -12,6 +12,10 @@
   align-items: center;
 }
 
+.item.clickable {
+  cursor: pointer;
+}
+
 .item.bot {
   width: 80%;
   margin: auto;
@@ -83,6 +87,10 @@
   margin-block: 9px;
 }
 
+.item-details.bot {
+  cursor: pointer;
+}
+
 .item-details::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -96,7 +104,6 @@
 .item-name {
   font-size: 18px;
   font-weight: bold;
-  text-transform: capitalize;
 }
 
 .item-last-run {

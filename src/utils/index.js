@@ -1,6 +1,7 @@
 
 // Function to parse dateTimes from "01 Aug 2024 20:12:10 GMT" to "dd/mm/yyyy hh:mm"
 const formatDateTime = (datetime) => {
+  if (!datetime) return '';
   const date = new Date(datetime);
 
   const formattedDate = date.toLocaleString('en-GB', {
@@ -9,7 +10,8 @@ const formatDateTime = (datetime) => {
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false // 24-hour format
+    hour12: false, // 24-hour format
+    timeZone: 'GMT'
   }).replace(',', '');
 
   return formattedDate;

@@ -7,7 +7,7 @@ import { cilMinus, cilPencil, cilPlus, cilSitemap } from "@coreui/icons";
 import DrawerComponent from "./components/Drawer";
 import CategoryList from "./components/CategoryList";
 import TresholdEdit from "./components/TresholdEdit";
-import NewCategoryForm from "./components/NewCategoryForm";
+import CategoryForm from "./components/CategoryForm";
 import BotForm from "./components/BotForm";
 import KeywordsSettings from "./components/KeywordsSettings";
 import SpinnerComponent from "src/components/Spinner";
@@ -73,7 +73,7 @@ const GeneralSettings = () => {
             <button
               onClick={toggleDrawer(
                 true,
-                <NewCategoryForm setCategories={setCategories} />,
+                <CategoryForm setCategories={setCategories} />,
                 "right",
               )}
             >
