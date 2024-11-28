@@ -17,17 +17,13 @@ const ScheduledJob = ({ job, onDelete }) => {
 
   return (
     <div className="titleSched">
-      <h5 className="schedtitl">{title}</h5>
-      <p className="pSchedule">
+      <h5>{title}</h5>
+      <span>
         <b>Run Date-Time:</b> {nextRunDateTime}
-      </p>
-      <CIcon
-        size="xxl"
-        icon={cilTrash}
-        style={{ position: "absolute", right: "20%" }}
-        className="deleteBtn"
-        onClick={handleDeleteClick}
-      />
+      </span>
+      <button onClick={handleDeleteClick}>
+        <CIcon size="lg" icon={cilTrash} />
+      </button>
     </div>
   );
 };
