@@ -1,33 +1,17 @@
 import React, { useState, useEffect } from "react";
 import RichTextEditor from "../helpers/textEditor/textEditor";
 import { Modal, Button } from "react-bootstrap";
-import Swal from "sweetalert2";
 import "./index.css";
 
-const EditModal = ({ item, onSave, onClose, fetchAnalysis }) => {
+const EditModal = ({ item, onSave, onClose, section_id }) => {
   const [editedContent, setEditedContent] = useState("");
 
   useEffect(() => {
-    // Cuando cambia el contenido del ítem, actualiza el estado del contenido editado
     setEditedContent(item.analysis);
   }, [item]);
 
   const handleSave = async () => {
-    // Marca la función como async
-    onSave(item.analysis_id, editedContent);
-
-    Swal.fire({
-      icon: "success",
-      title: "Analysis updated successfully",
-      showConfirmButton: false,
-      timer: 1000,
-      customClass: "swal",
-    });
-
-    // Aquí podrías llamar a la función fetchAnalysis si es necesario
-    await fetchAnalysis();
-
-    onClose();
+    await onSave(item.analysis_id, section_id, editedContent);
   };
 
   const handleContentChange = (content) => {
