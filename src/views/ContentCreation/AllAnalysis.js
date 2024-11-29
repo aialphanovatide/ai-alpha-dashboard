@@ -47,6 +47,7 @@ const Item = ({ item, onDelete, openEditModal }) => {
           gap: "5%",
           display: "flex",
           flexDirection: "column",
+          width: "100%",
         }}
       >
         <div
@@ -77,7 +78,9 @@ const Item = ({ item, onDelete, openEditModal }) => {
             display: "block",
           }}
           // className="itemContent"
-          dangerouslySetInnerHTML={{ __html: item.analysis }}
+          dangerouslySetInnerHTML={{
+            __html: item.analysis || item.narrative_trading,
+          }}
         />
       </div>
     </li>
@@ -89,6 +92,7 @@ const AllAnalysis = ({
   fetchAnalysis,
   section_id,
   section_name,
+  coin_name,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
@@ -160,7 +164,9 @@ const AllAnalysis = ({
 
   return (
     <div className="analysisSubmain">
-      <h4 className="allAnalysisTitle">{`${section_name} Section Analyses`}</h4>
+      <h4 className="allAnalysisTitle">{`${
+        coin_name ? coin_name : ""
+      }  ${section_name} Section Analyses`}</h4>
       {items && items.length > 0 ? (
         <ul className="allAnalysisUL">
           {items.map((item) => (
