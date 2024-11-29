@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import "quill/dist/quill.snow.css";
 import DropdownMenu from "../helpers/selectCoin/SelectCoin";
@@ -21,13 +21,13 @@ import DatePicker from "react-datepicker";
 import ScheduledJob from "./ScheduledJob";
 
 const ContentCreation = () => {
-  const [selectedCoin, setSelectedCoin] = useState(null);
+  const [selectedCoinID, setSelectedCoinID] = useState(null);
   const [selectedImage, setSelectedImage] = useState([]);
   const [content, setContent] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnalysisCreated, setIsAnalysisCreated] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSection, setSelectedSection] = useState("");
+  const [selectedSectionID, setSelectedSectionID] = useState("");
   const [sections, setSections] = useState([]);
   const [isFetchingSections, setIsFetchingSections] = useState(true);
   const [items, setItems] = useState([]);
@@ -35,6 +35,9 @@ const ContentCreation = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [scheduledJobs, setScheduledJobs] = useState([]);
   const [title, setTitle] = useState("");
+  const selectedSection = useMemo(() => {
+    return sections.find((section) => section.id == selectedSectionID);
+  }, [sections, selectedSectionID]);
 
   const deleteScheduled = async (jobId) => {
     try {
@@ -73,8 +76,8 @@ const ContentCreation = () => {
       setIsSubmitting(true);
 
       const formDataToSchedule = new FormData();
-      formDataToSchedule.append("coin_id", selectedCoin);
-      formDataToSchedule.append("section_id", selectedSection);
+      formDataToSchedule.append("coin_id", selectedCoinID);
+      formDataToSchedule.append("section_id", selectedSectionID);
       formDataToSchedule.append("category_name", selectedCategory);
       formDataToSchedule.append("content", `Title: ${title}\n${content}`);
       formDataToSchedule.append("scheduled_date", selectedDate.toISOString());
@@ -127,7 +130,7 @@ const ContentCreation = () => {
   };
 
   const handleSelectCoin = (coinId) => {
-    setSelectedCoin(coinId);
+    setSelectedCoinID(coinId);
   };
 
   const handleImageSelect = (image) => {
@@ -139,14 +142,14 @@ const ContentCreation = () => {
   };
 
   const handleSectionSelect = (event) => {
-    setSelectedSection(event.target.value);
+    setSelectedSectionID(event.target.value);
   };
 
   const fetchAnalysis = useCallback(async () => {
     try {
-      const response = selectedCoin
-        ? await getCoinAnalysis(selectedCoin, selectedSection)
-        : await getAnalyses(selectedSection);
+      const response = selectedCoinID
+        ? await getCoinAnalysis(selectedCoinID, selectedSectionID)
+        : await getAnalyses(selectedSectionID);
 
       if (!response.success) {
         throw new Error(response.error);
@@ -154,18 +157,18 @@ const ContentCreation = () => {
 
       setItems(response.data);
     } catch (error) {}
-  }, [selectedCoin, selectedSection]);
+  }, [selectedCoinID, selectedSectionID]);
 
   useEffect(() => {
     setItems([]);
     const fetchData = async () => {
-      if (selectedSection) {
+      if (selectedSectionID) {
         await fetchAnalysis();
       }
     };
 
     fetchData();
-  }, [selectedSection, fetchAnalysis]);
+  }, [selectedSectionID, fetchAnalysis]);
 
   const fetchSections = useCallback(async () => {
     try {
@@ -205,11 +208,11 @@ const ContentCreation = () => {
     setIsSubmitting(true);
 
     const formData = new FormData();
-    formData.append("coin_id", selectedCoin);
+    formData.append("coin_id", selectedCoinID);
     formData.append("content", content);
     // formData.append("images", selectedImage);
     formData.append("category_name", selectedCategory);
-    formData.append("section_id", selectedSection);
+    formData.append("section_id", selectedSectionID);
 
     try {
       const response = await postAnalysis(formData);
@@ -246,7 +249,7 @@ const ContentCreation = () => {
       <div className="analysisSubmain">
         <div className="selectors-container">
           <DropdownMenu
-            selectedCoin={selectedCoin}
+            selectedCoin={selectedCoinID}
             onSelectCoin={handleSelectCoin}
           />
           <CategoryDropdown
@@ -258,7 +261,7 @@ const ContentCreation = () => {
             <select
               id="coinBotDropdown"
               onChange={handleSectionSelect}
-              value={selectedSection || ""}
+              value={selectedSectionID || ""}
               className="select-dropdown"
               disabled={isFetchingSections || sections.length === 0}
             >
@@ -321,10 +324,10 @@ const ContentCreation = () => {
               onClick={handleScheduleSubmit}
               disabled={
                 !selectedCategory ||
-                !selectedCoin ||
+                !selectedCoinID ||
                 !selectedDate ||
                 !title ||
-                !selectedSection ||
+                !selectedSectionID ||
                 !content ||
                 isSubmitting
               }
@@ -338,7 +341,8 @@ const ContentCreation = () => {
         <AllAnalysis
           items={items}
           fetchAnalysis={fetchAnalysis}
-          section_id={selectedSection}
+          section_id={selectedSectionID}
+          section_name={selectedSection?.name}
         />
       )}
       {scheduledJobs.length > 0 && (
