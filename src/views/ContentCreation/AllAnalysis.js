@@ -11,7 +11,7 @@ import {
 } from "src/services/contentCreationService";
 import defaultImg from "../../assets/brand/logo.png";
 
-const Item = ({ item, onDelete, openEditModal }) => {
+const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
   const handleDeleteClick = (event) => {
     event.stopPropagation();
     onDelete(item.analysis_id);
@@ -66,7 +66,10 @@ const Item = ({ item, onDelete, openEditModal }) => {
               icon={cilTrash}
               className="deleteBtn"
               onClick={handleDeleteClick}
-              style={{ color: "gray" }}
+              style={{
+                color: isDeleting ? "#8080804d" : "gray",
+                cursor: isDeleting ? "not-allowed" : "pointer",
+              }}
             />
           )}
         </div>
@@ -96,6 +99,7 @@ const AllAnalysis = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const openEditModal = (item) => {
     setSelectedAnalysis(item);
@@ -104,6 +108,7 @@ const AllAnalysis = ({
 
   const handleDelete = async (analysis_id) => {
     try {
+      setIsDeleting(true);
       const response = await deleteAnalysis(analysis_id, section_id);
 
       if (!response.success) {
@@ -124,6 +129,8 @@ const AllAnalysis = ({
         customClass: "swal",
         backdrop: false,
       });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -166,7 +173,7 @@ const AllAnalysis = ({
     <div className="analysisSubmain">
       <h4 className="allAnalysisTitle">{`${
         coin_name ? coin_name : ""
-      }  ${section_name} Section Analyses`}</h4>
+      }  ${section_name} Analyses`}</h4>
       {items && items.length > 0 ? (
         <ul className="allAnalysisUL">
           {items.map((item) => (
@@ -175,6 +182,7 @@ const AllAnalysis = ({
               item={item}
               onDelete={handleDelete}
               openEditModal={openEditModal}
+              isDeleting={isDeleting}
             />
           ))}
         </ul>
