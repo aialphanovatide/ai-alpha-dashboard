@@ -19,6 +19,7 @@ import {
 import { AllAnalysis } from "./AllAnalysis";
 import DatePicker from "react-datepicker";
 import ScheduledJob from "./ScheduledJob";
+import { getCoins } from "src/services/coinService";
 
 const ContentCreation = () => {
   const [selectedCoinID, setSelectedCoinID] = useState(null);
@@ -35,9 +36,33 @@ const ContentCreation = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [scheduledJobs, setScheduledJobs] = useState([]);
   const [title, setTitle] = useState("");
+  const [coinBots, setCoinBots] = useState([]);
+
   const selectedSection = useMemo(() => {
     return sections.find((section) => section.id == selectedSectionID);
   }, [sections, selectedSectionID]);
+
+  const selectedCoin = useMemo(() => {
+    return coinBots.find((section) => section.bot_id == selectedCoinID);
+  }, [coinBots, selectedCoinID]);
+
+  const fetchCoins = useCallback(async () => {
+    try {
+      const response = await getCoins();
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+      setCoinBots(response.data);
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message || 'Failed to fetch coins',
+        customClass: "swal",
+        backdrop: false,
+      });
+    }
+  }, []);
 
   const deleteScheduled = async (jobId) => {
     try {
@@ -192,7 +217,8 @@ const ContentCreation = () => {
 
   useEffect(() => {
     fetchSections();
-  }, [fetchSections]);
+    fetchCoins();
+  }, [fetchSections, fetchCoins]);
 
   const handleSubmit = async () => {
     // if (selectedImage === null || content === null) {
@@ -251,6 +277,7 @@ const ContentCreation = () => {
           <DropdownMenu
             selectedCoin={selectedCoinID}
             onSelectCoin={handleSelectCoin}
+            items={coinBots}
           />
           <CategoryDropdown
             selectedCategory={selectedCategory}
@@ -343,6 +370,7 @@ const ContentCreation = () => {
           fetchAnalysis={fetchAnalysis}
           section_id={selectedSectionID}
           section_name={selectedSection?.name}
+          coin_name={selectedCoin?.name}
         />
       )}
       {scheduledJobs.length > 0 && (
