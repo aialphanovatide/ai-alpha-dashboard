@@ -11,7 +11,7 @@ import {
 } from "src/services/contentCreationService";
 import defaultImg from "../../assets/brand/logo.png";
 
-const Item = ({ item, onDelete, base64Image, openEditModal }) => {
+const Item = ({ item, onDelete, openEditModal }) => {
   const handleDeleteClick = (event) => {
     event.stopPropagation();
     onDelete(item.analysis_id);
@@ -25,6 +25,9 @@ const Item = ({ item, onDelete, base64Image, openEditModal }) => {
     <li className="allAnalysisLI" onClick={handleItemClick}>
       <img
         // className="itemImage"
+        onError={(e) => {
+          e.target.src = defaultImg;
+        }}
         src={item.image_url || defaultImg}
         alt="Analysis"
         style={{
@@ -44,7 +47,6 @@ const Item = ({ item, onDelete, base64Image, openEditModal }) => {
           gap: "5%",
           display: "flex",
           flexDirection: "column",
-          // justifyContent: "space-between",
         }}
       >
         <div
@@ -82,7 +84,12 @@ const Item = ({ item, onDelete, base64Image, openEditModal }) => {
   );
 };
 
-const AllAnalysis = ({ items, fetchAnalysis, section_id }) => {
+const AllAnalysis = ({
+  items,
+  fetchAnalysis,
+  section_id,
+  section_name,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
 
@@ -153,7 +160,7 @@ const AllAnalysis = ({ items, fetchAnalysis, section_id }) => {
 
   return (
     <div className="analysisSubmain">
-      <h3 className="allAnalysisTitle">Selected Section Analysis</h3>
+      <h4 className="allAnalysisTitle">{`${section_name} Section Analyses`}</h4>
       {items && items.length > 0 ? (
         <ul className="allAnalysisUL">
           {items.map((item) => (
