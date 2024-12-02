@@ -184,6 +184,11 @@ const ListItem = (params) => {
             borderRadius: "50%",
             border: "2px solid",
             borderColor: item.border_color ? item.border_color : "gray",
+            backgroundColor: item?.background_color
+              ? item.background_color.includes("#")
+                ? item?.background_color
+                : `#${item?.background_color}`
+              : 'transparent',
           }}
         >
           <img
