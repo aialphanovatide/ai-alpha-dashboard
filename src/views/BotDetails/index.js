@@ -258,6 +258,44 @@ const BotDetails = () => {
               </div>
             </div>
           </section>
+          <section className={styles.thirdSection}>
+            <div className={styles.promptContainer}>
+              <div className={styles.text}>
+                <span>Whitelist keywords</span>
+              </div>
+              <div className={styles.keywordsSubcontainer} id="bot-detail-prompt">
+                <div >
+                {bot?.keywords?.map((keyword, index) => (
+                    <div
+                    className={styles.keyword}
+                    key={index}
+                    id="botform-whitelist-keyword"
+                  >
+                    <span>{keyword}</span>
+                  </div>
+                  ))}
+                  </div>
+              </div>
+            </div>
+            <div className={styles.promptContainer}>
+              <div className={styles.text}>
+                <span>Blacklist Keywords</span>
+              </div>
+              <div className={styles.keywordsSubcontainer} id="bot-detail-prompt">
+                <div>
+                  {bot?.blacklist?.map((keyword, index) => (
+                    <div
+                    className={styles.keyword}
+                    key={index}
+                    id="botform-whitelist-keyword"
+                  >
+                    <span>{keyword}</span>
+                  </div>
+                  ))}
+                  </div>
+              </div>
+            </div>
+          </section>
         </div>
       )}
     </>
