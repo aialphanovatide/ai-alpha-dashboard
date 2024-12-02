@@ -412,6 +412,12 @@ const BotForm = ({ coin, setCategories }) => {
     }
   };
 
+  const filteredKeywords = (keywordsList, searchTerm) => {
+    return keywordsList.filter((kw) =>
+      (kw.toLowerCase().startsWith(searchTerm.toLowerCase())),
+    );
+  };
+
   return (
     <>
       <h4>
@@ -593,7 +599,7 @@ const BotForm = ({ coin, setCategories }) => {
               className={styles.keywordsContainer}
               id="whitelist-keywords-container"
             >
-              {keywords?.map((keyword, index) => (
+              {filteredKeywords(keywords, whitelistKeyword)?.map((keyword, index) => (
                 <div
                   className={styles.keyword}
                   key={index}
@@ -673,7 +679,7 @@ const BotForm = ({ coin, setCategories }) => {
               className={styles.keywordsContainer}
               id="blacklist-keywords-container"
             >
-              {blacklist?.map((keyword, index) => (
+              {filteredKeywords(blacklist, blacklistKeyword)?.map((keyword, index) => (
                 <div
                   className={styles.keyword}
                   key={index}
