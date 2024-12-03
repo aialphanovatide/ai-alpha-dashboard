@@ -433,7 +433,14 @@ const BotForm = ({ coin, setCategories }) => {
                 <strong>Alias</strong>
                 <span> *</span>
               </label>
-              <HelpOutline fontSize="small" />
+              <CustomTooltip
+                title={"Create a coin"}
+                content={
+                  "Enter a name, alias and category to enable the coin in Analysis, Fundamentals, Charts and Narrative Trading."
+                }
+              >
+                <HelpOutline fontSize="small" />
+              </CustomTooltip>
             </div>
             <input
               className={styles.input}
@@ -450,7 +457,14 @@ const BotForm = ({ coin, setCategories }) => {
                 <strong>Symbol</strong>
                 <span> *</span>
               </label>
-              <HelpOutline fontSize="small" />
+              <CustomTooltip
+                title={"Create a coin"}
+                content={
+                  "Enter a name, alias and category to enable the coin in Analysis, Fundamentals, Charts and Narrative Trading."
+                }
+              >
+                <HelpOutline fontSize="small" />
+              </CustomTooltip>
             </div>
             <input
               className={styles.input}
@@ -467,7 +481,14 @@ const BotForm = ({ coin, setCategories }) => {
                 <strong>Category</strong>
                 <span> *</span>
               </label>
-              <HelpOutline fontSize="small" />
+              <CustomTooltip
+                title={"Create a coin"}
+                content={
+                  "Enter a name, alias and category to enable the coin in Analysis, Fundamentals, Charts and Narrative Trading."
+                }
+              >
+                <HelpOutline fontSize="small" />
+              </CustomTooltip>
             </div>
             <select
               className={styles.select}
@@ -521,7 +542,13 @@ const BotForm = ({ coin, setCategories }) => {
                   Whitelist
                 </strong>
               </label>
-              <div style={{ display: "flex", flexDirection: "row" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
                 <input
                   type="file"
                   accept=".xls,.xlsx"
@@ -598,7 +625,13 @@ const BotForm = ({ coin, setCategories }) => {
                   Blacklist
                 </strong>
               </label>
-              <div style={{ display: "flex", flexDirection: "row" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
                 <input
                   type="file"
                   accept=".xls,.xlsx"
@@ -738,7 +771,14 @@ const BotForm = ({ coin, setCategories }) => {
               <label>
                 <strong>Upload Icon</strong>
               </label>
-              <HelpOutline />
+              <CustomTooltip
+                title={"Enable a coin"}
+                content={
+                  "Fill in all fields to enable the option to display the coin in the app."
+                }
+              >
+                <HelpOutline fontSize="small" />
+              </CustomTooltip>
             </div>
             <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
               <div className={styles.divInput}>
@@ -757,7 +797,14 @@ const BotForm = ({ coin, setCategories }) => {
               <label>
                 <strong>Background Color</strong>
               </label>
-              <HelpOutline fontSize="small" />
+              <CustomTooltip
+                title={"Enable a coin"}
+                content={
+                  "Fill in all fields to enable the option to display the coin in the app."
+                }
+              >
+                <HelpOutline fontSize="small" />
+              </CustomTooltip>
             </div>
             <div
               className={styles.input}
