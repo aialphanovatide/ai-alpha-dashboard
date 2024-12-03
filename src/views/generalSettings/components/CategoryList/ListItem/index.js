@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import { toggleCoinStatus } from "src/services/coinService";
 import ErrorList from "src/components/ErrorList";
 import { useNavigate } from "react-router-dom";
+import { toggleCategoryState } from "src/services/categoryService";
 
 const ListItem = (params) => {
   const {
@@ -27,6 +28,7 @@ const ListItem = (params) => {
     setSelectedCoins,
     updateCategoryState,
     setCategories,
+    isCategoryActive,
   } = params;
   const [isOpen, setIsOpen] = useState(false);
   const [isCategoryChecked, setCategoryChecked] = useState(false);
@@ -42,12 +44,11 @@ const ListItem = (params) => {
   const toggleOpen = (e) => {
     e.stopPropagation();
     setIsOpen(!isOpen);
-  }
+  };
 
   useEffect(() => {
-    if (isCoin) setIsItemActive(item.is_active);
-    else setIsItemActive(item.coins?.every((coin) => coin.is_active));
-  }, [item.is_active, item.coins]);
+    setIsItemActive(item.is_active);
+  }, [item.is_active]);
 
   useEffect(() => {
     if (selectedCategories.length === 0) setCategoryChecked(false);
@@ -95,53 +96,22 @@ const ListItem = (params) => {
           throw new Error(response.error);
         }
       } else {
-        const responses = await Promise.all(
-          item.coins.map(async (coin) => {
-            if (
-              (isItemActive && !coin.is_active) ||
-              (!isItemActive && coin.is_active)
-            )
-              return { success: true };
-            const response = await toggleCoinStatus(coin.bot_id);
-            if (response.success) coin.is_active = !coin.is_active;
-            return { ...response, coinName: coin.name };
-          }),
-        );
+        const response = await toggleCategoryState(item.category_id);
 
-        const allSuccessful = responses.every((res) => res.success);
-
-        if (allSuccessful) {
-          setIsItemActive(!isItemActive);
-          updateCategoryState(item.category_id, !isItemActive);
-        } else {
-          const errorMessages = responses
-            .filter((res) => !res.success)
-            .map((res) => ({ coinName: res.coinName, error: res.error }));
-          throw new Error(JSON.stringify(errorMessages));
+        if (!response.success) {
+          throw new Error(response.error);
         }
+
+        setIsItemActive(!isItemActive);
       }
     } catch (error) {
-      const swal = {
-        title: !isCoin
-          ? "Some coins couldn't be activated"
-          : "Coin activation failed",
+      Swal.fire({
+        title: `${isCoin ? "Coin" : "Category"} activation failed`,
         icon: "error",
         customClass: "swal",
         backdrop: false,
-      };
-
-      if (!isCoin) {
-        const errorString = error.message.replace(/^Error: /, "");
-        const errorArray = JSON.parse(errorString);
-
-        swal.html = ReactDOMServer.renderToString(
-          <ErrorList errorMessages={errorArray} />,
-        );
-      } else {
-        swal.text = error.message;
-      }
-
-      Swal.fire(swal);
+        text: error.message,
+      });
     } finally {
       setIsToggleLoading(false);
     }
@@ -152,7 +122,7 @@ const ListItem = (params) => {
       <div
         className={`item ${
           isCategoryChecked || isBotChecked ? "checked" : ""
-        } ${isCoin ? "bot" : (item.coins?.length > 0 ? "clickable" : "")}`}
+        } ${isCoin ? "bot" : item.coins?.length > 0 ? "clickable" : ""}`}
         onClick={!isCoin && item.coins?.length > 0 ? toggleOpen : null}
       >
         <div className="item-input">
@@ -238,7 +208,7 @@ const ListItem = (params) => {
                 isActive={isItemActive}
                 handleClick={handleStatusSwitchToggle}
                 isLoading={isToggleLoading}
-                // isDisabled={isCoin && !isCategoryActive}
+                isDisabled={(isCoin && !isCategoryActive) || isToggleLoading}
               />
             </div>
           </CustomTooltip>
@@ -271,7 +241,7 @@ const ListItem = (params) => {
               setSelectedCoins={setSelectedCoins}
               selectedCategories={selectedCategories}
               updateCategoryState={updateCategoryState}
-              isCategoryActive={!isCoin && item.is_active}
+              isCategoryActive={!isCoin && isItemActive}
               setCategories={setCategories}
             />
           ))}
