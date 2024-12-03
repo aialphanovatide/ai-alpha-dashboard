@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./index.css";
-import * as ReactDOMServer from "react-dom/server";
 import CustomTooltip from "src/components/CustomTooltip";
 import CIcon from "@coreui/icons-react";
 import { cilPen } from "@coreui/icons";
@@ -13,7 +12,6 @@ import SwitchButton from "src/components/commons/SwitchButton";
 import defaultImg from "../../../../../assets/brand/logo.png";
 import Swal from "sweetalert2";
 import { toggleCoinStatus } from "src/services/coinService";
-import ErrorList from "src/components/ErrorList";
 import { useNavigate } from "react-router-dom";
 import { toggleCategoryState } from "src/services/categoryService";
 
@@ -122,8 +120,7 @@ const ListItem = (params) => {
       <div
         className={`item ${
           isCategoryChecked || isBotChecked ? "checked" : ""
-        } ${isCoin ? "bot" : item.coins?.length > 0 ? "clickable" : ""}`}
-        onClick={!isCoin && item.coins?.length > 0 ? toggleOpen : null}
+        } ${isCoin ? "bot" : ""}`}
       >
         <div className="item-input">
           <CustomTooltip
@@ -166,8 +163,16 @@ const ListItem = (params) => {
           />
         </div>
         <div
-          className={`item-details ${isCoin ? "bot" : ""}`}
-          onClick={isCoin ? () => goToBotDetails(item.name) : null}
+          className={`item-details ${
+            isCoin ? "bot" : item.coins?.length > 0 ? "clickable" : ""
+          }`}
+          onClick={
+            isCoin
+              ? () => goToBotDetails(item.name)
+              : item.coins?.length > 0
+                ? toggleOpen
+                : null
+          }
         >
           <div className="item-name">
             {item.name || (isCoin ? "Bot name" : "Category name")}
