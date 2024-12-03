@@ -97,14 +97,19 @@ const BotDetails = () => {
     try {
       setIsFetching(true);
       const bot = await getBot(bot_name, "name");
+
+      if (!bot.success) {
+        throw new Error(bot.error);
+      }
+
       setBot(bot.data);
-      setIsItemActive(bot.data.is_active);
-      await fetchBotLogs(bot.data.id);
+      setIsItemActive(bot.data?.is_active);
+      await fetchBotLogs(bot.data?.id);
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Something went wrong!",
-        text: error.message,
+        text: error.message || "Error fetching bot details",
         backdrop: false,
       });
     } finally {
