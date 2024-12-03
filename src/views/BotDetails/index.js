@@ -248,22 +248,7 @@ const BotDetails = () => {
               </div>
             </div>
           </section>
-          <section className={styles.fourthSection}>
-            <div className={styles.logsContainer}>
-              <div className={styles.text}>
-                <span>Logs</span>
-                {/* <CustomTooltip title="" content="">
-                  <HelpOutline fontSize="small" />
-                </CustomTooltip> */}
-              </div>
-              <div className={styles.logs}>
-                <div>
-                  <p>{logs}</p>
-                </div>
-              </div>
-            </div>
-          </section>
-          <section className={styles.thirdSection}>
+          <section className={styles.thirdSection} style={{paddingTop: 0}}>
             <div className={styles.promptContainer}>
               <div className={styles.text}>
                 <span>Whitelist keywords</span>
@@ -298,6 +283,21 @@ const BotDetails = () => {
                   </div>
                   ))}
                   </div>
+              </div>
+            </div>
+          </section>
+          <section className={styles.fourthSection}>
+            <div className={styles.logsContainer}>
+              <div className={styles.text}>
+                <span>Logs</span>
+                {/* <CustomTooltip title="" content="">
+                  <HelpOutline fontSize="small" />
+                </CustomTooltip> */}
+              </div>
+              <div className={styles.logs}>
+                <div>
+                  <p>{logs}</p>
+                </div>
               </div>
             </div>
           </section>
