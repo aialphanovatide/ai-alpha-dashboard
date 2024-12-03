@@ -172,6 +172,12 @@
   overflow-x: hidden;
 }
 
+.prompt p {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  overflow-x: hidden;
+}
+
 .keywordsSubcontainer>div {
   flex-wrap: wrap;
   display: flex;
