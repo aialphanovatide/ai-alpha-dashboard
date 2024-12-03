@@ -345,31 +345,33 @@ const ContentCreation = () => {
             />
             <hr />
             <p>Choose date and time to post analysis:</p>
-            <DatePicker
-              selected={selectedDate}
-              onChange={handleDateChange}
-              showTimeSelect
-              timeFormat="HH:mm"
-              timeIntervals={1}
-              dateFormat="Pp"
-              required
-              placeholderText="Select date and time"
-            />
-            <button
-              className="schButton"
-              onClick={handleScheduleSubmit}
-              disabled={
-                !selectedCategory ||
-                !selectedCoinID ||
-                !selectedDate ||
-                !title ||
-                !selectedSectionID ||
-                !content ||
-                isSubmitting
-              }
-            >
-              Schedule Post
-            </button>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <DatePicker
+                selected={selectedDate}
+                onChange={handleDateChange}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={1}
+                dateFormat="Pp"
+                required
+                placeholderText="Select date and time"
+              />
+              <button
+                className="schButton"
+                onClick={handleScheduleSubmit}
+                disabled={
+                  !selectedCategory ||
+                  !selectedCoinID ||
+                  !selectedDate ||
+                  !title ||
+                  !selectedSectionID ||
+                  !content ||
+                  isSubmitting
+                }
+              >
+                Schedule Post
+              </button>
+            </div>
           </div>
         )}
       </div>
