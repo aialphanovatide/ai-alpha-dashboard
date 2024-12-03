@@ -335,13 +335,13 @@ const ContentCreation = () => {
         {showPostLaterSection && (
           <div className="postLaterSection">
             <hr />
-            <p>Set a Title:</p>
+            <p>Set an Identifier:</p>
             <input
               required
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter post title"
+              placeholder='e.g. "BTC Analysis"'
             />
             <hr />
             <p>Choose date and time to post analysis:</p>
