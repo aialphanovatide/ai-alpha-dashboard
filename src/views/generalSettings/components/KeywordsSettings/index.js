@@ -51,6 +51,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
     } else {
       Swal.fire({ text: response.error, icon: "error", customClass: "swal", backdrop: false });
     }
+    await storeKeywords(coins);
     setErrorMessage(null);
     setKeywords([]);
     setIsLoading(false);
