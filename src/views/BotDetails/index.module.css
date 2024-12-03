@@ -25,9 +25,13 @@
 
 .returnBtn {
   border: none;
-  background: transparent;
+  background: #f3f4f7;
   width: fit-content;
   /* color: #A3A3A3; */
+  border-radius: 50%;
+  aspect-ratio: 1;
+  position: fixed;
+  top: 11%;
 }
 
 .firstSection,
@@ -40,7 +44,7 @@
 
 .firstSection {
   padding-bottom: 30px;
-  padding-top: 10px;
+  padding-top: 35px;
   align-items: center;
 }
 
