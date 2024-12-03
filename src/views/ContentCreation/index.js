@@ -55,9 +55,9 @@ const ContentCreation = () => {
       setCoinBots(response.data);
     } catch (error) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: error.message || 'Failed to fetch coins',
+        icon: "error",
+        title: "Error",
+        text: error.message || "Failed to fetch coins",
         customClass: "swal",
         backdrop: false,
       });
@@ -310,19 +310,28 @@ const ContentCreation = () => {
           onSuccess={setIsAnalysisCreated}
           onContentChange={handleContentChange}
         />
-        <button
-          className="submitAnalisys"
-          onClick={handleSubmit}
-          disabled={isSubmitting || !content}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: 5,
+            margin: "auto",
+          }}
         >
-          {isSubmitting ? "Posting..." : "Post"}
-        </button>
-        <button
-          className="postLaterButton"
-          onClick={() => setShowPostLaterSection(true)}
-        >
-          Post Later
-        </button>
+          <button
+            className="submitAnalisys"
+            onClick={handleSubmit}
+            disabled={isSubmitting || !content}
+          >
+            {isSubmitting ? "Posting..." : "Post"}
+          </button>
+          <button
+            className="postLaterButton"
+            onClick={() => setShowPostLaterSection(true)}
+          >
+            Post Later
+          </button>
+        </div>
         {showPostLaterSection && (
           <div className="postLaterSection">
             <hr />
