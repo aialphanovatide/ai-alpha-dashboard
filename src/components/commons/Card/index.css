@@ -64,3 +64,11 @@
   height: 200px;
   object-fit: cover;
 }
+
+.topStoryButton {
+  border: none;
+  background: transparent;
+  height: fit-content;
+  width: fit-content;
+  color: #FF8739;
+}
