@@ -65,7 +65,8 @@
     "react-tabs": "^6.0.2",
     "redux": "4.2.1",
     "simplebar-react": "^3.2.4",
-    "sweetalert2": "^11.10.5"
+    "sweetalert2": "^11.10.5",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",

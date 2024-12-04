@@ -209,25 +209,16 @@ const toggleCategoryState = async (category_id, isActive) => {
       {
         method: "POST",
         headers,
-        body: {
-          action: isActive ? "deactivate" : "activate",
-        },
       },
     );
 
     const data = await response.json();
 
-    if (response.ok) {
-      return {
-        success: true,
-        message: `Category ${
-          isActive ? "desactivated" : "activated"
-        } successfully`,
-        data,
-      };
-    } else {
-      return { success: false, error: data.error || "Unknown error occurred" };
+    if (!data.success) {
+      throw new Error(data.error || "Unknown error occurred");
     }
+
+    return { success: true, data };
   } catch (error) {
     return {
       success: false,

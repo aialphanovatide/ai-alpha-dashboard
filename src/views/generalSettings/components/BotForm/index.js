@@ -6,7 +6,7 @@ import {
   cilX,
 } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { createRef, useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./index.module.css";
 import { HelpOutline } from "@mui/icons-material";
 import { ReactComponent as OpenLock } from "../../../../assets/icons/openLock.svg";
@@ -21,15 +21,16 @@ import SpinnerComponent from "src/components/Spinner";
 import defaultImg from "../../../../assets/brand/logo.png";
 import ReactDOMServer from "react-dom/server";
 import ErrorList from "src/components/ErrorList";
+import uploadIcon from "../../../../assets/icons/uploadIcon.svg";
+import * as XSLX from "xlsx";
 
 const BotForm = ({ coin, setCategories }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectCategories, setSelectCategories] = useState([]);
-  const [newsBotsCategories, setNewsBotsCategories] = useState([]);
   const [isWhitelistFileUploading, setWhitelistFileUploading] = useState(false);
   const [isBlacklistFileUploading, setBlacklistFileUploading] = useState(false);
-  const keyWordInputRef = React.createRef();
+  const keyWordInputRef = createRef();
   const [blacklist, setBlacklist] = useState([]);
   const [blacklistKeyword, setBlacklistKeyword] = useState("");
   const [keywords, setKeywords] = useState([]);
@@ -49,8 +50,26 @@ const BotForm = ({ coin, setCategories }) => {
     dalle_prompt: "",
     prompt: "",
     run_frequency: 20,
-    // url: "",
+    url: "",
   });
+
+  const downloadFile = (e, isBlacklist) => {
+    const fileTitle = isBlacklist ? "Blacklist" : "Whitelist";
+    const keywordsArray = isBlacklist ? blacklist : keywords;
+
+    const worksheet = XSLX.utils.aoa_to_sheet([
+      [fileTitle],
+      ...keywordsArray.map((item) => [item]),
+    ]);
+
+    const workbook = XSLX.utils.book_new();
+    XSLX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    const max_width = keywordsArray.reduce((w, r) => Math.max(w, r.length), 10);
+    worksheet["!cols"] = [ { wch: max_width - 5} ];
+
+    XSLX.writeFile(workbook, `${fileTitle}.xlsx`);
+  };
 
   const onFileUpload = async (event, isBlacklist) => {
     const setFileUploading = isBlacklist
@@ -131,6 +150,7 @@ const BotForm = ({ coin, setCategories }) => {
         dalle_prompt: response.data.dalle_prompt,
         prompt: response.data.prompt,
         run_frequency: response.data.run_frequency,
+        url: response.data.site?.url,
         iconPreview: formData.iconPreview
           ? formData.iconPreview
           : response.data.icon
@@ -153,9 +173,7 @@ const BotForm = ({ coin, setCategories }) => {
     try {
       setIsLoading(true);
       const categories = await getCategories();
-      const newsBotsCategories = await getCategories(true);
       setSelectCategories(categories);
-      setNewsBotsCategories(newsBotsCategories);
     } catch (err) {
       Swal.fire({
         text: err.message || "Error fetching categories",
@@ -166,7 +184,7 @@ const BotForm = ({ coin, setCategories }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [setSelectCategories, setNewsBotsCategories]);
+  }, [setSelectCategories]);
 
   useEffect(() => {
     fetchCategories();
@@ -329,6 +347,7 @@ const BotForm = ({ coin, setCategories }) => {
         category_id: formData.bot_category_id,
         dalle_prompt: formData.dalle_prompt,
         name: formData.name,
+        url: formData.url,
         prompt: formData.prompt,
         run_frequency: parseInt(formData.run_frequency),
         whitelist: keywords.join(","),
@@ -370,7 +389,7 @@ const BotForm = ({ coin, setCategories }) => {
           run_frequency: 20,
           blacklist: [],
           keywords: [],
-          // url: "",
+          url: "",
         });
         setBlacklist([]);
         setKeywords([]);
@@ -391,6 +410,12 @@ const BotForm = ({ coin, setCategories }) => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const filteredKeywords = (keywordsList, searchTerm) => {
+    return keywordsList.filter((kw) =>
+      (kw.toLowerCase().startsWith(searchTerm.toLowerCase())),
+    );
   };
 
   return (
@@ -484,7 +509,7 @@ const BotForm = ({ coin, setCategories }) => {
               ))}
             </select>
           </div>
-          {/* <div className={styles.section}>
+          <div className={styles.section}>
           <div className={styles.labelContainer}>
             <label>
               <strong>URL</strong>
@@ -506,7 +531,7 @@ const BotForm = ({ coin, setCategories }) => {
             type="url"
             value={formData.url}
           />
-        </div> */}
+        </div>
           <div className={styles.section}>
             <div
               style={{
@@ -536,10 +561,14 @@ const BotForm = ({ coin, setCategories }) => {
                   <CIcon icon={cilFile} />
                   {isWhitelistFileUploading ? "Uploading..." : "Upload .xsl"}
                 </label>
-                {/* <button className={styles.button}>
-                <CIcon icon={cilDataTransferDown} />
-                Download
-              </button> */}
+                <button
+                  className={styles.button}
+                  onClick={downloadFile}
+                  disabled={keywords.length < 1}
+                >
+                  <CIcon icon={cilDataTransferDown} />
+                  Download
+                </button>
                 <CustomTooltip
                   title={"Create a bot"}
                   content={
@@ -570,7 +599,7 @@ const BotForm = ({ coin, setCategories }) => {
               className={styles.keywordsContainer}
               id="whitelist-keywords-container"
             >
-              {keywords?.map((keyword, index) => (
+              {filteredKeywords(keywords, whitelistKeyword)?.map((keyword, index) => (
                 <div
                   className={styles.keyword}
                   key={index}
@@ -613,10 +642,14 @@ const BotForm = ({ coin, setCategories }) => {
                   <CIcon icon={cilFile} />
                   {isBlacklistFileUploading ? "Uploading..." : "Upload .xsl"}
                 </label>
-                {/* <button className={styles.button}>
-                <CIcon icon={cilDataTransferDown} />
-                Download
-              </button> */}
+                <button
+                  className={styles.button}
+                  onClick={(e) => downloadFile(e, true)}
+                  disabled={blacklist.length < 1}
+                >
+                  <CIcon icon={cilDataTransferDown} />
+                  Download
+                </button>
                 <CustomTooltip
                   title={"Create a bot"}
                   content={
@@ -646,7 +679,7 @@ const BotForm = ({ coin, setCategories }) => {
               className={styles.keywordsContainer}
               id="blacklist-keywords-container"
             >
-              {blacklist?.map((keyword, index) => (
+              {filteredKeywords(blacklist, blacklistKeyword)?.map((keyword, index) => (
                 <div
                   className={styles.keyword}
                   key={index}
@@ -740,17 +773,24 @@ const BotForm = ({ coin, setCategories }) => {
               </label>
               <HelpOutline />
             </div>
-            <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
-              <div className={styles.divInput}>
-                <input
-                  type="file"
-                  accept=".svg"
-                  onChange={handleImageChange}
-                  className={styles.imgPicker}
-                  id="botform-icon-input"
-                />
+              <div className={styles.divInput} id="botForm-img-input">
+                <div className={styles.imgPicker} id="botForm-img-input-button">
+                  <input
+                    type="file"
+                    accept=".svg"
+                    onChange={handleImageChange}
+                    style={{ display: "none" }}
+                    id="botform-icon-input"
+                  />
+                  <label htmlFor="botform-icon-input">
+                    <img src={uploadIcon} alt="icon" style={{ height: 16 }} />
+                    Upload
+                  </label>
+                </div>
+                <span style={formData.icon?.name? {color: 'black'} : {}}>
+                  {formData.icon ? formData.icon.name : "No files selected"}
+                </span>
               </div>
-            </div>
           </div>
           <div className={styles.section}>
             <div className={styles.labelContainer}>

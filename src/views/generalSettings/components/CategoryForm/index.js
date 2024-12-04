@@ -15,6 +15,7 @@ import {
 import Swal from "sweetalert2";
 import SpinnerComponent from "src/components/Spinner";
 import defaultImg from "../../../../assets/brand/logo.png";
+import uploadIcon from "../../../../assets/icons/uploadIcon.svg";
 
 const CategoryForm = ({ category, setCategories }) => {
   const [error, setError] = useState("");
@@ -263,16 +264,26 @@ const CategoryForm = ({ category, setCategories }) => {
                 <HelpOutline fontSize="small" />
               </CustomTooltip>
             </div>
-            <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
-              <div className={styles.divInput}>
+            <div className={styles.divInput} id="categoryForm-img-input">
+              <div
+                className={styles.imgPicker}
+                id="categoryForm-img-input-button"
+              >
                 <input
                   type="file"
                   accept=".svg"
                   onChange={handleImageChange}
-                  className={styles.imgPicker}
+                  style={{ display: "none" }}
                   id="categoryform-icon-input"
                 />
+                <label htmlFor="categoryform-icon-input">
+                  <img src={uploadIcon} alt="icon" style={{ height: 16 }} />
+                  Upload
+                </label>
               </div>
+              <span style={formData.icon?.name ? { color: "black" } : {}}>
+                {formData.icon ? formData.icon.name : "No files selected"}
+              </span>
             </div>
           </div>
           <div className={styles.section}>

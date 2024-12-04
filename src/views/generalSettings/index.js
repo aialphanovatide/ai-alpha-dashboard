@@ -48,7 +48,7 @@ const GeneralSettings = () => {
     <div className="bot-settings-container">
       <h2>
         <CIcon icon={cilSitemap} size="3xl" />
-        General settings
+        General Settings
       </h2>
       <div className="settings-container">
         {/* <div className="treshold" style={{ width: "15%" }}>

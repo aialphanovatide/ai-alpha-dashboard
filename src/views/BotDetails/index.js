@@ -97,14 +97,19 @@ const BotDetails = () => {
     try {
       setIsFetching(true);
       const bot = await getBot(bot_name, "name");
+
+      if (!bot.success) {
+        throw new Error(bot.error);
+      }
+
       setBot(bot.data);
-      setIsItemActive(bot.data.is_active);
-      await fetchBotLogs(bot.data.id);
+      setIsItemActive(bot.data?.is_active);
+      await fetchBotLogs(bot.data?.id);
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Something went wrong!",
-        text: error.message,
+        text: error.message || "Error fetching bot details",
         backdrop: false,
       });
     } finally {
@@ -240,6 +245,44 @@ const BotDetails = () => {
                 <div>
                   <p>{bot?.dalle_prompt}</p>
                 </div>
+              </div>
+            </div>
+          </section>
+          <section className={styles.thirdSection} style={{paddingTop: 0}}>
+            <div className={styles.promptContainer}>
+              <div className={styles.text}>
+                <span>Whitelist keywords</span>
+              </div>
+              <div className={styles.keywordsSubcontainer} id="bot-detail-prompt">
+                <div >
+                {bot?.keywords?.map((keyword, index) => (
+                    <div
+                    className={styles.keyword}
+                    key={index}
+                    id="botform-whitelist-keyword"
+                  >
+                    <span>{keyword}</span>
+                  </div>
+                  ))}
+                  </div>
+              </div>
+            </div>
+            <div className={styles.promptContainer}>
+              <div className={styles.text}>
+                <span>Blacklist Keywords</span>
+              </div>
+              <div className={styles.keywordsSubcontainer} id="bot-detail-prompt">
+                <div>
+                  {bot?.blacklist?.map((keyword, index) => (
+                    <div
+                    className={styles.keyword}
+                    key={index}
+                    id="botform-whitelist-keyword"
+                  >
+                    <span>{keyword}</span>
+                  </div>
+                  ))}
+                  </div>
               </div>
             </div>
           </section>
