@@ -19,7 +19,6 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [botsIDs, setBotsIDs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isKeywordChecked, setIsKeywordChecked] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -147,12 +146,11 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
   };
 
   const onKeywordChange = (keyword) => {
-    if (isKeywordChecked) {
+    if (keywords.includes(keyword)) {
       setKeywords(keywords.filter((kw) => kw !== keyword));
     } else {
       setKeywords((prev) => [...prev, keyword]);
     }
-    setIsKeywordChecked(!isKeywordChecked);
   };
 
   useEffect(() => {
