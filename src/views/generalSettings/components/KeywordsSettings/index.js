@@ -30,7 +30,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
 
     if (response.success) {
       Swal.fire({
-        text: `${isBlacklist ? 'Blacklist' : 'Whitelist'} updated successfully`,
+        text: `${isBlacklist ? "Blacklist" : "Whitelist"} updated successfully`,
         icon: "success",
         customClass: "swal",
         backdrop: false,
@@ -48,7 +48,12 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
         }
       }
     } else {
-      Swal.fire({ text: response.error, icon: "error", customClass: "swal", backdrop: false });
+      Swal.fire({
+        text: response.error,
+        icon: "error",
+        customClass: "swal",
+        backdrop: false,
+      });
     }
     setErrorMessage(null);
     setKeywords([]);
@@ -94,13 +99,6 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
     setErrorMessage(null);
   };
 
-  const removeKeyword = (e, index) => {
-    e.preventDefault();
-    setKeywords((prevKeywords) =>
-      prevKeywords.filter((keyword, i) => i !== index),
-    );
-  };
-
   const storeKeywords = async (coins) => {
     setIsLoading(true);
     for (const coin of coins) {
@@ -120,7 +118,12 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
       updateKeywords(bot.keywords, setWhitelistKeywords, whitelistKeywords);
       updateKeywords(bot.blacklist, setBlacklistKeywords, blacklistKeywords);
     } else {
-      Swal.fire({ text: response.error, icon: "error", customClass: "swal", backdrop: false });
+      Swal.fire({
+        text: response.error,
+        icon: "error",
+        customClass: "swal",
+        backdrop: false,
+      });
     }
     setIsLoading(false);
   };
@@ -219,7 +222,11 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                       isRemove ? "" : "Apple, Communication, Notebook..."
                     }
                     value={isRemove ? searchTerm : keyword}
-                    onChange={(e) => isRemove ? setSearchTerm(e.target.value) : setKeyword(e.target.value)}
+                    onChange={(e) =>
+                      isRemove
+                        ? setSearchTerm(e.target.value)
+                        : setKeyword(e.target.value)
+                    }
                   />
                   {isRemove ? (
                     <button style={{ textAlign: "right" }}>
@@ -236,13 +243,20 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
                     ? "All Keywords will be removed from the selected coins."
                     : "All Keywords will be added to the selected coins"}
                 </span>
-                <div className={styles.keyWordsContainer} id="keywordsSettings-keywordsContainer">
+                <div
+                  className={styles.keyWordsContainer}
+                  id="keywordsSettings-keywordsContainer"
+                >
                   {filteredKeywordsList?.map((keyword, index) => (
                     <div
                       className={styles.keyword}
                       key={index}
                       id="keyword-tag"
-                      style={!keywords.includes(keyword) ? {background: '#d9d9d9'} : {}}
+                      style={
+                        !keywords.includes(keyword)
+                          ? { background: "#d9d9d9" }
+                          : {}
+                      }
                     >
                       <input
                         type="checkbox"
