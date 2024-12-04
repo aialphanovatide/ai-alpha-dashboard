@@ -160,9 +160,14 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
   }, [coins]);
 
   const filteredKeywords = (keywordsList) => {
-    return keywordsList.filter((kw) =>
-      (kw.toLowerCase().startsWith(searchTerm.toLowerCase()) || keywords.includes(kw)),
+    const filteredKws = keywordsList.filter(
+      (kw) =>
+        kw.toLowerCase().startsWith(searchTerm.toLowerCase()) &&
+        !keywords.includes(kw),
     );
+    keywordsList = keywordsList.filter((kw) => !keywords.includes(kw));
+    let result = searchTerm.trim() === "" ? keywordsList : filteredKws;
+    return keywords.sort().concat(result);
   };
 
   const filteredKeywordsList = isRemove
