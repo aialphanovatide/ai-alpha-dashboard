@@ -7,7 +7,10 @@ import defaultImg from "src/assets/brand/logo.png";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import Swal from "sweetalert2";
-import { deleteFromTopStories, markAsTopStory } from "src/services/topStoriesService";
+import {
+  deleteFromTopStories,
+  markAsTopStory,
+} from "src/services/topStoriesService";
 
 const Card = (props) => {
   const { data, onClick, onDelete, onImgLoad } = props;
@@ -23,8 +26,8 @@ const Card = (props) => {
       setTopStoryLoading(true);
 
       const response = isTopStory
-      ? await deleteFromTopStories(data.id)
-      : await markAsTopStory(data.id);
+        ? await deleteFromTopStories(data.id)
+        : await markAsTopStory(data.id);
 
       if (!response.success) {
         throw new Error(response.error);
@@ -37,7 +40,7 @@ const Card = (props) => {
         title: "Oops...",
         text: error.message || "Error marking as top story",
         backdrop: false,
-        customClass: 'swal',
+        customClass: "swal",
       });
     } finally {
       setTopStoryLoading(false);
@@ -45,26 +48,25 @@ const Card = (props) => {
   };
 
   return (
-    <div
-      className="search-tool-item"
-      style={{ width: "100%" }}
-    >
-      <img
-        className={`img-modal-news-card`}
-        src={data.image}
-        onLoad={onImgLoad}
-        alt="news"
-        onError={(e) => (e.target.src = defaultImg)}
-      />
-      <h6 style={{ margin: 10 }}>
-        <strong>{data.title || "No Title"}</strong>
-      </h6>
-      {data.reason && <p>{data.reason}</p>}
-      <p dangerouslySetInnerHTML={{ __html: data.content || "No Content" }} />
-      {data.comment && (
-        <span style={{ paddingInline: 10 }}>{data.comment}</span>
-      )}
-      <div className="details-container" onClick={onClick}>
+    <div className="search-tool-item" style={{ width: "100%" }}>
+      <div onClick={onClick}>
+        <img
+          className={`img-modal-news-card`}
+          src={data.image}
+          onLoad={onImgLoad}
+          alt="news"
+          onError={(e) => (e.target.src = defaultImg)}
+        />
+        <h6 style={{ margin: 10 }}>
+          <strong>{data.title || "No Title"}</strong>
+        </h6>
+        {data.reason && <p>{data.reason}</p>}
+        <p dangerouslySetInnerHTML={{ __html: data.content || "No Content" }} />
+        {data.comment && (
+          <span style={{ paddingInline: 10 }}>{data.comment}</span>
+        )}
+      </div>
+      <div className="details-container">
         {data.date && (
           <span
             style={{
