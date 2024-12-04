@@ -11,6 +11,7 @@ import {
   deleteFromTopStories,
   markAsTopStory,
 } from "src/services/topStoriesService";
+import CustomTooltip from "src/components/CustomTooltip";
 
 const Card = (props) => {
   const { data, onClick, onDelete, onImgLoad } = props;
@@ -91,13 +92,17 @@ const Card = (props) => {
               }}
             ></div>
           )}
-          <button
-            className="topStoryButton"
-            onClick={handleTopStoryButton}
-            disabled={isTopStoryLoading}
+          <CustomTooltip
+            content={!isTopStory ? "Mark as top story" : "Unmark as top story"}
           >
-            {isTopStory ? <StarIcon /> : <StarBorderIcon />}
-          </button>
+            <button
+              className="topStoryButton"
+              onClick={handleTopStoryButton}
+              disabled={isTopStoryLoading}
+            >
+              {isTopStory ? <StarIcon /> : <StarBorderIcon />}
+            </button>
+          </CustomTooltip>
           {onDelete && (
             <CIcon
               size="lg"
