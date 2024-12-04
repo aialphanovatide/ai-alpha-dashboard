@@ -1,18 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./index.css";
 import { AccessTime } from "@mui/icons-material";
 import CIcon from "@coreui/icons-react";
 import { cilTrash } from "@coreui/icons";
 import defaultImg from "src/assets/brand/logo.png";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import Swal from "sweetalert2";
+import { deleteFromTopStories, markAsTopStory } from "src/services/topStoriesService";
 
 const Card = (props) => {
   const { data, onClick, onDelete, onImgLoad } = props;
+  const [isTopStory, setIsTopStory] = useState(false);
+  const [isTopStoryLoading, setTopStoryLoading] = useState(false);
+
+  useEffect(() => {
+    setIsTopStory(data.is_top_story);
+  }, [data]);
+
+  const handleTopStoryButton = async () => {
+    try {
+      setTopStoryLoading(true);
+
+      const response = isTopStory
+      ? await deleteFromTopStories(data.id)
+      : await markAsTopStory(data.id);
+
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+
+      setIsTopStory(!isTopStory);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message || "Error marking as top story",
+        backdrop: false,
+        customClass: 'swal',
+      });
+    } finally {
+      setTopStoryLoading(false);
+    }
+  };
 
   return (
     <div
       className="search-tool-item"
       style={{ width: "100%" }}
-      onClick={onClick}
     >
       <img
         className={`img-modal-news-card`}
@@ -29,7 +64,7 @@ const Card = (props) => {
       {data.comment && (
         <span style={{ paddingInline: 10 }}>{data.comment}</span>
       )}
-      <div className="details-container">
+      <div className="details-container" onClick={onClick}>
         {data.date && (
           <span
             style={{
@@ -44,9 +79,6 @@ const Card = (props) => {
           </span>
         )}
         <div className="tags-container">
-          {data.is_top_story && !onDelete && (
-            <span className="tag top-story">TOP STORY</span>
-          )}
           {data.tagColor && (
             <div
               style={{
@@ -57,6 +89,13 @@ const Card = (props) => {
               }}
             ></div>
           )}
+          <button
+            className="topStoryButton"
+            onClick={handleTopStoryButton}
+            disabled={isTopStoryLoading}
+          >
+            {isTopStory ? <StarIcon /> : <StarBorderIcon />}
+          </button>
           {onDelete && (
             <CIcon
               size="lg"
