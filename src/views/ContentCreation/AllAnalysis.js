@@ -33,7 +33,7 @@ const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
         style={{
           margin: 0,
           borderRadius: 0,
-          with: "inherit",
+          with: '30%',
           height: "100%",
           borderBottomLeftRadius: 5,
           borderTopLeftRadius: 5,
@@ -47,7 +47,7 @@ const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
           gap: "5%",
           display: "flex",
           flexDirection: "column",
-          width: "100%",
+          width: "70%",
         }}
       >
         <div
