@@ -20,14 +20,20 @@ const EditModal = ({ item, onSave, onClose, section_id }) => {
   };
 
   return (
-    <Modal size={'xl'} show={true} onHide={onClose} className="editModal" backdrop={false} >
+    <Modal
+      size={"xl"}
+      show={true}
+      onHide={onClose}
+      className="editModal"
+      backdrop={false}
+    >
       <Modal.Header closeButton>
         <Modal.Title>Edit Analysis</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <RichTextEditor
-          initialContent={editedContent} 
-          onContentChange={handleContentChange} 
+          initialContent={editedContent}
+          onContentChange={handleContentChange}
           className="editContentArea"
         />
       </Modal.Body>
