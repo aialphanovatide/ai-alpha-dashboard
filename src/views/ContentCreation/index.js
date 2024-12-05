@@ -269,6 +269,20 @@ const ContentCreation = () => {
     }
   };
 
+  const isFormValid = useMemo(
+    () =>
+      selectedCoinID &&
+      selectedCategory &&
+      selectedSectionID &&
+      content &&
+    [
+      selectedCoinID,
+      selectedCategory,
+      selectedSectionID,
+      content,
+    ],
+  );
+
   return (
     <div className="analysisMain">
       <Title>Content Creation</Title>
@@ -321,7 +335,7 @@ const ContentCreation = () => {
           <button
             className="submitAnalisys"
             onClick={handleSubmit}
-            disabled={isSubmitting || !content}
+            disabled={isSubmitting || !isFormValid}
           >
             {isSubmitting ? "Posting..." : "Post"}
           </button>
@@ -360,13 +374,10 @@ const ContentCreation = () => {
                 className="schButton"
                 onClick={handleScheduleSubmit}
                 disabled={
-                  !selectedCategory ||
-                  !selectedCoinID ||
+                  isSubmitting ||
+                  !isFormValid ||
                   !selectedDate ||
-                  !title ||
-                  !selectedSectionID ||
-                  !content ||
-                  isSubmitting
+                  !title
                 }
               >
                 Schedule Post
