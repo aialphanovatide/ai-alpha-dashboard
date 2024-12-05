@@ -160,6 +160,7 @@ const AllAnalysis = ({
       });
       fetchAnalysis();
     } catch (error) {
+      closeEditModal();
       Swal.fire({
         icon: "error",
         title: error.message || "An error occurred",
