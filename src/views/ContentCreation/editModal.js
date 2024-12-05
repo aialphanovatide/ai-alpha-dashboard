@@ -11,7 +11,8 @@ const EditModal = ({ item, onSave, onClose, section_id }) => {
   }, [item]);
 
   const handleSave = async () => {
-    await onSave(item.analysis_id, section_id, editedContent);
+    let id = item.analysis_id || item.narrative_trading_id;
+    await onSave(id, section_id, editedContent);
   };
 
   const handleContentChange = (content) => {
@@ -19,7 +20,7 @@ const EditModal = ({ item, onSave, onClose, section_id }) => {
   };
 
   return (
-    <Modal size={'xl'} show={true} onHide={onClose} className="editModal">
+    <Modal size={'xl'} show={true} onHide={onClose} className="editModal" backdrop={false} >
       <Modal.Header closeButton>
         <Modal.Title>Edit Analysis</Modal.Title>
       </Modal.Header>
