@@ -7,7 +7,7 @@ const EditModal = ({ item, onSave, onClose, section_id }) => {
   const [editedContent, setEditedContent] = useState("");
 
   useEffect(() => {
-    setEditedContent(item.analysis);
+    setEditedContent(item.analysis || item.narrative_trading);
   }, [item]);
 
   const handleSave = async () => {
