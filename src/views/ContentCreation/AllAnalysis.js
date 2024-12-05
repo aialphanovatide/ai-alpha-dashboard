@@ -14,7 +14,7 @@ import defaultImg from "../../assets/brand/logo.png";
 const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
   const handleDeleteClick = (event) => {
     event.stopPropagation();
-    onDelete(item.analysis_id);
+    onDelete(item.analysis_id || item.narrative_trading_id);
   };
 
   const handleItemClick = () => {
@@ -176,9 +176,9 @@ const AllAnalysis = ({
       }  ${section_name} Analyses`}</h4>
       {items && items.length > 0 ? (
         <ul className="allAnalysisUL">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <Item
-              key={item.analysis_id}
+              key={index}
               item={item}
               onDelete={handleDelete}
               openEditModal={openEditModal}
