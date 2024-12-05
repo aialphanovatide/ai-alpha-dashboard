@@ -1,76 +1,161 @@
-import React, { useEffect, useState, useCallback } from "react";
-import DatePicker from "react-datepicker";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import "quill/dist/quill.snow.css";
-import config from "../../config";
 import DropdownMenu from "../helpers/selectCoin/SelectCoin";
 import "./index.css";
 import RichTextEditor from "../helpers/textEditor/textEditor";
 import Swal from "sweetalert2";
-import { AllAnalysis } from "./AllAnalysis";
-import GeneralAnalysis from "./GeneralAnalysis";
-import ScheduledJob from "./ScheduledJob";
 import CategoryDropdown from "./CategoryDropdown";
 import Title from "src/components/commons/Title";
-import NoData from "src/components/NoData";
+import { getSections } from "src/services/sectionService";
+import {
+  createScheduleAnalysis,
+  deleteScheduledAnalysis,
+  getAnalyses,
+  getCoinAnalysis,
+  getScheduledAnalyses,
+  postAnalysis,
+} from "src/services/contentCreationService";
+import { AllAnalysis } from "./AllAnalysis";
+import DatePicker from "react-datepicker";
+import ScheduledJob from "./ScheduledJob";
+import { getCoins } from "src/services/coinService";
 
 const ContentCreation = () => {
-  const [selectedCoin, setSelectedCoin] = useState(null);
+  const [selectedCoinID, setSelectedCoinID] = useState(null);
   const [selectedImage, setSelectedImage] = useState([]);
   const [content, setContent] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [items, setItems] = useState([]);
   const [isAnalysisCreated, setIsAnalysisCreated] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSectionID, setSelectedSectionID] = useState("");
+  const [sections, setSections] = useState([]);
+  const [isFetchingSections, setIsFetchingSections] = useState(true);
+  const [items, setItems] = useState([]);
   const [showPostLaterSection, setShowPostLaterSection] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [scheduledJobs, setScheduledJobs] = useState([]);
   const [title, setTitle] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [coinBots, setCoinBots] = useState([]);
+
+  const selectedSection = useMemo(() => {
+    return sections.find((section) => section.id == selectedSectionID);
+  }, [sections, selectedSectionID]);
+
+  const selectedCoin = useMemo(() => {
+    return coinBots.find((section) => section.bot_id == selectedCoinID);
+  }, [coinBots, selectedCoinID]);
+
+  const fetchCoins = useCallback(async () => {
+    try {
+      const response = await getCoins();
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+      setCoinBots(response.data);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message || "Failed to fetch coins",
+        customClass: "swal",
+        backdrop: false,
+      });
+    }
+  }, []);
 
   const deleteScheduled = async (jobId) => {
     try {
-      const response = await fetch(
-        `${config.BASE_URL}/delete_scheduled_job/${jobId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-          },
-        },
-      );
+      const response = await deleteScheduledAnalysis(jobId);
 
-      if (response.ok) {
-        Swal.fire({
-          icon: "success",
-          title: "Scheduled Post deleted successfully",
-          showConfirmButton: false,
-          timer: 1000,
-          customClass: "swal",
-        });
-        // Actualiza la lista de trabajos programados después de eliminar uno
-        handleGetJobs();
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Scheduled Post cannot delete successfully",
-          showConfirmButton: false,
-          timer: 1000,
-          customClass: "swal",
-        });
-        console.error("Error deleting scheduled job:", response.statusText);
+      if (!response.success) {
+        throw new Error(response.error);
       }
+
+      Swal.fire({
+        icon: "success",
+        title: "Scheduled Post deleted successfully",
+        customClass: "swal",
+      });
+      handleGetJobs();
     } catch (error) {
-      console.error("Error deleting scheduled job:", error);
+      Swal.fire({
+        icon: "error",
+        title: "An error occurred",
+        text: error.message || "Failed to delete scheduled post",
+        customClass: "swal",
+      });
     }
   };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleScheduleSubmit = async () => {
+    try {
+      if (content === null || selectedDate === null || title === "") {
+        throw new Error("One or more required fields are missing");
+      }
+
+      setIsSubmitting(true);
+
+      const formDataToSchedule = new FormData();
+      formDataToSchedule.append("coin_id", selectedCoinID);
+      formDataToSchedule.append("section_id", selectedSectionID);
+      formDataToSchedule.append("category_name", selectedCategory);
+      formDataToSchedule.append("content", `Title: ${title}\n${content}`);
+      formDataToSchedule.append("scheduled_date", selectedDate.toISOString());
+
+      const response = await createScheduleAnalysis(formDataToSchedule);
+
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Analysis scheduled successfully",
+        customClass: "swal",
+      });
+      handleGetJobs();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "An error occurred",
+        text: error.message,
+        customClass: "swal",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGetJobs = async () => {
+    try {
+      const response = await getScheduledAnalyses();
+
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+
+      setScheduledJobs(response.data);
+    } catch (error) {
+      console.error("Error fetching jobs:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    handleGetJobs();
+  }, []);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
 
   const handleSelectCoin = (coinId) => {
-    setSelectedCoin(coinId);
+    setSelectedCoinID(coinId);
   };
 
   const handleImageSelect = (image) => {
@@ -81,207 +166,106 @@ const ContentCreation = () => {
     setContent(content);
   };
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  const handleSectionSelect = (event) => {
+    setSelectedSectionID(event.target.value);
   };
-  
-  const fetchCoinsByCategory = async (category) => {
-    try {
-      const response = await fetch(`${config.BASE_URL}/get_bot_ids_by_category/${category}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      const data = await response.json();
-      console.log("fetch: ",data)
-      if (response.ok) {
-        return data.data.bot_ids; // Assuming the API returns a list of coins
-      } else {
-        console.error("Error fetching coins by category:", response.statusText);
-        return [];
-      }
-    } catch (error) {
-      console.error("Error fetching coins by category:", error);
-      return [];
-    }
-  };
-  
-  // Define fetchAnalysis as a useCallback to prevent unnecessary re-renders
+
   const fetchAnalysis = useCallback(async () => {
     try {
-      const response = await fetch(
-        `${config.BASE_URL}/get_analysis/${selectedCoin}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-          },
-        },
-      );
+      const response = selectedCoinID
+        ? await getCoinAnalysis(selectedCoinID, selectedSectionID)
+        : await getAnalyses(selectedSectionID);
 
-      const data = await response.json();
-      if (response.ok) {
-        setItems(data.data);
-        setSelectedImage("");
-      } else {
-        console.error("Error fetching coin bots:", response.statusText);
+      if (!response.success) {
+        throw new Error(response.error);
       }
-    } catch (error) {
-      console.error("Error fetching coin bots:", error);
-    }
-  }, [selectedCoin]); // selectedCoin is added as a dependency
 
-  // Calls right away all the analysis when the component mounts
+      setItems(response.data);
+    } catch (error) {}
+  }, [selectedCoinID, selectedSectionID]);
+
   useEffect(() => {
+    setItems([]);
     const fetchData = async () => {
-      if (selectedCoin) {
+      if (selectedSectionID) {
         await fetchAnalysis();
       }
     };
 
     fetchData();
-  }, [selectedCoin, fetchAnalysis]); // Include fetchAnalysis as a dependency
+  }, [selectedSectionID, fetchAnalysis]);
 
-  const handleScheduleSubmit = async () => {
-    if (selectedImage === null || content === null || selectedDate === null || title === null) {
-      return Swal.fire({
-        icon: "error",
-        title: "One or more required fields are missing",
-        showConfirmButton: false,
-        timer: 1000,
-        customClass: "swal",
-      });
-    }
-  
-    setIsSubmitting(true);
-  
-    // Determine which coins to use
-    const coins = selectedCoin ? [selectedCoin] : await fetchCoinsByCategory(selectedCategory);
-    
-    for (const coin of coins) {
-      const formDataToSchedule = new FormData();
-      formDataToSchedule.append("coinBot", coin);
-      formDataToSchedule.append("content", `Title: ${title}\n${content}`);
-      formDataToSchedule.append("scheduledDate", selectedDate.toISOString());
-      formDataToSchedule.append("category_name", selectedCategory);
-  
-      try {
-        const response = await fetch(`${config.BASE_URL}/schedule_post`, {
-          method: "POST",
-          body: formDataToSchedule,
-        });
-        let responseData = await response.json();
-        if (response.ok) {
-          Swal.fire({
-            icon: "success",
-            title: responseData.message,
-            showConfirmButton: false,
-            timer: 1000,
-            customClass: "swal",
-          });
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error scheduling post",
-            showConfirmButton: false,
-            timer: 1000,
-            customClass: "swal",
-          });
-        }
-      } catch (error) {
-        Swal.fire({
-          icon: "error",
-          title: "An error occurred",
-          text: error.message,
-          showConfirmButton: false,
-          timer: 1000,
-          customClass: "swal",
-        });
-      }
-    }
-  
-    setIsSubmitting(false);
-  };
-  
-  const handleSubmit = async () => {
-    if (selectedImage === null || content === null) {
-      return Swal.fire({
-        icon: "error",
-        title: "One or more required fields are missing",
-        showConfirmButton: false,
-        timer: 1000,
-        customClass: "swal",
-      });
-    }
-  
-    setIsSubmitting(true);
-  
-    // Determine which coins to use
-    const coins = selectedCoin ? [selectedCoin] : await fetchCoinsByCategory(selectedCategory);
-    console.log('coins:',coins)
-    for (const coin of coins) {
-      const formData = new FormData();
-      formData.append("coinBot", coin);
-      formData.append("content", content);
-      formData.append("images", selectedImage);
-      formData.append("category_name", selectedCategory);
-  
-      try {
-        const response = await fetch(`${config.BASE_URL}/post_analysis`, {
-          method: "POST",
-          body: formData,
-        });
-        let responseData = await response.json();
-        if (response.ok) {
-          Swal.fire({
-            icon: "success",
-            title: responseData.message,
-            showConfirmButton: false,
-            timer: 1000,
-            customClass: "swal",
-          });
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error creating analysis",
-            showConfirmButton: false,
-            timer: 1000,
-            customClass: "swal",
-          });
-        }
-      } catch (error) {
-        Swal.fire({
-          icon: "error",
-          title: error,
-          showConfirmButton: false,
-          timer: 1000,
-          customClass: "swal",
-        });
-      }
-    }
-  
-    setIsSubmitting(false);
-  };
-
-  const handleGetJobs = async () => {
+  const fetchSections = useCallback(async () => {
     try {
-      const response = await fetch(`${config.BASE_URL}/get_scheduled_jobs`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-        },
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setScheduledJobs(data.jobs); // Actualiza el estado con los trabajos programados
-      } else {
-        console.error("Error fetching jobs:", response.statusText);
+      const response = await getSections();
+      if (!response.succes) {
+        throw new Error(response.error);
       }
+      setSections(response.data);
     } catch (error) {
-      console.error("Error fetching jobs:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message || "Failed to fetch sections",
+        customClass: "swal",
+        backdrop: false,
+      });
+    } finally {
+      setIsFetchingSections(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSections();
+    fetchCoins();
+  }, [fetchSections, fetchCoins]);
+
+  const handleSubmit = async () => {
+    // if (selectedImage === null || content === null) {
+    //   return Swal.fire({
+    //     icon: "error",
+    //     title: "One or more required fields are missing",
+    //     showConfirmButton: false,
+    //     timer: 1000,
+    //     customClass: "swal",
+    //   });
+    // }
+
+    setIsSubmitting(true);
+
+    const formData = new FormData();
+    formData.append("coin_id", selectedCoinID);
+    formData.append("content", content);
+    // formData.append("images", selectedImage);
+    formData.append("category_name", selectedCategory);
+    formData.append("section_id", selectedSectionID);
+
+    try {
+      const response = await postAnalysis(formData);
+
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Analysis posted successfully",
+        customClass: "swal",
+        backdrop: false,
+      });
+      setIsAnalysisCreated(true);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message || "Failed to post analysis",
+        customClass: "swal",
+        backdrop: false,
+      });
+    } finally {
+      setIsSubmitting(false);
+      fetchAnalysis();
     }
   };
 
@@ -291,15 +275,34 @@ const ContentCreation = () => {
       <div className="analysisSubmain">
         <div className="selectors-container">
           <DropdownMenu
-            selectedCoin={selectedCoin}
+            selectedCoin={selectedCoinID}
             onSelectCoin={handleSelectCoin}
+            items={coinBots}
           />
           <CategoryDropdown
             selectedCategory={selectedCategory}
             onSelectCategory={handleCategorySelect}
-            />
+          />
+          <div className="dropdown-container">
+            <label htmlFor="coinBotDropdown" className="label"></label>
+            <select
+              id="coinBotDropdown"
+              onChange={handleSectionSelect}
+              value={selectedSectionID || ""}
+              className="select-dropdown"
+              disabled={isFetchingSections || sections.length === 0}
+            >
+              <option value="" disabled>
+                Select Section to Show in the App
+              </option>
+              {sections.map((section, index) => (
+                <option key={index} value={section.id}>
+                  {section.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-
         <RichTextEditor
           handleImageSelect={handleImageSelect}
           images={selectedImage}
@@ -307,70 +310,93 @@ const ContentCreation = () => {
           onSuccess={setIsAnalysisCreated}
           onContentChange={handleContentChange}
         />
-        <button
-          className="submitAnalisys"
-          onClick={handleSubmit}
-          disabled={isSubmitting}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: 5,
+            margin: "auto",
+          }}
         >
-          {isSubmitting ? "Posting..." : "Post"}
-        </button>
-        <button
-          className="postLaterButton"
-          onClick={() => setShowPostLaterSection(true)}
-        >
-          Post Later
-        </button>
+          <button
+            className="submitAnalisys"
+            onClick={handleSubmit}
+            disabled={isSubmitting || !content}
+          >
+            {isSubmitting ? "Posting..." : "Post"}
+          </button>
+          <button
+            className="postLaterButton"
+            onClick={() => setShowPostLaterSection(true)}
+          >
+            Post Later
+          </button>
+        </div>
         {showPostLaterSection && (
           <div className="postLaterSection">
             <hr />
-            <p>Set a Title:</p>
+            <p>Set an Identifier:</p>
             <input
               required
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter post title"
+              placeholder='e.g. "BTC Analysis"'
             />
             <hr />
             <p>Choose date and time to post analysis:</p>
-            <DatePicker
-              selected={selectedDate}
-              onChange={handleDateChange}
-              showTimeSelect
-              timeFormat="HH:mm"
-              timeIntervals={1}
-              dateFormat="Pp"
-              required
-              placeholderText="Select date and time"
-            />
-
-            <button className="schButton" onClick={handleScheduleSubmit}>
-              Schedule Post
-            </button>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <DatePicker
+                selected={selectedDate}
+                onChange={handleDateChange}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={1}
+                dateFormat="Pp"
+                required
+                placeholderText="Select date and time"
+              />
+              <button
+                className="schButton"
+                onClick={handleScheduleSubmit}
+                disabled={
+                  !selectedCategory ||
+                  !selectedCoinID ||
+                  !selectedDate ||
+                  !title ||
+                  !selectedSectionID ||
+                  !content ||
+                  isSubmitting
+                }
+              >
+                Schedule Post
+              </button>
+            </div>
           </div>
         )}
       </div>
-      <AllAnalysis items={items} fetchAnalysis={fetchAnalysis} />
-      <GeneralAnalysis
-        success={isAnalysisCreated}
-        onSuccess={setIsAnalysisCreated}
-        fetchAnalysis={fetchAnalysis}
-      />
-      <div className="analysisSubmain">
-        <h3>Scheduled Analysis Posts</h3>
-        {scheduledJobs.length > 0 ? (
-          scheduledJobs.map((job) => (
+      {items.length > 0 && (
+        <AllAnalysis
+          items={items}
+          fetchAnalysis={fetchAnalysis}
+          section_id={selectedSectionID}
+          section_name={selectedSection?.name}
+          coin_name={selectedCoin?.name}
+        />
+      )}
+      {scheduledJobs.length > 0 && (
+        <div className="analysisSubmain">
+          <h3>Scheduled Analysis Posts</h3>
+          {scheduledJobs.map((job) => (
             <ScheduledJob
               key={job.id}
               title={title}
               job={job}
               onDelete={deleteScheduled}
             />
-          ))
-        ) : (
-          <NoData message={"No scheduled posts"}/>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
