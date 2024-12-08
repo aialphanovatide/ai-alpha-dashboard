@@ -120,6 +120,8 @@ const ContentCreation = () => {
         customClass: "swal",
       });
       handleGetJobs();
+      resetForm();
+      setIsAnalysisCreated(true);
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -220,6 +222,15 @@ const ContentCreation = () => {
     fetchCoins();
   }, [fetchSections, fetchCoins]);
 
+  const resetForm = () => {
+    setSelectedCoinID(null);
+    setSelectedCategory("");
+    setSelectedSectionID("");
+    setContent("");
+    setTitle("");
+    setSelectedDate(null);
+  };
+
   const handleSubmit = async () => {
     // if (selectedImage === null || content === null) {
     //   return Swal.fire({
@@ -254,6 +265,7 @@ const ContentCreation = () => {
         customClass: "swal",
         backdrop: false,
       });
+      resetForm();
       setIsAnalysisCreated(true);
     } catch (error) {
       Swal.fire({
