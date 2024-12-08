@@ -56,7 +56,7 @@ const postAnalysis = async (payload) => {
     const data = await response.json();
 
     if (!data.success) {
-      throw new Error(data.error);
+      throw new Error(data.error || data.message);
     }
 
     return { success: true, data: data.data };
