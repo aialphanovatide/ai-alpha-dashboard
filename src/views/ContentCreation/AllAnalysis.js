@@ -12,9 +12,22 @@ import {
 import defaultImg from "../../assets/brand/logo.png";
 
 const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
-  const [content, setContent] = useState(
-    item.analysis || item.narrative_trading,
-  );
+  const [content, setContent] = useState("");
+
+  const processContent = (item) => {
+    const content = item.analysis || item.narrative_trading;
+    const titleMatch = content.match(/Title:\s*(.*?)\r\n/);
+
+    if (titleMatch) {
+      const source = item.analysis ? item.analysis : item.narrative_trading;
+      return source.replace(titleMatch[0], "");
+    }
+    return content;
+  };
+
+  useEffect(() => {
+    setContent(processContent(item));
+  }, [item]);
 
   const handleDeleteClick = (event) => {
     event.stopPropagation();
@@ -24,17 +37,6 @@ const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
   const handleItemClick = () => {
     openEditModal(item);
   };
-
-  useEffect(() => {
-    const content = item.analysis || item.narrative_trading;
-    const titleMatch = content.match(/Title:\s*(.*?)\r\n/);
-
-    if (titleMatch) {
-      const source = item.analysis ? item.analysis : item.narrative_trading;
-      const editedContent = source.replace(titleMatch[0], "");
-      setContent(editedContent);
-    }
-  }, [item]);
 
   return (
     <li className="allAnalysisLI" onClick={handleItemClick}>
