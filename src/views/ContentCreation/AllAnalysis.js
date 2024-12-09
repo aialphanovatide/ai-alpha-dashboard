@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import CIcon from "@coreui/icons-react";
 import { cilTrash } from "@coreui/icons";
@@ -21,6 +21,20 @@ const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
     openEditModal(item);
   };
 
+  useEffect(() => {
+    const content = item.analysis || item.narrative_trading;
+    const titleMatch = content.match(/Title:\s*(.*?)\r\n/);
+
+    if (titleMatch) {
+      item.analysis
+        ? (item.analysis = item.analysis.replace(titleMatch[0], ""))
+        : (item.narrative_trading = item.narrative_trading.replace(
+            titleMatch[0],
+            "",
+          ));
+    }
+  }, [item]);
+
   return (
     <li className="allAnalysisLI" onClick={handleItemClick}>
       <img
@@ -33,7 +47,7 @@ const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
         style={{
           margin: 0,
           borderRadius: 0,
-          with: '30%',
+          with: "30%",
           height: "100%",
           borderBottomLeftRadius: 5,
           borderTopLeftRadius: 5,
