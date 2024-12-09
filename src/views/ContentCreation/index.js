@@ -223,10 +223,6 @@ const ContentCreation = () => {
   }, [fetchSections, fetchCoins]);
 
   const resetForm = () => {
-    setSelectedCoinID(null);
-    setSelectedCategory("");
-    setSelectedSectionID("");
-    setContent("");
     setTitle("");
     setSelectedDate(null);
   };
