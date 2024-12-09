@@ -60,7 +60,7 @@ const ApiUsage = () => {
       {/* CoinGecko Card */}
       <div className="api-card">
         {isCoingeckoLoading ? (
-          <SpinnerComponent style={{height: "100%"}} />
+          <SpinnerComponent/>
         ) : (
           <>
             <h4 style={{ height: "20%" }}>CoinGecko API</h4>
