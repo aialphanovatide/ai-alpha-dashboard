@@ -12,6 +12,10 @@ import {
 import defaultImg from "../../assets/brand/logo.png";
 
 const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
+  const [content, setContent] = useState(
+    item.analysis || item.narrative_trading,
+  );
+
   const handleDeleteClick = (event) => {
     event.stopPropagation();
     onDelete(item.analysis_id || item.narrative_trading_id);
@@ -26,12 +30,9 @@ const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
     const titleMatch = content.match(/Title:\s*(.*?)\r\n/);
 
     if (titleMatch) {
-      item.analysis
-        ? (item.analysis = item.analysis.replace(titleMatch[0], ""))
-        : (item.narrative_trading = item.narrative_trading.replace(
-            titleMatch[0],
-            "",
-          ));
+      const source = item.analysis ? item.analysis : item.narrative_trading;
+      const editedContent = source.replace(titleMatch[0], "");
+      setContent(editedContent);
     }
   }, [item]);
 
@@ -96,7 +97,7 @@ const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
           }}
           // className="itemContent"
           dangerouslySetInnerHTML={{
-            __html: item.analysis || item.narrative_trading,
+            __html: content,
           }}
         />
       </div>
