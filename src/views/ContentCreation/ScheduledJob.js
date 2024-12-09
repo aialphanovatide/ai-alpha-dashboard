@@ -1,6 +1,7 @@
 import React from "react";
 import CIcon from "@coreui/icons-react";
 import { cilTrash } from "@coreui/icons";
+import { formatDateTime } from "src/utils";
 
 const ScheduledJob = ({ job, onDelete }) => {
   const dateMatch = job.trigger.match(/\[(.*?)\]/);
@@ -19,7 +20,7 @@ const ScheduledJob = ({ job, onDelete }) => {
     <div className="titleSched">
       <h5>{title}</h5>
       <span>
-        <b>Run Date-Time:</b> {nextRunDateTime}
+        <b>Run Date-Time:</b> {formatDateTime(nextRunDateTime)}
       </span>
       <button onClick={handleDeleteClick}>
         <CIcon size="lg" icon={cilTrash} />
