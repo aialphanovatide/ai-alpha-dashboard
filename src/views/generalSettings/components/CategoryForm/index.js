@@ -372,10 +372,10 @@ const CategoryForm = ({ category, setCategories }) => {
           >
             {isSubmitting
               ? category
-                ? "Updating..."
+                ? "Saving..."
                 : "Creating..."
               : category
-                ? "Update"
+                ? "Save"
                 : "Create"}
           </button>
         </form>
