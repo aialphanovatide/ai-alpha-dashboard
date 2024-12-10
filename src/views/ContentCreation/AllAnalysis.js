@@ -26,7 +26,12 @@ const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
   };
 
   useEffect(() => {
-    setContent(processContent(item));
+    let content = processContent(item)
+    item.analysis
+    ? item.analysis = content
+    : item.narrative_trading = content
+
+    setContent(content);
   }, [item]);
 
   const handleDeleteClick = (event) => {
