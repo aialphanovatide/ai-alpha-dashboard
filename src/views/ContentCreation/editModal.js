@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import RichTextEditor from "../helpers/textEditor/textEditor";
 import { Modal, Button } from "react-bootstrap";
 import "./index.css";
@@ -18,6 +18,11 @@ const EditModal = ({ item, onSave, onClose, section_id }) => {
   const handleContentChange = (content) => {
     setEditedContent(content);
   };
+
+  const isFormValid = useMemo(
+    () => editedContent.replace(/<[^>]*>?/gm, "").trim().length > 0,
+    [editedContent],
+  );
 
   return (
     <Modal
@@ -44,7 +49,7 @@ const EditModal = ({ item, onSave, onClose, section_id }) => {
         <Button variant="danger" onClick={onClose}>
           Cancel
         </Button>
-        <Button variant="primary" onClick={handleSave}>
+        <Button variant="primary" onClick={handleSave} disabled={!isFormValid}>
           Save
         </Button>
       </Modal.Footer>
