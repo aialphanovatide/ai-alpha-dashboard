@@ -1,15 +1,42 @@
-import React, { useState } from "react";
-import config from "src/config";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import CIcon from "@coreui/icons-react";
 import { cilTrash } from "@coreui/icons";
 import EditModal from "./editModal";
 import NoData from "src/components/NoData";
+import { formatDateTime } from "src/utils";
+import {
+  deleteAnalysis,
+  editAnalysis,
+} from "src/services/contentCreationService";
+import defaultImg from "../../assets/brand/logo.png";
 
-const Item = ({ item, onDelete, base64Image, openEditModal }) => {
+const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
+  const [content, setContent] = useState("");
+
+  const processContent = (item) => {
+    const content = item.analysis || item.narrative_trading;
+    const titleMatch = content.match(/Title:\s*(.*?)\r\n/);
+
+    if (titleMatch) {
+      const source = item.analysis ? item.analysis : item.narrative_trading;
+      return source.replace(titleMatch[0], "");
+    }
+    return content;
+  };
+
+  useEffect(() => {
+    let content = processContent(item)
+    item.analysis
+    ? item.analysis = content
+    : item.narrative_trading = content
+
+    setContent(content);
+  }, [item]);
+
   const handleDeleteClick = (event) => {
-    event.stopPropagation(); // Detiene la propagación del evento click
-    onDelete(item.analysis_id); // Llama a la función onDelete con el ID del análisis
+    event.stopPropagation();
+    onDelete(item.analysis_id || item.narrative_trading_id);
   };
 
   const handleItemClick = () => {
@@ -18,132 +45,167 @@ const Item = ({ item, onDelete, base64Image, openEditModal }) => {
 
   return (
     <li className="allAnalysisLI" onClick={handleItemClick}>
-      {base64Image && (
-        <img
-          className="itemImage"
-          src={`data:image/png;base64,${base64Image}`}
-          alt="Analysis"
-        />
-      )}
-      <span
-        className="itemContent"
-        dangerouslySetInnerHTML={{ __html: item.analysis }}
+      <img
+        // className="itemImage"
+        onError={(e) => {
+          e.target.src = defaultImg;
+        }}
+        src={item.image_url || defaultImg}
+        alt="Analysis"
+        style={{
+          margin: 0,
+          borderRadius: 0,
+          with: "30%",
+          height: "100%",
+          borderBottomLeftRadius: 5,
+          borderTopLeftRadius: 5,
+        }}
       />
-      {onDelete && (
-        <CIcon
-          size="xxl"
-          icon={cilTrash}
-          className="deleteBtn"
-          onClick={handleDeleteClick}
+      <div
+        // className="itemContent"
+        style={{
+          height: "100%",
+          padding: "10px",
+          gap: "5%",
+          display: "flex",
+          flexDirection: "column",
+          width: "70%",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            color: "gray",
+            fontSize: "smaller",
+            height: "10%",
+          }}
+        >
+          <span>{formatDateTime(item.updated_at)}</span>
+          {onDelete && (
+            <CIcon
+              size="md"
+              icon={cilTrash}
+              className="deleteBtn"
+              onClick={handleDeleteClick}
+              style={{
+                color: isDeleting ? "#8080804d" : "gray",
+                cursor: isDeleting ? "not-allowed" : "pointer",
+              }}
+            />
+          )}
+        </div>
+        <span
+          style={{
+            height: "85%",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "block",
+          }}
+          // className="itemContent"
+          dangerouslySetInnerHTML={{
+            __html: content,
+          }}
         />
-      )}
+      </div>
     </li>
   );
-  
 };
 
-const AllAnalysis = ({ items, fetchAnalysis}) => {
+const AllAnalysis = ({
+  items,
+  fetchAnalysis,
+  section_id,
+  section_name,
+  coin_name,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedAnalysis, setSelectedAnalysis] = useState(null); 
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const openEditModal = (item) => {
     setSelectedAnalysis(item);
-    setIsModalOpen(true); 
+    setIsModalOpen(true);
   };
 
-
-
-  // Deletes an analysis
   const handleDelete = async (analysis_id) => {
     try {
-      const response = await fetch(
-        `${config.BASE_URL}/delete_analysis/${analysis_id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-          },
-        },
-      );
+      setIsDeleting(true);
+      const response = await deleteAnalysis(analysis_id, section_id);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        Swal.fire({
-          icon: "success",
-          title: data.message,
-          showConfirmButton: false,
-          timer: 1500,
-          customClass: "swal",
-        });
-        fetchAnalysis();
-      } else {
-        console.error("Error deleting analysis:", response.statusText);
-        Swal.fire({
-          icon: "error",
-          title: data.error,
-          showConfirmButton: false,
-          timer: 1500,
-          customClass: "swal",
-        });
+      if (!response.success) {
+        throw new Error(response.error);
       }
+
+      Swal.fire({
+        icon: "success",
+        title: "Analysis deleted successfully",
+        customClass: "swal",
+        backdrop: false,
+      });
+      fetchAnalysis();
     } catch (error) {
-      console.error("Error deleting analysis:", error);
       Swal.fire({
         icon: "error",
         title: error.message || "An error occurred",
-        showConfirmButton: false,
-        timer: 1500,
         customClass: "swal",
+        backdrop: false,
       });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
-  // Función para cerrar el modal de edición
   const closeEditModal = () => {
-    setIsModalOpen(false)
+    setIsModalOpen(false);
   };
 
-  const handleSave = async (analysis_id, editedContent) => {
+  const handleSave = async (analysis_id, section_id, editedContent) => {
     try {
-      const response = await fetch(
-        `${config.BASE_URL}/edit_analysis/${analysis_id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-          },
-          body: JSON.stringify({ content: editedContent }), 
-        }
-      );
-  
-      const data = await response.json();
-        
-      if (response.ok) {
-        console.log("Analysis updated successfully:", data);
-        fetchAnalysis();
-        closeEditModal(); // Cerrar el modal después de guardar
-      } else {
-        console.error("Error updating analysis:", data.error);
+      const payload = {
+        content: editedContent,
+        section_id: section_id || 3,
+      };
+
+      const response = await editAnalysis(analysis_id, payload);
+
+      if (!response.success) {
+        throw new Error(response.error);
       }
+
+      closeEditModal();
+      Swal.fire({
+        icon: "success",
+        title: "Analysis updated successfully",
+        customClass: "swal",
+        backdrop: false,
+      });
+      fetchAnalysis();
     } catch (error) {
-      console.error("Error updating analysis:", error);
+      closeEditModal();
+      Swal.fire({
+        icon: "error",
+        title: error.message || "An error occurred",
+        customClass: "swal",
+        backdrop: false,
+      });
     }
   };
 
   return (
     <div className="analysisSubmain">
-      <h3 className="allAnalysisTitle">Selected Coin Analysis</h3>
+      <h4 className="allAnalysisTitle">{`${
+        coin_name ? coin_name : ""
+      }  ${section_name} Analyses`}</h4>
       {items && items.length > 0 ? (
         <ul className="allAnalysisUL">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <Item
-              key={item.analysis_id}
+              key={index}
               item={item}
               onDelete={handleDelete}
               openEditModal={openEditModal}
+              isDeleting={isDeleting}
             />
           ))}
         </ul>
@@ -155,7 +217,7 @@ const AllAnalysis = ({ items, fetchAnalysis}) => {
           item={selectedAnalysis}
           onSave={handleSave}
           onClose={closeEditModal}
-          fetchAnalysis={fetchAnalysis} 
+          section_id={section_id}
         />
       )}
     </div>

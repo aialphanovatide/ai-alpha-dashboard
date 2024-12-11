@@ -838,10 +838,10 @@ const BotForm = ({ coin, setCategories }) => {
           >
             {isSubmitting
               ? coin
-                ? "Updating..."
+                ? "Saving..."
                 : "Creating..."
               : coin
-                ? "Update"
+                ? "Save"
                 : "Create"}
           </button>
         </form>

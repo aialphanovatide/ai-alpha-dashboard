@@ -163,6 +163,12 @@
   overflow-y: auto;
   height: 100%;
   padding-right: 10px;
+  overflow-x: hidden;
+}
+
+.prompt p {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .prompt>div::-webkit-scrollbar-thumb {
