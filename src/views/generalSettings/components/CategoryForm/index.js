@@ -224,7 +224,14 @@ const CategoryForm = ({ category, setCategories }) => {
                 <strong>Alias</strong>
                 <span> *</span>
               </label>
-              <HelpOutline fontSize="small" />
+              <CustomTooltip
+                title={"Create a coin category"}
+                content={
+                  "Enter a name and alias to enable the category in Analysis, Fundamentals, Charts and Narrative Trading."
+                }
+              >
+                <HelpOutline fontSize="small" />
+              </CustomTooltip>
             </div>
             <input
               className={styles.input}
@@ -240,7 +247,14 @@ const CategoryForm = ({ category, setCategories }) => {
               <label>
                 <strong>Slack Channel</strong>
               </label>
-              <HelpOutline fontSize="small" />
+              <CustomTooltip
+                title={"Create a bot category"}
+                content={
+                  "Add at least one additional detail (excluding icon or background color) to enable the category for news bot creation."
+                }
+              >
+                <HelpOutline fontSize="small" />
+              </CustomTooltip>
             </div>
             <input
               className={styles.input}
@@ -291,7 +305,14 @@ const CategoryForm = ({ category, setCategories }) => {
               <label>
                 <strong>Border Color</strong>
               </label>
-              <HelpOutline fontSize="small" />
+              <CustomTooltip
+                title={"Enable a category"}
+                content={
+                  "Fill in all fields to enable the option to display the category in the app."
+                }
+              >
+                <HelpOutline fontSize="small" />
+              </CustomTooltip>
             </div>
             <div
               className={styles.input}
