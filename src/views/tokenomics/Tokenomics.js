@@ -174,6 +174,7 @@ const Tokenomics = () => {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-Api-Key": config.X_API_KEY,
           },
         },
       );
@@ -199,6 +200,7 @@ const Tokenomics = () => {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-Api-Key": config.X_API_KEY,
           },
         },
       );
@@ -224,6 +226,7 @@ const Tokenomics = () => {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-Api-Key": config.X_API_KEY,
           },
         },
       );
@@ -251,6 +254,7 @@ const Tokenomics = () => {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-Api-Key": config.X_API_KEY,
           },
         },
       );
