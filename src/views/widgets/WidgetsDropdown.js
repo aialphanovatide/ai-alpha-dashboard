@@ -15,6 +15,7 @@ const WidgetsDropdown = (props) => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            "X-Api-Key": config.X_API_KEY,
           },
         })
 

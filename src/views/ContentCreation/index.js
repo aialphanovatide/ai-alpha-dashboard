@@ -36,6 +36,7 @@ const ContentCreation = () => {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-Api-Key": config.X_API_KEY,
           },
         },
       );
@@ -89,7 +90,7 @@ const ContentCreation = () => {
     try {
       const response = await fetch(`${config.BASE_URL}/get_bot_ids_by_category/${category}`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Api-Key": config.X_API_KEY },
       });
       const data = await response.json();
       console.log("fetch: ",data)
@@ -115,6 +116,7 @@ const ContentCreation = () => {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-Api-Key": config.X_API_KEY,
           },
         },
       );
@@ -169,6 +171,9 @@ const ContentCreation = () => {
         const response = await fetch(`${config.BASE_URL}/schedule_post`, {
           method: "POST",
           body: formDataToSchedule,
+          headers: {
+            "X-Api-Key": config.X_API_KEY,
+          },
         });
         let responseData = await response.json();
         if (response.ok) {
@@ -230,6 +235,9 @@ const ContentCreation = () => {
         const response = await fetch(`${config.BASE_URL}/post_analysis`, {
           method: "POST",
           body: formData,
+          headers: {
+            "X-Api-Key": config.X_API_KEY,
+          }
         });
         let responseData = await response.json();
         if (response.ok) {
@@ -270,6 +278,7 @@ const ContentCreation = () => {
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true",
+          "X-Api-Key": config.X_API_KEY,
         },
       });
 
