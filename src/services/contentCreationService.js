@@ -4,15 +4,17 @@ let headers = {
   "X-Api-Key": config.X_API_KEY,
 };
 
-const getAnalyses = async (section_id) => {
+const getAnalyses = async (limit) => {
   try {
-    const response = await fetch(
-      `${config.BASE_URL}/analyses?section_id=${section_id}`,
-      {
-        method: "GET",
-        headers,
-      },
-    );
+    let url = `${config.BASE_URL}/analyses?`;
+    if (limit) {
+      url += `per_page=${limit}&`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+    });
     const data = await response.json();
 
     if (!data.success) {
@@ -164,6 +166,25 @@ const getScheduledAnalyses = async () => {
   } catch (error) {
     return { success: false, error: error.message };
   }
+};
+
+const generateAnalysisImage = async (content) => {
+  try {
+    const response = await fetch(`${config.BASE_URL}/analysis/generate-image`, {
+      method: "POST",
+      headers,
+      body: content,
+    });
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.error);
+    }
+
+    return { success: true, data: data.data.temp_image_url };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 }
 
 export {
@@ -175,4 +196,5 @@ export {
   createScheduleAnalysis,
   deleteScheduledAnalysis,
   getScheduledAnalyses,
+  generateAnalysisImage,
 };
