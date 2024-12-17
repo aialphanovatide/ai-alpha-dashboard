@@ -5,6 +5,10 @@ body,
   height: 100%;
 }
 
+h4 {
+  margin: 0;
+}
+
 html {
   scroll-behavior: smooth;
 }
