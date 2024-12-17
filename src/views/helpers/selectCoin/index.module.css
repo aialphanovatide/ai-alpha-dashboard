@@ -1,0 +1,27 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-block: 15px;
+  margin-left: 10px
+}
+
+.section>div>label>span {
+  color: red;
+  font-weight: bold;
+}
+
+.labelContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.select {
+  background: #f5f5f5;
+  border-radius: 15px;
+  border: none;
+  font-size: smaller;
+  padding: 5px;
+  padding-inline: 10px;
+  color: #757575;
+}
