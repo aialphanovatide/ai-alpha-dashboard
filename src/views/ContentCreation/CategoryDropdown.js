@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import '../helpers/selectCoin/selectCoinStyles.css';
-import { getCategories } from 'src/services/categoryService';
-import Swal from 'sweetalert2';
+import React, { useState, useEffect, useCallback } from "react";
+import "../helpers/selectCoin/selectCoinStyles.css";
+import { getCategories } from "src/services/categoryService";
+import Swal from "sweetalert2";
+import styles from "./index.module.css";
 
 const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
   const [categories, setCategories] = useState([]);
@@ -13,9 +14,9 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
       setCategories(categories);
     } catch (error) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: error.message || 'Failed to fetch categories',
+        icon: "error",
+        title: "Error",
+        text: error.message || "Failed to fetch categories",
         customClass: "swal",
         backdrop: false,
       });
@@ -34,17 +35,24 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
   };
 
   return (
-    <div className="dropdown-container">
-      <label htmlFor="coinBotDropdown" className="label"></label>
+    <div className={styles.section}>
+      <div className={styles.labelContainer}>
+        <label>
+          <strong>Category</strong>
+          <span> *</span>
+        </label>
+      </div>
       <select
-        id="coinBotDropdown"
+        className={styles.select}
+        required
         onChange={handleDropdownChange}
         value={selectedCategory || ''}
-        className="select-dropdown"
-        disabled={loading || categories.length === 0}
+        disabled={loading || categories?.length === 0}
       >
-        <option value="" disabled>Select Coin Category...</option>
-        {categories.map((category) => (
+        <option value="" disabled>
+          Select category
+        </option>
+        {categories?.map((category) => (
           <option key={category.category_id} value={category.name}>
             {category.name}
           </option>
