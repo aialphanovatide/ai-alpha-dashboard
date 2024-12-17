@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import "./selectCoinStyles.css";
 import { getCoins } from "src/services/coinService";
 import Swal from "sweetalert2";
+import styles from "./index.module.css";
 
 const DropdownMenu = ({ selectedCoin, onSelectCoin, items }) => {
   const [coinBots, setCoinBots] = useState([]);
@@ -34,15 +35,22 @@ const DropdownMenu = ({ selectedCoin, onSelectCoin, items }) => {
   };
 
   return (
-    <div className="dropdown-container">
+    <div className={styles.section}>
+      <div className={styles.labelContainer}>
+        <label>
+          <strong>Coin</strong>
+          <span> *</span>
+        </label>
+      </div>
       <select
-        id="coinBotDropdown"
+        className={styles.select}
+        required
+        disabled={coinBots.length === 0}
         onChange={handleDropdownChange}
         value={selectedCoin || ""}
-        className="select-dropdown"
       >
         <option value="" disabled>
-          Select Coin...
+          Select coin
         </option>
         {coinBots.map((coinBot, index) => (
           <option key={index} value={coinBot.bot_id}>
