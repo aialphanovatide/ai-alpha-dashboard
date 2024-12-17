@@ -4,7 +4,6 @@
   padding: 0;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
   position: relative;
   width: 100%;
   overflow: hidden;
@@ -13,6 +12,7 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 10px;
+  height: 500px;
 }
 
 .search-tool-item p {
@@ -42,7 +42,6 @@
 }
 
 .search-tool-item p {
-  margin: 5px 0;
   color: #555;
 }
 
