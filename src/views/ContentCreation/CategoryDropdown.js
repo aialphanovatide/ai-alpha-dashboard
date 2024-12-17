@@ -54,6 +54,7 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
         </option>
         {categories?.map((category) => (
           <option key={category.category_id} value={category.name}>
+            {/* <img src={category.icon} alt={category.name} /> */}
             {category.name}
           </option>
         ))}
