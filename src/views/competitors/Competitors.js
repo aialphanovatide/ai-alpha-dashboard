@@ -292,8 +292,6 @@ const Competitors = () => {
                     .filter(
                       (competitor) =>
                         ![
-                          "circulating supply",
-                          "tvl",
                           "website",
                           "token",
                           "whitepaper",
