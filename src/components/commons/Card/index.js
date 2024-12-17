@@ -6,7 +6,7 @@ import { cilTrash } from "@coreui/icons";
 import defaultImg from "src/assets/brand/logo.png";
 
 const Card = (props) => {
-  const { data, onClick, onDelete, onImgLoad } = props;
+  const { data, onClick, onDelete, onImgLoad, content } = props;
 
   return (
     <div
@@ -16,16 +16,16 @@ const Card = (props) => {
     >
       <img
         className={`img-modal-news-card`}
-        src={data.image}
-        onLoad={onImgLoad}
+        src={data.image || data.image_url }
+        onLoad={onImgLoad || null}
         alt="news"
         onError={(e) => (e.target.src = defaultImg)}
       />
-      <h6 style={{ margin: 10 }}>
-        <strong>{data.title || "No Title"}</strong>
-      </h6>
+      {data.title && <h6 style={{ margin: 10 }}>
+        <strong>{data.title}</strong>
+      </h6>}
       {data.reason && <p>{data.reason}</p>}
-      <p dangerouslySetInnerHTML={{ __html: data.content || "No Content" }} />
+      <p dangerouslySetInnerHTML={{ __html: data.content || content }} />
       {data.comment && (
         <span style={{ paddingInline: 10 }}>{data.comment}</span>
       )}
