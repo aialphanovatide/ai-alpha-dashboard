@@ -1,35 +1,34 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import CIcon from "@coreui/icons-react";
-import { cilTrash } from "@coreui/icons";
 import EditModal from "./editModal";
-import NoData from "src/components/NoData";
-import { formatDateTime } from "src/utils";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import {
   deleteAnalysis,
   editAnalysis,
 } from "src/services/contentCreationService";
-import defaultImg from "../../assets/brand/logo.png";
+import Card from "src/components/commons/Card";
+import { ReactComponent as ClockBack } from "src/assets/icons/clock-back.svg";
+import styles from "./index.module.css";
 
 const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
   const [content, setContent] = useState("");
 
   const processContent = (item) => {
     const content = item.analysis || item.narrative_trading;
-    const titleMatch = content.match(/Title:\s*(.*?)\r\n/);
+    // const titleMatch = content?.match(/Title:\s*(.*?)\r\n/);
 
-    if (titleMatch) {
-      const source = item.analysis ? item.analysis : item.narrative_trading;
-      return source.replace(titleMatch[0], "");
-    }
+    // if (titleMatch) {
+    //   const source = item.analysis ? item.analysis : item.narrative_trading;
+    //   return source?.replace(titleMatch[0], "");
+    // }
     return content;
   };
 
   useEffect(() => {
-    let content = processContent(item)
-    item.analysis
-    ? item.analysis = content
-    : item.narrative_trading = content
+    let content = processContent(item);
+    item.content = content;
 
     setContent(content);
   }, [item]);
@@ -44,84 +43,21 @@ const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
   };
 
   return (
-    <li className="allAnalysisLI" onClick={handleItemClick}>
-      <img
-        // className="itemImage"
-        onError={(e) => {
-          e.target.src = defaultImg;
-        }}
-        src={item.image_url || defaultImg}
-        alt="Analysis"
-        style={{
-          margin: 0,
-          borderRadius: 0,
-          with: "30%",
-          height: "100%",
-          borderBottomLeftRadius: 5,
-          borderTopLeftRadius: 5,
-        }}
-      />
-      <div
-        // className="itemContent"
-        style={{
-          height: "100%",
-          padding: "10px",
-          gap: "5%",
-          display: "flex",
-          flexDirection: "column",
-          width: "70%",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            color: "gray",
-            fontSize: "smaller",
-            height: "10%",
-          }}
-        >
-          <span>{formatDateTime(item.updated_at)}</span>
-          {onDelete && (
-            <CIcon
-              size="md"
-              icon={cilTrash}
-              className="deleteBtn"
-              onClick={handleDeleteClick}
-              style={{
-                color: isDeleting ? "#8080804d" : "gray",
-                cursor: isDeleting ? "not-allowed" : "pointer",
-              }}
-            />
-          )}
-        </div>
-        <span
-          style={{
-            height: "85%",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            display: "block",
-          }}
-          // className="itemContent"
-          dangerouslySetInnerHTML={{
-            __html: content,
-          }}
-        />
-      </div>
-    </li>
+    <Card
+      data={item}
+      onDelete={handleDeleteClick}
+      onClick={handleItemClick}
+      content={content}
+      // onImgLoad={handleImageLoaded}
+    />
   );
 };
 
-const AllAnalysis = ({
-  items,
-  fetchAnalysis,
-  section_id,
-  section_name,
-  coin_name,
-}) => {
+const AllAnalysis = ({ items, fetchAnalysis, section_id }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showContent, setShowContent] = useState(false);
 
   const openEditModal = (item) => {
     setSelectedAnalysis(item);
@@ -164,7 +100,7 @@ const AllAnalysis = ({
     try {
       const payload = {
         content: editedContent,
-        section_id: section_id || 3,
+        section_id: section_id || 34,
       };
 
       const response = await editAnalysis(analysis_id, payload);
@@ -194,23 +130,43 @@ const AllAnalysis = ({
 
   return (
     <div className="analysisSubmain">
-      <h4 className="allAnalysisTitle">{`${
-        coin_name ? coin_name : ""
-      }  ${section_name} Analyses`}</h4>
-      {items && items.length > 0 ? (
-        <ul className="allAnalysisUL">
-          {items.map((item, index) => (
-            <Item
-              key={index}
-              item={item}
-              onDelete={handleDelete}
-              openEditModal={openEditModal}
-              isDeleting={isDeleting}
-            />
-          ))}
-        </ul>
-      ) : (
-        <NoData message={"No Analysis found for this coin"} />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          cursor: "pointer",
+        }}
+        onClick={() => setShowContent(!showContent)}
+      >
+        <div style={{ display: "flex", gap: 10 }}>
+          <ClockBack style={{ height: 28, width: "fit-content" }} />
+          <h4 className="allAnalysisTitle">Latests posts</h4>
+        </div>
+        {showContent ? (
+          <ExpandLessIcon color="disabled" fontSize="large" />
+        ) : (
+          <ExpandMoreIcon color="disabled" fontSize="large" />
+        )}
+      </div>
+      {showContent && (
+        <>
+          <div className="latestPostsContainer">
+            {items.map((item, index) => (
+              <Item
+                key={index}
+                item={item}
+                onDelete={handleDelete}
+                openEditModal={openEditModal}
+                isDeleting={isDeleting}
+              />
+            ))}
+          </div>
+          <button className={styles.seeMoreButton}>
+            See more
+            <ChevronRightIcon />
+          </button>
+        </>
       )}
       {isModalOpen && (
         <EditModal
