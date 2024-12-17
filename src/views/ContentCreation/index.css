@@ -26,74 +26,39 @@
   margin-left: 10px;
 }
 
+.submitAnalisys,
+.postLaterButton {
+  width: 400px;
+  height: 40px;
+  border-radius: 5px;
+}
 
 .submitAnalisys {
-  display: inline-block;
-  margin: 6rem 0 0rem 0;
-  align-self: flex-start;
-  padding: 8px 18px;
-  font-size: 15px;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  border: 2px solid #5856d6;
-  color: #5856d6;
-  border-radius: 5px;
-  background-color: white;
-  transition: background-color 0.3s ease;
+  background: #FF6C0D;
+  color: white;
+  border: none;
 }
 
 .postLaterButton {
-  display: inline-block;
-  margin: 6rem 0 0rem 0;
-  margin-left: 10px;
-  align-self: flex-start;
-  padding: 8px 18px;
-  font-size: 15px;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  border: 2px solid #5856d6;
-  color: #5856d6;
-  border-radius: 5px;
-  background-color: white;
-  transition: background-color 0.3s ease;
-}
-
-.submitAnalisys:hover {
-  background-color: #5856d6;
-  /* Green background color on hover */
-  color: white;
-}
-
-.postLaterButton:hover {
-  background-color: #5856d6;
-  /* Green background color on hover */
-  color: white;
+  border: 1px solid #FF6C0D;
+  color: #FF6C0D;
+  background: transparent;
 }
 
 .postLaterButton:disabled {
-  background-color: #d3d3d3;
-  /* Light gray background when disabled */
-  border: 2px solid #d3d3d3;
-  /* Light gray border when disabled */
+  border: 1px solid #FFB870;
   color: #808080;
-  /* Gray text color when disabled */
   cursor: not-allowed;
+  color: #FFB870;
 }
 
 .submitAnalisys:disabled {
-  background-color: #d3d3d3;
-  /* Light gray background when disabled */
-  border: 2px solid #d3d3d3;
-  /* Light gray border when disabled */
+  background: #FFECD4;
+  border: none;
   color: #808080;
-  /* Gray text color when disabled */
   cursor: not-allowed;
+  color: #FFB870;
 }
-
 
 .analysisTitle {
   align-self: flex-start;
@@ -107,6 +72,8 @@
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -151,14 +118,12 @@
   position: relative
 }
 
-.allAnalysisUL {
-  margin: 1rem 0 1rem 0;
-  border-radius: 5px;
-  list-style: none;
-  width: 100%;
-  padding: 0;
-  max-height: 800px;
-  overflow-y: scroll;
+.latestPostsContainer {
+  margin: 0;
+  margin-top: 15px;
+  grid-template-columns: repeat(3, calc((100% - 40px) / 3));
+  gap: 20px;
+  display: grid;
 }
 
 .allAnalysisLI {
