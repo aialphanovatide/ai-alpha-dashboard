@@ -1,31 +1,20 @@
 import React from "react";
-import CIcon from "@coreui/icons-react";
-import { cilTrash } from "@coreui/icons";
+import Card from "src/components/commons/Card";
 import { formatDateTime } from "src/utils";
 
 const ScheduledJob = ({ job, onDelete }) => {
-  const dateMatch = job.trigger.match(/\[(.*?)\]/);
-  const nextRunDateTime = dateMatch
-    ? dateMatch[1].replace(/ -\d{2}$/, "")
-    : "Unknown";
-
-  const titleMatch = job.args.match(/Title:\s*(.*?)\\r\\n/);
-  const title = titleMatch ? titleMatch[1] : "Unknown";
-
   const handleDeleteClick = () => {
     onDelete(job.id);
   };
 
   return (
-    <div className="titleSched">
-      <h5>{title}</h5>
-      <span>
-        <b>Run Date-Time:</b> {formatDateTime(nextRunDateTime)}
-      </span>
-      <button onClick={handleDeleteClick}>
-        <CIcon size="lg" icon={cilTrash} />
-      </button>
-    </div>
+    <Card
+      content={job.content}
+      title={job.title}
+      image={job.image_url}
+      date={formatDateTime(job.scheduled_time)}
+      onDelete={handleDeleteClick}
+    />
   );
 };
 
