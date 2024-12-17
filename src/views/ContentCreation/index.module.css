@@ -1,0 +1,160 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-block: 15px;
+  margin-left: 10px
+}
+
+.section>div>label>span {
+  color: red;
+  font-weight: bold;
+}
+
+.labelContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.select {
+  background: #f5f5f5;
+  border-radius: 15px;
+  border: none;
+  font-size: smaller;
+  padding: 5px;
+  padding-inline: 10px;
+  color: #757575;
+}
+
+.contentTitle {
+  font-weight: 600;
+  font-size: 20px;
+  margin-block: 15px;
+  margin-top: 20px;
+  display: block;
+}
+
+.contentEditorContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  height: 500px;
+}
+
+.buttonsContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: auto;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: 70px;
+}
+
+.expandButton {
+  border: none;
+  background: none;
+  color: #d4d4d4;
+  font-size: 40px;
+  padding: 0;
+  display: flex;
+}
+
+.contentPreview {
+  padding-inline: 10px;
+  margin: 0;
+  max-height: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 15;
+  line-clamp: 15;
+  -webkit-box-orient: vertical;
+  word-wrap: break-word;
+  line-height: normal;
+  white-space: normal;
+}
+
+.contentPreview p {
+  margin: 0;
+}
+
+.generateImgButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background: transparent;
+}
+
+.regenerateImgButton {
+  border-radius: 5px;
+  border: none;
+  position: absolute;
+  aspect-ratio: 1;
+  bottom: 5px;
+  right: 5px;
+  background: #f5f5f5;
+  opacity: 0.7;
+  color: black;
+  padding: 2px 4px;
+}
+
+.seeMoreButton {
+  border: none;
+  background: none;
+  color: #c6c6c6;
+  align-self: flex-end;
+  padding: 10px 0px 10px 0px;
+}
+
+.scheduleModal {
+  z-index: 1;
+}
+
+.scheduleModal>div {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  margin: auto;
+  justify-content: center;
+}
+
+.scheduleModal>div>div {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  width: 600px;
+  justify-content: space-evenly;
+  align-items: center;
+  position: relative;
+}
+
+.datePicker {
+  display: flex;
+  flex-direction: row;
+  border-radius: 20px;
+  padding: 5px 10px;
+  width: 300px;
+  padding-left: 10px;
+  background: #f5f5f5;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.datePicker input {
+  border: none;
+  background: transparent;
+  width: 250px;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  position: absolute;
+  top: 10px;
+  right: 5px;
+  color: gray;
+}
