@@ -152,7 +152,7 @@ const Upgrades = () => {
             "X-Api-Key": config.X_API_KEY,
           },
           body: JSON.stringify({
-            upgrade_data: formData,
+            upgrate_data: formData,
           }),
         },
       );
