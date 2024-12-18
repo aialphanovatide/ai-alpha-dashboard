@@ -5,6 +5,8 @@ import defaultImg from "src/assets/brand/logo.png";
 import { Modal } from "react-bootstrap";
 import styles from "./index.module.css";
 import { ReactComponent as TrashIcon } from "src/assets/icons/trash.svg";
+import CIcon from "@coreui/icons-react";
+import { cilX } from "@coreui/icons";
 
 const Card = (props) => {
   const {
@@ -82,14 +84,14 @@ const Card = (props) => {
                 alt="category-icon"
                 onError={(e) => (e.target.style.display = "none")}
                 className={styles.smallIcon}
-                />
-              )}
+              />
+            )}
             {coinIcon && (
               <img
-              src={coinIcon}
-              alt="coin-icon"
-              onError={(e) => (e.target.style.display = "none")}
-              className={styles.smallIcon}
+                src={coinIcon}
+                alt="coin-icon"
+                onError={(e) => (e.target.style.display = "none")}
+                className={styles.smallIcon}
               />
             )}
           </div>
@@ -99,9 +101,31 @@ const Card = (props) => {
         size={"xl"}
         show={isModalOpen}
         onHide={() => setIsModalOpen(false)}
-        className={styles.modal}
+        className={styles.cardModal}
       >
-        hola
+        <button
+          className={styles.closeModalBtn}
+          onClick={() => setIsModalOpen(false)}
+        >
+          <CIcon icon={cilX} size="lg" />
+        </button>
+        <img
+          src={data?.image || image}
+          alt="card-img"
+          className={styles.modalImg}
+          onError={(e) => (e.target.src = defaultImg)}
+        />
+        <div className={styles.modalDataContainer}>
+          <h6 className={styles.modalTitle}>{data?.title || title}</h6>
+          <span className={styles.date}>
+            <AccessTime fontSize="small" />
+            {data?.date || date}
+          </span>
+          <p
+            dangerouslySetInnerHTML={{ __html: data?.content || content }}
+            className={styles.content}
+          />
+        </div>
       </Modal>
     </>
   );
