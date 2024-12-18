@@ -14,6 +14,9 @@ const ScheduledJob = ({ job, onDelete }) => {
       image={job.image_url}
       date={formatDateTime(job.scheduled_time)}
       onDelete={handleDeleteClick}
+      coinIcon={job.coin_icon}
+      categoryIcon={job.category_icon}
+      sectionName={job.section_name}
     />
   );
 };
