@@ -1,0 +1,42 @@
+.modal {
+  z-index: 1;
+}
+
+.modal>div {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  margin: auto;
+  justify-content: center;
+}
+
+.modal>div>div {
+  display: flex;
+  flex-direction: column;
+  height: 520px;
+  width: 380px;
+  justify-content: space-evenly;
+  align-items: center;
+  position: relative;
+}
+
+.title {
+  max-height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  font-weight: 600;
+}
+
+.dataContainer {
+  padding: 10px;
+  height: 320px;
+}
+
+.date {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  color: gray;
+}
