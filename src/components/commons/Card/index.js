@@ -1,73 +1,109 @@
-import React from "react";
+import React, { useState } from "react";
 import "./index.css";
 import { AccessTime } from "@mui/icons-material";
-import CIcon from "@coreui/icons-react";
-import { cilTrash } from "@coreui/icons";
 import defaultImg from "src/assets/brand/logo.png";
+import { Modal } from "react-bootstrap";
+import styles from "./index.module.css";
+import { ReactComponent as TrashIcon } from "src/assets/icons/trash.svg";
 
 const Card = (props) => {
-  const { data, onClick, onDelete, onImgLoad, content } = props;
+  const {
+    data = {},
+    onClick,
+    onDelete,
+    onImgLoad,
+    content,
+    title,
+    image,
+    date,
+    coinIcon,
+    categoryIcon,
+    sectionName,
+  } = props;
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div
-      className="search-tool-item"
-      style={{ width: "100%" }}
-      onClick={onClick}
-    >
-      <img
-        className={`img-modal-news-card`}
-        src={data.image || data.image_url }
-        onLoad={onImgLoad || null}
-        alt="news"
-        onError={(e) => (e.target.src = defaultImg)}
-      />
-      {data.title && <h6 style={{ margin: 10 }}>
-        <strong>{data.title}</strong>
-      </h6>}
-      {data.reason && <p>{data.reason}</p>}
-      <p dangerouslySetInnerHTML={{ __html: data.content || content }} />
-      {data.comment && (
-        <span style={{ paddingInline: 10 }}>{data.comment}</span>
-      )}
-      <div className="details-container">
-        {data.date && (
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 5,
-              fontSize: 14,
-            }}
-          >
-            <AccessTime />
-            <strong>{data.date}</strong>
-          </span>
-        )}
-        <div className="tags-container">
-          {data.is_top_story && !onDelete && (
-            <span className="tag top-story">TOP STORY</span>
+    <>
+      <div className="search-tool-item" style={{ width: "100%" }}>
+        <img
+          className={`img-modal-news-card`}
+          src={data?.image || image}
+          onLoad={onImgLoad || null}
+          alt="card-img"
+          onError={(e) => (e.target.src = defaultImg)}
+          onClick={onClick ? onClick : () => setIsModalOpen(true)}
+        />
+        <div
+          className={styles.dataContainer}
+          onClick={onClick ? onClick : () => setIsModalOpen(true)}
+        >
+          {(data?.title || title) && (
+            <h6 className={styles.title}>{data?.title || title}</h6>
           )}
-          {data.tagColor && (
-            <div
-              style={{
-                height: 20,
-                width: 20,
-                borderRadius: "50%",
-                background: data.tagColor,
-              }}
-            ></div>
+          {(data?.date || date) && (
+            <span className={styles.date}>
+              <AccessTime fontSize="small" />
+              {data?.date || date}
+            </span>
           )}
-          {onDelete && (
-            <CIcon
-              size="lg"
-              icon={cilTrash}
-              className="deleteBtn"
-              onClick={onDelete}
-            />
+          {data?.reason && <p>{data?.reason}</p>}
+          <p dangerouslySetInnerHTML={{ __html: data?.content || content }} />
+          {data?.comment && (
+            <span style={{ paddingInline: 10 }}>{data?.comment}</span>
           )}
         </div>
+        <div className="details-container">
+          {data?.tagColor && (
+            <div className="tags-container">
+              <div
+                style={{
+                  height: 20,
+                  width: 20,
+                  borderRadius: "50%",
+                  background: data?.tagColor,
+                }}
+              ></div>
+            </div>
+          )}
+          {onDelete && (
+            <TrashIcon
+              onClick={onDelete}
+              className="trashBtn"
+              style={{ height: 20, width: "fit-content" }}
+            />
+          )}
+          {sectionName && (
+            <span style={{ color: "#a3a3a3" }}>{sectionName}</span>
+          )}
+          <div>
+            {categoryIcon && (
+              <img
+                src={categoryIcon}
+                alt="category-icon"
+                onError={(e) => (e.target.style.display = "none")}
+                className={styles.smallIcon}
+                />
+              )}
+            {coinIcon && (
+              <img
+              src={coinIcon}
+              alt="coin-icon"
+              onError={(e) => (e.target.style.display = "none")}
+              className={styles.smallIcon}
+              />
+            )}
+          </div>
+        </div>
       </div>
-    </div>
+      <Modal
+        size={"xl"}
+        show={isModalOpen}
+        onHide={() => setIsModalOpen(false)}
+        className={styles.modal}
+      >
+        hola
+      </Modal>
+    </>
   );
 };
 
