@@ -158,3 +158,10 @@
   right: 5px;
   color: gray;
 }
+
+.textMockContainer p {
+  background: white;
+  color: transparent;
+  margin-bottom: 8px;
+  font-size: 10px;
+}

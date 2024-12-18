@@ -458,11 +458,26 @@ const ContentCreation = () => {
               </button>
             </div>
             <div style={{ height: 300 }}>
-              <p
-                dangerouslySetInnerHTML={{ __html: content }}
-                style={{ height: "fit-content", fontSize: 16 }}
-                className={styles.contentPreview}
-              />
+              {isContent ? (
+                <p
+                  dangerouslySetInnerHTML={{ __html: content }}
+                  style={{ height: "fit-content", fontSize: 16 }}
+                  className={styles.contentPreview}
+                />
+              ) : (
+                <div className={styles.textMockContainer}>
+                  <p style={{width: '100%', marginTop: 10, marginBottom: 5}}>-</p>
+                  <p style={{width: '80%'}}>-</p>
+                  <p style={{width: '95%', marginTop: 30}}>-</p>
+                  <p style={{width: '95%'}}>-</p>
+                  <p style={{width: '80%'}}>-</p>
+                  <p style={{width: '85%'}}>-</p>
+                  <p style={{width: '80%'}}>-</p>
+                  <p style={{width: '90%'}}>-</p>
+                  <p style={{width: '80%'}}>-</p>
+                  <p style={{width: '75%'}}>-</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
