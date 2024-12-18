@@ -77,6 +77,8 @@ textarea:focus-visible {
   width: 7px;
 }
 
+
+
 *::-webkit-scrollbar-thumb {
   background: rgb(104, 104, 104);
   border-radius: 10px;
