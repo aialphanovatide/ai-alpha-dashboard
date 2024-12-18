@@ -3,7 +3,7 @@ body,
 #root,
 #root>div {
   height: 100%;
-  font-family: 'Inter';
+  font-family: 'Figtree', sans-serif;
 }
 
 html {

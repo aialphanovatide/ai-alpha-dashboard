@@ -37,6 +37,7 @@ const NarrativeTrading = () => {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-Api-Key": config.X_API_KEY,
           },
         },
       );
@@ -101,6 +102,7 @@ const NarrativeTrading = () => {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-Api-Key": config.X_API_KEY,
           },
         },
       );
@@ -124,7 +126,7 @@ const NarrativeTrading = () => {
         `${config.BASE_URL}/get_bot_ids_by_category/${category}`,
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "X-Api-Key": config.X_API_KEY, },
         },
       );
       const data = await response.json();
@@ -203,6 +205,9 @@ const NarrativeTrading = () => {
           {
             method: "POST",
             body: formDataToSchedule,
+            headers: {
+              "X-Api-Key": config.X_API_KEY,
+            },
           },
         );
 
@@ -275,6 +280,9 @@ const NarrativeTrading = () => {
           {
             method: "POST",
             body: formData,
+            headers: {
+              "X-Api-Key": config.X_API_KEY,
+            }
           },
         );
         console.log(formData);
@@ -328,6 +336,7 @@ const NarrativeTrading = () => {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-Api-Key": config.X_API_KEY,
           },
         },
       );

@@ -33,6 +33,7 @@ const DAppsEditModal = ({ show, onClose, dapp }) => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "X-Api-Key": config.X_API_KEY,
           },
           body: JSON.stringify(editedDApp),
         },
