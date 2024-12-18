@@ -3,6 +3,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "quill/dist/quill.snow.css";
 import DropdownMenu from "../helpers/selectCoin/SelectCoin";
 import "./index.css";
+import styles from "./index.module.css";
 import RichTextEditor from "../helpers/textEditor/textEditor";
 import Swal from "sweetalert2";
 import CategoryDropdown from "./CategoryDropdown";
@@ -11,8 +12,8 @@ import { getSections } from "src/services/sectionService";
 import {
   createScheduleAnalysis,
   deleteScheduledAnalysis,
+  generateAnalysisImage,
   getAnalyses,
-  getCoinAnalysis,
   getScheduledAnalyses,
   postAnalysis,
 } from "src/services/contentCreationService";
@@ -20,6 +21,16 @@ import { AllAnalysis } from "./AllAnalysis";
 import DatePicker from "react-datepicker";
 import ScheduledJob from "./ScheduledJob";
 import { getCoins } from "src/services/coinService";
+import CIcon from "@coreui/icons-react";
+import { cilImagePlus, cilX } from "@coreui/icons";
+import { ReactComponent as RenewIcon } from "src/assets/icons/renew.svg";
+import { ReactComponent as ScheduleIcon } from "src/assets/icons/scheduled-icon.svg";
+import { ReactComponent as CalendarIcon } from "src/assets/icons/calendar.svg";
+import { ReactComponent as TitleIcon } from "src/assets/icons/contentCreationIcon.svg";
+import { ReactComponent as ImageIcon } from "src/assets/icons/imageICon.svg";
+import { Modal } from "react-bootstrap";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 const ContentCreation = () => {
   const [selectedCoinID, setSelectedCoinID] = useState(null);
@@ -35,16 +46,10 @@ const ContentCreation = () => {
   const [showPostLaterSection, setShowPostLaterSection] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [scheduledJobs, setScheduledJobs] = useState([]);
-  const [title, setTitle] = useState("");
   const [coinBots, setCoinBots] = useState([]);
-
-  const selectedSection = useMemo(() => {
-    return sections.find((section) => section.id == selectedSectionID);
-  }, [sections, selectedSectionID]);
-
-  const selectedCoin = useMemo(() => {
-    return coinBots.find((section) => section.bot_id == selectedCoinID);
-  }, [coinBots, selectedCoinID]);
+  const [generatedImg, setGeneratedImg] = useState(null);
+  const [isImageGenerating, setIsImageGenerating] = useState(false);
+  const [showJobs, setShowJobs] = useState(false);
 
   const fetchCoins = useCallback(async () => {
     try {
@@ -94,7 +99,7 @@ const ContentCreation = () => {
 
   const handleScheduleSubmit = async () => {
     try {
-      if (content === null || selectedDate === null || title === "") {
+      if (content === null || selectedDate === null) {
         throw new Error("One or more required fields are missing");
       }
 
@@ -102,9 +107,10 @@ const ContentCreation = () => {
 
       const formDataToSchedule = new FormData();
       formDataToSchedule.append("coin_id", selectedCoinID);
-      formDataToSchedule.append("section_id", selectedSectionID);
       formDataToSchedule.append("category_name", selectedCategory);
-      formDataToSchedule.append("content", `Title: ${title}\n${content}`);
+      formDataToSchedule.append("content", content);
+      formDataToSchedule.append("section_id", selectedSectionID);
+      formDataToSchedule.append("image_url", generatedImg);
       formDataToSchedule.append("scheduled_date", selectedDate.toISOString());
 
       const response = await createScheduleAnalysis(formDataToSchedule);
@@ -118,7 +124,9 @@ const ContentCreation = () => {
         title: "Success",
         text: "Analysis scheduled successfully",
         customClass: "swal",
+        backdrop: false,
       });
+      setShowPostLaterSection(false);
       handleGetJobs();
       resetForm();
       setIsAnalysisCreated(true);
@@ -128,6 +136,7 @@ const ContentCreation = () => {
         title: "An error occurred",
         text: error.message,
         customClass: "swal",
+        backdrop: false,
       });
     } finally {
       setIsSubmitting(false);
@@ -157,6 +166,10 @@ const ContentCreation = () => {
   };
 
   const handleSelectCoin = (coinId) => {
+    let selectedCoin = coinBots.find((coin) => coin.id === coinId);
+    if (selectedCoin) {
+      setSelectedCategory(selectedCoin.category);
+    }
     setSelectedCoinID(coinId);
   };
 
@@ -174,9 +187,7 @@ const ContentCreation = () => {
 
   const fetchAnalysis = useCallback(async () => {
     try {
-      const response = selectedCoinID
-        ? await getCoinAnalysis(selectedCoinID, selectedSectionID)
-        : await getAnalyses(selectedSectionID);
+      const response = await getAnalyses(3);
 
       if (!response.success) {
         throw new Error(response.error);
@@ -188,14 +199,33 @@ const ContentCreation = () => {
 
   useEffect(() => {
     setItems([]);
-    const fetchData = async () => {
-      if (selectedSectionID) {
-        await fetchAnalysis();
-      }
-    };
+    fetchAnalysis();
+  }, [fetchAnalysis]);
 
-    fetchData();
-  }, [selectedSectionID, fetchAnalysis]);
+  const generateImg = async () => {
+    try {
+      setIsImageGenerating(true);
+      const formData = new FormData();
+      formData.append("content", content);
+      const response = await generateAnalysisImage(formData);
+
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+
+      setGeneratedImg(response.data);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message || "Failed to generate image",
+        customClass: "swal",
+        backdrop: false,
+      });
+    } finally {
+      setIsImageGenerating(false);
+    }
+  };
 
   const fetchSections = useCallback(async () => {
     try {
@@ -223,8 +253,13 @@ const ContentCreation = () => {
   }, [fetchSections, fetchCoins]);
 
   const resetForm = () => {
-    setTitle("");
     setSelectedDate(null);
+    setSelectedCoinID(null);
+    // setSelectedImage([]);
+    setContent(null);
+    setSelectedCategory("");
+    setSelectedSectionID("");
+    setGeneratedImg(null);
   };
 
   const handleSubmit = async () => {
@@ -244,6 +279,7 @@ const ContentCreation = () => {
     formData.append("coin_id", selectedCoinID);
     formData.append("content", content);
     // formData.append("images", selectedImage);
+    formData.append("image_url", generatedImg);
     formData.append("category_name", selectedCategory);
     formData.append("section_id", selectedSectionID);
 
@@ -282,19 +318,23 @@ const ContentCreation = () => {
       selectedCoinID &&
       selectedCategory &&
       selectedSectionID &&
-      content &&
-    [
-      selectedCoinID,
-      selectedCategory,
-      selectedSectionID,
-      content,
-    ],
+      content && [selectedCoinID, selectedCategory, selectedSectionID, content],
+  );
+
+  const isContent = useMemo(
+    () => content?.replace(/<[^>]*>?/gm, "").trim().length > 0,
+    [content],
   );
 
   return (
     <div className="analysisMain">
-      <Title>Content Creation</Title>
-      <div className="analysisSubmain">
+      <Title>
+        <TitleIcon
+          style={{ height: 35, width: "fit-content", marginRight: 15 }}
+        />
+        Content Creator
+      </Title>
+      <div style={{ width: "100%" }}>
         <div className="selectors-container">
           <DropdownMenu
             selectedCoin={selectedCoinID}
@@ -305,17 +345,22 @@ const ContentCreation = () => {
             selectedCategory={selectedCategory}
             onSelectCategory={handleCategorySelect}
           />
-          <div className="dropdown-container">
-            <label htmlFor="coinBotDropdown" className="label"></label>
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>Section</strong>
+                <span> *</span>
+              </label>
+            </div>
             <select
-              id="coinBotDropdown"
+              className={styles.select}
+              required
               onChange={handleSectionSelect}
               value={selectedSectionID || ""}
-              className="select-dropdown"
               disabled={isFetchingSections || sections.length === 0}
             >
               <option value="" disabled>
-                Select Section to Show in the App
+                Select section
               </option>
               {sections.map((section, index) => (
                 <option key={index} value={section.id}>
@@ -325,95 +370,227 @@ const ContentCreation = () => {
             </select>
           </div>
         </div>
-        <RichTextEditor
-          handleImageSelect={handleImageSelect}
-          images={selectedImage}
-          success={isAnalysisCreated}
-          onSuccess={setIsAnalysisCreated}
-          onContentChange={handleContentChange}
-        />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 5,
-            margin: "auto",
-          }}
-        >
+        <span className={styles.contentTitle}>Content</span>
+        <div className={styles.contentEditorContainer}>
+          <RichTextEditor
+            handleImageSelect={handleImageSelect}
+            images={selectedImage}
+            success={isAnalysisCreated}
+            onSuccess={setIsAnalysisCreated}
+            onContentChange={handleContentChange}
+          />
+          <div
+            style={{
+              width: "30%",
+              borderRadius: 10,
+              background: "#efefef",
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+              padding: 10,
+            }}
+          >
+            <div
+              style={{
+                borderRadius: 10,
+                background: "white",
+                height: 160,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                overflow: "hidden",
+                position: "relative",
+              }}
+            >
+              {generatedImg ? (
+                <img
+                  src={generatedImg}
+                  alt="generated img"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <button
+                  className={styles.generateImgButton}
+                  style={{
+                    cursor: isImageGenerating
+                      ? "wait"
+                      : isContent
+                        ? "pointer"
+                        : "not-allowed",
+                    color: !isContent ? "#9d9d9d" : "orange",
+                  }}
+                  onClick={generateImg}
+                  disabled={!isContent || isImageGenerating}
+                >
+                  <ImageIcon
+                    style={{
+                      height: 20,
+                      width: "fit-content",
+                      fill: !isContent ? "#9d9d9d" : "orange",
+                    }}
+                  />
+                  <span>
+                    {isImageGenerating
+                      ? "Creating picture..."
+                      : "Create picture"}
+                  </span>
+                </button>
+              )}
+              <button
+                className={styles.regenerateImgButton}
+                onClick={generateImg}
+                disabled={!isContent || isImageGenerating}
+                style={{
+                  cursor: isImageGenerating
+                    ? "wait"
+                    : isContent
+                      ? "pointer"
+                      : "not-allowed",
+                }}
+              >
+                <RenewIcon
+                  style={{ fill: generatedImg ? "black" : "#9d9d9d" }}
+                />
+              </button>
+            </div>
+            <div style={{ height: 300 }}>
+              <p
+                dangerouslySetInnerHTML={{ __html: content }}
+                style={{ height: "fit-content", fontSize: 16 }}
+                className={styles.contentPreview}
+              />
+            </div>
+          </div>
+        </div>
+        <div className={styles.buttonsContainer}>
           <button
             className="submitAnalisys"
             onClick={handleSubmit}
             disabled={isSubmitting || !isFormValid}
           >
-            {isSubmitting ? "Posting..." : "Post"}
+            {isSubmitting ? "Submitting..." : "Submit"}
           </button>
           <button
             className="postLaterButton"
             onClick={() => setShowPostLaterSection(true)}
+            disabled={isSubmitting || !isFormValid}
           >
-            Post Later
+            Schedule
           </button>
         </div>
-        {showPostLaterSection && (
-          <div className="postLaterSection">
-            <hr />
-            <p>Set an Identifier:</p>
-            <input
-              required
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder='e.g. "BTC Analysis"'
+        <Modal
+          size={"xl"}
+          show={showPostLaterSection}
+          onHide={() => setShowPostLaterSection(false)}
+          className={styles.scheduleModal}
+          backdrop={false}
+        >
+          <button className={styles.closeButton}>
+            <CIcon
+              icon={cilX}
+              size="xl"
+              onClick={() => setShowPostLaterSection(false)}
             />
-            <hr />
-            <p>Choose date and time to post analysis:</p>
-            <div style={{ display: "flex", alignItems: "center" }}>
+          </button>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 5,
+              alignItems: "center",
+            }}
+          >
+            <ScheduleIcon />
+            <h3>Schedule the content</h3>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 5,
+              alignItems: "center",
+            }}
+          >
+            <label htmlFor="date" style={{ fontSize: 18, fontWeight: 600 }}>
+              Select Date and Time
+            </label>
+            <div className={styles.datePicker}>
               <DatePicker
                 selected={selectedDate}
                 onChange={handleDateChange}
                 showTimeSelect
                 timeFormat="HH:mm"
+                name="date"
                 timeIntervals={1}
                 dateFormat="Pp"
                 required
-                placeholderText="Select date and time"
+                placeholderText="DD/MM/YYYY HH:MM"
               />
-              <button
-                className="schButton"
-                onClick={handleScheduleSubmit}
-                disabled={
-                  isSubmitting ||
-                  !isFormValid ||
-                  !selectedDate ||
-                  !title
-                }
-              >
-                Schedule Post
-              </button>
+              <CalendarIcon style={{ height: 20 }} />
             </div>
           </div>
-        )}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 20,
+              alignItems: "center",
+            }}
+          >
+            <span style={{ color: "#737373" }}>
+              This action cannot be undone
+            </span>
+            <button
+              className="postLaterButton"
+              onClick={handleScheduleSubmit}
+              disabled={isSubmitting || !isFormValid || !selectedDate}
+            >
+              {isSubmitting ? "Scheduling..." : "Schedule"}
+            </button>
+          </div>
+        </Modal>
       </div>
-      {items.length > 0 && (
-        <AllAnalysis
-          items={items}
-          fetchAnalysis={fetchAnalysis}
-          section_id={selectedSectionID}
-          section_name={selectedSection?.name}
-          coin_name={selectedCoin?.name}
-        />
-      )}
+      <AllAnalysis
+        items={items}
+        fetchAnalysis={fetchAnalysis}
+        section_id={selectedSectionID}
+      />
       {scheduledJobs.length > 0 && (
         <div className="analysisSubmain">
-          <h3>Scheduled Analysis Posts</h3>
-          {scheduledJobs.map((job) => (
-            <ScheduledJob
-              key={job.id}
-              title={title}
-              job={job}
-              onDelete={deleteScheduled}
-            />
-          ))}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              cursor: "pointer",
+            }}
+            onClick={() => setShowJobs(!showJobs)}
+          >
+            <div style={{ display: "flex", gap: 10 }}>
+              <ScheduleIcon style={{ height: 28, width: "fit-content" }} />
+              <h4 className="allAnalysisTitle">Scheduled</h4>
+            </div>
+            {showJobs ? (
+              <ExpandLessIcon color="disabled" fontSize="large" />
+            ) : (
+              <ExpandMoreIcon color="disabled" fontSize="large" />
+            )}
+          </div>
+          {showJobs && (
+            <div className="latestPostsContainer">
+              {scheduledJobs.map((job) => (
+                <ScheduledJob
+                  key={job.id}
+                  job={job}
+                  onDelete={deleteScheduled}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
