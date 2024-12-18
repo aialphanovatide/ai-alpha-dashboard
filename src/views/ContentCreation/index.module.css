@@ -111,7 +111,7 @@
 }
 
 .scheduleModal {
-  z-index: 1;
+  z-index: 2;
 }
 
 .scheduleModal>div {
