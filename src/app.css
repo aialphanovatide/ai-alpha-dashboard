@@ -3,7 +3,7 @@ body,
 #root,
 #root>div {
   height: 100%;
-  font-family: 'Inter';
+  font-family: 'Figtree', sans-serif;
 }
 
 html {
@@ -76,6 +76,8 @@ textarea:focus-visible {
 *::-webkit-scrollbar {
   width: 7px;
 }
+
+
 
 *::-webkit-scrollbar-thumb {
   background: rgb(104, 104, 104);

@@ -122,6 +122,7 @@ const DApps = () => {
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true",
+          "X-Api-Key": config.X_API_KEY,
         },
         body: JSON.stringify({
           coin_bot_id: selectedCoinBot,
@@ -161,6 +162,7 @@ const DApps = () => {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-Api-Key": config.X_API_KEY,
           },
         },
       );

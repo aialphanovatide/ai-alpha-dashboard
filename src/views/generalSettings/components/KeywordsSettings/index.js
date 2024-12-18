@@ -55,6 +55,7 @@ const KeywordsSettings = ({ coins, isRemove, isBlacklist }) => {
         backdrop: false,
       });
     }
+    await storeKeywords(coins);
     setErrorMessage(null);
     setKeywords([]);
     setIsLoading(false);
