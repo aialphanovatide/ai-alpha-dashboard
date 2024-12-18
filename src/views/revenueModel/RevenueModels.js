@@ -16,7 +16,7 @@ const RevenueModels = () => {
   useEffect(() => {
     const getAllBots = async () => {
       try {
-        const response = await fetch(`${config.BOTS_V2_API}/get_all_coin_bots`, {
+        const response = await fetch(`${config.BOTS_V2_API}/bots`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -25,8 +25,8 @@ const RevenueModels = () => {
         });
 
         const data = await response.json();
-        if (data && data.data.coin_bots) {
-          setBots(data.data.coin_bots);
+        if (data && data.data) {
+          setBots(data.data);
         } else {
           console.error("Error fetching bots:", data.error);
         }
@@ -52,6 +52,7 @@ const RevenueModels = () => {
             headers: {
               "Content-Type": "application/json",
               "ngrok-skip-browser-warning": "true",
+              'X-Api-Key': config.X_API_KEY
             },
           },
         );
@@ -89,6 +90,7 @@ const RevenueModels = () => {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            'X-Api-Key': config.X_API_KEY
           },
         },
       );
@@ -169,7 +171,7 @@ const RevenueModels = () => {
   return (
     <div>
       <div style={{ margin: "20px" }}>
-        <h2>Revenue model</h2>
+        <h3>Revenue model</h3>
 
         {/* Select of the coin */}
         <Form.Group controlId="coinBotSelect" style={{ marginBottom: "15px" }}>

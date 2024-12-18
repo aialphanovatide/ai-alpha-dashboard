@@ -12,6 +12,7 @@ import {
 import "../chartsPage/ChartsPage.css";
 import config from "../../config";
 import Swal from "sweetalert2";
+import Title from "src/components/commons/Title";
 
 const ChartsPage = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -30,6 +31,7 @@ const ChartsPage = () => {
   const [coinData, setCoinData] = useState([]);
   const [temp, setTemp] = useState("");
   const [pairValue, setPairValue] = useState("");
+  const [isEssential, setIsEssential] = useState(false);
 
   const temporalities = ["1h", "4h", "1d", "1w"];
   const pairs = ["usdt", "btc", "eth"];
@@ -39,7 +41,7 @@ const ChartsPage = () => {
     const fetchCoinBots = async () => {
       try {
         const response = await fetch(
-          `${config.BOTS_V2_API}/get_all_coin_bots`,
+          `${config.BOTS_V2_API}/bots`,
           {
             method: "GET",
             headers: {
@@ -51,7 +53,7 @@ const ChartsPage = () => {
 
         if (response.ok) {
           const data = await response.json();
-          setCoinBots(data.data.coin_bots);
+          setCoinBots(data.data);
         } else {
           console.error("Error fetching coin bots:", response.statusText);
         }
@@ -66,12 +68,13 @@ const ChartsPage = () => {
   const fetchCoinData = useCallback(async () => {
     try {
       const response = await fetch(
-        `${config.BASE_URL}/api/coin-support-resistance?coin_id=${selectedCoin}&temporality=${temp}&pair=${pairValue}`,
+        `${config.BASE_URL}/chart?coin_id=${selectedCoin}&temporality=${temp}&pair=${pairValue}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-API-KEY": config.X_API_KEY
           },
         },
       );
@@ -131,11 +134,12 @@ const ChartsPage = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${config.BASE_URL}/api/chart/save_chart`, {
+      const response = await fetch(`${config.BASE_URL}/chart`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true",
+          "X-API-KEY": config.X_API_KEY
         },
         body: JSON.stringify({
           support_1: formData.support1,
@@ -146,10 +150,11 @@ const ChartsPage = () => {
           resistance_2: formData.resistance2,
           resistance_3: formData.resistance3,
           resistance_4: formData.resistance4,
-          coin_bot_id: selectedCoin,
-          token: selectedCoinName,
+          coin_id: selectedCoin,
+          coin_name: selectedCoinName,
           pair: pairValue,
           temporality: temp,
+          is_essential: isEssential,
         }),
       });
 
@@ -165,6 +170,7 @@ const ChartsPage = () => {
           resistance3: "",
           resistance4: "",
         });
+        setIsEssential(false);
         fetchCoinData();
 
         Swal.fire({
@@ -172,6 +178,7 @@ const ChartsPage = () => {
           title: responseData.message,
           showConfirmButton: false,
           timer: 1000,
+          customClass: "swal",
         });
       } else {
         console.error("Error saving chart:", response.statusText);
@@ -179,6 +186,7 @@ const ChartsPage = () => {
           icon: "error",
           title: responseData.message,
           showConfirmButton: false,
+          customClass: "swal",
         });
       }
     } catch (error) {
@@ -187,6 +195,7 @@ const ChartsPage = () => {
         icon: "error",
         title: error,
         showConfirmButton: false,
+        customClass: "swal",
       });
     }
   };
@@ -218,7 +227,7 @@ const ChartsPage = () => {
   return (
     <CRow>
       <CCol className="mainContainer" xs="13">
-        <h4 className="chartTitle">Support & Resistance</h4>
+        <Title>Support & Resistance</Title>
         <CCard className="card">
           <CCardBody className="cardBody">
             <form className="form" onSubmit={handleSubmit}>
@@ -335,7 +344,14 @@ const ChartsPage = () => {
                   ))}
                 </CCol>
               </CRow>
-
+              <div className="checkbox-container">
+                <input
+                  type="checkbox"
+                  value={isEssential}
+                  onChange={() => setIsEssential(!isEssential)}
+                />
+                <label className="label">Essential Update</label>
+              </div>
               <div className="lastContainer">
                 {/* Submit button */}
                 <CButton className="save-btn" type="submit">

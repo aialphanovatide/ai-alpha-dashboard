@@ -9,7 +9,7 @@ const DropdownMenu = ({ selectedCoin, onSelectCoin }) => {
   useEffect(() => {
     const fetchCoinBots = async () => {
       try {
-        const response = await fetch(`${config.BOTS_V2_API}/get_all_coin_bots`, {
+        const response = await fetch(`${config.BOTS_V2_API}/bots`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ const DropdownMenu = ({ selectedCoin, onSelectCoin }) => {
 
         if (response.ok) {
           const data = await response.json();
-          setCoinBots(data.data.coin_bots);
+          setCoinBots(data.data);
         } else {
           console.error('Error fetching coin bots:', response.statusText);
         }
@@ -38,7 +38,7 @@ const DropdownMenu = ({ selectedCoin, onSelectCoin }) => {
 
   return (
     <div className="dropdown-container">
-      <label htmlFor="coinBotDropdown" className="label marLeft"></label>
+      {/* <label htmlFor="coinBotDropdown" className="label marLeft"></label> */}
       <select
         id="coinBotDropdown"
         onChange={handleDropdownChange}

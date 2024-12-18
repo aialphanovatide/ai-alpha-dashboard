@@ -21,6 +21,7 @@ const EditModal = ({ item, onSave, onClose, fetchAnalysis }) => {
       title: "Analysis updated successfully",
       showConfirmButton: false,
       timer: 1000,
+      customClass: "swal",
     });
 
     // Aquí podrías llamar a la función fetchAnalysis si es necesario
@@ -36,7 +37,7 @@ const EditModal = ({ item, onSave, onClose, fetchAnalysis }) => {
   return (
     <Modal size={'xl'} show={true} onHide={onClose} className="editModal">
       <Modal.Header closeButton>
-        <Modal.Title>Edit Analysis</Modal.Title>
+        <Modal.Title>Edit Narrative Trading</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <RichTextEditor
@@ -49,7 +50,7 @@ const EditModal = ({ item, onSave, onClose, fetchAnalysis }) => {
       <br />
       <br />
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
+        <Button variant="danger" onClick={onClose}>
           Cancel
         </Button>
         <Button variant="primary" onClick={handleSave}>

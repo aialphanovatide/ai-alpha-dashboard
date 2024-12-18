@@ -1,0 +1,128 @@
+/* Gauge percentage styling */
+.gauge>foreignObject>div>div>div span:nth-child(3) {
+  position: initial !important;
+  font-size: 100% !important;
+}
+
+/* Make gauge percentage number bold */
+.gauge>foreignObject>div>div>div span:nth-child(1) {
+  font-weight: bold;
+}
+
+.cards-container { 
+  display: flex; 
+  gap: 20px;
+}
+
+.gauge-container {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  align-items: center;
+  gap: 5px;
+}
+
+.api-card {
+  /* flex: 1; */
+  width: 260px;
+  /* width: 30%; */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 220px;
+  /* height: 220px; */
+  height: fit-content;
+  background-color: white;
+}
+
+.coin-gecko-ul {
+  width: 60%;
+  margin: 0px;
+  font-size: small;
+}
+
+.coin-gecko-info-container {
+  display: flex;
+  align-items: center;
+  height: 80%
+}
+
+.openai-info-container {
+  height: 80%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  font-size: smaller;
+  align-items: center;
+  padding: 0;
+}
+
+.api-card h4 {
+  text-align: center;
+}
+
+.error-container {
+  height: 80%;
+  margin: auto;
+  width: fit-content;
+  align-content: center;
+}
+
+/* @media (max-width: 620px) { */
+@media (max-width: 800px) {
+  .coin-gecko-info-container {
+    flex-direction: column;
+  }
+
+  /* .cards-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  } */
+
+  .api-card {
+    height: fit-content;
+  }
+
+  .api-card + .api-card {
+    height: 100%;
+  }
+  
+  .gauge-container {
+    width: 100%;
+  }
+
+  .coin-gecko-ul {
+    margin: auto;
+    width: 100%;
+  }
+
+  .gauge-container {
+    margin-block: 10px;
+  }
+}
+
+@media (max-width: 475px) {
+  .cards-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .api-card {
+    min-height: max-content;
+  }
+
+  .openai-info-container {
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .error-container {
+    height: 200px;
+  }
+
+  .coin-gecko-ul {
+    width: 100%;
+  }
+}

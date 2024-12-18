@@ -14,8 +14,20 @@ import { CNavItem } from '@coreui/react'
 const _nav = [
   {
     component: CNavItem,
-    name: 'Analysis',
-    to: '/analysis',
+    name: 'Home',
+    to: '/home',
+    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'General Settings',
+    to: '/generalSettings',
+    icon: <CIcon icon={cilSitemap} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Content Creation',
+    to: '/contentCreation',
     icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   },
   {
@@ -26,38 +38,26 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Dashboard',
-    to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
     name: 'Fundamentals',
     to: '/fundamentals',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
   },
+  // {
+  //   component: CNavItem,
+  //   name: 'Narrative Trading',
+  //   to: '/narrativeTrading',
+  //   icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+  // },
+  // {
+  //   component: CNavItem,
+  //   name: 'News Creator Tool',
+  //   to: '/newsCreatorTool',
+  //   icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+  // },
   {
     component: CNavItem,
-    name: 'Narrative Trading',
-    to: '/narrativeTrading',
-    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'News Bots Settings',
-    to: '/botsSettings',
-    icon: <CIcon icon={cilSitemap} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'News Creator Tool',
-    to: '/newsCreatorTool',
-    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Search Tool',
-    to: '/searchTool',
+    name: 'News Search Tool',
+    to: '/newsSearchTool',
     icon: <CIcon icon={cilSitemap} customClassName="nav-icon" />,
   },
   {
@@ -72,6 +72,6 @@ const _nav = [
     to: '/users',
     icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
   },
-].sort((a, b) => a.name.localeCompare(b.name));
+]
 
 export default _nav;

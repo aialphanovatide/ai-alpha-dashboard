@@ -1,0 +1,134 @@
+.searchResults {
+  grid-template-columns: repeat(3, calc((100% - 40px)/3));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* ------------------ ITEM ----------------------------------- */
+
+.alltopStoriesmain {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.alltopStoriesTitle {
+  margin-bottom: 30px;
+}
+
+.card-deck {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+}
+
+.card {
+  flex: 0 0 30%;
+  margin: 0;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.card-img-top {
+  border-radius: 5px 5px 0 0;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+/* .card-title {
+  font-size: 1.2em;
+  font-weight: bold;
+} */
+
+.card-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  height: 100px;
+}
+
+.card-date {
+  font-size: 0.9em;
+  color: #777;
+  position: relative;
+  bottom: 5px;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
+.card-date p {
+  margin: 0;
+}
+
+.deleteBtn:hover {
+  color: red;
+}
+
+.deleteBtn {
+  color: #282828;
+  cursor: pointer;
+  margin: 0.5rem;
+  float: right;
+}
+
+/* -------------------- MODAL -------------------------------- */
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  max-width: 700px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 75%;
+  position: relative;
+  overflow-y: scroll;
+}
+
+.modalText {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.modalImage {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.closeButton {
+  cursor: pointer;
+  background: #007bff;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-top: 15px;
+}

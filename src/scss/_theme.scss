@@ -10,7 +10,7 @@ body {
   @include transition(padding .15s);
 }
 
-.header > .container-fluid,
+.header>.container-fluid,
 .sidebar-header {
   min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
 }
@@ -43,7 +43,7 @@ body {
   }
 }
 
-.header > .container-fluid + .container-fluid {
+.header>.container-fluid+.container-fluid {
   min-height: 3rem;
 }
 
@@ -70,8 +70,199 @@ body {
     #table span,
     #table td,
     #table th,
-    #table-pagination {
+    #table-pagination,
+    .ql-editor span,
+    .ql-editor strong,
+    .allAnalysisLI strong,
+    .allAnalysisLI p,
+    .allAnalysisLI span,
+    .form-control.input,
+    .MuiDrawer-paper span,
+    .MuiDrawer-paper th,
+    .MuiDrawer-paper div,
+    .MuiDrawer-paper td,
+    .analysisSubmain p,
+    .search-tool-item p,
+    .card p,
+    .deleteBtn,
+    .modal-content p,
+    .swal,
+    .edit-btn,
+    .top-container button,
+    .MuiDrawer-paper,
+    .user-info-subcontainer p,
+    .user-plans-container>div p {
       color: white !important;
+    }
+
+    #deleteItemModal-subcontainer>svg,
+    .MuiDrawer-paper svg {
+      fill: white;
+    }
+
+    .allAnalysisLI {
+      box-shadow: rgb(16 16 16) 0px 1px 4px !important;
+    }
+
+    .page-button {
+      background-color: #2a303d;
+      border: gray
+    }
+
+    .page-button:hover,
+    .submitAnalisys,
+    .postLaterButton,
+    .schButton {
+      background-color: transparent !important;
+    }
+
+    .page-button:disabled {
+      background-color: #4e4e4e;
+    }
+
+    .api-card,
+    .analysisSubmain,
+    #searchHeader,
+    .allAnalysisLI,
+    .formContainer,
+    .css-1ps6pg7-MuiPaper-root,
+    .card,
+    .search-tool-item,
+    .swal {
+      background-color: #2a303d !important;
+      border: gray !important
+    }
+
+    .ql-toolbar.ql-snow {
+      background: #818181 !important;
+    }
+
+    #showPasswordButton {
+      border-color: #333a49;
+      background-color: rgb(42 48 61);
+    }
+
+    .item.checked,
+    #keywordsSettings-keywordsContainer>div {
+      background-color: #945d15;
+    }
+
+    .settings-container>div>span,
+    .MuiDrawer-paper {
+      background-color: #1e222a;
+    }
+
+    .settings-container>div,
+    .keywords {
+      border-color: white;
+      color: white;
+    }
+
+    // Keywords settings container
+    .keywords.disabled {
+      border-color: #a3a3a3;
+      color: #a3a3a3;
+    }
+
+
+    // Category list scroll bar
+    .bot-list-container::-webkit-scrollbar,
+    .MuiDrawer-paper::-webkit-scrollbar {
+      background-color: #1e222a;
+    }
+
+    .bot-list-container::-webkit-scrollbar-thumb,
+    .MuiDrawer-paper::-webkit-scrollbar-thumb {
+      background-color: #484848;
+      border-color: #1e222a;
+    }
+
+    .MuiDrawer-paper textarea::-webkit-scrollbar-thumb {
+      border-color: #2a303d;
+    }
+
+    .item {
+      background-color: rgba(24, 26, 27, 0.61);
+    }
+
+    .switch-button {
+      background-color: #272727;
+    }
+
+    // general settings forms inputs
+    #frequency,
+    .MuiDrawer-paper input,
+    .MuiDrawer-paper select,
+    .MuiDrawer-paper textarea,
+    .MuiDrawer-paper textarea::-webkit-scrollbar,
+    .CategoryForm_input__b5u00,
+    .BotForm_keywordInput__OaLIj,
+    .WhiteList_keywordInput__Odyg6,
+    .BlackList_keywordInput__f9zAk,
+    .BotForm_input__6xnak,
+    .BotForm_keywordsContainer__-Nath,
+    #bot-form-preview-container,
+    #categoryform-icon-container,
+    #category-alias,
+    .css-vtpge1-MuiSlider-root .MuiSlider-valueLabel,
+    #customInput,
+    #background-color-input,
+    #whitelist-keywords-container,
+    #blacklist-keywords-container,
+    #blacklist-keywords-input,
+    #whitelist-keywords-input,
+    #categoryform-icon-container,
+    #categoryform-border-color-input,
+    #botForm-img-input,
+    #categoryForm-img-input {
+      background-color: #2a303d !important;
+      color: white;
+    }
+
+    #botform-whitelist-keyword,
+    #botform-blacklist-keyword {
+      background-color: #8b8b8b;
+    }
+
+    .switch-button.active,
+    #bot-form-submit-button:disabled,
+    #categoryform-submit-button:disabled,
+    .switch-button.active {
+      background-color: #6b4d0c;
+    }
+
+    #keyword-tag {
+      background-color: #FF8739
+    }
+
+    #bot-form-submit-button:disabled,
+    #categoryForm-img-input-button,
+    #botForm-img-input-button,
+    #keyword-tag[style="background: rgb(217, 217, 217);"] {
+      background-color: #4e4e4e !important;
+    }
+
+    #trashBtn>svg>path {
+      fill: white;
+      stroke: white;
+    }
+
+    #trashBtn:disabled>svg>path {
+      fill: #4e4e4e;
+      stroke: #4e4e4e;
+    }
+
+    #bot-detail-prompt {
+      background-color: #4d4d4d;
+    }
+
+    .infoDisplayItem-label,
+    #botDetails-switchContainer-span {
+      color: #d6d6d6;
+    }
+
+    #info-display-item-icon {
+      filter: invert(1);
     }
   }
 }

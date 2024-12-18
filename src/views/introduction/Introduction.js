@@ -16,7 +16,7 @@ const Introduction = () => {
   useEffect(() => {
     const getAllBots = async () => {
       try {
-        const response = await fetch(`${config.BOTS_V2_API}/get_all_coin_bots`, {
+        const response = await fetch(`${config.BOTS_V2_API}/bots`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -25,9 +25,8 @@ const Introduction = () => {
         });
 
         const data = await response.json();
-        console.log(data)
-        if (data && data.data.coin_bots) {
-          setBots(data.data.coin_bots);
+        if (data && data.data) {
+          setBots(data.data);
         } else {
           console.error("Error fetching bots:", data.error);
         }
@@ -50,6 +49,7 @@ const Introduction = () => {
             headers: {
               "Content-Type": "application/json",
               "ngrok-skip-browser-warning": "true",
+              'X-Api-Key': config.X_API_KEY
             },
           },
         );
@@ -102,6 +102,7 @@ const Introduction = () => {
           icon: "error",
           title: "Please, select a coin",
           showConfirmButton: false,
+          customClass: "swal",
         });
         return;
       }
@@ -133,12 +134,14 @@ const Introduction = () => {
           title: responseData.message,
           showConfirmButton: false,
           timer: 1000,
+          customClass: "swal",
         });
       } else {
         Swal.fire({
           icon: "error",
           title: responseData.message,
           showConfirmButton: false,
+          customClass: "swal",
         });
       }
 
@@ -152,6 +155,7 @@ const Introduction = () => {
         icon: "error",
         title: error,
         showConfirmButton: false,
+        customClass: "swal",
       });
     }
   };
@@ -164,6 +168,7 @@ const Introduction = () => {
           icon: "error",
           title: "Coin or content is missing",
           showConfirmButton: false,
+          customClass: "swal",
         });
         return;
       }
@@ -180,6 +185,7 @@ const Introduction = () => {
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true",
+          "X-API-KEY": config.X_API_KEY,
         },
         body: JSON.stringify(data),
       });
@@ -192,12 +198,14 @@ const Introduction = () => {
           title: responseData.message,
           showConfirmButton: false,
           timer: 3000,
+          customClass: "swal",
         });
       } else {
         Swal.fire({
           icon: "error",
           title: responseData.message,
           showConfirmButton: false,
+          customClass: "swal",
         });
       }
 
@@ -211,13 +219,14 @@ const Introduction = () => {
         icon: "success",
         title: error,
         showConfirmButton: false,
+        customClass: "swal",
       });
     }
   };
 
   return (
     <div style={{ margin: "20px" }}>
-      <h2>Introduction</h2>
+      <h3>Introduction</h3>
 
       {/* Select coin */}
       <Form.Group controlId="coinBotSelect" style={{ marginBottom: "15px" }}>

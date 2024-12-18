@@ -15,17 +15,18 @@ const AppHeaderDropdown = () => {
   const navigate = useNavigate()
 
   const handleSignOut = () => {
+    localStorage.removeItem('token')
     navigate('/login')
   }
 
   return (
-    <CDropdown variant="nav-item py-1">
+    <CDropdown variant="nav-item" className="py-1" style={{display: "flex"}}>
       <CDropdownToggle
         placement="bottom-end"
-        className="py-0 pe-0 d-flex align-items-center"
+        className="py-0 d-flex align-items-center"
         caret={false}
       >
-        <CIcon icon={cilUser} className="downn" size="lg" />
+        <CIcon icon={cilUser} className="downn" size="lg" style={{margin: 0}}/>
       </CDropdownToggle>
       <CDropdownMenu>
         <CDropdownItem className="logout-button" onClick={handleSignOut}>

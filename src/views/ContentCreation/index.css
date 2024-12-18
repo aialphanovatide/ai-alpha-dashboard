@@ -1,0 +1,270 @@
+.analysisMain {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    padding: 1rem;
+}
+
+
+.schButton {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 8px 18px;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid #5856d6; 
+  color: #5856d6; 
+  border-radius: 5px;
+  background-color: white;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+}
+
+
+.submitAnalisys {
+    display: inline-block;
+    margin: 6rem 0 0rem 0;
+    align-self: flex-start;
+    padding: 8px 18px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: 2px solid #5856d6; 
+    color: #5856d6; 
+    border-radius: 5px;
+    background-color: white;
+    transition: background-color 0.3s ease;
+  }
+
+  .postLaterButton{
+      display: inline-block;
+      margin: 6rem 0 0rem 0;
+      margin-left: 10px;
+      align-self: flex-start;
+      padding: 8px 18px;
+      font-size: 15px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      border: 2px solid #5856d6; 
+      color: #5856d6; 
+      border-radius: 5px;
+      background-color: white;
+      transition: background-color 0.3s ease;
+  }
+  
+  .submitAnalisys:hover {
+    background-color: #5856d6; /* Green background color on hover */
+    color: white;
+  }
+  
+  .postLaterButton:hover {
+    background-color: #5856d6; /* Green background color on hover */
+    color: white;
+  }
+
+  .postLaterButton:disabled {
+    background-color: #d3d3d3; /* Light gray background when disabled */
+    border: 2px solid #d3d3d3; /* Light gray border when disabled */
+    color: #808080; /* Gray text color when disabled */
+    cursor: not-allowed;
+  }
+
+  .submitAnalisys:disabled {
+    background-color: #d3d3d3; /* Light gray background when disabled */
+    border: 2px solid #d3d3d3; /* Light gray border when disabled */
+    color: #808080; /* Gray text color when disabled */
+    cursor: not-allowed;
+  }
+
+
+.analysisTitle {
+  align-self: flex-start;
+  padding: 10px;
+}
+
+.analysisSubmain{
+  background-color: #fff;
+  padding: 1.5rem;
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  margin-bottom: 30px;
+}
+
+
+
+/* ------------------ ITEM ----------------------------------- */
+
+
+.allAnalysismain {
+  width: 100%;
+  margin: 1rem;
+  border-radius: 5px;
+}
+
+.titleSched{
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  padding: 10px;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  background-color: #fff;
+  border-radius: 5px;
+  display: flex;
+  height: 200px;
+  align-items: center;
+  /* overflow: hidden; */
+  position: relative;
+  cursor: pointer;
+}
+
+.schedtitl{ 
+width: 20%;
+}
+
+.pSchedule{
+  width: 100%;  
+  top: 4%;
+  left: 10%;
+  position: relative
+}
+
+.allAnalysisUL {
+  margin: 1rem 0 1rem 0;
+  border-radius: 5px;
+  list-style: none;
+  width: 100%;
+  padding: 0;
+  max-height: 800px;
+  overflow-y: scroll;
+}
+
+.allAnalysisLI {
+  margin: 1rem 1%;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  background-color: #fff;
+  border-radius: 5px;
+  display: flex;
+  height: 200px;
+  align-items: center;
+  /* overflow: hidden; */
+  position: relative;
+  cursor: pointer;
+}
+
+.itemImage {
+  margin: 5px 10px;
+  border-radius: 5px;
+  width: 25%;
+  height: 90%;
+  object-fit: contain;
+}
+
+.itemContent {
+  width: 68%;
+  height: 160px;
+  overflow: hidden; 
+  margin: 0 1rem 0 1rem;
+  text-overflow: ellipsis;
+}
+
+.deleteBtn:hover{
+  color: red;
+}
+
+.deleteBtn{
+  color: #282828;
+  cursor: pointer;
+}
+
+
+/* -------------------- MODAL -------------------------------- */
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  
+}
+
+.modalContent {
+  background: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  max-width: 700px;
+  width: 100%; 
+  display: flex;
+  flex-direction: column;
+  height: 75%;
+  position: relative;
+  overflow-y: scroll;
+}
+
+
+.modalText .ql-align-left {
+  text-align: left;
+  color:#282828;  
+}
+
+.modalText .ql-align-right {
+  text-align: right;
+  color:#282828;  
+}
+
+.modalText .ql-align-center {
+  text-align: center;
+  color:#282828;  
+}
+
+
+
+.modalImage {
+  height: auto;
+  width: 40%;
+  align-self: center;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  object-fit: contain;
+  
+}
+
+.closeButton {
+  cursor: pointer;
+  background: #007bff;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-top: 15px;
+  
+}
+
+p{
+  color:#282828;
+}
+
+
+.modalText p {
+  color: #282828;
+}
+
+
+

@@ -39,6 +39,11 @@
     margin: 0px 0px 30px 0;
 }
 
+.mainContainer {
+    width: 90%;
+    margin: auto
+}
+
 .lastContainer{
  display: flex;
  align-items: center;
@@ -51,10 +56,6 @@
 
 .chatTitle{
     padding: 20px 0px 20px 20px;
-}
-
-.form {  
-    max-width: 50%;
 }
 
 .chartOptions {
@@ -71,5 +72,10 @@
     font-size: 14px;
 }
 
+.checkbox-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
 
 

@@ -1,18 +1,18 @@
 import React from 'react'
-
-const BotsSettings = React.lazy(() => import('./views/botsSettings/BotsSettings'))
 const ChartsPage = React.lazy(() => import('./views/chartsPage/ChartsPage'))
-const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
-const Analysis = React.lazy(() => import('./views/analysis/Analysis'))
-const Fundamentals = React.lazy(() => import('./views/fundamental/Fundamentals'))
-const NarrativeTrading = React.lazy(() => import('./views/narrativeTrading/NarrativeTrading'))
-const topSoties = React.lazy(() => import('./views/topStories/topStories'))
+const Home = React.lazy(() => import('./views/Home'))
+const ContentCreation = React.lazy(() => import('./views/ContentCreation'))
+const Fundamentals = React.lazy(() => import('./views/Fundamentals'))
+const GeneralSettings = React.lazy(() => import('./views/generalSettings'))
+// const NarrativeTrading = React.lazy(() => import('./views/narrativeTrading/NarrativeTrading'))
+const topSories = React.lazy(() => import('./views/topStories'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
-const SearchTool = React.lazy(() => import('./views/searchTool/SearchTool'))
-const NewsCreatorTool = React.lazy(() => import('./views/newsCreatorTool/NewsCreatorTool'))
+const NewsSearchTool = React.lazy(() => import('./views/NewsSearchTool'))
+// const NewsCreatorTool = React.lazy(() => import('./views/newsCreatorTool/NewsCreatorTool'))
 const UsersList = React.lazy(() => import('./views/UsersList'))
 const UserDetail = React.lazy(() => import('./views/UserDetail'))
+const BotDetails = React.lazy(() => import('./views/BotDetails'))
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
 const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
@@ -61,15 +61,15 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/searchTool', name: 'Search Tool', element: SearchTool },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/newsCreatorTool', name: 'News Creator Tool', element: NewsCreatorTool },
+  { path: '/newsSearchTool', name: 'Search Tool', element: NewsSearchTool },
+  { path: '/home', name: 'Home', element: Home },
+  // { path: '/newsCreatorTool', name: 'News Creator Tool', element: NewsCreatorTool },
   { path: '/fundamentals', name: 'Fundamentals', element: Fundamentals },
-  { path: '/narrativeTrading', name: 'NarrativeTrading', element: NarrativeTrading },
-  { path: '/botsSettings', name: 'BotsSettings', element: BotsSettings },
+  // { path: '/narrativeTrading', name: 'NarrativeTrading', element: NarrativeTrading },
+  { path: '/generalSettings', name: 'GeneralSettings', element: GeneralSettings },
   { path: '/chartsPage', name: 'ChartsPage', element: ChartsPage },
-  { path: '/analysis', name: 'Analysis', element: Analysis },
-  { path: '/topStories', name: 'Top Stories', element: topSoties },
+  { path: '/contentCreation', name: 'Content Creation', element: ContentCreation },
+  { path: '/topStories', name: 'Top Stories', element: topSories },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
@@ -114,6 +114,7 @@ const routes = [
   { path: '/widgets', name: 'Widgets', element: Widgets },
   { path: '/users', name: 'Users List', element: UsersList },
   { path: '/userdetail/:user_id', name: 'User Detail', element: UserDetail },
+  { path: '/botdetails/:bot_name', name: 'Bot Details', element: BotDetails },
 ]
 
 export default routes
