@@ -6,63 +6,37 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import {
   deleteAnalysis,
-  editAnalysis,
 } from "src/services/contentCreationService";
 import Card from "src/components/commons/Card";
 import { ReactComponent as ClockBack } from "src/assets/icons/clock-back.svg";
 import styles from "./index.module.css";
+import { formatDateTime } from "src/utils";
+import { useNavigate } from "react-router-dom";
 
-const Item = ({ item, onDelete, openEditModal, isDeleting }) => {
-  const [content, setContent] = useState("");
-
-  const processContent = (item) => {
-    const content = item.analysis || item.narrative_trading;
-    // const titleMatch = content?.match(/Title:\s*(.*?)\r\n/);
-
-    // if (titleMatch) {
-    //   const source = item.analysis ? item.analysis : item.narrative_trading;
-    //   return source?.replace(titleMatch[0], "");
-    // }
-    return content;
-  };
-
-  useEffect(() => {
-    let content = processContent(item);
-    item.content = content;
-
-    setContent(content);
-  }, [item]);
-
+const Item = ({ item, onDelete }) => {
   const handleDeleteClick = (event) => {
     event.stopPropagation();
-    onDelete(item.analysis_id || item.narrative_trading_id);
-  };
-
-  const handleItemClick = () => {
-    openEditModal(item);
+    onDelete(item.id);
   };
 
   return (
     <Card
-      data={item}
       onDelete={handleDeleteClick}
-      onClick={handleItemClick}
-      content={content}
-      // onImgLoad={handleImageLoaded}
+      content={item.content}
+      title={item.title}
+      image={item.image_url}
+      date={formatDateTime(item.created_at)}
+      sectionName={item.section_name}
+      categoryIcon={item.category_icon}
+      coinIcon={item.coin_icon}
     />
   );
 };
 
 const AllAnalysis = ({ items, fetchAnalysis, section_id }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showContent, setShowContent] = useState(false);
-
-  const openEditModal = (item) => {
-    setSelectedAnalysis(item);
-    setIsModalOpen(true);
-  };
+  const navigate = useNavigate();
 
   const handleDelete = async (analysis_id) => {
     try {
@@ -92,41 +66,9 @@ const AllAnalysis = ({ items, fetchAnalysis, section_id }) => {
     }
   };
 
-  const closeEditModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleSave = async (analysis_id, section_id, editedContent) => {
-    try {
-      const payload = {
-        content: editedContent,
-        section_id: section_id || 34,
-      };
-
-      const response = await editAnalysis(analysis_id, payload);
-
-      if (!response.success) {
-        throw new Error(response.error);
-      }
-
-      closeEditModal();
-      Swal.fire({
-        icon: "success",
-        title: "Analysis updated successfully",
-        customClass: "swal",
-        backdrop: false,
-      });
-      fetchAnalysis();
-    } catch (error) {
-      closeEditModal();
-      Swal.fire({
-        icon: "error",
-        title: error.message || "An error occurred",
-        customClass: "swal",
-        backdrop: false,
-      });
-    }
-  };
+  const handleRedirect = () => {
+    navigate("/newsSearchTool?data=analysis");
+  }
 
   return (
     <div className="analysisSubmain">
@@ -157,24 +99,14 @@ const AllAnalysis = ({ items, fetchAnalysis, section_id }) => {
                 key={index}
                 item={item}
                 onDelete={handleDelete}
-                openEditModal={openEditModal}
-                isDeleting={isDeleting}
               />
             ))}
           </div>
-          <button className={styles.seeMoreButton}>
+          <button className={styles.seeMoreButton} onClick={handleRedirect}>
             See more
             <ChevronRightIcon />
           </button>
         </>
-      )}
-      {isModalOpen && (
-        <EditModal
-          item={selectedAnalysis}
-          onSave={handleSave}
-          onClose={closeEditModal}
-          section_id={section_id}
-        />
       )}
     </div>
   );
