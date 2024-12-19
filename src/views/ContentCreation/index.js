@@ -226,9 +226,14 @@ const ContentCreation = () => {
 
   const generateImg = async () => {
     try {
+      const contentWithoutImg = content.replace(
+        /<img\s+[^>]*src="[^"]*"[^>]*>/,
+        "",
+      );
+
       setIsImageGenerating(true);
       const formData = new FormData();
-      formData.append("content", content);
+      formData.append("content", contentWithoutImg);
       const response = await generateAnalysisImage(formData);
 
       if (!response.success) {
@@ -351,10 +356,14 @@ const ContentCreation = () => {
       ],
   );
 
-  const isContent = useMemo(
-    () => content?.replace(/<[^>]*>?/gm, "").trim().length > 0,
-    [content],
-  );
+  const isContent = useMemo(() => {
+    const textContent = content?.replace(/<[^>]*>?/gm, "").trim().length > 0;
+    return textContent;
+  }, [content]);
+
+  const isImageInContent = useMemo(() => {
+    return /<img\s+[^>]*src="[^"]*"[^>]*>/.test(content);
+  }, [content]);
 
   return (
     <div className="analysisMain">
@@ -476,7 +485,7 @@ const ContentCreation = () => {
               </button>
             </div>
             <div style={{ height: 300 }}>
-              {isContent ? (
+              {isContent || isImageInContent ? (
                 <p
                   dangerouslySetInnerHTML={{ __html: content }}
                   style={{ height: "fit-content", fontSize: 16 }}
