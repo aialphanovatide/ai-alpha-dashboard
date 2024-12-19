@@ -1,7 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.css";
 import { AccessTime } from "@mui/icons-material";
 import defaultImg from "src/assets/brand/logo.png";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import Swal from "sweetalert2";
+import {
+  deleteFromTopStories,
+  markAsTopStory,
+} from "src/services/topStoriesService";
+import CustomTooltip from "src/components/CustomTooltip";
 import { Modal } from "react-bootstrap";
 import styles from "./index.module.css";
 import { ReactComponent as TrashIcon } from "src/assets/icons/trash.svg";
@@ -23,6 +31,38 @@ const Card = (props) => {
     sectionName,
   } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTopStory, setIsTopStory] = useState(false);
+  const [isTopStoryLoading, setTopStoryLoading] = useState(false);
+
+  useEffect(() => {
+    setIsTopStory(data.is_top_story);
+  }, [data]);
+
+  const handleTopStoryButton = async () => {
+    try {
+      setTopStoryLoading(true);
+
+      const response = isTopStory
+        ? await deleteFromTopStories(data.id)
+        : await markAsTopStory(data.id);
+
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+
+      setIsTopStory(!isTopStory);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message || "Error marking as top story",
+        backdrop: false,
+        customClass: "swal",
+      });
+    } finally {
+      setTopStoryLoading(false);
+    }
+  };
 
   return (
     <>
@@ -67,6 +107,17 @@ const Card = (props) => {
               ></div>
             </div>
           )}
+          <CustomTooltip
+            content={!isTopStory ? "Mark as top story" : "Unmark as top story"}
+          >
+            <button
+              className="topStoryButton"
+              onClick={handleTopStoryButton}
+              disabled={isTopStoryLoading}
+            >
+              {isTopStory ? <StarIcon /> : <StarBorderIcon />}
+            </button>
+          </CustomTooltip>
           {onDelete && (
             <TrashIcon
               onClick={onDelete}

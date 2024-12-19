@@ -86,56 +86,56 @@ const Competitors = () => {
         new Set(competitorsCoinNames.map((token) => token.trim())),
       );
     
-      const tokenomicsData = await Promise.all(
-        uniqueTokenSymbols.map(async (tokenSymbol) => {
-          try {
-            const response = await fetch(
-              `https://fsxbdb84-5000.uks1.devtunnels.ms/get/token_data?token_symbol=${tokenSymbol}`,
-              {
-                method: "GET",
-                headers: {
-                  "Content-Type": "application/json",
-                  "ngrok-skip-browser-warning": "true",
-                },
-              },
-            );
+      // const tokenomicsData = await Promise.all(
+      //   uniqueTokenSymbols.map(async (tokenSymbol) => {
+      //     try {
+      //       const response = await fetch(
+      //         `https://fsxbdb84-5000.uks1.devtunnels.ms/get/token_data?token_symbol=${tokenSymbol}`,
+      //         {
+      //           method: "GET",
+      //           headers: {
+      //             "Content-Type": "application/json",
+      //             "ngrok-skip-browser-warning": "true",
+      //           },
+      //         },
+      //       );
             
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
+      //       if (!response.ok) {
+      //         throw new Error('Network response was not ok');
+      //       }
             
-            const data = await response.json();
+      //       const data = await response.json();
     
-            if (!data || !data.data) {
-              throw new Error('Data not found in response');
-            }
+      //       if (!data || !data.data) {
+      //         throw new Error('Data not found in response');
+      //       }
     
-            const tokenData = {
-              token: tokenSymbol,
-              symbol: data.data.symbol || "N/A",
-              tokenname: data.data.tokenname || "N/A",
-              description: data.data.description || "N/A",
-              current_price: data.data.current_price || 0,
-              ath: data.data.ath || 0,
-              ath_change_percentage: data.data.ath_change_percentage || 0,
-              market_cap_usd: data.data.market_cap_usd || 0,
-              circulating_supply: data.data.circulating_supply || 0,
-              total_supply: data.data.total_supply || 0,
-              percentage_circulating_supply: data.data.percentage_circulating_supply || 0,
-              tvl: data.data.tvl || 0,
-              chains: data.data.chains || [],
-              categories: data.data.categories || [],
-              website: data.data.website || "",
-              whitepaper: data.data.whitepaper || "",
-            };
+      //       const tokenData = {
+      //         token: tokenSymbol,
+      //         symbol: data.data.symbol || "N/A",
+      //         tokenname: data.data.tokenname || "N/A",
+      //         description: data.data.description || "N/A",
+      //         current_price: data.data.current_price || 0,
+      //         ath: data.data.ath || 0,
+      //         ath_change_percentage: data.data.ath_change_percentage || 0,
+      //         market_cap_usd: data.data.market_cap_usd || 0,
+      //         circulating_supply: data.data.circulating_supply || 0,
+      //         total_supply: data.data.total_supply || 0,
+      //         percentage_circulating_supply: data.data.percentage_circulating_supply || 0,
+      //         tvl: data.data.tvl || 0,
+      //         chains: data.data.chains || [],
+      //         categories: data.data.categories || [],
+      //         website: data.data.website || "",
+      //         whitepaper: data.data.whitepaper || "",
+      //       };
     
-            return tokenData;
-          } catch (error) {
-            console.error(`Error fetching tokenomics data for ${tokenSymbol}:`, error);
-            return null; // Return null for failed requests
-          }
-        }),
-      );
+      //       return tokenData;
+      //     } catch (error) {
+      //       console.error(`Error fetching tokenomics data for ${tokenSymbol}:`, error);
+      //       return null; // Return null for failed requests
+      //     }
+      //   }),
+      // );
     
       const finalData = {};
       competitorsData.forEach((competitor) => {
@@ -155,10 +155,10 @@ const Competitors = () => {
         });
         competitorData.id = competitor.competitor.id;
     
-        const tokenomicData = tokenomicsData.find((data) => data && data.token === token);
-        if (tokenomicData) {
-          finalData[token].tokenomicData = { ...tokenomicData };
-        }
+        // const tokenomicData = tokenomicsData.find((data) => data && data.token === token);
+        // if (tokenomicData) {
+        //   finalData[token].tokenomicData = { ...tokenomicData };
+        // }
         finalData[token].competitors.push(competitorData);
       });
     
@@ -179,6 +179,7 @@ const Competitors = () => {
         headers: {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true",
+          "X-Api-Key": config.X_API_KEY,
         },
         body: JSON.stringify({
           coin_bot_id: selectedCoinBot,
@@ -230,6 +231,7 @@ const Competitors = () => {
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
+            "X-Api-Key": config.X_API_KEY,
           },
         },
       );
@@ -290,8 +292,6 @@ const Competitors = () => {
                     .filter(
                       (competitor) =>
                         ![
-                          "circulating supply",
-                          "tvl",
                           "website",
                           "token",
                           "whitepaper",

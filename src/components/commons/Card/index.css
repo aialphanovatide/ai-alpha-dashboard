@@ -71,3 +71,11 @@
   object-fit: cover;
   cursor: pointer;
 }
+
+.topStoryButton {
+  border: none;
+  background: transparent;
+  height: fit-content;
+  width: fit-content;
+  color: #FF8739;
+}

@@ -240,6 +240,8 @@ body {
     #whitelist-keywords-input,
     #categoryform-icon-container,
     #categoryform-border-color-input,
+    #botForm-img-input,
+    #categoryForm-img-input,
     #custom-select-container>button,
     #custom-select-container>div,
     #custom-select-option:hover,
@@ -269,9 +271,8 @@ body {
     }
 
     #bot-form-submit-button:disabled,
-    #categoryform-icon-input::file-selector-button,
-    #botform-icon-input::file-selector-button,
-    #categoryform-icon-input::file-selector-button,
+    #categoryForm-img-input-button,
+    #botForm-img-input-button,
     #keyword-tag[style="background: rgb(217, 217, 217);"] {
       background-color: #4e4e4e !important;
     }

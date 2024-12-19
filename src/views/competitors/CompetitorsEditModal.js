@@ -29,6 +29,7 @@ const CompetitorsEditModal = ({
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "X-Api-Key": config.X_API_KEY,
           },
           body: JSON.stringify({ competitor_data: editedData }),
         },
