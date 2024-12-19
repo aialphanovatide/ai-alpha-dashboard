@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 const Item = ({ item, onDelete }) => {
   const handleDeleteClick = (event) => {
     event.stopPropagation();
-    onDelete(item.id);
+    onDelete(item.id, item.section_id);
   };
 
   return (
@@ -33,12 +33,12 @@ const Item = ({ item, onDelete }) => {
   );
 };
 
-const AllAnalysis = ({ items, fetchAnalysis, section_id }) => {
+const AllAnalysis = ({ items, fetchAnalysis }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const navigate = useNavigate();
 
-  const handleDelete = async (analysis_id) => {
+  const handleDelete = async (analysis_id, section_id) => {
     try {
       setIsDeleting(true);
       const response = await deleteAnalysis(analysis_id, section_id);
