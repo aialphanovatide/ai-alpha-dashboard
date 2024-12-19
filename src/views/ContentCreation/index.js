@@ -22,7 +22,7 @@ import DatePicker from "react-datepicker";
 import ScheduledJob from "./ScheduledJob";
 import { getCoins } from "src/services/coinService";
 import CIcon from "@coreui/icons-react";
-import { cilImagePlus, cilX } from "@coreui/icons";
+import { cilX } from "@coreui/icons";
 import { ReactComponent as RenewIcon } from "src/assets/icons/renew.svg";
 import { ReactComponent as ScheduleIcon } from "src/assets/icons/scheduled-icon.svg";
 import { ReactComponent as CalendarIcon } from "src/assets/icons/calendar.svg";
@@ -31,6 +31,7 @@ import { ReactComponent as ImageIcon } from "src/assets/icons/imageICon.svg";
 import { Modal } from "react-bootstrap";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { getCategories } from "src/services/categoryService";
 
 const ContentCreation = () => {
   const [selectedCoinID, setSelectedCoinID] = useState(null);
@@ -50,6 +51,22 @@ const ContentCreation = () => {
   const [generatedImg, setGeneratedImg] = useState(null);
   const [isImageGenerating, setIsImageGenerating] = useState(false);
   const [showJobs, setShowJobs] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const categories = await getCategories();
+      setCategories(categories);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message || "Failed to fetch categories",
+        customClass: "swal",
+        backdrop: false,
+      });
+    }
+  }, []);
 
   const fetchCoins = useCallback(async () => {
     try {
@@ -165,11 +182,11 @@ const ContentCreation = () => {
     setSelectedCategory(category);
   };
 
-  const handleSelectCoin = (coinId) => {
-    let selectedCoin = coinBots.find((coin) => coin.id === coinId);
-    if (selectedCoin) {
-      setSelectedCategory(selectedCoin.category);
-    }
+  const handleSelectCoin = (coinId, categoryId) => {
+    const category = categories.find(
+      (category) => category.category_id === parseInt(categoryId),
+    );
+    setSelectedCategory(category.name);
     setSelectedCoinID(coinId);
   };
 
@@ -250,7 +267,8 @@ const ContentCreation = () => {
   useEffect(() => {
     fetchSections();
     fetchCoins();
-  }, [fetchSections, fetchCoins]);
+    fetchCategories();
+  }, [fetchSections, fetchCoins, fetchCategories]);
 
   const resetForm = () => {
     setSelectedDate(null);
@@ -344,6 +362,8 @@ const ContentCreation = () => {
           <CategoryDropdown
             selectedCategory={selectedCategory}
             onSelectCategory={handleCategorySelect}
+            items={categories}
+            disabled={selectedCoinID}
           />
           <div className={styles.section}>
             <div className={styles.labelContainer}>
