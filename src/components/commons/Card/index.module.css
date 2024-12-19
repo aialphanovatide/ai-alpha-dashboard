@@ -97,6 +97,11 @@
   margin: 0px;
 }
 
+.content img {
+  width: 100%;
+  height: auto;
+}
+
 .content p {
   margin: 0px;
 }

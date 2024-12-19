@@ -26,6 +26,11 @@
   font-weight: 400;
 }
 
+.search-tool-item p img {
+  width: 100%;
+  height: auto;
+}
+
 .fade.modal-backdrop {
   z-index: 1;
 }

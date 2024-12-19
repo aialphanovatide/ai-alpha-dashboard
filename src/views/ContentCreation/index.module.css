@@ -76,6 +76,11 @@
   white-space: normal;
 }
 
+.contentPreview img {
+  width: 100%;
+  height: auto;
+}
+
 .contentPreview p {
   margin: 0;
 }
