@@ -32,15 +32,16 @@ import { Modal } from "react-bootstrap";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { getCategories } from "src/services/categoryService";
+import CustomSelect from "src/components/commons/CustomSelect";
 
 const ContentCreation = () => {
-  const [selectedCoinID, setSelectedCoinID] = useState(null);
+  const [selectedCoin, setSelectedCoin] = useState(null);
   const [selectedImage, setSelectedImage] = useState([]);
   const [content, setContent] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnalysisCreated, setIsAnalysisCreated] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSectionID, setSelectedSectionID] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSection, setSelectedSection] = useState(null);
   const [sections, setSections] = useState([]);
   const [isFetchingSections, setIsFetchingSections] = useState(true);
   const [items, setItems] = useState([]);
@@ -128,10 +129,10 @@ const ContentCreation = () => {
       setIsScheduling(true);
 
       const formDataToSchedule = new FormData();
-      formDataToSchedule.append("coin_id", selectedCoinID);
-      formDataToSchedule.append("category_name", selectedCategory);
+      formDataToSchedule.append("coin_id", selectedCoin.bot_id);
+      formDataToSchedule.append("category_name", selectedCategory.name);
       formDataToSchedule.append("content", content);
-      formDataToSchedule.append("section_id", selectedSectionID);
+      formDataToSchedule.append("section_id", selectedSection.id);
       formDataToSchedule.append("image_url", generatedImg);
       formDataToSchedule.append("scheduled_date", selectedDate.toISOString());
 
@@ -195,16 +196,14 @@ const ContentCreation = () => {
     handleGetJobs();
   }, []);
 
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
-  };
-
-  const handleSelectCoin = (coinId, categoryId) => {
-    const category = categories.find(
-      (category) => category.category_id === parseInt(categoryId),
-    );
-    setSelectedCategory(category.name);
-    setSelectedCoinID(coinId);
+  const handleSelectCoin = (coin) => {
+    if (coin) {
+      const category = categories.find(
+        (category) => category.category_id === parseInt(coin.category_id),
+      );
+      setSelectedCategory(category);
+    }
+    setSelectedCoin(coin);
   };
 
   const handleImageSelect = (image) => {
@@ -213,10 +212,6 @@ const ContentCreation = () => {
 
   const handleContentChange = (content) => {
     setContent(content);
-  };
-
-  const handleSectionSelect = (event) => {
-    setSelectedSectionID(event.target.value);
   };
 
   const fetchAnalysis = useCallback(async () => {
@@ -294,34 +289,22 @@ const ContentCreation = () => {
 
   const resetForm = () => {
     setSelectedDate(null);
-    setSelectedCoinID(null);
-    // setSelectedImage([]);
+    setSelectedCoin(null);
     setContent(null);
-    setSelectedCategory("");
-    setSelectedSectionID("");
+    setSelectedCategory(null);
+    setSelectedSection(null);
     setGeneratedImg(null);
   };
 
   const handleSubmit = async () => {
-    // if (selectedImage === null || content === null) {
-    //   return Swal.fire({
-    //     icon: "error",
-    //     title: "One or more required fields are missing",
-    //     showConfirmButton: false,
-    //     timer: 1000,
-    //     customClass: "swal",
-    //   });
-    // }
-
     setIsSubmitting(true);
 
     const formData = new FormData();
-    formData.append("coin_id", selectedCoinID);
+    formData.append("coin_id", selectedCoin.bot_id);
     formData.append("content", content);
-    // formData.append("images", selectedImage);
     formData.append("image_url", generatedImg);
-    formData.append("category_name", selectedCategory);
-    formData.append("section_id", selectedSectionID);
+    formData.append("category_name", selectedCategory.name);
+    formData.append("section_id", selectedSection.id);
 
     try {
       const response = await postAnalysis(formData);
@@ -355,14 +338,14 @@ const ContentCreation = () => {
 
   const isFormValid = useMemo(
     () =>
-      selectedCoinID &&
+      selectedCoin &&
       selectedCategory &&
-      selectedSectionID &&
+      selectedSection &&
       content &&
       generatedImg && [
-        selectedCoinID,
+        selectedCoin,
         selectedCategory,
-        selectedSectionID,
+        selectedSection,
         content,
         generatedImg,
       ],
@@ -388,19 +371,39 @@ const ContentCreation = () => {
       </Title>
       <div style={{ width: "100%" }}>
         <div className="selectors-container">
-          <DropdownMenu
-            selectedCoin={selectedCoinID}
-            onSelectCoin={handleSelectCoin}
-            items={coinBots}
-          />
-          <CategoryDropdown
-            selectedCategory={selectedCategory}
-            onSelectCategory={handleCategorySelect}
-            items={categories}
-            disabled={
-              selectedCoinID || isFetchingCategories || categories.length === 0
-            }
-          />
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>Coin</strong>
+                <span> *</span>
+              </label>
+            </div>
+            <CustomSelect
+              items={coinBots}
+              element="coins"
+              placeholder="Select coin"
+              onSelect={handleSelectCoin}
+              value={selectedCoin}
+            />
+          </div>
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>Category</strong>
+                <span> *</span>
+              </label>
+            </div>
+            <CustomSelect
+              items={categories}
+              element="categories"
+              placeholder="Select category"
+              onSelect={setSelectedCategory}
+              value={selectedCategory}
+              disabled={
+                selectedCoin || isFetchingCategories || categories.length === 0
+              }
+            />
+          </div>
           <div className={styles.section}>
             <div className={styles.labelContainer}>
               <label>
@@ -408,22 +411,14 @@ const ContentCreation = () => {
                 <span> *</span>
               </label>
             </div>
-            <select
-              className={styles.select}
-              required
-              onChange={handleSectionSelect}
-              value={selectedSectionID || ""}
+            <CustomSelect
+              items={sections}
+              element="sections"
+              placeholder="Select section"
+              onSelect={setSelectedSection}
+              value={selectedSection}
               disabled={isFetchingSections || sections.length === 0}
-            >
-              <option value="" disabled>
-                Select section
-              </option>
-              {sections.map((section, index) => (
-                <option key={index} value={section.id}>
-                  {section.name}
-                </option>
-              ))}
-            </select>
+            />
           </div>
         </div>
         <span className={styles.contentTitle}>Content</span>
@@ -624,7 +619,7 @@ const ContentCreation = () => {
         <AllAnalysis
           items={items}
           fetchAnalysis={fetchAnalysis}
-          section_id={selectedSectionID}
+          section_id={selectedSection?.id}
         />
       )}
       {scheduledJobs?.length > 0 && (
