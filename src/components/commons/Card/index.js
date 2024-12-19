@@ -71,7 +71,7 @@ const Card = (props) => {
             <TrashIcon
               onClick={onDelete}
               className="trashBtn"
-              style={{ height: 20, width: "fit-content" }}
+              style={{ height: 20, width: "fit-content", cursor: "pointer" }}
             />
           )}
           {sectionName && (
