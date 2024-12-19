@@ -195,7 +195,7 @@ const ContentCreation = () => {
 
       setItems(response.data);
     } catch (error) {}
-  }, [selectedCoinID, selectedSectionID]);
+  }, []);
 
   useEffect(() => {
     setItems([]);
