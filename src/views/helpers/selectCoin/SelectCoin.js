@@ -31,7 +31,8 @@ const DropdownMenu = ({ selectedCoin, onSelectCoin, items }) => {
 
   const handleDropdownChange = (event) => {
     const selectedCoinId = event.target.value;
-    onSelectCoin(selectedCoinId);
+    const categoryId = event.target.selectedOptions[0].getAttribute("data-category-id");
+    onSelectCoin(selectedCoinId, categoryId);
   };
 
   return (
@@ -53,7 +54,11 @@ const DropdownMenu = ({ selectedCoin, onSelectCoin, items }) => {
           Select coin
         </option>
         {coinBots.map((coinBot, index) => (
-          <option key={index} value={coinBot.bot_id}>
+          <option
+            key={index}
+            value={coinBot.bot_id}
+            data-category-id={coinBot.category_id}
+          >
             {coinBot.name}
           </option>
         ))}
