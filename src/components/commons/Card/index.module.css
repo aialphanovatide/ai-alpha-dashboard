@@ -1,0 +1,108 @@
+.cardModal {
+  z-index: 1;
+}
+
+.cardModal>div {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  margin: auto;
+  justify-content: center;
+}
+
+.cardModal>div>div {
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  width: 380px;
+  align-items: center;
+  position: relative;
+  padding: 0px;
+}
+
+.title {
+  max-height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  font-weight: 600;
+  font-size: 18px;
+  /* add ellipsis*/
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  word-wrap: break-word;
+  line-height: normal;
+  white-space: normal;
+  margin: 0px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.dataContainer {
+  padding: 10px;
+  height: 270px;
+  cursor: pointer;
+}
+
+.date {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  color: #a3a3a3;
+  margin-block: 10px;
+}
+
+.smallIcon {
+  background: linear-gradient(34deg, rgba(2, 0, 36, 0) 8%, rgb(202 202 202) 100%);
+  height: 23px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.closeModalBtn {
+  cursor: pointer;
+  border: none;
+  background: none;
+  align-self: flex-end;
+  margin: 5px;
+}
+
+.modalImg {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.modalDataContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  overflow-y: auto;
+  width: 100%;
+  overflow-x: hidden;
+  flex: auto;
+}
+
+.modalTitle {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.content {
+  width: 100%;
+  overflow-wrap: anywhere;
+  margin: 0px;
+}
+
+.content img {
+  width: 100%;
+  height: auto;
+}
+
+.content p {
+  margin: 0px;
+}
+

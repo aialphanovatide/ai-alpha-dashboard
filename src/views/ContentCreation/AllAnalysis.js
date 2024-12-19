@@ -1,164 +1,117 @@
-import React, { useState } from "react";
-import config from "src/config";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import CIcon from "@coreui/icons-react";
-import { cilTrash } from "@coreui/icons";
 import EditModal from "./editModal";
-import NoData from "src/components/NoData";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { deleteAnalysis } from "src/services/contentCreationService";
+import Card from "src/components/commons/Card";
+import { ReactComponent as ClockBack } from "src/assets/icons/clock-back.svg";
+import styles from "./index.module.css";
+import { formatDateTime } from "src/utils";
+import { useNavigate } from "react-router-dom";
 
-const Item = ({ item, onDelete, base64Image, openEditModal }) => {
+const Item = ({ item, onDelete }) => {
   const handleDeleteClick = (event) => {
-    event.stopPropagation(); // Detiene la propagación del evento click
-    onDelete(item.analysis_id); // Llama a la función onDelete con el ID del análisis
-  };
-
-  const handleItemClick = () => {
-    openEditModal(item);
+    event.stopPropagation();
+    onDelete(item.id, item.section_id);
   };
 
   return (
-    <li className="allAnalysisLI" onClick={handleItemClick}>
-      {base64Image && (
-        <img
-          className="itemImage"
-          src={`data:image/png;base64,${base64Image}`}
-          alt="Analysis"
-        />
-      )}
-      <span
-        className="itemContent"
-        dangerouslySetInnerHTML={{ __html: item.analysis }}
-      />
-      {onDelete && (
-        <CIcon
-          size="xxl"
-          icon={cilTrash}
-          className="deleteBtn"
-          onClick={handleDeleteClick}
-        />
-      )}
-    </li>
+    <Card
+      onDelete={handleDeleteClick}
+      content={item.content}
+      title={item.title}
+      image={item.image_url}
+      date={formatDateTime(item.created_at)}
+      sectionName={item.section_name}
+      categoryIcon={item.category_icon}
+      coinIcon={item.coin_icon}
+    />
   );
-  
 };
 
-const AllAnalysis = ({ items, fetchAnalysis}) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedAnalysis, setSelectedAnalysis] = useState(null); 
+const AllAnalysis = ({ items, fetchAnalysis }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+  const navigate = useNavigate();
 
-  const openEditModal = (item) => {
-    setSelectedAnalysis(item);
-    setIsModalOpen(true); 
-  };
-
-
-
-  // Deletes an analysis
-  const handleDelete = async (analysis_id) => {
+  const handleDelete = async (analysis_id, section_id) => {
     try {
-      const response = await fetch(
-        `${config.BASE_URL}/delete_analysis/${analysis_id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-            "X-Api-Key": config.X_API_KEY,
-          },
-        },
-      );
+      setIsDeleting(true);
+      const response = await deleteAnalysis(analysis_id, section_id);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        Swal.fire({
-          icon: "success",
-          title: data.message,
-          showConfirmButton: false,
-          timer: 1500,
-          customClass: "swal",
-        });
-        fetchAnalysis();
-      } else {
-        console.error("Error deleting analysis:", response.statusText);
-        Swal.fire({
-          icon: "error",
-          title: data.error,
-          showConfirmButton: false,
-          timer: 1500,
-          customClass: "swal",
-        });
+      if (!response.success) {
+        throw new Error(response.error);
       }
+
+      Swal.fire({
+        icon: "success",
+        title: "Analysis deleted successfully",
+        customClass: "swal",
+        backdrop: false,
+      });
+      fetchAnalysis();
     } catch (error) {
-      console.error("Error deleting analysis:", error);
       Swal.fire({
         icon: "error",
         title: error.message || "An error occurred",
-        showConfirmButton: false,
-        timer: 1500,
         customClass: "swal",
+        backdrop: false,
       });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
-  // Función para cerrar el modal de edición
-  const closeEditModal = () => {
-    setIsModalOpen(false)
-  };
-
-  const handleSave = async (analysis_id, editedContent) => {
-    try {
-      const response = await fetch(
-        `${config.BASE_URL}/edit_analysis/${analysis_id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-            "X-Api-Key": config.X_API_KEY,
-          },
-          body: JSON.stringify({ content: editedContent }), 
-        }
-      );
-  
-      const data = await response.json();
-        
-      if (response.ok) {
-        console.log("Analysis updated successfully:", data);
-        fetchAnalysis();
-        closeEditModal(); // Cerrar el modal después de guardar
-      } else {
-        console.error("Error updating analysis:", data.error);
-      }
-    } catch (error) {
-      console.error("Error updating analysis:", error);
-    }
+  const handleRedirect = () => {
+    navigate("/newsSearchTool?data=analysis");
   };
 
   return (
     <div className="analysisSubmain">
-      <h3 className="allAnalysisTitle">Selected Coin Analysis</h3>
-      {items && items.length > 0 ? (
-        <ul className="allAnalysisUL">
-          {items.map((item) => (
-            <Item
-              key={item.analysis_id}
-              item={item}
-              onDelete={handleDelete}
-              openEditModal={openEditModal}
-            />
-          ))}
-        </ul>
-      ) : (
-        <NoData message={"No Analysis found for this coin"} />
-      )}
-      {isModalOpen && (
-        <EditModal
-          item={selectedAnalysis}
-          onSave={handleSave}
-          onClose={closeEditModal}
-          fetchAnalysis={fetchAnalysis} 
-        />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          cursor: "pointer",
+        }}
+        onClick={() => setShowContent(!showContent)}
+      >
+        <div style={{ display: "flex", gap: 10 }}>
+          <ClockBack
+            style={{ height: 28, width: "fit-content" }}
+            id="contentCreation-allAnalysescontainer-icon"
+          />
+          <h4 className="allAnalysisTitle">Latests posts</h4>
+        </div>
+        {showContent ? (
+          <ExpandLessIcon
+            color="disabled"
+            fontSize="large"
+            className="chevron-icon"
+          />
+        ) : (
+          <ExpandMoreIcon
+            color="disabled"
+            fontSize="large"
+            className="chevron-icon"
+          />
+        )}
+      </div>
+      {showContent && (
+        <>
+          <div className="latestPostsContainer">
+            {items.map((item, index) => (
+              <Item key={index} item={item} onDelete={handleDelete} />
+            ))}
+          </div>
+          <button className={styles.seeMoreButton} onClick={handleRedirect}>
+            See more
+            <ChevronRightIcon />
+          </button>
+        </>
       )}
     </div>
   );

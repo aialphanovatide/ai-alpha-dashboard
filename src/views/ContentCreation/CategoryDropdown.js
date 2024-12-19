@@ -1,46 +1,39 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import '../helpers/selectCoin/selectCoinStyles.css';
-import config from "../../config";
+import React, { useState, useEffect, useCallback } from "react";
+import "../helpers/selectCoin/selectCoinStyles.css";
+import { getCategories } from "src/services/categoryService";
+import Swal from "sweetalert2";
+import styles from "./index.module.css";
 
-const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
+const CategoryDropdown = ({
+  selectedCategory,
+  onSelectCategory,
+  items,
+  disabled,
+}) => {
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const getAllBots = useCallback(async () => {
+  const fetchCategories = useCallback(async () => {
     try {
-      const response = await fetch(`${config.BOTS_V2_API}/get_all_bots`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-        },
-      });
-
-      const responseText = await response.text();
-      console.log("responseText : ", responseText);
-
-      try {
-        const data = JSON.parse(responseText);
-        console.log("data : ", data);
-        if (data && data.data) {
-          // Asumiendo que `data.data` es un array de categorías
-          setCategories(data.data);
-        } else {
-          console.error("Error in response:", data.message);
-        }
-      } catch (parseError) {
-        console.error("Error parsing JSON:", parseError);
-      }
+      setLoading(true);
+      const categories = await getCategories();
+      setCategories(categories);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message || "Failed to fetch categories",
+        customClass: "swal",
+        backdrop: false,
+      });
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    getAllBots();
-  }, [getAllBots]);
+    items.length == 0 ? fetchCategories() : setCategories(items);
+  }, [fetchCategories]);
 
   const handleDropdownChange = (event) => {
     const selectedCategory = event.target.value;
@@ -48,19 +41,27 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
   };
 
   return (
-    <div className="dropdown-container">
-      <label htmlFor="coinBotDropdown" className="label"></label>
+    <div className={styles.section}>
+      <div className={styles.labelContainer}>
+        <label>
+          <strong>Category</strong>
+          <span> *</span>
+        </label>
+      </div>
       <select
-        id="coinBotDropdown"
+        className={styles.select}
+        required
         onChange={handleDropdownChange}
-        value={selectedCategory || ''}
-        className="select-dropdown"
-        disabled={loading || categories.length === 0}
+        value={selectedCategory || ""}
+        disabled={loading || categories?.length === 0 || disabled}
       >
-        <option value="" disabled>Select Coin Category...</option>
-        {categories.map((category) => (
-          <option key={category.id} value={category.alias}>
-            {category.alias}
+        <option value="" disabled>
+          Select category
+        </option>
+        {categories?.map((category) => (
+          <option key={category.category_id} value={category.name}>
+            {/* <img src={category.icon} alt={category.name} /> */}
+            {category.name}
           </option>
         ))}
       </select>

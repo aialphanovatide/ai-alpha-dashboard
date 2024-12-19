@@ -1,5 +1,27 @@
 .textEditor {
     height: 500px;
-    margin-top: 20px;
-    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.textEditorContainer {
+    width: 70%;
+}
+
+.textEditor .ql-toolbar.ql-snow {
+    border: none;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: 1px solid #ccc;
+    flex: 0 0 auto;
+}
+
+.textEditor .ql-container.ql-snow {
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border: none;
+    flex: 1;
+    overflow: auto;
 }

@@ -1,54 +1,65 @@
-import React, { useState, useEffect } from 'react';
-import config from '../../../config';
-import './selectCoinStyles.css';
+import React, { useState, useEffect, useCallback } from "react";
+import "./selectCoinStyles.css";
+import { getCoins } from "src/services/coinService";
+import Swal from "sweetalert2";
+import styles from "./index.module.css";
 
-const DropdownMenu = ({ selectedCoin, onSelectCoin }) => {
+const DropdownMenu = ({ selectedCoin, onSelectCoin, items }) => {
   const [coinBots, setCoinBots] = useState([]);
 
-  // Gets all the coins
-  useEffect(() => {
-    const fetchCoinBots = async () => {
-      try {
-        const response = await fetch(`${config.BOTS_V2_API}/bots`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setCoinBots(data.data);
-        } else {
-          console.error('Error fetching coin bots:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error fetching coin bots:', error);
+  const fetchCoins = useCallback(async () => {
+    try {
+      const response = await getCoins();
+      if (!response.success) {
+        throw new Error(response.error);
       }
-    };
-
-    fetchCoinBots();
+      setCoinBots(response.data);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message || "Failed to fetch coins",
+        customClass: "swal",
+        backdrop: false,
+      });
+    }
   }, []);
+
+  useEffect(() => {
+    items.length == 0 ? fetchCoins() : setCoinBots(items);
+  }, [fetchCoins]);
 
   const handleDropdownChange = (event) => {
     const selectedCoinId = event.target.value;
-    onSelectCoin(selectedCoinId); 
+    const categoryId = event.target.selectedOptions[0].getAttribute("data-category-id");
+    onSelectCoin(selectedCoinId, categoryId);
   };
 
   return (
-    <div className="dropdown-container">
-      {/* <label htmlFor="coinBotDropdown" className="label marLeft"></label> */}
+    <div className={styles.section}>
+      <div className={styles.labelContainer}>
+        <label>
+          <strong>Coin</strong>
+          <span> *</span>
+        </label>
+      </div>
       <select
-        id="coinBotDropdown"
+        className={styles.select}
+        required
+        disabled={coinBots.length === 0}
         onChange={handleDropdownChange}
-        value={selectedCoin || ''}
-        className="select-dropdown"
+        value={selectedCoin || ""}
       >
-        <option value="" disabled>Select Coin...</option>
-        {coinBots.map((coinBot) => (
-          <option key={coinBot.id} value={coinBot.id}>
-            {coinBot.name.toUpperCase()}
+        <option value="" disabled>
+          Select coin
+        </option>
+        {coinBots.map((coinBot, index) => (
+          <option
+            key={index}
+            value={coinBot.bot_id}
+            data-category-id={coinBot.category_id}
+          >
+            {coinBot.name}
           </option>
         ))}
       </select>

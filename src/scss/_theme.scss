@@ -83,21 +83,40 @@ body {
     .MuiDrawer-paper td,
     .analysisSubmain p,
     .search-tool-item p,
+    .search-tool-item span,
     .card p,
     .deleteBtn,
     .modal-content p,
+    .modal-content span,
     .swal,
     .edit-btn,
     .top-container button,
     .MuiDrawer-paper,
     .user-info-subcontainer p,
-    .user-plans-container>div p {
+    .user-plans-container>div p,
+    #contentCreation-contentPreview p,
+    .ql-editor p,
+    #contentCreation-datePickerContainer {
       color: white !important;
     }
 
     #deleteItemModal-subcontainer>svg,
-    .MuiDrawer-paper svg {
+    .MuiDrawer-paper svg,
+    .chevron-icon,
+    #contentCreation-regenerateImgButton svg {
+      fill: white !important;
+    }
+
+    .trashBtn path {
+      stroke: white;
+    }
+
+    #trashBtn>svg>path,
+    #contentCreation-titleIcon path,
+    #contentCreation-allAnalysescontainer-icon path,
+    .contentCreation-scheduledPosts-icon path {
       fill: white;
+      stroke: white;
     }
 
     .allAnalysisLI {
@@ -109,8 +128,11 @@ body {
       border: gray
     }
 
+    .submitAnalisys:disabled {
+      background: #aa8a61;
+    }
+
     .page-button:hover,
-    .submitAnalisys,
     .postLaterButton,
     .schButton {
       background-color: transparent !important;
@@ -128,12 +150,17 @@ body {
     .css-1ps6pg7-MuiPaper-root,
     .card,
     .search-tool-item,
-    .swal {
+    .swal,
+    .selectors-container,
+    #contentCreation-previewCard,
+    .textEditor .ql-container.ql-snow,
+    #contentCreation-datePickerContainer {
       background-color: #2a303d !important;
       border: gray !important
     }
 
-    .ql-toolbar.ql-snow {
+    .ql-toolbar.ql-snow,
+    #contentCreation-regenerateImgButton {
       background: #818181 !important;
     }
 
@@ -214,9 +241,17 @@ body {
     #categoryform-icon-container,
     #categoryform-border-color-input,
     #botForm-img-input,
-    #categoryForm-img-input {
-      background-color: #2a303d !important;
+    #categoryForm-img-input,
+    #custom-select-container>button,
+    #custom-select-container>div,
+    #custom-select-option:hover,
+    #contentCreation-previewImgContainer {
+      background-color: #24282f !important;
       color: white;
+    }
+
+    #contentCreation-textMockContainer p {
+      background-color: #24282f !important;
     }
 
     #botform-whitelist-keyword,
@@ -240,11 +275,6 @@ body {
     #botForm-img-input-button,
     #keyword-tag[style="background: rgb(217, 217, 217);"] {
       background-color: #4e4e4e !important;
-    }
-
-    #trashBtn>svg>path {
-      fill: white;
-      stroke: white;
     }
 
     #trashBtn:disabled>svg>path {

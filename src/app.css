@@ -6,6 +6,10 @@ body,
   font-family: 'Figtree', sans-serif;
 }
 
+h4, h6 {
+  margin: 0;
+}
+
 html {
   scroll-behavior: smooth;
 }

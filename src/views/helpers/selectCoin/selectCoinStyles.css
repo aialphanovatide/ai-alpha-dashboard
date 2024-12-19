@@ -29,6 +29,18 @@
     display: flex;
     align-items: center; /* Centra verticalmente */
     gap: 10px;
+    background: white;
+    border-radius: 10px;
+    width: fit-content;
+    padding-right: 10px;
+  }
+
+  .selectors-container select {
+    cursor: pointer;
+  }
+
+  .selectors-container select:disabled {
+    cursor: not-allowed;
   }
   
   .or-text {
