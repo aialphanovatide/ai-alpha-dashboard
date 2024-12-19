@@ -107,24 +107,30 @@ const Card = (props) => {
               ></div>
             </div>
           )}
-          <CustomTooltip
-            content={!isTopStory ? "Mark as top story" : "Unmark as top story"}
-          >
-            <button
-              className="topStoryButton"
-              onClick={handleTopStoryButton}
-              disabled={isTopStoryLoading}
-            >
-              {isTopStory ? <StarIcon /> : <StarBorderIcon />}
-            </button>
-          </CustomTooltip>
-          {onDelete && (
-            <TrashIcon
-              onClick={onDelete}
-              className="trashBtn"
-              style={{ height: 20, width: "fit-content", cursor: "pointer" }}
-            />
-          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 5, width: "fit-content" }}>
+            {onDelete && (
+              <TrashIcon
+                onClick={onDelete}
+                className="trashBtn"
+                style={{ height: 20, width: "fit-content", cursor: "pointer" }}
+              />
+            )}
+            {!sectionName && (
+              <CustomTooltip
+                content={
+                  !isTopStory ? "Mark as top story" : "Unmark as top story"
+                }
+              >
+                <button
+                  className="topStoryButton"
+                  onClick={handleTopStoryButton}
+                  disabled={isTopStoryLoading}
+                >
+                  {isTopStory ? <StarIcon /> : <StarBorderIcon />}
+                </button>
+              </CustomTooltip>
+            )}
+          </div>
           {sectionName && (
             <span style={{ color: "#a3a3a3" }}>{sectionName}</span>
           )}
