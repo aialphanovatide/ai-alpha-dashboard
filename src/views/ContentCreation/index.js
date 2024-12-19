@@ -179,6 +179,18 @@ const ContentCreation = () => {
     }
   };
 
+  function formatContent(content) {
+    return content
+      .replace(
+        /<p>(.*?)<\/p><p><br><\/p>/,
+        '<p style="font-size: 20px"><strong>$1</strong></p><p><br></p>',
+      )
+      .replace(
+        /<p><span>(.*?)<\/span><\/p><p><br><\/p>/,
+        '<p style="font-size: 20px"><strong>$1</strong></p><p><br></p>',
+      );
+  }
+
   useEffect(() => {
     handleGetJobs();
   }, []);
@@ -487,7 +499,7 @@ const ContentCreation = () => {
             <div style={{ height: 300 }}>
               {isContent || isImageInContent ? (
                 <p
-                  dangerouslySetInnerHTML={{ __html: content }}
+                  dangerouslySetInnerHTML={{ __html: formatContent(content) }}
                   style={{ height: "fit-content", fontSize: 16 }}
                   className={styles.contentPreview}
                   id="contentCreation-contentPreview"
