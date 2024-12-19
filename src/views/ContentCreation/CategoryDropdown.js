@@ -4,7 +4,12 @@ import { getCategories } from "src/services/categoryService";
 import Swal from "sweetalert2";
 import styles from "./index.module.css";
 
-const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
+const CategoryDropdown = ({
+  selectedCategory,
+  onSelectCategory,
+  items,
+  disabled,
+}) => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +31,7 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
   }, []);
 
   useEffect(() => {
-    fetchCategories();
+    items.length == 0 ? fetchCategories() : setCategories(items);
   }, [fetchCategories]);
 
   const handleDropdownChange = (event) => {
@@ -46,8 +51,8 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory }) => {
         className={styles.select}
         required
         onChange={handleDropdownChange}
-        value={selectedCategory || ''}
-        disabled={loading || categories?.length === 0}
+        value={selectedCategory || ""}
+        disabled={loading || categories?.length === 0 || disabled}
       >
         <option value="" disabled>
           Select category
