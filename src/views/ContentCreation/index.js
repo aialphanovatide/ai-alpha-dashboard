@@ -466,16 +466,18 @@ const ContentCreation = () => {
                 />
               ) : (
                 <div className={styles.textMockContainer}>
-                  <p style={{width: '100%', marginTop: 10, marginBottom: 5}}>-</p>
-                  <p style={{width: '80%'}}>-</p>
-                  <p style={{width: '95%', marginTop: 30}}>-</p>
-                  <p style={{width: '95%'}}>-</p>
-                  <p style={{width: '80%'}}>-</p>
-                  <p style={{width: '85%'}}>-</p>
-                  <p style={{width: '80%'}}>-</p>
-                  <p style={{width: '90%'}}>-</p>
-                  <p style={{width: '80%'}}>-</p>
-                  <p style={{width: '75%'}}>-</p>
+                  <p style={{ width: "100%", marginTop: 10, marginBottom: 5 }}>
+                    -
+                  </p>
+                  <p style={{ width: "80%" }}>-</p>
+                  <p style={{ width: "95%", marginTop: 30 }}>-</p>
+                  <p style={{ width: "95%" }}>-</p>
+                  <p style={{ width: "80%" }}>-</p>
+                  <p style={{ width: "85%" }}>-</p>
+                  <p style={{ width: "80%" }}>-</p>
+                  <p style={{ width: "90%" }}>-</p>
+                  <p style={{ width: "80%" }}>-</p>
+                  <p style={{ width: "75%" }}>-</p>
                 </div>
               )}
             </div>
@@ -569,12 +571,14 @@ const ContentCreation = () => {
           </div>
         </Modal>
       </div>
-      <AllAnalysis
-        items={items}
-        fetchAnalysis={fetchAnalysis}
-        section_id={selectedSectionID}
-      />
-      {scheduledJobs.length > 0 && (
+      {items?.length > 0 && (
+        <AllAnalysis
+          items={items}
+          fetchAnalysis={fetchAnalysis}
+          section_id={selectedSectionID}
+        />
+      )}
+      {scheduledJobs?.length > 0 && (
         <div className="analysisSubmain">
           <div
             style={{
