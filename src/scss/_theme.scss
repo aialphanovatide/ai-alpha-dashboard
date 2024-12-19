@@ -239,7 +239,9 @@ body {
     #whitelist-keywords-input,
     #categoryform-icon-container,
     #categoryform-border-color-input,
-    .selectors-container select,
+    #custom-select-container>button,
+    #custom-select-container>div,
+    #custom-select-option:hover,
     #contentCreation-previewImgContainer {
       background-color: #24282f !important;
       color: white;

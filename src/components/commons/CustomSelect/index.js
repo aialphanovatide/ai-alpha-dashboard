@@ -48,6 +48,7 @@ const CustomSelect = ({
     <div
       ref={containerRef}
       className={`${styles.selectContainer} ${isOpen ? styles.open : ""}`}
+      id="custom-select-container"
     >
       <button
         className={styles.selectHeader}
@@ -78,6 +79,7 @@ const CustomSelect = ({
               key={item.id}
               className={styles.option}
               onClick={() => handleSelect(item)}
+              id='custom-select-option'
             >
               {item.icon && (
                 <img
