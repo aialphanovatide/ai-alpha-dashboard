@@ -4,9 +4,7 @@ import EditModal from "./editModal";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import {
-  deleteAnalysis,
-} from "src/services/contentCreationService";
+import { deleteAnalysis } from "src/services/contentCreationService";
 import Card from "src/components/commons/Card";
 import { ReactComponent as ClockBack } from "src/assets/icons/clock-back.svg";
 import styles from "./index.module.css";
@@ -68,7 +66,7 @@ const AllAnalysis = ({ items, fetchAnalysis }) => {
 
   const handleRedirect = () => {
     navigate("/newsSearchTool?data=analysis");
-  }
+  };
 
   return (
     <div className="analysisSubmain">
@@ -95,11 +93,7 @@ const AllAnalysis = ({ items, fetchAnalysis }) => {
         <>
           <div className="latestPostsContainer">
             {items.map((item, index) => (
-              <Item
-                key={index}
-                item={item}
-                onDelete={handleDelete}
-              />
+              <Item key={index} item={item} onDelete={handleDelete} />
             ))}
           </div>
           <button className={styles.seeMoreButton} onClick={handleRedirect}>
