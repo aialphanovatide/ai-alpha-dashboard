@@ -52,9 +52,12 @@ const ContentCreation = () => {
   const [isImageGenerating, setIsImageGenerating] = useState(false);
   const [showJobs, setShowJobs] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [isFetchingCategories, setIsFetchingCategories] = useState(false);
+  const [isScheduling, setIsScheduling] = useState(false);
 
   const fetchCategories = useCallback(async () => {
     try {
+      setIsFetchingCategories(true);
       const categories = await getCategories();
       setCategories(categories);
     } catch (error) {
@@ -65,6 +68,8 @@ const ContentCreation = () => {
         customClass: "swal",
         backdrop: false,
       });
+    } finally {
+      setIsFetchingCategories(false);
     }
   }, []);
 
@@ -120,7 +125,7 @@ const ContentCreation = () => {
         throw new Error("One or more required fields are missing");
       }
 
-      setIsSubmitting(true);
+      setIsScheduling(true);
 
       const formDataToSchedule = new FormData();
       formDataToSchedule.append("coin_id", selectedCoinID);
@@ -156,7 +161,7 @@ const ContentCreation = () => {
         backdrop: false,
       });
     } finally {
-      setIsSubmitting(false);
+      setIsScheduling(false);
     }
   };
 
@@ -336,7 +341,14 @@ const ContentCreation = () => {
       selectedCoinID &&
       selectedCategory &&
       selectedSectionID &&
-      content && [selectedCoinID, selectedCategory, selectedSectionID, content],
+      content &&
+      generatedImg && [
+        selectedCoinID,
+        selectedCategory,
+        selectedSectionID,
+        content,
+        generatedImg,
+      ],
   );
 
   const isContent = useMemo(
@@ -364,7 +376,9 @@ const ContentCreation = () => {
             selectedCategory={selectedCategory}
             onSelectCategory={handleCategorySelect}
             items={categories}
-            disabled={selectedCoinID}
+            disabled={
+              selectedCoinID || isFetchingCategories || categories.length === 0
+            }
           />
           <div className={styles.section}>
             <div className={styles.labelContainer}>
@@ -502,7 +516,7 @@ const ContentCreation = () => {
           <button
             className="postLaterButton"
             onClick={() => setShowPostLaterSection(true)}
-            // disabled={isSubmitting || !isFormValid}
+            disabled={isSubmitting || !isFormValid}
           >
             Schedule
           </button>
@@ -578,9 +592,9 @@ const ContentCreation = () => {
             <button
               className="postLaterButton"
               onClick={handleScheduleSubmit}
-              disabled={isSubmitting || !isFormValid || !selectedDate}
+              disabled={isScheduling || !isFormValid || !selectedDate}
             >
-              {isSubmitting ? "Scheduling..." : "Schedule"}
+              {isScheduling ? "Scheduling..." : "Schedule"}
             </button>
           </div>
         </Modal>

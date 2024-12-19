@@ -11,10 +11,11 @@ const CategoryDropdown = ({
   disabled,
 }) => {
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const fetchCategories = useCallback(async () => {
     try {
+      setLoading(true);
       const categories = await getCategories();
       setCategories(categories);
     } catch (error) {
