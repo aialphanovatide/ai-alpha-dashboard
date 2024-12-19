@@ -80,13 +80,24 @@ const AllAnalysis = ({ items, fetchAnalysis }) => {
         onClick={() => setShowContent(!showContent)}
       >
         <div style={{ display: "flex", gap: 10 }}>
-          <ClockBack style={{ height: 28, width: "fit-content" }} />
+          <ClockBack
+            style={{ height: 28, width: "fit-content" }}
+            id="contentCreation-allAnalysescontainer-icon"
+          />
           <h4 className="allAnalysisTitle">Latests posts</h4>
         </div>
         {showContent ? (
-          <ExpandLessIcon color="disabled" fontSize="large" />
+          <ExpandLessIcon
+            color="disabled"
+            fontSize="large"
+            className="chevron-icon"
+          />
         ) : (
-          <ExpandMoreIcon color="disabled" fontSize="large" />
+          <ExpandMoreIcon
+            color="disabled"
+            fontSize="large"
+            className="chevron-icon"
+          />
         )}
       </div>
       {showContent && (

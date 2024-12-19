@@ -349,6 +349,7 @@ const ContentCreation = () => {
       <Title>
         <TitleIcon
           style={{ height: 35, width: "fit-content", marginRight: 15 }}
+          id="contentCreation-titleIcon"
         />
         Content Creator
       </Title>
@@ -399,28 +400,10 @@ const ContentCreation = () => {
             onSuccess={setIsAnalysisCreated}
             onContentChange={handleContentChange}
           />
-          <div
-            style={{
-              width: "30%",
-              borderRadius: 10,
-              background: "#efefef",
-              display: "flex",
-              flexDirection: "column",
-              gap: 10,
-              padding: 10,
-            }}
-          >
+          <div className={styles.previewCard} id="contentCreation-previewCard">
             <div
-              style={{
-                borderRadius: 10,
-                background: "white",
-                height: 160,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                overflow: "hidden",
-                position: "relative",
-              }}
+              className={styles.previewImgContainer}
+              id="contentCreation-previewImgContainer"
             >
               {generatedImg ? (
                 <img
@@ -463,6 +446,7 @@ const ContentCreation = () => {
               <button
                 className={styles.regenerateImgButton}
                 onClick={generateImg}
+                id="contentCreation-regenerateImgButton"
                 disabled={!isContent || isImageGenerating}
                 style={{
                   cursor: isImageGenerating
@@ -483,9 +467,13 @@ const ContentCreation = () => {
                   dangerouslySetInnerHTML={{ __html: content }}
                   style={{ height: "fit-content", fontSize: 16 }}
                   className={styles.contentPreview}
+                  id="contentCreation-contentPreview"
                 />
               ) : (
-                <div className={styles.textMockContainer}>
+                <div
+                  className={styles.textMockContainer}
+                  id="contentCreation-textMockContainer"
+                >
                   <p style={{ width: "100%", marginTop: 10, marginBottom: 5 }}>
                     -
                   </p>
@@ -514,7 +502,7 @@ const ContentCreation = () => {
           <button
             className="postLaterButton"
             onClick={() => setShowPostLaterSection(true)}
-            disabled={isSubmitting || !isFormValid}
+            // disabled={isSubmitting || !isFormValid}
           >
             Schedule
           </button>
@@ -541,7 +529,7 @@ const ContentCreation = () => {
               alignItems: "center",
             }}
           >
-            <ScheduleIcon />
+            <ScheduleIcon className="contentCreation-scheduledPosts-icon" />
             <h3>Schedule the content</h3>
           </div>
           <div
@@ -555,7 +543,10 @@ const ContentCreation = () => {
             <label htmlFor="date" style={{ fontSize: 18, fontWeight: 600 }}>
               Select Date and Time
             </label>
-            <div className={styles.datePicker}>
+            <div
+              className={styles.datePicker}
+              id="contentCreation-datePickerContainer"
+            >
               <DatePicker
                 selected={selectedDate}
                 onChange={handleDateChange}
@@ -567,7 +558,10 @@ const ContentCreation = () => {
                 required
                 placeholderText="DD/MM/YYYY HH:MM"
               />
-              <CalendarIcon style={{ height: 20 }} />
+              <CalendarIcon
+                style={{ height: 20 }}
+                className="contentCreation-scheduledPosts-icon"
+              />
             </div>
           </div>
           <div
@@ -610,13 +604,24 @@ const ContentCreation = () => {
             onClick={() => setShowJobs(!showJobs)}
           >
             <div style={{ display: "flex", gap: 10 }}>
-              <ScheduleIcon style={{ height: 28, width: "fit-content" }} />
+              <ScheduleIcon
+                style={{ height: 28, width: "fit-content" }}
+                className="contentCreation-scheduledPosts-icon"
+              />
               <h4 className="allAnalysisTitle">Scheduled</h4>
             </div>
             {showJobs ? (
-              <ExpandLessIcon color="disabled" fontSize="large" />
+              <ExpandLessIcon
+                color="disabled"
+                fontSize="large"
+                className="chevron-icon"
+              />
             ) : (
-              <ExpandMoreIcon color="disabled" fontSize="large" />
+              <ExpandMoreIcon
+                color="disabled"
+                fontSize="large"
+                className="chevron-icon"
+              />
             )}
           </div>
           {showJobs && (
