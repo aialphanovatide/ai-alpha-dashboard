@@ -3,7 +3,8 @@
   flex-direction: column;
   gap: 5px;
   margin-block: 15px;
-  margin-left: 10px
+  margin-left: 10px;
+  width: 180px;
 }
 
 .section>div>label>span {
