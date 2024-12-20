@@ -1,33 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Spinner, Alert } from "react-bootstrap";
 import config from "../../config";
-import TextExtractor from "../textExtractor/TextExtractor";
 import Title from "src/components/commons/Title";
 import styles from "./index.module.css";
 import { ReactComponent as TitleIcon } from "src/assets/icons/newsCreator.svg";
+import { ReactComponent as RenewIcon } from "src/assets/icons/newsCreator.svg";
 import CustomSelect from "src/components/commons/CustomSelect";
+import RichTextEditor from "../helpers/textEditor/textEditor";
 
 const NewsCreator = () => {
   const [categories, setCategories] = useState([]);
   const [bots, setBots] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedBot, setSelectedBot] = useState(null);
-  const [analysis, setAnalysis] = useState("");
-  const [usedKeywords, setUsedKeywords] = useState("");
-  const [isArticleEfficient, setIsArticleEfficient] = useState("");
-  const [isLoadingRegenerateArticle, setIsLoadingRegenerateArticle] =
-    useState(false);
-  const [isLoadingRegenerateImage, setIsLoadingRegenerateImage] =
-    useState(false);
-  const [isLoadingSave, setIsLoadingSave] = useState(false);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [previewData, setPreviewData] = useState(null);
-  const [showPreview, setShowPreview] = useState(false);
-  const [articleToBeSaved, setArticleToBeSaved] = useState(null);
-  const [imageToBeSaved, setImageToBeSaved] = useState(null);
-  const [charLimitError, setCharLimitError] = useState(false);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [isTopStory, setIsTopStory] = useState(false); // Nuevo estado para el checkbox
+  const [generatedImg, setGeneratedImg] = useState(null);
+  const [isImageGenerating, setIsImageGenerating] = useState(false);
+  const [isContent, setIsContent] = useState(false);
+  const [isImageInContent, setIsImageInContent] = useState(false);
+  const [content, setContent] = useState("");
 
   useEffect(() => {
     const fetchCategoriesAndBots = async () => {
@@ -50,252 +39,200 @@ const NewsCreator = () => {
 
     fetchCategoriesAndBots();
   }, []);
+  //   setIsLoadingRegenerateArticle(true);
+  //   try {
+  //     const articleResponse = await fetch(
+  //       `${config.BOTS_V2_API}/generate_article`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           "ngrok-skip-browser-warning": "true",
+  //         },
+  //         body: JSON.stringify({
+  //           content: analysis,
+  //           category_id: selectedCategory.id,
+  //         }),
+  //       },
+  //     );
 
-  const refreshArticles = async () => {
-    try {
-      const response = await fetch(`${config.BOTS_V2_API}/last_five_articles`);
-      const data = await response.json();
-      // Update state or perform any necessary actions
-    } catch (error) {
-      console.error("Error refreshing articles:", error.message);
-    }
-  };
+  //     const articleData = await articleResponse.json();
+  //     console.log(articleData.data.summary.response);
+  //     const { title, content } = parseSummary(
+  //       articleData.data.summary.response,
+  //     );
+  //     console.log(title, content);
+  //     if (!articleResponse.ok) {
+  //       console.error("Error generating article:", articleData.error);
+  //       return;
+  //     }
 
-  const checkIfAllFieldsFilled = () => {
-    if (
-      selectedCategory &&
-      selectedBot &&
-      analysis &&
-      usedKeywords &&
-      isArticleEfficient &&
-      !charLimitError
-    ) {
-      setIsButtonDisabled(false);
-    } else {
-      setIsButtonDisabled(true);
-    }
-  };
+  //     const imageResponse = await fetch(
+  //       `${config.BOTS_V2_API}/generate_image`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           "ngrok-skip-browser-warning": "true",
+  //         },
+  //         body: JSON.stringify({
+  //           content: articleData.data.summary.response,
+  //           bot_id: selectedBot?.id,
+  //         }),
+  //       },
+  //     );
 
-  useEffect(() => {
-    checkIfAllFieldsFilled();
-  }, [
-    selectedCategory,
-    selectedBot,
-    analysis,
-    usedKeywords,
-    isArticleEfficient,
-    charLimitError,
-  ]);
+  //     const imageData = await imageResponse.json();
+  //     console.log(imageData);
+  //     if (!imageResponse.ok) {
+  //       console.error("Error generating image:", imageData.error);
+  //       return;
+  //     }
 
-  const getSelectedBotName = () => {
-    const bot = bots.find(
-      (b) => b.id.toString() === selectedBot?.id.toString(),
-    );
-    return bot ? bot.name : "";
-  };
+  //     const imageUrl = imageData.data.image_url;
 
-  const parseSummary = (summary) => {
-    const lines = summary.split("\n").filter((line) => line.trim() !== "");
-    const title = lines[0].replace(/^\*\*(.*)\*\*$/, "$1"); // Elimina los asteriscos si están presentes
-    const content = lines.slice(1).join("\n");
-    return { title, content };
-  };
+  //     setPreviewData({
+  //       title: title,
+  //       content: content,
+  //       image: imageUrl,
+  //     });
+  //     setArticleToBeSaved({
+  //       title: title,
+  //       content: content,
+  //       analysis: analysis,
+  //       used_keywords: usedKeywords,
+  //       is_article_efficient: isArticleEfficient,
+  //       category_id: selectedCategory.id,
+  //       bot_id: selectedBot?.id,
+  //     });
+  //     setImageToBeSaved(imageUrl);
 
-  const handleGenerate = async () => {
-    setIsLoadingRegenerateArticle(true);
-    try {
-      const articleResponse = await fetch(
-        `${config.BOTS_V2_API}/generate_article`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-          },
-          body: JSON.stringify({
-            content: analysis,
-            category_id: selectedCategory.id,
-          }),
-        },
-      );
+  //     setShowPreview(true);
+  //   } catch (error) {
+  //     console.error("Error generating article or image:", error.message);
+  //   } finally {
+  //     setIsLoadingRegenerateArticle(false);
+  //     setIsLoadingRegenerateImage(false);
+  //   }
+  // };
 
-      const articleData = await articleResponse.json();
-      console.log(articleData.data.summary.response);
-      const { title, content } = parseSummary(
-        articleData.data.summary.response,
-      );
-      console.log(title, content);
-      if (!articleResponse.ok) {
-        console.error("Error generating article:", articleData.error);
-        return;
-      }
+  // const handleSave = async () => {
+  //   setIsLoadingSave(true);
+  //   try {
+  //     const response = await fetch(`${config.BOTS_V2_API}/add_new_article`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "ngrok-skip-browser-warning": "true",
+  //       },
+  //       body: JSON.stringify({
+  //         title: articleToBeSaved.title,
+  //         content: articleToBeSaved.content,
+  //         analysis: articleToBeSaved.analysis,
+  //         used_keywords: articleToBeSaved.used_keywords,
+  //         is_article_efficient: articleToBeSaved.is_article_efficient,
+  //         category_id: articleToBeSaved.category_id,
+  //         bot_id: articleToBeSaved.bot_id,
+  //         image_url: imageToBeSaved,
+  //         is_top_story: isTopStory, // Enviar el valor del checkbox
+  //       }),
+  //     });
 
-      const imageResponse = await fetch(
-        `${config.BOTS_V2_API}/generate_image`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-          },
-          body: JSON.stringify({
-            content: articleData.data.summary.response,
-            bot_id: selectedBot?.id,
-          }),
-        },
-      );
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       setShowSuccessMessage(true); // Show success message
+  //       console.log("Article saved successfully!");
+  //       setTimeout(() => {
+  //         setShowSuccessMessage(false); // Hide after 5 seconds
+  //         startOver(); // Reset form after hiding success message
+  //       }, 5000);
+  //       refreshArticles();
+  //     } else {
+  //       console.error("Error saving article:", data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error saving article:", error.message);
+  //   } finally {
+  //     setIsLoadingSave(false);
+  //   }
+  // };
 
-      const imageData = await imageResponse.json();
-      console.log(imageData);
-      if (!imageResponse.ok) {
-        console.error("Error generating image:", imageData.error);
-        return;
-      }
+  // const handleRegenerateArticle = async () => {
+  //   setIsLoadingRegenerateArticle(true);
+  //   try {
+  //     const articleResponse = await fetch(
+  //       `${config.BOTS_V2_API}/generate_article`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           "ngrok-skip-browser-warning": "true",
+  //         },
+  //         body: JSON.stringify({
+  //           content: analysis,
+  //           category_id: selectedCategory.id,
+  //         }),
+  //       },
+  //     );
 
-      const imageUrl = imageData.data.image_url;
+  //     const articleData = await articleResponse.json();
+  //     if (!articleResponse.ok) {
+  //       console.error("Error regenerating article:", articleData.error);
+  //       return;
+  //     }
 
-      setPreviewData({
-        title: title,
-        content: content,
-        image: imageUrl,
-      });
-      setArticleToBeSaved({
-        title: title,
-        content: content,
-        analysis: analysis,
-        used_keywords: usedKeywords,
-        is_article_efficient: isArticleEfficient,
-        category_id: selectedCategory.id,
-        bot_id: selectedBot?.id,
-      });
-      setImageToBeSaved(imageUrl);
+  //     setPreviewData((prevData) => ({
+  //       ...prevData,
+  //       title: articleData.data.title,
+  //       content: articleData.data.content,
+  //     }));
+  //     setArticleToBeSaved((prevData) => ({
+  //       ...prevData,
+  //       title: articleData.data.title,
+  //       content: articleData.data.content,
+  //     }));
+  //   } catch (error) {
+  //     console.error("Error regenerating article:", error.message);
+  //   } finally {
+  //     setIsLoadingRegenerateArticle(false);
+  //   }
+  // };
 
-      setShowPreview(true);
-    } catch (error) {
-      console.error("Error generating article or image:", error.message);
-    } finally {
-      setIsLoadingRegenerateArticle(false);
-      setIsLoadingRegenerateImage(false);
-    }
-  };
+  // const handleRegenerateImage = async () => {
+  //   setIsLoadingRegenerateImage(true);
+  //   try {
+  //     const imageResponse = await fetch(
+  //       `${config.BOTS_V2_API}/generate_image`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           "ngrok-skip-browser-warning": "true",
+  //         },
+  //         body: JSON.stringify({
+  //           content: previewData.content,
+  //           bot_id: selectedBot?.id,
+  //         }),
+  //       },
+  //     );
 
-  const handleSave = async () => {
-    setIsLoadingSave(true);
-    try {
-      const response = await fetch(`${config.BOTS_V2_API}/add_new_article`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-        },
-        body: JSON.stringify({
-          title: articleToBeSaved.title,
-          content: articleToBeSaved.content,
-          analysis: articleToBeSaved.analysis,
-          used_keywords: articleToBeSaved.used_keywords,
-          is_article_efficient: articleToBeSaved.is_article_efficient,
-          category_id: articleToBeSaved.category_id,
-          bot_id: articleToBeSaved.bot_id,
-          image_url: imageToBeSaved,
-          is_top_story: isTopStory, // Enviar el valor del checkbox
-        }),
-      });
+  //     const imageData = await imageResponse.json();
+  //     if (!imageResponse.ok) {
+  //       console.error("Error regenerating image:", imageData.error);
+  //       return;
+  //     }
 
-      const data = await response.json();
-      if (response.ok) {
-        setShowSuccessMessage(true); // Show success message
-        console.log("Article saved successfully!");
-        setTimeout(() => {
-          setShowSuccessMessage(false); // Hide after 5 seconds
-          startOver(); // Reset form after hiding success message
-        }, 5000);
-        refreshArticles();
-      } else {
-        console.error("Error saving article:", data.message);
-      }
-    } catch (error) {
-      console.error("Error saving article:", error.message);
-    } finally {
-      setIsLoadingSave(false);
-    }
-  };
-
-  const handleRegenerateArticle = async () => {
-    setIsLoadingRegenerateArticle(true);
-    try {
-      const articleResponse = await fetch(
-        `${config.BOTS_V2_API}/generate_article`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-          },
-          body: JSON.stringify({
-            content: analysis,
-            category_id: selectedCategory.id,
-          }),
-        },
-      );
-
-      const articleData = await articleResponse.json();
-      if (!articleResponse.ok) {
-        console.error("Error regenerating article:", articleData.error);
-        return;
-      }
-
-      setPreviewData((prevData) => ({
-        ...prevData,
-        title: articleData.data.title,
-        content: articleData.data.content,
-      }));
-      setArticleToBeSaved((prevData) => ({
-        ...prevData,
-        title: articleData.data.title,
-        content: articleData.data.content,
-      }));
-    } catch (error) {
-      console.error("Error regenerating article:", error.message);
-    } finally {
-      setIsLoadingRegenerateArticle(false);
-    }
-  };
-
-  const handleRegenerateImage = async () => {
-    setIsLoadingRegenerateImage(true);
-    try {
-      const imageResponse = await fetch(
-        `${config.BOTS_V2_API}/generate_image`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-          },
-          body: JSON.stringify({
-            content: previewData.content,
-            bot_id: selectedBot?.id,
-          }),
-        },
-      );
-
-      const imageData = await imageResponse.json();
-      if (!imageResponse.ok) {
-        console.error("Error regenerating image:", imageData.error);
-        return;
-      }
-
-      setPreviewData((prevData) => ({
-        ...prevData,
-        image: imageData.data.image_url,
-      }));
-      setImageToBeSaved(imageData.data.image_url);
-    } catch (error) {
-      console.error("Error regenerating image:", error.message);
-    } finally {
-      setIsLoadingRegenerateImage(false);
-    }
-  };
+  //     setPreviewData((prevData) => ({
+  //       ...prevData,
+  //       image: imageData.data.image_url,
+  //     }));
+  //     setImageToBeSaved(imageData.data.image_url);
+  //   } catch (error) {
+  //     console.error("Error regenerating image:", error.message);
+  //   } finally {
+  //     setIsLoadingRegenerateImage(false);
+  //   }
+  // };
 
   const handleSelectCoin = (coin) => {
     if (coin) {
@@ -307,24 +244,17 @@ const NewsCreator = () => {
     setSelectedBot(coin);
   };
 
-  const startOver = () => {
-    setSelectedCategory(null);
-    setSelectedBot(null);
-    setAnalysis("");
-    setUsedKeywords("");
-    setIsArticleEfficient("");
-    setPreviewData(null);
-    setShowPreview(false);
-    setArticleToBeSaved(null);
-    setImageToBeSaved(null);
-    setIsTopStory(false); // Resetear el valor del checkbox
-  };
-
-  const handleAnalysisChange = (e) => {
-    const value = e.target.value;
-    setAnalysis(value);
-    setCharLimitError(value.length > 3000);
-  };
+  function formatContent(content) {
+    return content
+      .replace(
+        /<p>(.*?)<\/p><p><br><\/p>/,
+        '<p style="font-size: 20px"><strong>$1</strong></p><p><br></p>',
+      )
+      .replace(
+        /<p><span>(.*?)<\/span><\/p><p><br><\/p>/,
+        '<p style="font-size: 20px"><strong>$1</strong></p><p><br></p>',
+      );
+  }
 
   return (
     <div className={styles.container}>
@@ -369,6 +299,79 @@ const NewsCreator = () => {
               //   selectedCoin || isFetchingCategories || categories.length === 0
               // }
             />
+          </div>
+        </div>
+        <span className={styles.contentTitle}>Results</span>
+        <div className={styles.contentEditorContainer}>
+          <RichTextEditor
+          // handleImageSelect={handleImageSelect}
+          // images={selectedImage}
+          // success={isAnalysisCreated}
+          // onSuccess={setIsAnalysisCreated}
+          // onContentChange={handleContentChange}
+          />
+          <div className={styles.previewCard} id="contentCreation-previewCard">
+            <div
+              className={styles.previewImgContainer}
+              id="contentCreation-previewImgContainer"
+            >
+              {generatedImg && (
+                <img
+                  src={generatedImg}
+                  alt="generated img"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
+              <button
+                className={styles.regenerateImgButton}
+                // onClick={generateImg}
+                id="contentCreation-regenerateImgButton"
+                disabled={!isContent || isImageGenerating}
+                style={{
+                  cursor: isImageGenerating
+                    ? "wait"
+                    : isContent
+                      ? "pointer"
+                      : "not-allowed",
+                }}
+              >
+                <RenewIcon
+                  style={{ fill: generatedImg ? "black" : "#9d9d9d" }}
+                />
+              </button>
+            </div>
+            <div style={{ height: 300 }}>
+              {isContent || isImageInContent ? (
+                <p
+                  dangerouslySetInnerHTML={{ __html: formatContent(content) }}
+                  style={{ height: "fit-content", fontSize: 16 }}
+                  className={styles.contentPreview}
+                  id="contentCreation-contentPreview"
+                />
+              ) : (
+                <div
+                  className={styles.textMockContainer}
+                  id="contentCreation-textMockContainer"
+                >
+                  <p style={{ width: "100%", marginTop: 10, marginBottom: 5 }}>
+                    -
+                  </p>
+                  <p style={{ width: "80%" }}>-</p>
+                  <p style={{ width: "95%", marginTop: 30 }}>-</p>
+                  <p style={{ width: "95%" }}>-</p>
+                  <p style={{ width: "80%" }}>-</p>
+                  <p style={{ width: "85%" }}>-</p>
+                  <p style={{ width: "80%" }}>-</p>
+                  <p style={{ width: "90%" }}>-</p>
+                  <p style={{ width: "80%" }}>-</p>
+                  <p style={{ width: "75%" }}>-</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
