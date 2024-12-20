@@ -4,12 +4,14 @@ import config from "../../config";
 import TextExtractor from "../textExtractor/TextExtractor";
 import Title from "src/components/commons/Title";
 import styles from "./index.module.css";
+import { ReactComponent as TitleIcon } from "src/assets/icons/newsCreator.svg";
+import CustomSelect from "src/components/commons/CustomSelect";
 
 const NewsCreator = () => {
   const [categories, setCategories] = useState([]);
   const [bots, setBots] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedBot, setSelectedBot] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedBot, setSelectedBot] = useState(null);
   const [analysis, setAnalysis] = useState("");
   const [usedKeywords, setUsedKeywords] = useState("");
   const [isArticleEfficient, setIsArticleEfficient] = useState("");
@@ -55,10 +57,9 @@ const NewsCreator = () => {
       const data = await response.json();
       // Update state or perform any necessary actions
     } catch (error) {
-      console.error('Error refreshing articles:', error.message);
+      console.error("Error refreshing articles:", error.message);
     }
   };
-  
 
   const checkIfAllFieldsFilled = () => {
     if (
@@ -86,20 +87,20 @@ const NewsCreator = () => {
     charLimitError,
   ]);
 
- 
-const getSelectedBotName = () => {
-  const bot = bots.find((b) => b.id.toString() === selectedBot.toString());
-  return bot ? bot.name : "";
-};
-
+  const getSelectedBotName = () => {
+    const bot = bots.find(
+      (b) => b.id.toString() === selectedBot?.id.toString(),
+    );
+    return bot ? bot.name : "";
+  };
 
   const parseSummary = (summary) => {
-    const lines = summary.split('\n').filter(line => line.trim() !== '');
-    const title = lines[0].replace(/^\*\*(.*)\*\*$/, '$1'); // Elimina los asteriscos si están presentes
-    const content = lines.slice(1).join('\n');
+    const lines = summary.split("\n").filter((line) => line.trim() !== "");
+    const title = lines[0].replace(/^\*\*(.*)\*\*$/, "$1"); // Elimina los asteriscos si están presentes
+    const content = lines.slice(1).join("\n");
     return { title, content };
   };
-  
+
   const handleGenerate = async () => {
     setIsLoadingRegenerateArticle(true);
     try {
@@ -113,20 +114,22 @@ const getSelectedBotName = () => {
           },
           body: JSON.stringify({
             content: analysis,
-            category_id: selectedCategory,
+            category_id: selectedCategory.id,
           }),
         },
       );
-  
+
       const articleData = await articleResponse.json();
       console.log(articleData.data.summary.response);
-      const { title, content } = parseSummary(articleData.data.summary.response);
+      const { title, content } = parseSummary(
+        articleData.data.summary.response,
+      );
       console.log(title, content);
       if (!articleResponse.ok) {
         console.error("Error generating article:", articleData.error);
         return;
       }
-  
+
       const imageResponse = await fetch(
         `${config.BOTS_V2_API}/generate_image`,
         {
@@ -137,20 +140,20 @@ const getSelectedBotName = () => {
           },
           body: JSON.stringify({
             content: articleData.data.summary.response,
-            bot_id: selectedBot,
+            bot_id: selectedBot?.id,
           }),
         },
       );
-  
+
       const imageData = await imageResponse.json();
       console.log(imageData);
       if (!imageResponse.ok) {
         console.error("Error generating image:", imageData.error);
         return;
       }
-  
+
       const imageUrl = imageData.data.image_url;
-  
+
       setPreviewData({
         title: title,
         content: content,
@@ -162,11 +165,11 @@ const getSelectedBotName = () => {
         analysis: analysis,
         used_keywords: usedKeywords,
         is_article_efficient: isArticleEfficient,
-        category_id: selectedCategory,
-        bot_id: selectedBot,
+        category_id: selectedCategory.id,
+        bot_id: selectedBot?.id,
       });
       setImageToBeSaved(imageUrl);
-  
+
       setShowPreview(true);
     } catch (error) {
       console.error("Error generating article or image:", error.message);
@@ -175,7 +178,6 @@ const getSelectedBotName = () => {
       setIsLoadingRegenerateImage(false);
     }
   };
-  
 
   const handleSave = async () => {
     setIsLoadingSave(true);
@@ -231,7 +233,7 @@ const getSelectedBotName = () => {
           },
           body: JSON.stringify({
             content: analysis,
-            category_id: selectedCategory,
+            category_id: selectedCategory.id,
           }),
         },
       );
@@ -272,7 +274,7 @@ const getSelectedBotName = () => {
           },
           body: JSON.stringify({
             content: previewData.content,
-            bot_id: selectedBot,
+            bot_id: selectedBot?.id,
           }),
         },
       );
@@ -295,9 +297,19 @@ const getSelectedBotName = () => {
     }
   };
 
+  const handleSelectCoin = (coin) => {
+    if (coin) {
+      const category = categories.find(
+        (category) => category.category_id === parseInt(coin.category_id),
+      );
+      setSelectedCategory(category);
+    }
+    setSelectedBot(coin);
+  };
+
   const startOver = () => {
-    setSelectedCategory("");
-    setSelectedBot("");
+    setSelectedCategory(null);
+    setSelectedBot(null);
     setAnalysis("");
     setUsedKeywords("");
     setIsArticleEfficient("");
@@ -316,39 +328,52 @@ const getSelectedBotName = () => {
 
   return (
     <div>
-      <Title>News Creator Tool</Title>
+      <Title>
+        <TitleIcon
+          style={{ height: 35, width: "fit-content", marginRight: 15 }}
+          id="newsCreator-titleIcon"
+        />
+        News Creator
+      </Title>
+      <div style={{ width: "100%" }}>
+        <div className="selectors-container">
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>Coin</strong>
+                <span> *</span>
+              </label>
+            </div>
+            <CustomSelect
+              items={bots}
+              element="coins"
+              placeholder="Select coin"
+              onSelect={handleSelectCoin}
+              value={selectedBot}
+            />
+          </div>
+          <div className={styles.section}>
+            <div className={styles.labelContainer}>
+              <label>
+                <strong>Category</strong>
+                <span> *</span>
+              </label>
+            </div>
+            <CustomSelect
+              items={categories}
+              element="categories"
+              placeholder="Select category"
+              onSelect={setSelectedCategory}
+              value={selectedCategory}
+              // disabled={
+              //   selectedCoin || isFetchingCategories || categories.length === 0
+              // }
+            />
+          </div>
+        </div>
+      </div>
       <Form className="formContainer">
-        <Form.Group controlId="category">
-          <Form.Label>Category</Form.Label>
-          <Form.Control
-            as="select"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            <option value="">Select Category</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </Form.Control>
-        </Form.Group>
-        <br />
         <Form.Group controlId="bot">
-          <Form.Label>Coin</Form.Label>
-          <Form.Control
-            as="select"
-            value={selectedBot}
-            onChange={(e) => setSelectedBot(e.target.value)}
-          >
-            <option value="">Select Coin</option>
-            {bots.map((bot) => (
-              <option key={bot.id} value={bot.id}>
-                {bot.name}
-              </option>
-            ))}
-          </Form.Control>
-          <br />
           <TextExtractor
             setAnalysis={setAnalysis}
             coin_bot={getSelectedBotName()} // Pasar el nombre en lugar del ID
@@ -464,9 +489,9 @@ const getSelectedBotName = () => {
             </Button>
             <br />
             <br />
-            <Form.Check 
-              type="checkbox" 
-              label="Add to Top Story" 
+            <Form.Check
+              type="checkbox"
+              label="Add to Top Story"
               checked={isTopStory}
               onChange={(e) => setIsTopStory(e.target.checked)}
             />
