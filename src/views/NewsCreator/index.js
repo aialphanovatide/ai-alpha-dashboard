@@ -140,7 +140,7 @@ const NewsCreator = () => {
         </div>
         <textarea
           placeholder="Write the prompt"
-          onChange={setPrompt}
+          onChange={(e) => setPrompt(e.target.value)}
           value={prompt}
         />
         <button
