@@ -48,12 +48,12 @@ const _nav = [
   //   to: '/narrativeTrading',
   //   icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   // },
-  // {
-  //   component: CNavItem,
-  //   name: 'News Creator Tool',
-  //   to: '/newsCreatorTool',
-  //   icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
-  // },
+  {
+    component: CNavItem,
+    name: 'News Creator',
+    to: '/newsCreator',
+    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+  },
   {
     component: CNavItem,
     name: 'News Search Tool',

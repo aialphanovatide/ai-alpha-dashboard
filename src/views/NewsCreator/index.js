@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Spinner, Alert } from "react-bootstrap";
 import config from "../../config";
 import TextExtractor from "../textExtractor/TextExtractor";
-import "./NewsCreatorTool.css";
 import LastFiveArticles from "../lastFiveArticles/LastFiveArticles";
 import Title from "src/components/commons/Title";
+import styles from "./index.module.css";
 
-const NewsCreatorTool = () => {
+const NewsCreator = () => {
   const [categories, setCategories] = useState([]);
   const [bots, setBots] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -515,4 +515,4 @@ const getSelectedBotName = () => {
   );
 };
 
-export default NewsCreatorTool;
+export default NewsCreator;
