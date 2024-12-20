@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import config from "../../config";
-import Title from "src/components/commons/Title";
 import styles from "./index.module.css";
 import { ReactComponent as TitleIcon } from "src/assets/icons/newsCreator.svg";
 import { ReactComponent as RenewIcon } from "src/assets/icons/renew.svg";
 import { ReactComponent as StarIcon } from "src/assets/icons/star.svg";
 import { ReactComponent as EmptyStarIcon } from "src/assets/icons/emptyStar.svg";
+import uploadIcon from "src/assets/icons/uploadIcon.svg";
 import CustomSelect from "src/components/commons/CustomSelect";
 import RichTextEditor from "../helpers/textEditor/textEditor";
 
@@ -76,168 +76,189 @@ const NewsCreator = () => {
         />
         News Creator
       </h1>
-      <div style={{ width: "100%" }}>
-        <div className={styles.selectorsContainer}>
-          <div className={styles.section}>
-            <div className={styles.labelContainer}>
-              <label>
-                <strong>Coin</strong>
-                <span> *</span>
-              </label>
-            </div>
-            <CustomSelect
-              items={bots}
-              element="coins"
-              placeholder="Select coin"
-              onSelect={handleSelectCoin}
-              value={selectedBot}
-            />
+      <div className={styles.selectorsContainer}>
+        <div className={styles.section}>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Coin</strong>
+              <span> *</span>
+            </label>
           </div>
-          <div className={styles.section}>
-            <div className={styles.labelContainer}>
-              <label>
-                <strong>Category</strong>
-                <span> *</span>
+          <CustomSelect
+            items={bots}
+            element="coins"
+            placeholder="Select coin"
+            onSelect={handleSelectCoin}
+            value={selectedBot}
+          />
+        </div>
+        <div className={styles.section}>
+          <div className={styles.labelContainer}>
+            <label>
+              <strong>Category</strong>
+              <span> *</span>
+            </label>
+          </div>
+          <CustomSelect
+            items={categories}
+            element="categories"
+            placeholder="Select category"
+            onSelect={setSelectedCategory}
+            value={selectedCategory}
+            // disabled={
+            //   selectedCoin || isFetchingCategories || categories.length === 0
+            // }
+          />
+        </div>
+      </div>
+      <section className={styles.generateSection}>
+        <div className={styles.titleInputContainer}>
+          <span className={styles.sectionTitle}>Create the text</span>
+          <div className={styles.divInput} id="botForm-img-input">
+            <div className={styles.filePicker} id="botForm-img-input-button">
+              <input
+                type="file"
+                // accept=".svg"
+                // onChange={handleImageChange}
+                style={{ display: "none" }}
+                id="botform-icon-input"
+              />
+              <label htmlFor="botform-icon-input">
+                <img src={uploadIcon} alt="icon" style={{ height: 16 }} />
+                Upload
               </label>
             </div>
-            <CustomSelect
-              items={categories}
-              element="categories"
-              placeholder="Select category"
-              onSelect={setSelectedCategory}
-              value={selectedCategory}
-              // disabled={
-              //   selectedCoin || isFetchingCategories || categories.length === 0
-              // }
+            <input
+              type="text"
+              // onChange={handleImageLinkChange}
+              // value={formData.icon?.link || ""}
+              // placeholder={formData.icon ? formData.icon.name : "No files selected"}
+              placeholder="Upload file or paste link"
+              id="botForm-img-link"
             />
           </div>
         </div>
-        <section className={styles.generateSection}>
-          <div>
-            <span className={styles.sectionTitle}>Create the text</span>
-          </div>
-          <textarea placeholder="Write the prompt" onChange={setPrompt} value={prompt} />
-          <button
-            className={styles.createButton}
-            // disabled={isSubmitting || !isFormValid}
-          >
-            Create
-          </button>
-        </section>
-        <section>
-          <span className={styles.sectionTitle}>Results</span>
-          <div className={styles.contentEditorContainer}>
-            <RichTextEditor
-            // handleImageSelect={handleImageSelect}
-            // images={selectedImage}
-            // success={isAnalysisCreated}
-            // onSuccess={setIsAnalysisCreated}
-            // onContentChange={handleContentChange}
-            />
-            <div
-              className={styles.previewCard}
-              id="contentCreation-previewCard"
-            >
-              <div
-                className={styles.previewImgContainer}
-                id="contentCreation-previewImgContainer"
-              >
-                {generatedImg && (
-                  <img
-                    src={generatedImg}
-                    alt="generated img"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                )}
-                <button
-                  className={styles.regenerateImgButton}
-                  // onClick={generateImg}
-                  id="contentCreation-regenerateImgButton"
-                  disabled={!isContent || isImageGenerating}
-                  style={{
-                    cursor: isImageGenerating
-                      ? "wait"
-                      : isContent
-                        ? "pointer"
-                        : "not-allowed",
-                  }}
-                >
-                  <RenewIcon
-                    style={{ fill: generatedImg ? "black" : "#9d9d9d" }}
-                  />
-                </button>
-              </div>
-              <div style={{ height: 300, position: "relative" }}>
-                {isContent || isImageInContent ? (
-                  <p
-                    dangerouslySetInnerHTML={{ __html: formatContent(content) }}
-                    style={{ height: "fit-content", fontSize: 16 }}
-                    className={styles.contentPreview}
-                    id="contentCreation-contentPreview"
-                  />
-                ) : (
-                  <div
-                    className={styles.textMockContainer}
-                    id="contentCreation-textMockContainer"
-                  >
-                    <p
-                      style={{ width: "100%", marginTop: 10, marginBottom: 5 }}
-                    >
-                      -
-                    </p>
-                    <p style={{ width: "80%" }}>-</p>
-                    <p style={{ width: "95%", marginTop: 30 }}>-</p>
-                    <p style={{ width: "95%" }}>-</p>
-                    <p style={{ width: "80%" }}>-</p>
-                    <p style={{ width: "85%" }}>-</p>
-                    <p style={{ width: "80%" }}>-</p>
-                    <p style={{ width: "90%" }}>-</p>
-                    <p style={{ width: "80%" }}>-</p>
-                    <p style={{ width: "75%" }}>-</p>
-                  </div>
-                )}
-
-                <button
-                  className={styles.regenerateImgButton}
-                  // onClick={generateImg}
-                  id="contentCreation-regenerateImgButton"
-                  disabled={!isContent || isImageGenerating}
-                  style={{
-                    cursor: isImageGenerating
-                      ? "wait"
-                      : isContent
-                        ? "pointer"
-                        : "not-allowed",
-                  }}
-                >
-                  <RenewIcon
-                    style={{ fill: generatedImg ? "black" : "#9d9d9d" }}
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
+        <textarea
+          placeholder="Write the prompt"
+          onChange={setPrompt}
+          value={prompt}
+        />
         <button
-          className={styles.topStoryButton}
-          onClick={() => setIsTopStory(!isTopStory)}
-        >
-          {isTopStory ? <StarIcon /> : <EmptyStarIcon />}
-          <span>Mark as a top story</span>
-        </button>
-        <button
-          className={styles.submitButton}
-          // onClick={handleSubmit}
+          className={styles.createButton}
           // disabled={isSubmitting || !isFormValid}
           disabled={true}
         >
-          {isSubmitting ? "Submitting..." : "Submit"}
+          Create
         </button>
-      </div>
+      </section>
+      <section>
+        <span className={styles.sectionTitle}>Results</span>
+        <div className={styles.contentEditorContainer}>
+          <RichTextEditor
+          // handleImageSelect={handleImageSelect}
+          // images={selectedImage}
+          // success={isAnalysisCreated}
+          // onSuccess={setIsAnalysisCreated}
+          // onContentChange={handleContentChange}
+          />
+          <div className={styles.previewCard} id="contentCreation-previewCard">
+            <div
+              className={styles.previewImgContainer}
+              id="contentCreation-previewImgContainer"
+            >
+              {generatedImg && (
+                <img
+                  src={generatedImg}
+                  alt="generated img"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
+              <button
+                className={styles.regenerateImgButton}
+                // onClick={generateImg}
+                id="contentCreation-regenerateImgButton"
+                disabled={!isContent || isImageGenerating}
+                style={{
+                  cursor: isImageGenerating
+                    ? "wait"
+                    : isContent
+                      ? "pointer"
+                      : "not-allowed",
+                }}
+              >
+                <RenewIcon
+                  style={{ fill: generatedImg ? "black" : "#9d9d9d" }}
+                />
+              </button>
+            </div>
+            <div style={{ height: 300, position: "relative" }}>
+              {isContent || isImageInContent ? (
+                <p
+                  dangerouslySetInnerHTML={{ __html: formatContent(content) }}
+                  style={{ height: "fit-content", fontSize: 16 }}
+                  className={styles.contentPreview}
+                  id="contentCreation-contentPreview"
+                />
+              ) : (
+                <div
+                  className={styles.textMockContainer}
+                  id="contentCreation-textMockContainer"
+                >
+                  <p style={{ width: "100%", marginTop: 10, marginBottom: 5 }}>
+                    -
+                  </p>
+                  <p style={{ width: "80%" }}>-</p>
+                  <p style={{ width: "95%", marginTop: 30 }}>-</p>
+                  <p style={{ width: "95%" }}>-</p>
+                  <p style={{ width: "80%" }}>-</p>
+                  <p style={{ width: "85%" }}>-</p>
+                  <p style={{ width: "80%" }}>-</p>
+                  <p style={{ width: "90%" }}>-</p>
+                  <p style={{ width: "80%" }}>-</p>
+                  <p style={{ width: "75%" }}>-</p>
+                </div>
+              )}
+
+              <button
+                className={styles.regenerateImgButton}
+                // onClick={generateImg}
+                id="contentCreation-regenerateImgButton"
+                disabled={!isContent || isImageGenerating}
+                style={{
+                  cursor: isImageGenerating
+                    ? "wait"
+                    : isContent
+                      ? "pointer"
+                      : "not-allowed",
+                }}
+              >
+                <RenewIcon
+                  style={{ fill: generatedImg ? "black" : "#9d9d9d" }}
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <button
+        className={styles.topStoryButton}
+        onClick={() => setIsTopStory(!isTopStory)}
+      >
+        {isTopStory ? <StarIcon /> : <EmptyStarIcon />}
+        <span>Mark as a top story</span>
+      </button>
+      <button
+        className={styles.submitButton}
+        // onClick={handleSubmit}
+        // disabled={isSubmitting || !isFormValid}
+        disabled={true}
+      >
+        {isSubmitting ? "Submitting..." : "Submit"}
+      </button>
     </div>
   );
 };
