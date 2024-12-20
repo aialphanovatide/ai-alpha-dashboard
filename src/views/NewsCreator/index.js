@@ -4,6 +4,8 @@ import Title from "src/components/commons/Title";
 import styles from "./index.module.css";
 import { ReactComponent as TitleIcon } from "src/assets/icons/newsCreator.svg";
 import { ReactComponent as RenewIcon } from "src/assets/icons/renew.svg";
+import { ReactComponent as StarIcon } from "src/assets/icons/star.svg";
+import { ReactComponent as EmptyStarIcon } from "src/assets/icons/emptyStar.svg";
 import CustomSelect from "src/components/commons/CustomSelect";
 import RichTextEditor from "../helpers/textEditor/textEditor";
 
@@ -17,6 +19,7 @@ const NewsCreator = () => {
   const [isContent, setIsContent] = useState(false);
   const [isImageInContent, setIsImageInContent] = useState(false);
   const [content, setContent] = useState("");
+  const [isTopStory, setIsTopStory] = useState(false);
 
   useEffect(() => {
     const fetchCategoriesAndBots = async () => {
@@ -391,6 +394,18 @@ const NewsCreator = () => {
             </div>
           </div>
         </div>
+
+        <button
+          className={styles.topStoryButton}
+          onClick={() => setIsTopStory(!isTopStory)}
+        >
+          {isTopStory ? (
+            <StarIcon/>
+          ) : (
+            <EmptyStarIcon/>
+          )}
+          <span>Mark as a top story</span>
+        </button>
       </div>
     </div>
   );
