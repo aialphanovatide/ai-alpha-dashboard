@@ -327,7 +327,7 @@ const NewsCreator = () => {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <Title>
         <TitleIcon
           style={{ height: 35, width: "fit-content", marginRight: 15 }}
@@ -336,7 +336,7 @@ const NewsCreator = () => {
         News Creator
       </Title>
       <div style={{ width: "100%" }}>
-        <div className="selectors-container">
+        <div className={styles.selectorsContainer}>
           <div className={styles.section}>
             <div className={styles.labelContainer}>
               <label>
@@ -372,164 +372,6 @@ const NewsCreator = () => {
           </div>
         </div>
       </div>
-      <Form className="formContainer">
-        <Form.Group controlId="bot">
-          <TextExtractor
-            setAnalysis={setAnalysis}
-            coin_bot={getSelectedBotName()} // Pasar el nombre en lugar del ID
-          />
-          <br />
-        </Form.Group>
-        <br />
-        <Form.Group controlId="analysis">
-          <Form.Label>Article Analysis</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={15}
-            value={analysis}
-            onChange={handleAnalysisChange}
-            isInvalid={charLimitError}
-          />
-          {charLimitError && (
-            <Form.Control.Feedback type="invalid">
-              Analysis text exceeds the 3000 character limit.
-            </Form.Control.Feedback>
-          )}
-        </Form.Group>
-        <br />
-        <Form.Group controlId="usedKeywords">
-          <Form.Label>Used Keywords</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Use this phrase format: phrase, phrase, phrase"
-            value={usedKeywords}
-            onChange={(e) => setUsedKeywords(e.target.value)}
-          />
-        </Form.Group>
-        <br />
-        <Form.Group controlId="isArticleEfficient">
-          <Form.Label>Is Article Efficient</Form.Label>
-          <Form.Control
-            type="text"
-            value={isArticleEfficient}
-            onChange={(e) => setIsArticleEfficient(e.target.value)}
-          />
-        </Form.Group>
-        <br />
-        <Button
-          variant="primary"
-          onClick={handleGenerate}
-          disabled={isButtonDisabled || isLoadingRegenerateArticle}
-        >
-          {isLoadingRegenerateArticle ? (
-            <Spinner
-              as="span"
-              animation="border"
-              size="sm"
-              role="status"
-              aria-hidden="true"
-            />
-          ) : (
-            "Create Article"
-          )}
-        </Button>
-      </Form>
-      <br />
-      {showPreview && previewData && (
-        <div className="preview-section">
-          <h2>News Preview</h2>
-          <br />
-          {previewData.image && (
-            <img
-              src={previewData.image}
-              style={{ width: "300px", height: "300px" }}
-              alt="Generated"
-            />
-          )}
-          <br />
-          <br />
-          <Button
-            variant="secondary"
-            onClick={handleRegenerateImage}
-            disabled={isLoadingRegenerateImage}
-          >
-            {isLoadingRegenerateImage ? (
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-            ) : (
-              "Regenerate Image"
-            )}
-          </Button>
-          <br />
-          <br />
-          <h3>{previewData.title}</h3>
-          <p>{previewData.content}</p>
-          <div className="button-group">
-            <Button
-              variant="secondary"
-              onClick={handleRegenerateArticle}
-              disabled={isLoadingRegenerateArticle}
-            >
-              {isLoadingRegenerateArticle ? (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-              ) : (
-                "Regenerate Article"
-              )}
-            </Button>
-            <br />
-            <br />
-            <Form.Check
-              type="checkbox"
-              label="Add to Top Story"
-              checked={isTopStory}
-              onChange={(e) => setIsTopStory(e.target.checked)}
-            />
-            <br />
-            <Button
-              variant="success"
-              onClick={handleSave}
-              disabled={isLoadingSave}
-            >
-              {isLoadingSave ? (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-              ) : (
-                "Save"
-              )}
-            </Button>
-            <Button
-              variant="danger"
-              style={{ marginLeft: "10px" }}
-              onClick={startOver}
-            >
-              Start Over
-            </Button>
-            <br />
-            <br />
-          </div>
-        </div>
-      )}
-      {showSuccessMessage && (
-        <Alert variant="success" className="mt-3">
-          Article created successfully!
-        </Alert>
-      )}
     </div>
   );
 };
