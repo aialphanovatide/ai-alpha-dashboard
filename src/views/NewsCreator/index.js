@@ -3,7 +3,7 @@ import config from "../../config";
 import Title from "src/components/commons/Title";
 import styles from "./index.module.css";
 import { ReactComponent as TitleIcon } from "src/assets/icons/newsCreator.svg";
-import { ReactComponent as RenewIcon } from "src/assets/icons/newsCreator.svg";
+import { ReactComponent as RenewIcon } from "src/assets/icons/renew.svg";
 import CustomSelect from "src/components/commons/CustomSelect";
 import RichTextEditor from "../helpers/textEditor/textEditor";
 
@@ -344,7 +344,7 @@ const NewsCreator = () => {
                 />
               </button>
             </div>
-            <div style={{ height: 300 }}>
+            <div style={{ height: 300, position: "relative" }}>
               {isContent || isImageInContent ? (
                 <p
                   dangerouslySetInnerHTML={{ __html: formatContent(content) }}
@@ -371,6 +371,23 @@ const NewsCreator = () => {
                   <p style={{ width: "75%" }}>-</p>
                 </div>
               )}
+              <button
+                className={styles.regenerateImgButton}
+                // onClick={generateImg}
+                id="contentCreation-regenerateImgButton"
+                disabled={!isContent || isImageGenerating}
+                style={{
+                  cursor: isImageGenerating
+                    ? "wait"
+                    : isContent
+                      ? "pointer"
+                      : "not-allowed",
+                }}
+              >
+                <RenewIcon
+                  style={{ fill: generatedImg ? "black" : "#9d9d9d" }}
+                />
+              </button>
             </div>
           </div>
         </div>
