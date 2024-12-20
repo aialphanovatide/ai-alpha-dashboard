@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Spinner, Alert } from "react-bootstrap";
 import config from "../../config";
 import TextExtractor from "../textExtractor/TextExtractor";
-import LastFiveArticles from "../lastFiveArticles/LastFiveArticles";
 import Title from "src/components/commons/Title";
 import styles from "./index.module.css";
 
@@ -506,11 +505,6 @@ const getSelectedBotName = () => {
           Article created successfully!
         </Alert>
       )}
-      <br />
-      <br />
-      <hr></hr>
-      <LastFiveArticles refreshArticles={refreshArticles} />
-      <br />
     </div>
   );
 };
